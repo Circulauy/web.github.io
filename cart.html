@@ -597,9 +597,23 @@
             }
         });
     });
+</script>;
+    } <script>
+    document.getElementById('search-icon').addEventListener('click', function(e) {
+        e.preventDefault();
+        let topSearch = document.getElementById('top-search');
+        if (topSearch.style.display === 'none' || topSearch.style.display === '') {
+            topSearch.style.display = 'block';
+        } else {
+            topSearch.style.display = 'none';
+        }
+    });
+
+    document.querySelector('.close-search').addEventListener('click', function() {
+        document.getElementById('top-search').style.display = 'none';
+    });
 </script>
-	    
-</script>
+    
 
 
 </body>
