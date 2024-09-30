@@ -233,16 +233,21 @@
                                     </td>
                                   <td class="price-pr">
     <p>$ 80.0</p>
-</td>
-<td class="quantity-box">
-    <input type="number" size="4" value="1" min="0" step="1" class="c-input-text qty text">
-</td>
-<td class="total-pr">
-    <p>$ 80.0</p>
-</td>
-<td class="remove-pr">
-    <a href="#">Eliminar</a>
-</td>
+<tr id="product-1">
+    <td class="price-pr">
+        <p>$ 80.0</p>
+    </td>
+    <td class="quantity-box">
+        <input type="number" size="4" value="1" min="0" step="1" class="c-input-text qty text">
+    </td>
+    <td class="total-pr">
+        <p>$ 80.0</p>
+    </td>
+    <td class="remove-pr">
+        <a href="#" class="remove-item" data-product-id="product-1">Eliminar</a>
+    </td>
+</tr>
+
 
 									<i class="fas fa-times"></i>
 								</a>
@@ -581,7 +586,21 @@
 
     // Actualizar el subtotal al cargar la página
     document.addEventListener('DOMContentLoaded', updateSubtotal);
+    } <script>
+    document.querySelectorAll('.remove-item').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const productRow = document.getElementById(productId);
+            if (productRow) {
+                productRow.remove();
+            }
+        });
+    });
 </script>
+	    
+</script>
+
 
 </body>
 
