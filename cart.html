@@ -613,6 +613,22 @@
     document.querySelector('.close-search').addEventListener('click', function() {
         document.getElementById('top-search').style.display = 'none';
     });
+
+    document.getElementById('search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            let searchTerm = this.value.toLowerCase();
+            let bodyText = document.body.innerText.toLowerCase();
+            if (bodyText.includes(searchTerm)) {
+                alert('Término encontrado');
+            } else {
+                alert('Término no encontrado');
+            }
+        }
+    });
+</script>
+
+    });
 </script>
     
 
