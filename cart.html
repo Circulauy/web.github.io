@@ -554,6 +554,31 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
+    <script>
+    // Ejemplo de productos en el carrito
+    const cartItems = [
+        { name: 'Producto 1', price: 10.99, quantity: 2 },
+        { name: 'Producto 2', price: 5.49, quantity: 1 },
+        { name: 'Producto 3', price: 20.00, quantity: 3 }
+    ];
+
+    function calculateSubtotal() {
+        let subtotal = 0;
+        cartItems.forEach(item => {
+            subtotal += item.price * item.quantity;
+        });
+        return subtotal.toFixed(2);
+    }
+
+    function updateSubtotal() {
+        const subtotalElement = document.getElementById('subtotal');
+        subtotalElement.textContent = `$${calculateSubtotal()}`;
+    }
+
+    // Actualizar el subtotal al cargar la página
+    document.addEventListener('DOMContentLoaded', updateSubtotal);
+</script>
+
 </body>
 
 </html>
