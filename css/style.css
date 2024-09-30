@@ -2599,6 +2599,24 @@
 }
 
 
+.attr-nav .search {
+    position: relative;
+}
+
+.attr-nav .search input[type="text"] {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.attr-nav .search:hover input[type="text"] {
+    display: block; /* Mostrar al pasar el ratón */
+}
 
 
 
