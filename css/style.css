@@ -736,7 +736,21 @@
 }
  .top-search input.form-control{
      color: #ffffff;
+} 
+.top-search {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 1000;
+    padding: 10px 0;
+    display: none; /* Oculto por defecto */
 }
+
+.input-group-addon {
+    cursor: pointer;
+}
+
 /*------------------------------------------------------------------ Slider -------------------------------------------------------------------*/
  .cover-slides{
      height: 100vh;
