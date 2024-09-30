@@ -131,8 +131,6 @@
                 <!-- Start Atribute Navigation -->
                 <div class="attr-nav">
     <ul>
-        <li class="search">
-            <a href="javascript:void(0);" id="search-icon"><i class="fa fa-search"></i></a></li>
                         <li class="side-menu"><a href="#">
 						<i class="fa fa-shopping-bag"></i>
                             <span class="badge">3</span>
@@ -176,15 +174,6 @@
     <!-- End Main Top -->
 
    <!-- Start Top Search -->
-<div class="top-search" id="top-search" style="display: none;">
-    <div class="container">
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" placeholder="Search">
-            <span class="input-group-addon close-search"><i class="fa fa-times"></i></span>
-        </div>
-    </div>
-</div>
 <!-- End Top Search -->
 
     <!-- Start All Title Box -->
@@ -596,39 +585,6 @@
             if (productRow) {
                 productRow.remove();
             }
-        });
-    });
-</script>;
-    } <script>
-    document.getElementById('search-icon').addEventListener('click', function(e) {
-        e.preventDefault();
-        let topSearch = document.getElementById('top-search');
-        if (topSearch.style.display === 'none' || topSearch.style.display === '') {
-            topSearch.style.display = 'block';
-        } else {
-            topSearch.style.display = 'none';
-        }
-    });
-
-    document.querySelector('.close-search').addEventListener('click', function() {
-        document.getElementById('top-search').style.display = 'none';
-    });
-
-    document.getElementById('search-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            let searchTerm = this.value.toLowerCase();
-            let bodyText = document.body.innerText.toLowerCase();
-            if (bodyText.includes(searchTerm)) {
-                alert('Término encontrado');
-            } else {
-                alert('Término no encontrado');
-            }
-        }
-    });
-</script>
-
-
     });
 </script>
     
