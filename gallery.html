@@ -620,6 +620,34 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
+    <body>
+    <!-- Contenido de tu página -->
+    <script>
+        document.getElementById('search-icon').addEventListener('click', function (e) {
+            e.preventDefault();
+            let searchBar = document.getElementById('search-bar');
+            if (searchBar.style.display === 'none' || searchBar.style.display === '') {
+                searchBar.style.display = 'block';
+            } else {
+                searchBar.style.display = 'none';
+            }
+        });
+
+        document.getElementById('search-bar').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                let searchTerm = this.value.toLowerCase();
+                let bodyText = document.body.innerText.toLowerCase();
+                if (bodyText.includes(searchTerm)) {
+                    alert('Término encontrado');
+                } else {
+                    alert('Término no encontrado');
+                }
+            }
+        });
+    </script>
+</body>
+
 </body>
 
 </html>
