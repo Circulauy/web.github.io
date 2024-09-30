@@ -615,6 +615,43 @@
         });
     });
 </script>
+<script>
+    // Función para eliminar un producto del carrito
+    function removeProduct(productId) {
+        const productRow = document.getElementById(productId);
+        if (productRow) {
+            productRow.remove();
+        }
+    }
+
+    // Añadir evento de clic a todos los enlaces "Eliminar"
+    document.querySelectorAll('.remove-item').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            removeProduct(productId);
+        });
+    });
+
+    // Evento de clic para actualizar el carrito
+    document.getElementById('update-cart').addEventListener('click', function(e) {
+        e.preventDefault();
+        let cartItems = document.querySelectorAll('tr[id^="product-"]');
+        cartItems.forEach(function(item) {
+            let quantityInput = item.querySelector('.quantity-box input');
+            let priceElement = item.querySelector('.price-pr p');
+            let totalElement = item.querySelector('.total-pr p');
+
+            let price = parseFloat(priceElement.textContent.replace('$', ''));
+            let quantity = parseInt(quantityInput.value);
+            let total = price * quantity;
+
+            totalElement.textContent = `$${total.toFixed(2)}`;
+        });
+
+        // Aquí puedes agregar lógica adicional para actualizar el subtotal general del carrito
+    });
+</script>
 
 </script>
     
