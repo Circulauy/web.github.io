@@ -121,10 +121,6 @@
                             <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">TIENDA</a>
                             <ul class="dropdown-menu">
 								<li><a href="tienda.html">Tienda</a></li>
-								<li><a href="shop-detail.html">Tienda Detalle</a></li>
-                                <li><a href="cart.html">Carrito</a></li>
-                                <li><a href="checkout.html">Checkout</a></li>
-                                <li><a href="my-account.html">Mi Cuenta</a></li>
                                 <li><a href="wishlist.html">Lista de Deseos</a></li>
                             </ul>
                         </li>
@@ -461,15 +457,18 @@
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
-						<div class="footer-top-box">
-							<h3>Suscribite a nuestro Newsletter</h3>
-							<form class="newsletter-box">
-								<div class="form-group">
-									<input class="" type="email" name="Email" placeholder="Dirección de Email*" />
-									<i class="fa fa-envelope"></i>
-								</div>
-								<button class="btn hvr-hover" type="submit">Enviar</button>
-							</form>
+    <div class="footer-top-box">
+        <h3>Suscribite a nuestro Newsletter</h3>
+        <form class="newsletter-box" action="send_email.php" method="post">
+            <div class="form-group">
+                <input class="" type="email" name="email" placeholder="Dirección de Email*" required />
+                <i class="fa fa-envelope"></i>
+            </div>
+            <button class="btn hvr-hover" type="submit">Enviar</button>
+        </form>
+    </div>
+</div>
+
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
