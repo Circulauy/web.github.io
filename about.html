@@ -554,6 +554,25 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
+    script>
+        document.getElementById('newsletter-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el envío del formulario por defecto
+
+            var formData = new FormData(this);
+
+            fetch('send_email.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('form-message').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('form-message').innerText = 'Error al enviar el correo.';
+            });
+        });
+    </script>
 </body>
 
 </html>
