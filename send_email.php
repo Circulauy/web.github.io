@@ -1,4 +1,8 @@
 <?php
+header('Content-Type: application/json'); // Establece el tipo de contenido de la respuesta a JSON
+
+$response = array();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
@@ -11,14 +15,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                    "X-Mailer: PHP/" . phpversion();
 
         if (mail($to, $subject, $message, $headers)) {
-            echo "Correo enviado exitosamente.";
+            $response['status'] = 'success';
+            $response['message'] = 'Correo enviado exitosamente.';
         } else {
-            echo "Error al enviar el correo.";
+            $response['status'] = 'error';
+            $response['message'] = 'Error al enviar el correo.';
         }
     } else {
-        echo "Dirección de email no válida.";
+        $response['status'] = 'error';
+        $response['message'] = 'Dirección de email no válida.';
     }
 } else {
-    echo "Método de solicitud no permitido.";
+    $response['status'] = 'error';
+    $response['message'] = 'Método de solicitud no permitido.';
 }
+
+echo json_encode($response);
 ?>
