@@ -6,8 +6,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $to = "circulauy@gmail.com";
         $subject = "Nueva suscripción al newsletter";
         $message = "El siguiente correo electrónico se ha suscrito al newsletter: " . $email;
-        $headers = "From: no-reply@tudominio.com\r\n" .
-                   "Reply-To: no-reply@tudominio.com\r\n" .
+        $headers = "From: circulauy@gmail.com\r\n" .
+                   "Reply-To: circulauy@gmail.com\r\n" .
                    "X-Mailer: PHP/" . phpversion();
 
         if (mail($to, $subject, $message, $headers)) {
