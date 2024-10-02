@@ -1684,7 +1684,7 @@
 }
  .our-team .post{
      display: block;
-     font-size: 15px;
+     font-size: 20px;
 }
  .our-team .social{
      list-style: none;
@@ -1736,7 +1736,7 @@
      padding: 20px 0px;
 }
  .team-description p{
-     font-size: 20px;
+     font-size: 16px;
      margin: 0px;
 }
  .hover-team:hover .social{
