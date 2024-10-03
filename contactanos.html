@@ -212,22 +212,53 @@
                         <h2>Escribinos!</h2>
 <div class="contact-form-box">
   <h3>Contáctanos</h3>
-  <form class="contact-box" method="POST" action="/.netlify/functions/contact_form">
+  <form id="contactForm" class="contact-box">
     <div class="form-group">
-      <input type="text" name="nombre" placeholder="Tu nombre*" required />
+      <input type="text" id="nombre" name="nombre" placeholder="Tu nombre*" required />
     </div>
     <div class="form-group">
-      <input type="email" name="email" placeholder="Tu correo electrónico*" required />
+      <input type="email" id="email" name="email" placeholder="Tu correo electrónico*" required />
     </div>
     <div class="form-group">
-      <input type="text" name="motivo" placeholder="Motivo de contacto*" required />
+      <input type="text" id="motivo" name="motivo" placeholder="Motivo del contacto*" required />
     </div>
     <div class="form-group">
-      <textarea name="mensaje" placeholder="Escribe tu mensaje aquí*" required></textarea>
+      <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí*" required></textarea>
     </div>
     <button class="btn hvr-hover" type="submit">Enviar</button>
-</div>
+  </form>
+	<script>
+    // Interceptar el evento submit del formulario y enviarlo como JSON
+    document.getElementById("contactForm").addEventListener("submit", async function(event) {
+      event.preventDefault(); // Prevenir el envío normal del formulario
 
+      // Obtener los valores de los campos del formulario
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("email").value;
+      const motivo = document.getElementById("motivo").value;
+      const mensaje = document.getElementById("mensaje").value;
+
+      // Crear el objeto de datos
+      const formData = { nombre, email, motivo, mensaje };
+
+      try {
+        // Enviar los datos como JSON usando fetch
+        const response = await fetch("/.netlify/functions/contact_form", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        // Manejar la respuesta
+        const result = await response.json();
+        alert(result.message); // Mostrar mensaje de éxito o error
+      } catch (error) {
+        alert("Error al enviar el formulario. Inténtalo de nuevo más tarde.");
+        console.error("Error:", error);
+      }
+    });
+  </script>
+</div>
         </div>
     </div>
 </form>
