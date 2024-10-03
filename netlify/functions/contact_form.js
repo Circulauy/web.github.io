@@ -44,7 +44,7 @@ exports.handler = async (event) => {
   // Definir las opciones del correo
   let mailOptions = {
     from: email,
-    to: "circulauy@correo.com", // Cambia esto con el correo de destino
+    to: "circulauy@gmail.com", // Cambia esto con el correo de destino
     subject: `Nuevo mensaje de contacto de: ${nombre}`,
     text: `Motivo: ${motivo}\nMensaje:\n${mensaje}\n\nCorreo del remitente: ${email}`,
   };
