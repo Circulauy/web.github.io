@@ -578,33 +578,68 @@
 
 
     <!-- Start Footer  -->
-    <footer>
+     <footer>
         <div class="footer-main">
             <div class="container">
 				<div class="row">
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Horario de Atención</h3>
+							<h3>Horario de atención</h3>
 							<ul class="list-time">
-								<li>Lunes - Viernes: 10 a 18 hs</li> <li>Sábado y Domingo: Cerrado</li> 
+								<li>Lunes - Viernes: 10 a 18hs</li> <li>Sábado y Domingo: Cerrado</li> 
 							</ul>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Suscribite a nuestro Newsletter</h3>
-							<form class="newsletter-box">
-								<div class="form-group">
-									<input class="" type="email" name="Email" placeholder="Dirección Email*" />
-									<i class="fa fa-envelope"></i>
-								</div>
-								<button class="btn hvr-hover" type="submit">Enviar</button>
-							</form>
-						</div>
+    <h3>Suscribite a nuestro Newsletter</h3>
+    <form class="newsletter-box" id="newsletterForm">
+        <div class="form-group">
+            <input class="" type="email" id="email" name="email" placeholder="Dirección de Email*" required />
+            <i class="fa fa-envelope"></i>
+        </div>
+        <button class="btn hvr-hover" type="button" onclick="sendEmail()">Enviar</button>
+    </form>
+    <p id="response" style="font-weight: bold; margin-top: 10px;"></p>
+</div>
+
+						
+						<script>
+    function sendEmail() {
+        var email = document.getElementById("email").value;
+        var formData = JSON.stringify({ email: email });
+
+        fetch("/.netlify/functions/send-email", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json()) // Convertir la respuesta a JSON
+        .then(data => {
+            const responseElement = document.getElementById("response");
+            if (data.status === 'success') {
+                responseElement.style.color = "green";
+                responseElement.innerText = data.message; // Mensaje de éxito
+            } else {
+                responseElement.style.color = "red";
+                responseElement.innerText = data.message; // Mensaje de error
+            }
+        })
+        .catch(error => {
+            document.getElementById("response").style.color = "red";
+            document.getElementById("response").innerText = "Hubo un error al procesar la solicitud.";
+            console.error("Error al enviar el formulario:", error);
+        });
+    }
+</script>
+
+
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Redes sociales</h3>
+							<h3>Redes Sociales</h3>
 							<p>Seguinos en nuestras redes y enterate de las últimas novedades.</p>
 							<ul>
                                 <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
@@ -645,9 +680,10 @@
                             <h4>Contactanos</h4>
                             <ul>
                                 <li>
-                                    <p><i class="fas fa-map-marker-alt"></i>Ubicación: Pocitos, Montevideo, Uruguay.
+                                    <p><i class="fas fa-map-marker-alt"></i>Ubicación: Pocitos, Montevideo, Uruguay. <br></p>
+                                </li>
                                 <li>
-                                    <p><i class="fas fa-phone-square"></i>Whatsapp:+598 99 395 724 <a href="</a></p> Whatsapp:+598 99 395 724 <a href="https://api.whatsapp.com/message/VZBGW56IKUM6B1?autoload=1&app_absent=0" target="_blank">+598 99 395 724</sup></a></p>
+                                    <p><i class="fas fa-phone-square"></i>Whatsapp: <a href="https://api.whatsapp.com/message/VZBGW56IKUM6B1?autoload=1&app_absent=0" target="_blank">+598 99 395 724</sup></a></p>
                                 </li>
                                 <li>
                                     <p><i class="fas fa-envelope"></i>Email: <a href="mailto:circulauy@gmail.com">circulauy@gmail.com</a></p>
