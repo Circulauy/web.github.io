@@ -3,6 +3,31 @@
 <!-- Basic -->
 
 <head>
+ <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Side Menu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* Estilos básicos para el side menu */
+    .side {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100%;
+      background: #f8f8f8;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      transform: translateX(100%); /* Mantener fuera de vista inicialmente */
+      transition: transform 0.3s ease-in-out; /* Transición suave para el desplazamiento */
+      z-index: 9999; /* Asegurar que el menú esté encima de otros elementos */
+    }
+    .close-side {
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+  </style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -131,49 +156,47 @@
 </div>
 
 <!-- Contenedor para el ícono de la bolsa de compras -->
-<div class="attr-nav" style="margin-left: -10px; padding-right: 0;">
-  <ul style="margin: 0; padding: 0;">
-    <li class="nav-item">
-      <!-- Elimina el href y agrega el id "open-side-menu" para usarlo como gatillo -->
-      <a class="nav-link" href="#" id="open-side-menu">
-        <i class="fa fa-shopping-bag" style="margin-right: 5px;"> </i>
-        <span class="badge">3</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-<!-- Start Side Menu -->
-<div class="side" id="side-menu" style="transform: translateX(100%); transition: 0.3s ease;">
-  <!-- Botón para cerrar el menú lateral -->
-  <a href="#" class="close-side" id="close-side-menu">
-    <i class="fa fa-times"></i>
-  </a>
-  <li class="cart-box">
-    <ul class="cart-list">
-      <li>
-        <a href="#" class="photo"><img src="images/img-pro-01.jpg" class="cart-thumb" alt="" /></a>
-        <h6><a href="#">Delica omtantur </a></h6>
-        <p>1x - <span class="price">$80.00</span></p>
-      </li>
-      <li>
-        <a href="#" class="photo"><img src="images/img-pro-02.jpg" class="cart-thumb" alt="" /></a>
-        <h6><a href="#">Omnes ocurreret</a></h6>
-        <p>1x - <span class="price">$60.00</span></p>
-      </li>
-      <li>
-        <a href="#" class="photo"><img src="images/img-pro-03.jpg" class="cart-thumb" alt="" /></a>
-        <h6><a href="#">Agam facilisis</a></h6>
-        <p>1x - <span class="price">$40.00</span></p>
-      </li>
-      <li class="total">
-        <a href="#" class="btn btn-default hvr-hover btn-cart">VIEW CART</a>
-        <span class="float-right"><strong>Total</strong>: $180.00</span>
+  <div class="attr-nav" style="margin-left: -10px; padding-right: 0;">
+    <ul style="margin: 0; padding: 0;">
+      <li class="nav-item">
+        <!-- Eliminar el href del enlace para que no redirija -->
+        <a class="nav-link" href="#" id="open-side-menu">
+          <i class="fa fa-shopping-bag" style="margin-right: 5px;"> </i>
+          <span class="badge">3</span>
+        </a>
       </li>
     </ul>
-  </li>
-</div>
-<!-- End Side Menu -->
+  </div>
+
+  <!-- Start Side Menu -->
+  <div class="side" id="side-menu">
+    <a href="#" class="close-side" id="close-side-menu">
+      <i class="fa fa-times"></i>
+    </a>
+    <li class="cart-box">
+      <ul class="cart-list">
+        <li>
+          <a href="#" class="photo"><img src="images/img-pro-01.jpg" class="cart-thumb" alt="" /></a>
+          <h6><a href="#">Delica omtantur</a></h6>
+          <p>1x - <span class="price">$80.00</span></p>
+        </li>
+        <li>
+          <a href="#" class="photo"><img src="images/img-pro-02.jpg" class="cart-thumb" alt="" /></a>
+          <h6><a href="#">Omnes ocurreret</a></h6>
+          <p>1x - <span class="price">$60.00</span></p>
+        </li>
+        <li>
+          <a href="#" class="photo"><img src="images/img-pro-03.jpg" class="cart-thumb" alt="" /></a>
+          <h6><a href="#">Agam facilisis</a></h6>
+          <p>1x - <span class="price">$40.00</span></p>
+        </li>
+        <li class="total">
+          <a href="#" class="btn btn-default hvr-hover btn-cart">VIEW CART</a>
+          <span class="float-right"><strong>Total</strong>: $180.00</span>
+        </li>
+      </ul>
+    </li>
+  </div>
 
         </nav>
         <!-- End Navigation -->
@@ -619,24 +642,30 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
-    <script>
-  // Obtener los elementos por sus identificadores
-  const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
-  const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
-  const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
+ <script> document.addEventListener('DOMContentLoaded', function () {
+      // Obtener los elementos por sus identificadores
+      const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
+      const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
+      const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
 
-  // Función para mostrar el side menu
-  openSideMenuBtn.addEventListener('click', function(event) {
-    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-    sideMenu.style.transform = 'translateX(0)'; // Mueve el menú a la posición visible
-  });
+      // Verificar que los elementos existen
+      if (openSideMenuBtn && closeSideMenuBtn && sideMenu) {
+        // Función para mostrar el side menu
+        openSideMenuBtn.addEventListener('click', function(event) {
+          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+          sideMenu.style.transform = 'translateX(0)'; // Mueve el menú a la posición visible
+        });
 
-  // Función para ocultar el side menu
-  closeSideMenuBtn.addEventListener('click', function(event) {
-    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-    sideMenu.style.transform = 'translateX(100%)'; // Mueve el menú fuera de la vista
-  });
-</script>
+        // Función para ocultar el side menu
+        closeSideMenuBtn.addEventListener('click', function(event) {
+          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+          sideMenu.style.transform = 'translateX(100%)'; // Mueve el menú fuera de la vista
+        });
+      } else {
+        console.error("Uno o más elementos del DOM no se encontraron.");
+      }
+    });
+  </script>
 
 </body>
 
