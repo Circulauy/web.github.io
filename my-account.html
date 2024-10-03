@@ -5,7 +5,7 @@
 <head>
  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Cuenta| Circula</title>
+  <title>Mi Cuenta | Circula</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     /* Estilos básicos para el side menu */
@@ -669,7 +669,7 @@
         closeSideMenuBtn.addEventListener('click', function(event) {
           event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
           console.log("Clic en cerrar el menú"); // Verificar que se detecta el clic
-          sideMenu.style.transform = 'translateX(100%)'; // Mueve el menú fuera de la vista
+         sideMenu.style.left = '0'; // En lugar de transform
           console.log("Side menu cerrado"); // Confirmar que se ejecutó
         });
       } else {
