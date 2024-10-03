@@ -10,23 +10,20 @@
   <style>
    /* Estilos básicos para el side menu */
 .side {
-  position: fixed; /* Fijar el menú lateral */
+  position: fixed;
   top: 0;
-  right: 0;
+  left: 100%; /* Mover el menú fuera de vista desde la izquierda */
   width: 300px;
   height: 100%;
   background: #f8f8f8;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Asegurar que el menú esté encima */
-  display: none; /* Ocultar el menú inicialmente */
-  transition: display 0.3s ease-in-out; /* Transición suave para la visibilidad */
+  z-index: 1000;
+  transition: left 0.3s ease-in-out; /* Transición suave usando 'left' */
 }
 
-/* Clase para mostrar el side menu */
 .side.open {
-  display: block; /* Mostrar el menú cuando se le agregue la clase 'open' */
+  left: 0; /* Mover a la vista */
 }
-
 .close-side {
   cursor: pointer;
   position: absolute;
