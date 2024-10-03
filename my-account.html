@@ -9,16 +9,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
  /* Estilos básicos para el side menu */
+/* Contenedor del side menu con altura dinámica */
 .side {
   position: fixed;
   top: 0;
   right: -300px; /* Mover el menú fuera de la vista a la derecha */
   width: 300px; /* Ancho del side menu */
-  height: 100%;
+  height: auto; /* Ajustar la altura automáticamente */
+  max-height: 80%; /* Limitar la altura máxima al 80% del viewport */
   background: #f8f8f8;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   transition: right 0.3s ease-in-out; /* Transición suave usando 'right' */
+  overflow-y: auto; /* Permitir desplazamiento vertical si hay más elementos */
 }
 
 /* Clase para mostrar el side menu */
@@ -26,15 +29,49 @@
   right: 0; /* Mover el menú a la vista */
 }
 
-/* Ajustar el botón de cerrar para que esté visible dentro del side menu */
+/* Estilo para el botón de cerrar */
 .close-side {
   cursor: pointer;
   position: absolute;
-  top: 10px; /* Asegura que esté cerca del borde superior */
-  right: 20px; /* Usa right en lugar de left para mantenerlo en el borde derecho */
-  z-index: 1100; /* Asegurar que el botón de cerrar esté encima de otros elementos */
+  top: 10px;
+  left: 20px; /* Botón alineado a la izquierda dentro del side menu */
+  z-index: 1100;
+  font-size: 24px;
+  color: #333;
 }
 
+/* Estilo para el contenedor de la lista de artículos */
+.cart-box {
+  padding: 15px;
+}
+
+/* Lista de artículos en el carrito */
+.cart-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Alinear el botón de "Ver Carrito" en la parte inferior */
+.cart-list .view-cart-btn {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Estilo del botón "Ver Carrito" */
+.cart-list .view-cart-btn a {
+  display: block;
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+.cart-list .view-cart-btn a:hover {
+  background: #555; /* Cambiar el color del botón al hacer hover */
+}
   </style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
