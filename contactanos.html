@@ -210,37 +210,25 @@
                 <div class="col-lg-8 col-sm-12">
                     <div class="contact-form-right">
                         <h2>Escribinos!</h2>
-                        <p>¿Tenés alguna duda? ¿Te gustaría empezar un proyecto con nosotros? Llená el formulario y te estaremos contactando a la brevedad.</p>
-                        <form action="https://formsubmit.co/circulauy@gmail.com" method="POST" id="contactForm" >
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Tu nombre" required data-error="Por favor ingresá tu nombre">
-                <div class="help-block with-errors"></div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <input type="email" placeholder="Tu Email" id="emailct" class="form-control" name="email" required data-error="Por favor ingresá tu email">
-                <div class="help-block with-errors"></div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <input type="text" class="form-control" id="subject" name="subject" placeholder="Motivo" required data-error="Por favor ingresá tu motivo de contacto">
-                <div class="help-block with-errors"></div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <textarea class="form-control" id="message" name="message" placeholder="Tu mensaje" rows="4" data-error="Escribí tu mensaje" required></textarea>
-                <div class="help-block with-errors"></div>
-            </div>
-            <div class="submit-button text-center">
-                <input class="btn" id="submit" type="submit" value="Enviar mensaje">
-                <div id="msgSubmit" class="h3 text-center hidden"></div>
-                <div class="clearfix"></div>
-            </div>
+<div class="contact-form-box">
+  <h3>Contáctanos</h3>
+  <form class="contact-box" method="POST" action="/.netlify/functions/contact_form">
+    <div class="form-group">
+      <input type="text" name="nombre" placeholder="Tu nombre*" required />
+    </div>
+    <div class="form-group">
+      <input type="email" name="email" placeholder="Tu correo electrónico*" required />
+    </div>
+    <div class="form-group">
+      <input type="text" name="motivo" placeholder="Motivo de contacto*" required />
+    </div>
+    <div class="form-group">
+      <textarea name="mensaje" placeholder="Escribe tu mensaje aquí*" required></textarea>
+    </div>
+    <button class="btn hvr-hover" type="submit">Enviar</button>
+  </form>
+</div>
+
         </div>
     </div>
 </form>
