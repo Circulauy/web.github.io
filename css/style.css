@@ -2379,6 +2379,7 @@
 }
 
 /* Contenedor de la fila principal */
+/* Contenedor principal de la fila */
 .container .row {
   display: flex; /* Mantener los elementos en la misma fila */
   align-items: flex-start; /* Alineación superior */
@@ -2389,7 +2390,7 @@
 
 /* Estilos para el formulario de contacto */
 .contact-form-right {
-  flex: 1;
+  flex: 1; /* Ajustar el tamaño del formulario */
   padding-right: 15px;
   margin-bottom: 30px; /* Espacio inferior */
 }
@@ -2402,16 +2403,20 @@
   background: #f9f9f9;
 }
 
-/* Estilo del contenedor de información de contacto */
-.contact-info-container {
-  margin: 0 15px; /* Espacio lateral para separar del formulario */
+/* Nuevo contenedor de información de contacto */
+.contact-info-right {
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f1f1f1; /* Fondo para destacar */
+  border: 1px solid #ddd; /* Borde alrededor del contenedor */
+  border-radius: 8px; /* Bordes redondeados */
+  background: #f1f1f1; /* Fondo diferenciado */
+  margin: 0 15px; /* Espacio a los lados */
 }
 
-/* Estilos específicos para la información de contacto */
+/* Estilos para la información de contacto */
+.contact-info-left {
+  margin-top: 10px; /* Espacio superior adicional */
+}
+
 .contact-info-left h2 {
   margin-bottom: 20px;
 }
@@ -2429,7 +2434,7 @@
   margin: 0;
 }
 
-/* Estilos para el mensaje */
+/* Estilos para el contenedor de mensajes */
 #form-message {
   margin-top: 20px;
   font-size: 16px;
@@ -2442,6 +2447,11 @@
   padding: 10px 20px;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Asegurar que el formulario tenga espacio */
+.contact-form-box .form-group .form-control {
   border-radius: 5px;
 }
 
