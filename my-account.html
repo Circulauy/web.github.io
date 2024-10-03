@@ -291,6 +291,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
   const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
   const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
+// Función para obtener el carrito del localStorage
+function getCart() {
+  const cart = localStorage.getItem('cart');
+  return cart ? JSON.parse(cart) : []; // Devuelve el carrito si existe, o un array vacío si no
+}
+
+// Función para guardar el carrito en localStorage
+function saveCart(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart)); // Guarda el carrito como un string en localStorage
+}
+
   const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
   const cartTotal = document.getElementById('cart-total'); // Contenedor para el total del pedido
 
