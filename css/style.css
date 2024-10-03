@@ -2377,17 +2377,6 @@
  .services-box-main{
      padding: 70px 0px;
 }
-/* Contenedor principal del formulario */
-.contact-form-box {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: none !important; /* Eliminar el cuadro sombreado */
-  transition: none !important; /* Eliminar transiciones */
-}
 
 /* Eliminar sombras y márgenes en cada grupo de campos */
 .contact-form-right .form-group {
