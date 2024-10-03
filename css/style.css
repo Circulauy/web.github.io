@@ -2414,7 +2414,7 @@
  .contact-info-left ul li p a:hover{
      color: #b0b435;
 }
-/* Estilos del formulario */
+/* Eliminar cuadro sombreado en el formulario */
 .contact-form-box {
   max-width: 600px;
   margin: 20px auto;
@@ -2422,7 +2422,25 @@
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
-  transition: background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out; /* Aplicar transiciones solo a propiedades específicas */
+  box-shadow: none !important; /* Eliminar sombras */
+  transition: none !important; /* Eliminar transiciones */
+}
+
+/* Eliminar sombra y movimientos en campos de texto */
+.contact-form-right .form-group .form-control {
+  border-radius: 0px;
+  min-height: 40px;
+  box-shadow: none !important; /* Eliminar sombras de los campos */
+  border: 1px solid #ccc; /* Color de borde estático */
+  transition: none !important; /* Eliminar transiciones */
+}
+
+/* Estilos específicos para eliminar movimientos */
+.contact-form-right .form-group .form-control:focus,
+.contact-form-right .form-group .form-control:active {
+  border: 1px solid #b0b435; /* Asegurar que el borde no cambie de tamaño */
+  box-shadow: none !important; /* Eliminar sombras al hacer clic o enfocar */
+  outline: none; /* Desactivar contorno adicional */
 }
 
 /* Botón de enviar */
@@ -2433,24 +2451,35 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out; /* Solo aplicar transiciones a propiedades necesarias */
+  box-shadow: none !important; /* Eliminar sombra del botón */
+  transition: background-color 0.3s ease-in-out; /* Solo aplicar transición al color */
 }
 
-/* Quitar position: relative si no es necesario */
+/* Quitar `position: relative` en el botón para evitar movimientos */
 .btn.hvr-hover {
   position: static; /* Cambia a `static` para evitar movimientos */
 }
 
-/* Botón cuando está en proceso */
-.btn.hvr-hover.loading {
-  background-color: #6c757d;
-  cursor: not-allowed;
+/* Desactivar sombra y transiciones en el botón durante `active` o `focus` */
+.btn.hvr-hover:focus,
+.btn.hvr-hover:active {
+  box-shadow: none !important; /* Eliminar sombra en focus */
+  outline: none !important; /* Eliminar contorno */
+  transform: none !important; /* Eliminar transformaciones */
+}
+
+/* Ajustar estilos de foco y hover en el formulario */
+.contact-form-right .form-group:focus,
+.contact-form-right .form-group:hover {
+  box-shadow: none !important; /* Eliminar sombras en hover o focus */
+  border: none !important; /* Evitar cambios de borde */
 }
 
 /* Icono de carga dentro del botón */
 .loading-icon {
   margin-left: 10px;
   animation: spin 1s linear infinite;
+  box-shadow: none !important; /* Evitar sombra en el icono */
 }
 
 /* Animación de carga */
@@ -2465,37 +2494,10 @@
   border-radius: 5px;
   font-size: 16px;
   text-align: center;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Solo aplicar transiciones a propiedades que no afecten el tamaño */
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  box-shadow: none !important; /* Eliminar sombras del contenedor de mensajes */
 }
 
-/* Ajustar estilos de foco en el formulario */
-.contact-form-right .form-group .form-control:focus {
-  border: 1px solid #b0b435;
-  box-shadow: none;
-  transition: none !important; /* Desactivar transiciones en focus */
-}
-
-/* Ajustar márgenes y padding de los campos */
-.contact-form-right .form-group {
-  margin-bottom: 30px;
-  position: relative;
-  transition: none !important; /* Desactivar transiciones de `margin` y `padding` */
-}
-
-/* Eliminar transiciones de los campos individuales */
-.contact-form-right .form-group .form-control {
-  border-radius: 0px;
-  min-height: 40px;
-  transition: none !important; /* Desactivar transiciones en los campos */
-}
-
-/* Estilo de contenedor del mensaje de éxito */
-#form-message {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  text-align: center;
-}
 
 }
  .help-block.with-errors{
