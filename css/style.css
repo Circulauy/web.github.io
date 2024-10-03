@@ -2414,85 +2414,89 @@
  .contact-info-left ul li p a:hover{
      color: #b0b435;
 }
- .contact-form-right{
-     padding: 20px;
+/* Estilos del formulario */
+.contact-form-box {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out; /* Aplicar transiciones solo a propiedades específicas */
 }
- .contact-form-right h2{
-     font-size: 24px;
-     font-weight: 700;
-}
- .contact-form-right p{
-     margin-bottom: 15px;
-}
- .contact-form-right .form-group .form-control::-moz-placeholder{
-     color: #999999;
-}
- .contact-form-right .form-group .form-control{
-     border-radius: 0px;
-     min-height: 40px;
-}
- .contact-form-right .form-group {
-     margin-bottom: 30px;
-     position: relative;
-}
- .contact-form-right .form-group .form-control:focus{
-     border: 1px solid #b0b435;
-     box-shadow: none;
-}
- .submit-button button{
-     padding: 10px 20px;
-     font-weight: 700;
-     color: #ffffff;
-     border: none;
-	   /* Estilos del formulario */
-  .contact-form-box {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    transition: all 0.5s ease-in-out; /* Transición del formulario */
-  }
 
-  /* Botón de enviar */
-  .btn.hvr-hover {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-    position: relative;
-  }
+/* Botón de enviar */
+.btn.hvr-hover {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out; /* Solo aplicar transiciones a propiedades necesarias */
+}
 
-  /* Botón cuando está en proceso */
-  .btn.hvr-hover.loading {
-    background-color: #6c757d;
-    cursor: not-allowed;
-  }
+/* Quitar position: relative si no es necesario */
+.btn.hvr-hover {
+  position: static; /* Cambia a `static` para evitar movimientos */
+}
 
-  /* Icono de carga dentro del botón */
-  .loading-icon {
-    margin-left: 10px;
-    animation: spin 1s linear infinite;
-  }
+/* Botón cuando está en proceso */
+.btn.hvr-hover.loading {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
 
-  /* Animación de carga */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+/* Icono de carga dentro del botón */
+.loading-icon {
+  margin-left: 10px;
+  animation: spin 1s linear infinite;
+}
 
-  /* Estilo del mensaje de éxito */
-  #form-message {
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    text-align: center;
-    transition: all 0.5s ease-in-out;
-  }
+/* Animación de carga */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estilo del mensaje de éxito */
+#form-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Solo aplicar transiciones a propiedades que no afecten el tamaño */
+}
+
+/* Ajustar estilos de foco en el formulario */
+.contact-form-right .form-group .form-control:focus {
+  border: 1px solid #b0b435;
+  box-shadow: none;
+  transition: none !important; /* Desactivar transiciones en focus */
+}
+
+/* Ajustar márgenes y padding de los campos */
+.contact-form-right .form-group {
+  margin-bottom: 30px;
+  position: relative;
+  transition: none !important; /* Desactivar transiciones de `margin` y `padding` */
+}
+
+/* Eliminar transiciones de los campos individuales */
+.contact-form-right .form-group .form-control {
+  border-radius: 0px;
+  min-height: 40px;
+  transition: none !important; /* Desactivar transiciones en los campos */
+}
+
+/* Estilo de contenedor del mensaje de éxito */
+#form-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+}
+
 }
  .help-block.with-errors{
      position: absolute;
