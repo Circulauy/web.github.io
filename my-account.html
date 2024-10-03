@@ -237,7 +237,7 @@
         <p>1x - <span class="price">$40.00</span></p>
       </li>
       <!-- Botón "Ver Carrito" agregado al final -->
-      <li class="view-cart-btn" id="view-cart-btn" style="display: none;">
+      <li class="view-cart-btn" id="view-cart-btn">
         <a href="cart.html">Ver Carrito</a>
       </li>
     </ul>
@@ -246,13 +246,16 @@
   <!-- End Side Menu -->
 
    <script>
-  document.addEventListener('DOMContentLoaded', function () {
+ document.addEventListener('DOMContentLoaded', function () {
   // Obtener los elementos por sus identificadores
   const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
   const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
   const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
   const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
   const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
+
+  // Asegurar que el botón "Ver Carrito" esté visible
+  viewCartBtn.style.display = 'block';
 
   // Función para mostrar el side menu usando la clase 'open'
   openSideMenuBtn.addEventListener('click', function(event) {
@@ -272,7 +275,7 @@
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
   });
-    });
+});
   </script>
 
 
