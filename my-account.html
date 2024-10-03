@@ -260,7 +260,7 @@
         Total: $0.00
       </li>
       <!-- Botón "Ver Carrito" agregado al final -->
-      <li class="view-cart-btn" id="view-cart-btn">
+      <li class="view-cart-btn" id="view-cart-btn" style="display: none;">
         <a href="cart.html">Ver Carrito</a>
       </li>
     </ul>
@@ -277,6 +277,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
   const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
   const cartTotal = document.getElementById('cart-total'); // Contenedor para el total del pedido
+
+  // Verificar que los elementos existan en el DOM
+  if (!openSideMenuBtn || !closeSideMenuBtn || !sideMenu || !cartList || !viewCartBtn || !cartTotal) {
+    console.error("Uno o más elementos no se encontraron en el DOM.");
+    return;
+  }
 
   // Función para calcular el total de los artículos en el carrito
   function calculateCartTotal() {
@@ -315,6 +321,8 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
   });
+});
+
   </script>
 
 
