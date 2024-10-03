@@ -291,50 +291,86 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
   const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
   const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
-// Función para obtener el carrito del localStorage
-function getCart() {
-  const cart = localStorage.getItem('cart');
-  return cart ? JSON.parse(cart) : []; // Devuelve el carrito si existe, o un array vacío si no
-}
-
-// Función para guardar el carrito en localStorage
-function saveCart(cart) {
-  localStorage.setItem('cart', JSON.stringify(cart)); // Guarda el carrito como un string en localStorage
-}
-
   const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
   const cartTotal = document.getElementById('cart-total'); // Contenedor para el total del pedido
 
+  // Función para obtener el carrito del localStorage
+  function getCart() {
+    const cart = localStorage.getItem('cart');
+    return cart ? JSON.parse(cart) : [];
+  }
+
+  // Función para guardar el carrito en localStorage
+  function saveCart(cart) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  // Función para renderizar el carrito en el side menu
+  function renderCart() {
+    const cart = getCart(); // Obtener el carrito desde localStorage
+    cartList.innerHTML = ''; // Limpiar la lista de artículos
+
+    cart.forEach(item => {
+      // Crear el elemento HTML para cada producto en el carrito
+      const cartItem = document.createElement('li');
+      cartItem.classList.add('cart-item');
+      cartItem.setAttribute('data-id', item.id);
+      cartItem.innerHTML = `
+        <a href="#" class="photo"><img src="${item.imagen}" class="cart-thumb" alt="" /></a>
+        <h6><a href="#">${item.nombre}</a></h6>
+        <p>
+          <input type="number" class="item-quantity" value="${item.cantidad}" min="0" style="width: 40px; margin-right: 5px;" />
+          x - <span class="price">$${item.precio.toFixed(2)}</span>
+          <i class="fa fa-trash remove-item" style="cursor: pointer; color: red; margin-left: 10px;"></i>
+        </p>
+      `;
+      cartList.appendChild(cartItem);
+    });
+
+    // Recalcular el total y actualizar eventos
+    calculateCartTotal();
+    setEventListeners(); // Asignar los eventos a los nuevos elementos
+  }
+
   // Función para calcular el total de los artículos en el carrito
   function calculateCartTotal() {
-    let total = 0;
-    const items = cartList.querySelectorAll('.cart-item'); // Seleccionar todos los elementos de producto
-    items.forEach(item => {
-      const quantity = parseInt(item.querySelector('.item-quantity').value); // Obtener la cantidad de cada artículo
-      const price = parseFloat(item.querySelector('.price').textContent.replace('$', '').trim());
-      if (!isNaN(quantity) && !isNaN(price)) {
-        total += price * quantity; // Sumar el total basado en la cantidad y el precio
-      }
-    });
-    // Actualizar el contenedor del total con el valor calculado
+    const cart = getCart(); // Obtener el carrito desde localStorage
+    const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
     cartTotal.textContent = `Total: $${total.toFixed(2)}`;
   }
 
   // Función para eliminar un artículo del carrito
   function removeCartItem(event) {
     const itemToRemove = event.target.closest('.cart-item'); // Encontrar el elemento padre del ícono
-    itemToRemove.remove(); // Eliminar el artículo de la lista
-    calculateCartTotal(); // Recalcular el total después de la eliminación
+    const itemId = parseInt(itemToRemove.getAttribute('data-id'));
+
+    // Eliminar el producto del carrito en localStorage
+    let cart = getCart();
+    cart = cart.filter(item => item.id !== itemId);
+    saveCart(cart); // Guardar el carrito actualizado
+    renderCart(); // Volver a renderizar el carrito
   }
 
   // Función para actualizar la cantidad del artículo
   function updateQuantity(event) {
-    const item = event.target.closest('.cart-item'); // Encontrar el contenedor del producto
-    const quantity = parseInt(event.target.value); // Obtener el valor del input
-    if (quantity <= 0) {
-      item.remove(); // Si la cantidad es 0, eliminar el producto
+    const item = event.target.closest('.cart-item');
+    const itemId = parseInt(item.getAttribute('data-id'));
+    const newQuantity = parseInt(event.target.value);
+
+    // Obtener y actualizar la cantidad en el carrito en localStorage
+    let cart = getCart();
+    const itemIndex = cart.findIndex(item => item.id === itemId);
+
+    if (newQuantity <= 0) {
+      // Eliminar si la cantidad es 0
+      cart.splice(itemIndex, 1);
+    } else {
+      // Actualizar la cantidad
+      cart[itemIndex].cantidad = newQuantity;
     }
-    calculateCartTotal(); // Recalcular el total
+
+    saveCart(cart); // Guardar el carrito actualizado
+    renderCart(); // Volver a renderizar el carrito
   }
 
   // Asignar eventos a los botones de eliminar y a los campos de cantidad
@@ -357,19 +393,7 @@ function saveCart(cart) {
   openSideMenuBtn.addEventListener('click', function(event) {
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
-
-    // Calcular el total del carrito al abrir el menú
-    calculateCartTotal();
-
-    // Mostrar el botón "Ver Carrito" si hay más de 3 artículos
-    if (cartList.children.length > 4) { // Incluye el <li> de Total en el conteo
-      viewCartBtn.style.display = 'block'; // Mostrar el botón
-    } else {
-      viewCartBtn.style.display = 'none'; // Ocultar si hay 3 o menos
-    }
-
-    // Asignar eventos a los botones y inputs
-    setEventListeners();
+    renderCart(); // Renderizar el carrito al abrir el menú
   });
 
   // Función para ocultar el side menu
@@ -377,6 +401,9 @@ function saveCart(cart) {
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
   });
+
+  // Renderizar el carrito inicial
+  renderCart();
 });
 
   </script>
