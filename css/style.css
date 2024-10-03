@@ -2387,6 +2387,13 @@
   margin-top: 40px; /* Separar del header */
   margin-bottom: 40px; /* Separar del footer */
 }
+input,
+textarea,
+button,
+.contact-form-box .form-group .form-control {
+  animation: none !important;
+  transition: none !important;
+}
 
 /* Estilos para el formulario de contacto */
 .contact-form-right {
