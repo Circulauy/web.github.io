@@ -1,33 +1,52 @@
-// Importar la librería de nodemailer para enviar correos
+// Importar la librería nodemailer para enviar correos
 const nodemailer = require("nodemailer");
 
 exports.handler = async (event) => {
-  // Verificar si el método de la solicitud es POST
+  // Verificar que el método sea POST
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      body: "Método no permitido",
+      body: JSON.stringify({ message: "Método no permitido" }),
     };
   }
 
-  // Extraer los datos enviados desde el formulario
-  const { nombre, email, motivo, mensaje } = JSON.parse(event.body);
+  // Extraer los datos directamente de `event.body`
+  let formData;
+  try {
+    formData = JSON.parse(event.body); // Si `event.body` ya es JSON, no se necesita `parse`
+  } catch (error) {
+    console.error("Error al parsear el cuerpo de la solicitud:", error);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Formato de datos incorrecto" }),
+    };
+  }
 
-  // Configurar el transportador de correo con nodemailer
+  const { nombre, email, motivo, mensaje } = formData;
+
+  // Validar los datos del formulario
+  if (!nombre || !email || !motivo || !mensaje) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Todos los campos son requeridos" }),
+    };
+  }
+
+  // Configurar el transportador de nodemailer con tus credenciales de correo
   let transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "gmail", // Cambia esto según el servicio de correo que utilices
     auth: {
-      user: "toni.robaina@gmail.com", // Cambia esto con tu correo de origen
-      pass: "hkce wmts ukhf jdvh", // Cambia esto con tu contraseña de aplicación
+      user: "toni.robaina@gmail.com", // Cambia esto con el correo de origen
+      pass: "uxwf oqfy ugnm dilj", // Cambia esto con la contraseña de la aplicación
     },
   });
 
   // Definir las opciones del correo
   let mailOptions = {
     from: email,
-    to: "circulauy@correo.com", // Cambia esto con tu correo de destino
-    subject: `Nuevo mensaje de contacto: ${motivo}`,
-    text: `Nombre: ${nombre}\nCorreo: ${email}\nMotivo: ${motivo}\nMensaje: ${mensaje}`,
+    to: "circulauy@correo.com", // Cambia esto con el correo de destino
+    subject: `Nuevo mensaje de contacto de: ${nombre}`,
+    text: `Motivo: ${motivo}\nMensaje:\n${mensaje}\n\nCorreo del remitente: ${email}`,
   };
 
   // Intentar enviar el correo
