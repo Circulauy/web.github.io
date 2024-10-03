@@ -18,7 +18,7 @@ exports.handler = async function (event, context) {
     port: 587,
     auth: {
       user: "circulauy@gmail.com", // Reemplaza con tu correo
-      pass: "Circula.uy2021", // Reemplaza con tu contraseña o con la App Password de Gmail si usas autenticación de 2 pasos
+      pass: "lznr ocgg fnoh qpuc", // Reemplaza con tu contraseña o con la App Password de Gmail si usas autenticación de 2 pasos
     },
   });
 
