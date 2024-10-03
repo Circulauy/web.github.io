@@ -255,6 +255,10 @@
         <h6><a href="#">Agam facilisis</a></h6>
         <p>1x - <span class="price">$40.00</span></p>
       </li>
+      <!-- Contenedor para el Total del Pedido -->
+      <li id="cart-total" style="font-weight: bold; padding: 10px 0; text-align: center;">
+        Total: $0.00
+      </li>
       <!-- Botón "Ver Carrito" agregado al final -->
       <li class="view-cart-btn" id="view-cart-btn">
         <a href="cart.html">Ver Carrito</a>
@@ -265,24 +269,41 @@
   <!-- End Side Menu -->
 
    <script>
- document.addEventListener('DOMContentLoaded', function () {
-  // Obtener los elementos por sus identificadores
+document.addEventListener('DOMContentLoaded', function () {
+  // Obtener los elementos del menú y del carrito
   const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
   const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
   const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
   const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
   const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
+  const cartTotal = document.getElementById('cart-total'); // Contenedor para el total del pedido
 
-  // Asegurar que el botón "Ver Carrito" esté visible
-  viewCartBtn.style.display = 'block';
+  // Función para calcular el total de los artículos en el carrito
+  function calculateCartTotal() {
+    let total = 0;
+    const prices = cartList.querySelectorAll('.price'); // Seleccionar todos los precios de los artículos
+    prices.forEach(priceElement => {
+      // Extraer el valor numérico del precio y sumar al total
+      const priceText = priceElement.textContent.replace('$', '').trim(); // Eliminar el símbolo de $ y espacios
+      const price = parseFloat(priceText);
+      if (!isNaN(price)) {
+        total += price;
+      }
+    });
+    // Actualizar el contenedor del total con el valor calculado
+    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+  }
 
   // Función para mostrar el side menu usando la clase 'open'
   openSideMenuBtn.addEventListener('click', function(event) {
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
 
+    // Calcular el total del carrito al abrir el menú
+    calculateCartTotal();
+
     // Mostrar el botón "Ver Carrito" si hay más de 3 artículos
-    if (cartList.children.length > 3) {
+    if (cartList.children.length > 4) { // Incluye el <li> de Total en el conteo
       viewCartBtn.style.display = 'block'; // Mostrar el botón
     } else {
       viewCartBtn.style.display = 'none'; // Ocultar si hay 3 o menos
@@ -294,7 +315,6 @@
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
     sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
   });
-});
   </script>
 
 
