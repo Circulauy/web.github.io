@@ -400,34 +400,69 @@
 
 
     <!-- Start Footer  -->
-    <footer>
+     <footer>
         <div class="footer-main">
             <div class="container">
 				<div class="row">
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Business Time</h3>
+							<h3>Horario de atención</h3>
 							<ul class="list-time">
-								<li>Monday - Friday: 08.00am to 05.00pm</li> <li>Saturday: 10.00am to 08.00pm</li> <li>Sunday: <span>Closed</span></li>
+								<li>Lunes - Viernes: 10 a 18hs</li> <li>Sábado y Domingo: Cerrado</li> 
 							</ul>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Newsletter</h3>
-							<form class="newsletter-box">
-								<div class="form-group">
-									<input class="" type="email" name="Email" placeholder="Email Address*" />
-									<i class="fa fa-envelope"></i>
-								</div>
-								<button class="btn hvr-hover" type="submit">Submit</button>
-							</form>
-						</div>
+    <h3>Suscribite a nuestro Newsletter</h3>
+    <form class="newsletter-box" id="newsletterForm">
+        <div class="form-group">
+            <input class="" type="email" id="email" name="email" placeholder="Dirección de Email*" required />
+            <i class="fa fa-envelope"></i>
+        </div>
+        <button class="btn hvr-hover" type="button" onclick="sendEmail()">Enviar</button>
+    </form>
+    <p id="response" style="font-weight: bold; margin-top: 10px;"></p>
+</div>
+
+						
+						<script>
+    function sendEmail() {
+        var email = document.getElementById("email").value;
+        var formData = JSON.stringify({ email: email });
+
+        fetch("/.netlify/functions/send-email", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json()) // Convertir la respuesta a JSON
+        .then(data => {
+            const responseElement = document.getElementById("response");
+            if (data.status === 'success') {
+                responseElement.style.color = "green";
+                responseElement.innerText = data.message; // Mensaje de éxito
+            } else {
+                responseElement.style.color = "red";
+                responseElement.innerText = data.message; // Mensaje de error
+            }
+        })
+        .catch(error => {
+            document.getElementById("response").style.color = "red";
+            document.getElementById("response").innerText = "Hubo un error al procesar la solicitud.";
+            console.error("Error al enviar el formulario:", error);
+        });
+    }
+</script>
+
+
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Social Media</h3>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<h3>Redes Sociales</h3>
+							<p>Seguinos en nuestras redes y enterate de las últimas novedades.</p>
 							<ul>
                                 <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
                                 <li><a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
@@ -444,36 +479,36 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-12 col-sm-12">
                         <div class="footer-widget">
-                            <h4>About Freshshop</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p> 
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p> 							
+                            <h4>Sobre Circula</h4>
+                            <p>Transformamos tus residuos plásticos en productos de diseño únicos, que perdurarán años cumpliendo su función.</p> 
+							<p>El plástico no es basura. </p> 							
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-12 col-sm-12">
                         <div class="footer-link">
-                            <h4>Information</h4>
+                            <h4>Información</h4>
                             <ul>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Customer Service</a></li>
-                                <li><a href="#">Our Sitemap</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Delivery Information</a></li>
+                                <li><a href="#">Sobre Nosotros</a></li>
+                                <li><a href="#">Servicio al Cliente</a></li>
+                                <li><a href="#">Mapa del Sitio</a></li>
+                                <li><a href="#">Términos &amp; Condiciones</a></li>
+                                <li><a href="#">Política de Privacidad</a></li>
+                                <li><a href="#">Información de envíos</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-12 col-sm-12">
                         <div class="footer-link-contact">
-                            <h4>Contact Us</h4>
+                            <h4>Contactanos</h4>
                             <ul>
                                 <li>
-                                    <p><i class="fas fa-map-marker-alt"></i>Address: Michael I. Days 3756 <br>Preston Street Wichita,<br> KS 67213 </p>
+                                    <p><i class="fas fa-map-marker-alt"></i>Ubicación: Pocitos, Montevideo, Uruguay. <br></p>
                                 </li>
                                 <li>
-                                    <p><i class="fas fa-phone-square"></i>Phone: <a href="tel:+1-888705770">+1-888 705 770</a></p>
+                                    <p><i class="fas fa-phone-square"></i>Whatsapp: <a href="https://api.whatsapp.com/message/VZBGW56IKUM6B1?autoload=1&app_absent=0" target="_blank">+598 99 395 724</sup></a></p>
                                 </li>
                                 <li>
-                                    <p><i class="fas fa-envelope"></i>Email: <a href="mailto:contactinfo@gmail.com">contactinfo@gmail.com</a></p>
+                                    <p><i class="fas fa-envelope"></i>Email: <a href="mailto:circulauy@gmail.com">circulauy@gmail.com</a></p>
                                 </li>
                             </ul>
                         </div>
