@@ -2378,36 +2378,64 @@
      padding: 70px 0px;
 }
 
-/* Eliminar sombras y márgenes en cada grupo de campos */
-.contact-form-right .form-group {
-  margin-bottom: 15px; /* Ajustar el margen inferior */
-  padding: 0; /* Asegurar que el padding no cause movimientos */
-  box-shadow: none !important; /* Eliminar sombras */
-  border: none !important; /* Eliminar bordes */
-  transition: none !important; /* Desactivar transiciones */
+/* Contenedor de la fila principal */
+.container .row {
+  display: flex; /* Mantener los elementos en la misma fila */
+  align-items: flex-start; /* Alineación superior */
+  justify-content: space-between; /* Espacio entre las columnas */
+  margin-top: 40px; /* Separar del header */
+  margin-bottom: 40px; /* Separar del footer */
 }
 
-/* Campos de texto (input y textarea) */
-.contact-form-right .form-group .form-control {
-  border-radius: 0px;
-  min-height: 40px;
-  border: 1px solid #ccc; /* Asegurar un borde estático */
-  padding: 10px; /* Asegurar que el padding sea fijo */
-  box-shadow: none !important; /* Eliminar sombras */
-  transition: none !important; /* Desactivar transiciones */
+/* Estilos para el formulario de contacto */
+.contact-form-right {
+  flex: 1;
+  padding-right: 15px;
+  margin-bottom: 30px; /* Espacio inferior */
 }
 
-/* Estabilizar campos durante focus */
-.contact-form-right .form-group .form-control:focus,
-.contact-form-right .form-group .form-control:active {
-  border: 1px solid #b0b435; /* Evitar que el borde cambie de tamaño */
-  box-shadow: none !important; /* Eliminar sombras */
-  outline: none !important; /* Desactivar contorno adicional */
-  margin: 0; /* Evitar que el margen cambie */
-  padding: 10px; /* Mantener el padding constante */
+/* Estilos para la caja del formulario */
+.contact-form-box {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
 }
 
-/* Botón de enviar */
+/* Estilo del contenedor de información de contacto */
+.contact-info-container {
+  margin: 0 15px; /* Espacio lateral para separar del formulario */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f1f1f1; /* Fondo para destacar */
+}
+
+/* Estilos específicos para la información de contacto */
+.contact-info-left h2 {
+  margin-bottom: 20px;
+}
+
+.contact-info-left ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.contact-info-left ul li {
+  margin-bottom: 15px; /* Espacio entre elementos */
+}
+
+.contact-info-left ul li p {
+  margin: 0;
+}
+
+/* Estilos para el mensaje */
+#form-message {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Estilo del botón */
 .btn.hvr-hover {
   background-color: #007bff;
   color: #fff;
@@ -2415,41 +2443,6 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  box-shadow: none !important; /* Eliminar sombra del botón */
-  transition: none !important; /* Eliminar todas las transiciones */
-}
-
-/* Eliminar el movimiento del botón */
-.btn.hvr-hover:focus,
-.btn.hvr-hover:active {
-  transform: none !important;
-  box-shadow: none !important;
-  outline: none !important; /* Eliminar contorno en active/focus */
-}
-
-/* Icono de carga dentro del botón */
-.loading-icon {
-  margin-left: 10px;
-  animation: spin 1s linear infinite;
-  box-shadow: none !important; /* Eliminar sombra en el icono */
-}
-
-/* Contenedor del mensaje de éxito */
-#form-message {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  text-align: center;
-  box-shadow: none !important; /* Eliminar sombra del mensaje */
-  transition: none !important; /* Eliminar transiciones */
-}
-
-/* Ajustes adicionales */
-.contact-form-right .form-group .form-control:hover,
-.contact-form-right .form-group .form-control:focus {
-  background-color: #fff; /* Mantener el fondo constante */
-  border: 1px solid #b0b435; /* Asegurar un borde constante */
-  padding: 10px; /* Evitar que el padding cambie */
 }
 
 }
