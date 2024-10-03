@@ -2649,6 +2649,15 @@ button,
 .attr-nav .search:hover input[type="text"] {
     display: block; /* Mostrar al pasar el ratón */
 }
+/* Desactivar animaciones de animate.css en los campos de formulario */
+input,
+textarea,
+button,
+.contact-form-box .form-group .form-control {
+  animation: none !important; /* Desactivar animaciones */
+  transition: none !important; /* Desactivar transiciones */
+}
+
 
 
 
