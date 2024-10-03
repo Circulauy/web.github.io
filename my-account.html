@@ -619,6 +619,25 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
+    <script>
+  // Obtener los elementos por sus identificadores
+  const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
+  const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
+  const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
+
+  // Función para mostrar el side menu
+  openSideMenuBtn.addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    sideMenu.style.transform = 'translateX(0)'; // Mueve el menú a la posición visible
+  });
+
+  // Función para ocultar el side menu
+  closeSideMenuBtn.addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    sideMenu.style.transform = 'translateX(100%)'; // Mueve el menú fuera de la vista
+  });
+</script>
+
 </body>
 
 </html>
