@@ -246,32 +246,32 @@
   <!-- End Side Menu -->
 
    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Obtener los elementos por sus identificadores
-      const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
-      const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
-      const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
+  document.addEventListener('DOMContentLoaded', function () {
+  // Obtener los elementos por sus identificadores
+  const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
+  const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
+  const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
+  const cartList = document.getElementById('cart-list'); // Contenedor de la lista de artículos
+  const viewCartBtn = document.getElementById('view-cart-btn'); // Botón "Ver Carrito"
 
-      // Verificar que los elementos existen
-      if (openSideMenuBtn && closeSideMenuBtn && sideMenu) {
-        // Función para mostrar el side menu usando la clase 'open'
-        openSideMenuBtn.addEventListener('click', function(event) {
-          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en abrir el menú");
-          sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
-          console.log("Side menu abierto"); // Confirmar que se ejecutó
-        });
+  // Función para mostrar el side menu usando la clase 'open'
+  openSideMenuBtn.addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
 
-        // Función para ocultar el side menu
-        closeSideMenuBtn.addEventListener('click', function(event) {
-          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en cerrar el menú");
-          sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
-          console.log("Side menu cerrado"); // Confirmar que se ejecutó
-        });
-      } else {
-        console.error("Uno o más elementos del DOM no se encontraron.");
-      }
+    // Mostrar el botón "Ver Carrito" si hay más de 3 artículos
+    if (cartList.children.length > 3) {
+      viewCartBtn.style.display = 'block'; // Mostrar el botón
+    } else {
+      viewCartBtn.style.display = 'none'; // Ocultar si hay 3 o menos
+    }
+  });
+
+  // Función para ocultar el side menu
+  closeSideMenuBtn.addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
+  });
     });
   </script>
 
