@@ -204,35 +204,85 @@
     <!-- End All Title Box -->
 
     <!-- Start Contactanos  -->
-    <div class="contact-box-main">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-sm-12">
-                    <div class="contact-form-right">
-                        <h2>Escribinos!</h2>
-<div class="contact-form-box">
-  <h3>Contáctanos</h3>
- <form id="contactForm" class="contact-box">
-    <div class="form-group">
-      <input type="text" id="nombre" name="nombre" placeholder="Tu nombre*" required />
-    </div>
-    <div class="form-group">
-      <input type="email" id="email" name="email" placeholder="Tu correo electrónico*" required />
-    </div>
-    <div class="form-group">
-      <input type="text" id="motivo" name="motivo" placeholder="Motivo del contacto*" required />
-    </div>
-    <div class="form-group">
-      <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí*" required></textarea>
-    </div>
-    <button id="submitBtn" class="btn hvr-hover" type="submit">
-      Enviar
-      <span id="loading-icon" class="loading-icon" style="display: none;">⏳</span>
-    </button>
-    <!-- Contenedor para mensajes de éxito o error -->
-    <div id="form-message" style="display:none; margin-top: 15px;"></div>
-  </form>
-</div>
+/* Contenedor principal del formulario y la información de contacto */
+.contact-box-main .container .row {
+  display: flex; /* Usar Flexbox para alinear en la misma fila */
+  align-items: flex-start; /* Alineación vertical de los elementos */
+  justify-content: space-between; /* Espacio entre las columnas */
+}
+
+/* Estilos para el formulario de contacto */
+.contact-form-right {
+  flex: 1; /* Ajustar el tamaño del formulario */
+  padding-right: 15px; /* Espacio a la derecha del formulario */
+  max-width: 60%; /* Limitar el tamaño máximo */
+}
+
+/* Estilos para la información de contacto */
+.contact-info-left {
+  flex: 1; /* Ajustar el tamaño de la información */
+  padding-left: 15px; /* Espacio a la izquierda del contenedor */
+  max-width: 35%; /* Limitar el tamaño máximo */
+}
+
+/* Ajustar campos del formulario */
+.contact-form-box .form-group {
+  margin-bottom: 20px; /* Espacio entre campos */
+}
+
+/* Ajustar tamaño y comportamiento de los campos */
+.contact-form-box .form-control {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: none;
+
+
+
+
+
+Dijiste:
+te está faltando el elemento contenedor para mensajes de exito o error
+ChatGPT dijo:
+ChatGPT
+Entendido, voy a asegurarme de incluir todos los elementos necesarios, incluido el contenedor para los mensajes de éxito o error (#form-message) y ajustar el CSS para que todo se muestre correctamente en la misma línea horizontal.
+
+Aquí tienes el código completo con el contenedor de mensajes de éxito/error incorporado y el CSS necesario para asegurar que todos los elementos se muestren en la misma línea, respetando la estructura original.
+
+Código HTML con el Contenedor de Mensajes de Éxito/Error:
+html
+Copiar código
+<div class="contact-box-main">
+  <div class="container">
+    <div class="row">
+      <!-- Columna del formulario de contacto -->
+      <div class="col-lg-8 col-sm-12">
+        <div class="contact-form-right">
+          <h2>Escribinos!</h2>
+          <div class="contact-form-box">
+            <h3>Contáctanos</h3>
+            <form id="contactForm" class="contact-box">
+              <div class="form-group">
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre*" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Tu correo electrónico*" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <input type="text" id="motivo" name="motivo" placeholder="Motivo del contacto*" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí*" class="form-control" required></textarea>
+              </div>
+              <button id="submitBtn" class="btn hvr-hover" type="submit">Enviar</button>
+              <!-- Contenedor para mensajes de éxito o error -->
+              <div id="form-message" style="display:none; margin-top: 15px; color: green;">¡Tu mensaje ha sido enviado exitosamente!</div>
+            </form>
+          </div>
+        </div>
+      </div>
  <script>
     // Interceptar el evento submit del formulario y enviarlo como JSON
     document.getElementById("contactForm").addEventListener("submit", async function(event) {
@@ -282,27 +332,25 @@
       }
     });
   </script>
-                </div>
-				<div class="col-lg-4 col-sm-12">
-                    <div class="contact-info-left">
-                        <h2>INFORMACIÓN DE CONTACTO</h2>
-                        <p> </p>
-                        <ul>
-                            <li>
-                                <p><i class="fas fa-map-marker-alt"></i>Ubicación: Pocitos, Montevideo, Uruguay
-                            </li>
-                            <li>
-                                <p><i class="fas fa-phone-square"></i>Whatsapp: <a href="https://api.whatsapp.com/message/VZBGW56IKUM6B1?autoload=1&app_absent=0" target="_blank">+598 99 395 724</sup></a></p>
-                            </li>
-                            <li>
-                                <p><i class="fas fa-envelope"></i>Email: <a href="mailto:circulauy@gmail.com">circulauy@gmail.com</a></p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+                
+      <!-- Columna de información de contacto -->
+      <div class="col-lg-4 col-md-4 col-sm-12 contact-info-left">
+        <h2>INFORMACIÓN DE CONTACTO</h2>
+        <ul>
+          <li>
+            <p><i class="fas fa-map-marker-alt"></i>Ubicación: Pocitos, Montevideo, Uruguay</p>
+          </li>
+          <li>
+            <p><i class="fas fa-phone-square"></i>Whatsapp: <a href="https://api.whatsapp.com/message/VZBGW56IKUM6B1?autoload=1&app_absent=0" target="_blank">+598 99 395 724</a></p>
+          </li>
+          <li>
+            <p><i class="fas fa-envelope"></i>Email: <a href="mailto:circulauy@gmail.com">circulauy@gmail.com</a></p>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
     <!-- End Cart -->
 
     <!-- Start Instagram Feed  -->
