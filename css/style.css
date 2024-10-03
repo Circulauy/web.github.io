@@ -2377,44 +2377,7 @@
  .services-box-main{
      padding: 70px 0px;
 }
- .contact-box-main{
-     padding: 70px 0px;
-}
- .contact-info-left{
-     padding: 20px;
-     background: url(../images/contact-bg.jpg) no-repeat center;
-	 background-size: cover;
-}
- .contact-info-left h2{
-     font-size: 22px;
-     font-weight: 700;
-}
- .contact-info-left p{
-     margin-bottom: 15px;
-}
- .contact-info-left ul li{
-     margin-bottom: 12px;
-}
- .contact-info-left ul li p{
-     font-size: 16px;
-     color: #222222;
-     font-weight: 300;
-     padding-right: 16px;
-     padding-left: 25px;
-     line-height: 24px;
-     position: relative;
-}
- .contact-info-left ul li p i{
-     position: absolute;
-     left: 0;
-     top: 5px;
-     padding-right: 6px;
-     color: #b0b435;
-}
- .contact-info-left ul li p a:hover{
-     color: #b0b435;
-}
-/* Eliminar cuadro sombreado en el formulario */
+/* Contenedor principal del formulario */
 .contact-form-box {
   max-width: 600px;
   margin: 20px auto;
@@ -2422,25 +2385,37 @@
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: none !important; /* Eliminar sombras */
+  box-shadow: none !important; /* Eliminar el cuadro sombreado */
   transition: none !important; /* Eliminar transiciones */
 }
 
-/* Eliminar sombra y movimientos en campos de texto */
+/* Eliminar sombras y márgenes en cada grupo de campos */
+.contact-form-right .form-group {
+  margin-bottom: 15px; /* Ajustar el margen inferior */
+  padding: 0; /* Asegurar que el padding no cause movimientos */
+  box-shadow: none !important; /* Eliminar sombras */
+  border: none !important; /* Eliminar bordes */
+  transition: none !important; /* Desactivar transiciones */
+}
+
+/* Campos de texto (input y textarea) */
 .contact-form-right .form-group .form-control {
   border-radius: 0px;
   min-height: 40px;
-  box-shadow: none !important; /* Eliminar sombras de los campos */
-  border: 1px solid #ccc; /* Color de borde estático */
-  transition: none !important; /* Eliminar transiciones */
+  border: 1px solid #ccc; /* Asegurar un borde estático */
+  padding: 10px; /* Asegurar que el padding sea fijo */
+  box-shadow: none !important; /* Eliminar sombras */
+  transition: none !important; /* Desactivar transiciones */
 }
 
-/* Estilos específicos para eliminar movimientos */
+/* Estabilizar campos durante focus */
 .contact-form-right .form-group .form-control:focus,
 .contact-form-right .form-group .form-control:active {
-  border: 1px solid #b0b435; /* Asegurar que el borde no cambie de tamaño */
-  box-shadow: none !important; /* Eliminar sombras al hacer clic o enfocar */
-  outline: none; /* Desactivar contorno adicional */
+  border: 1px solid #b0b435; /* Evitar que el borde cambie de tamaño */
+  box-shadow: none !important; /* Eliminar sombras */
+  outline: none !important; /* Desactivar contorno adicional */
+  margin: 0; /* Evitar que el margen cambie */
+  padding: 10px; /* Mantener el padding constante */
 }
 
 /* Botón de enviar */
@@ -2452,52 +2427,41 @@
   cursor: pointer;
   border-radius: 5px;
   box-shadow: none !important; /* Eliminar sombra del botón */
-  transition: background-color 0.3s ease-in-out; /* Solo aplicar transición al color */
+  transition: none !important; /* Eliminar todas las transiciones */
 }
 
-/* Quitar `position: relative` en el botón para evitar movimientos */
-.btn.hvr-hover {
-  position: static; /* Cambia a `static` para evitar movimientos */
-}
-
-/* Desactivar sombra y transiciones en el botón durante `active` o `focus` */
+/* Eliminar el movimiento del botón */
 .btn.hvr-hover:focus,
 .btn.hvr-hover:active {
-  box-shadow: none !important; /* Eliminar sombra en focus */
-  outline: none !important; /* Eliminar contorno */
-  transform: none !important; /* Eliminar transformaciones */
-}
-
-/* Ajustar estilos de foco y hover en el formulario */
-.contact-form-right .form-group:focus,
-.contact-form-right .form-group:hover {
-  box-shadow: none !important; /* Eliminar sombras en hover o focus */
-  border: none !important; /* Evitar cambios de borde */
+  transform: none !important;
+  box-shadow: none !important;
+  outline: none !important; /* Eliminar contorno en active/focus */
 }
 
 /* Icono de carga dentro del botón */
 .loading-icon {
   margin-left: 10px;
   animation: spin 1s linear infinite;
-  box-shadow: none !important; /* Evitar sombra en el icono */
+  box-shadow: none !important; /* Eliminar sombra en el icono */
 }
 
-/* Animación de carga */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Estilo del mensaje de éxito */
+/* Contenedor del mensaje de éxito */
 #form-message {
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
   text-align: center;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  box-shadow: none !important; /* Eliminar sombras del contenedor de mensajes */
+  box-shadow: none !important; /* Eliminar sombra del mensaje */
+  transition: none !important; /* Eliminar transiciones */
 }
 
+/* Ajustes adicionales */
+.contact-form-right .form-group .form-control:hover,
+.contact-form-right .form-group .form-control:focus {
+  background-color: #fff; /* Mantener el fondo constante */
+  border: 1px solid #b0b435; /* Asegurar un borde constante */
+  padding: 10px; /* Evitar que el padding cambie */
+}
 
 }
  .help-block.with-errors{
