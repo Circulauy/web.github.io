@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     /* Estilos básicos para el side menu */
-     /* Estilos básicos para el side menu */
     .side {
       position: fixed;
       top: 0;
@@ -18,9 +17,11 @@
       height: 100%;
       background: #f8f8f8;
       box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-      transform: translateX(100%); /* Mantener fuera de vista inicialmente */
-      transition: transform 0.3s ease-in-out; /* Transición suave para el desplazamiento */
+      display: none; /* Ocultar inicialmente */
       z-index: 9999; /* Asegurar que el menú esté encima */
+    }
+    .side.open {
+      display: block; /* Mostrar cuando se active */
     }
     .close-side {
       cursor: pointer;
@@ -157,7 +158,6 @@
 </div>
 
 <!-- Contenedor para el ícono de la bolsa de compras -->
-<!-- Contenedor para el ícono de la bolsa de compras -->
   <div class="attr-nav" style="margin-left: -10px; padding-right: 0;">
     <ul style="margin: 0; padding: 0;">
       <li class="nav-item">
@@ -200,6 +200,42 @@
     </li>
   </div>
   <!-- End Side Menu -->
+
+  <!-- JavaScript para abrir y cerrar el side menu -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Obtener los elementos por sus identificadores
+      const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
+      const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
+      const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
+
+      // Agregar logs para verificar que los elementos existen
+      console.log("openSideMenuBtn:", openSideMenuBtn);
+      console.log("closeSideMenuBtn:", closeSideMenuBtn);
+      console.log("sideMenu:", sideMenu);
+
+      // Verificar que los elementos existen
+      if (openSideMenuBtn && closeSideMenuBtn && sideMenu) {
+        // Función para mostrar el side menu usando display
+        openSideMenuBtn.addEventListener('click', function(event) {
+          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+          console.log("Clic en abrir el menú"); // Verificar que se detecta el clic
+          sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
+          console.log("Side menu abierto"); // Confirmar que se ejecutó
+        });
+
+        // Función para ocultar el side menu
+        closeSideMenuBtn.addEventListener('click', function(event) {
+          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+          console.log("Clic en cerrar el menú"); // Verificar que se detecta el clic
+          sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
+          console.log("Side menu cerrado"); // Confirmar que se ejecutó
+        });
+      } else {
+        console.error("Uno o más elementos del DOM no se encontraron.");
+      }
+    });
+  </script>
 
         <!-- End Navigation -->
     </header>
@@ -644,39 +680,6 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
- <script> document.addEventListener('DOMContentLoaded', function () {
-      // Obtener los elementos por sus identificadores
-      const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
-      const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
-      const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
-
-      // Agregar logs para verificar que los elementos existen
-      console.log("openSideMenuBtn:", openSideMenuBtn);
-      console.log("closeSideMenuBtn:", closeSideMenuBtn);
-      console.log("sideMenu:", sideMenu);
-
-      // Verificar que los elementos existen
-      if (openSideMenuBtn && closeSideMenuBtn && sideMenu) {
-        // Función para mostrar el side menu
-        openSideMenuBtn.addEventListener('click', function(event) {
-          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en abrir el menú"); // Verificar que se detecta el clic
-          sideMenu.style.transform = 'translateX(0)'; // Mueve el menú a la posición visible
-          console.log("Side menu abierto"); // Confirmar que se ejecutó
-        });
-
-        // Función para ocultar el side menu
-        closeSideMenuBtn.addEventListener('click', function(event) {
-          event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en cerrar el menú"); // Verificar que se detecta el clic
-         sideMenu.style.left = '0'; // En lugar de transform
-          console.log("Side menu cerrado"); // Confirmar que se ejecutó
-        });
-      } else {
-        console.error("Uno o más elementos del DOM no se encontraron.");
-      }
-    });
-  </script>
 </body>
 
 </html>
