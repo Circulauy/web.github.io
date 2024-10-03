@@ -8,65 +8,78 @@
   <title>Mi Cuenta | Circula</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
-/* Contenedor del side menu con altura dinámica */
+/* Contenedor del side menu */
 .side {
   position: fixed;
   top: 0;
-  right: -300px; /* Mover el menú fuera de la vista a la derecha */
-  width: 300px; /* Ancho del side menu */
-  height: auto; /* Ajustar la altura automáticamente */
-  max-height: 80%; /* Limitar la altura máxima al 80% del viewport */
-  background: #f8f8f8;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  right: -300px;
+  width: 300px;
+  height: auto;
+  max-height: 80%;
+  background: #ffffff; /* Fondo blanco para el side menu */
+  box-shadow: none; /* Eliminar sombras que causan el efecto de recuadro */
+  border: none; /* Eliminar bordes alrededor del menú */
   z-index: 1000;
-  transition: right 0.3s ease-in-out; /* Transición suave usando 'right' */
-  overflow-y: auto; /* Permitir desplazamiento vertical si hay más elementos */
-  display: block; /* Asegurar que se muestre */
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
 }
 
 /* Clase para mostrar el side menu */
 .side.open {
-  right: 0; /* Mover el menú a la vista */
+  right: 0;
 }
 
 /* Botón de cerrar ajustado */
 .close-side {
   cursor: pointer;
   position: absolute;
-  top: 10px; /* Ajustar para que se vea dentro del menú */
-  right: 20px; /* Mostrarlo en el borde derecho del side menu */
-  z-index: 1100; /* Asegurar que el botón de cerrar esté visible por encima del contenido */
-  font-size: 24px; /* Tamaño adecuado para el botón */
-  color: #333; /* Color del ícono de la cruz */
+  top: 10px;
+  right: 20px;
+  z-index: 1100;
+  font-size: 24px;
+  color: #333;
 }
 
-/* Estilo para el contenedor de la lista de artículos */
+/* Contenedor de la lista de artículos */
 .cart-box {
   padding: 15px;
+  background: transparent; /* Fondo transparente para el contenedor */
+  box-shadow: none; /* Asegurar que no haya sombras en el contenedor */
+  border: none; /* Eliminar bordes en el contenedor de la lista */
 }
 
-/* Lista de artículos en el carrito */
+/* Lista de artículos */
 .cart-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  background: transparent; /* Fondo transparente */
+  border: none; /* Eliminar bordes en la lista */
 }
 
-/* Alinear el botón de "Ver Carrito" en la parte inferior */
-.cart-list .view-cart-btn {
-  text-align: center;
-  margin-top: 20px;
+/* Estilo para los elementos de la lista */
+.cart-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eaeaea; /* Líneas de separación ligeras */
+}
+
+/* Eliminar bordes y sombras en imágenes */
+.cart-thumb {
+  box-shadow: none; /* Eliminar sombras de las imágenes */
+  border: none; /* Eliminar bordes de las imágenes */
 }
 
 /* Estilo del botón "Ver Carrito" */
 .cart-list .view-cart-btn a {
   display: block;
-  background: #333;
+  background: #333; /* Fondo oscuro solo en el botón de "Ver Carrito" */
   color: #fff;
   padding: 10px 20px;
   text-decoration: none;
   border-radius: 5px;
   margin: 0 auto;
+  box-shadow: none; /* Eliminar sombras en el botón */
+  border: none; /* Eliminar bordes en el botón */
 }
 
 .cart-list .view-cart-btn a:hover {
