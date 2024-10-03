@@ -225,11 +225,15 @@
     <div class="form-group">
       <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí*" required></textarea>
     </div>
-    <button class="btn hvr-hover" type="submit">Enviar</button>
+    <button id="submitBtn" class="btn hvr-hover" type="submit">
+      Enviar
+      <span id="loading-icon" class="loading-icon" style="display: none;">⏳</span>
+    </button>
     <!-- Contenedor para mensajes de éxito o error -->
     <div id="form-message" style="display:none; margin-top: 15px;"></div>
   </form>
-
+</div>
+			    
   <script>
     // Interceptar el evento submit del formulario y enviarlo como JSON
     document.getElementById("contactForm").addEventListener("submit", async function(event) {
@@ -543,6 +547,70 @@
     <script src="js/form-validator.min.js"></script>
     <script src="js/contact-form-script.js"></script>
     <script src="js/custom.js"></script>
+<script>
+  document.getElementById("contactForm").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevenir el envío normal del formulario
+
+    // Obtener los valores de los campos del formulario
+    const nombre = document.getElementById("nombre").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const motivo = document.getElementById("motivo").value.trim();
+    const mensaje = document.getElementById("mensaje").value.trim();
+
+    if (!nombre || !email || !motivo || !mensaje) {
+      mostrarMensaje("Todos los campos son requeridos.", "red");
+      return;
+    }
+
+    const formData = { nombre, email, motivo, mensaje };
+    const formMessage = document.getElementById("form-message");
+    const submitBtn = document.getElementById("submitBtn");
+    const loadingIcon = document.getElementById("loading-icon");
+
+    // Cambiar el estado del botón a "Cargando"
+    submitBtn.classList.add("loading");
+    submitBtn.disabled = true;
+    loadingIcon.style.display = "inline-block"; // Mostrar el icono de carga
+
+    try {
+      const response = await fetch("/.netlify/functions/contact_form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      formMessage.style.display = "block";
+      if (response.ok) {
+        mostrarMensaje("¡Tu mensaje ha sido enviado exitosamente!", "green");
+        document.querySelector(".contact-form-box").style.transform = "scale(0.95)";
+        document.querySelector(".contact-form-box").style.opacity = "0.8";
+        submitBtn.textContent = "¡Enviado!";
+        document.getElementById("contactForm").reset(); // Limpiar el formulario
+      } else {
+        mostrarMensaje("Error al enviar el mensaje: " + result.message, "red");
+      }
+    } catch (error) {
+      mostrarMensaje("Error al enviar el formulario. Inténtalo de nuevo más tarde.", "red");
+      console.error("Error:", error);
+    } finally {
+      setTimeout(() => {
+        submitBtn.classList.remove("loading");
+        submitBtn.disabled = false;
+        loadingIcon.style.display = "none";
+        submitBtn.textContent = "Enviar";
+      }, 3000);
+    }
+  });
+
+  // Función para mostrar el mensaje debajo del formulario
+  function mostrarMensaje(texto, color) {
+    const formMessage = document.getElementById("form-message");
+    formMessage.style.display = "block";
+    formMessage.style.color = color;
+    formMessage.textContent = texto;
+  }
+</script>
 </body>
 
 </html>
