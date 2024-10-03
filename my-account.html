@@ -10,25 +10,30 @@
   <style>
     /* Estilos básicos para el side menu */
     .side {
-      position: fixed;
+      position: fixed; /* Fijar el menú lateral */
       top: 0;
       right: 0;
       width: 300px;
       height: 100%;
       background: #f8f8f8;
       box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-      display: none; /* Ocultar inicialmente */
-      z-index: 9999; /* Asegurar que el menú esté encima */
+      transform: translateX(100%); /* Mantener fuera de vista inicialmente */
+      transition: transform 0.3s ease-in-out; /* Transición suave para el desplazamiento */
+      z-index: 1000; /* Asegurar que el menú esté encima */
+      display: block; /* Mostrar por defecto */
     }
+    
+    /* Clase para mostrar el side menu */
     .side.open {
-      display: block; /* Mostrar cuando se active */
+      transform: translateX(0); /* Mueve el menú a la vista */
     }
+
     .close-side {
       cursor: pointer;
       position: absolute;
       top: 10px;
       right: 20px;
-    }
+      z-index: 1100; /* Asegurar que el botón de cerrar esté encima */
   </style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -201,25 +206,19 @@
   </div>
   <!-- End Side Menu -->
 
-  <!-- JavaScript para abrir y cerrar el side menu -->
-  <script>
+   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Obtener los elementos por sus identificadores
       const openSideMenuBtn = document.getElementById('open-side-menu'); // Ícono de la bolsa de compras
       const closeSideMenuBtn = document.getElementById('close-side-menu'); // Botón de cerrar
       const sideMenu = document.getElementById('side-menu'); // Contenedor del side menu
 
-      // Agregar logs para verificar que los elementos existen
-      console.log("openSideMenuBtn:", openSideMenuBtn);
-      console.log("closeSideMenuBtn:", closeSideMenuBtn);
-      console.log("sideMenu:", sideMenu);
-
       // Verificar que los elementos existen
       if (openSideMenuBtn && closeSideMenuBtn && sideMenu) {
-        // Función para mostrar el side menu usando display
+        // Función para mostrar el side menu usando la clase 'open'
         openSideMenuBtn.addEventListener('click', function(event) {
           event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en abrir el menú"); // Verificar que se detecta el clic
+          console.log("Clic en abrir el menú");
           sideMenu.classList.add('open'); // Agregar la clase 'open' para mostrar el menú
           console.log("Side menu abierto"); // Confirmar que se ejecutó
         });
@@ -227,7 +226,7 @@
         // Función para ocultar el side menu
         closeSideMenuBtn.addEventListener('click', function(event) {
           event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-          console.log("Clic en cerrar el menú"); // Verificar que se detecta el clic
+          console.log("Clic en cerrar el menú");
           sideMenu.classList.remove('open'); // Remover la clase 'open' para ocultar el menú
           console.log("Side menu cerrado"); // Confirmar que se ejecutó
         });
@@ -236,6 +235,7 @@
       }
     });
   </script>
+
 
         <!-- End Navigation -->
     </header>
