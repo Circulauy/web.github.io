@@ -26,13 +26,15 @@
   right: 0; /* Mover el menú a la vista */
 }
 
+/* Ajustar el botón de cerrar para que esté visible dentro del side menu */
 .close-side {
   cursor: pointer;
   position: absolute;
-  top: 10px;
-  left: 20px; /* Asegurar que el botón de cerrar esté a la izquierda dentro del side menu */
-  z-index: 1100; /* Asegurar que el botón de cerrar esté encima */
+  top: 10px; /* Asegura que esté cerca del borde superior */
+  right: 20px; /* Usa right en lugar de left para mantenerlo en el borde derecho */
+  z-index: 1100; /* Asegurar que el botón de cerrar esté encima de otros elementos */
 }
+
   </style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
