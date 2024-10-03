@@ -436,15 +436,50 @@
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
-							<h3>Suscribite a nuestro Newsletter</h3>
-							<form class="newsletter-box">
-								<div class="form-group">
-									<input class="" type="email" name="Email" placeholder="Dirección de Email*" />
-									<i class="fa fa-envelope"></i>
-								</div>
-								<button class="btn hvr-hover" type="submit">Enviar</button>
-							</form>
-						</div>
+    <h3>Suscribite a nuestro Newsletter</h3>
+    <form class="newsletter-box" id="newsletterForm">
+        <div class="form-group">
+            <input class="" type="email" id="email" name="email" placeholder="Dirección de Email*" required />
+            <i class="fa fa-envelope"></i>
+        </div>
+        <button class="btn hvr-hover" type="button" onclick="sendEmail()">Enviar</button>
+    </form>
+    <p id="response" style="font-weight: bold; margin-top: 10px;"></p>
+</div>
+
+						
+						<script>
+    function sendEmail() {
+        var email = document.getElementById("email").value;
+        var formData = JSON.stringify({ email: email });
+
+        fetch("/.netlify/functions/send-email", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json()) // Convertir la respuesta a JSON
+        .then(data => {
+            const responseElement = document.getElementById("response");
+            if (data.status === 'success') {
+                responseElement.style.color = "green";
+                responseElement.innerText = data.message; // Mensaje de éxito
+            } else {
+                responseElement.style.color = "red";
+                responseElement.innerText = data.message; // Mensaje de error
+            }
+        })
+        .catch(error => {
+            document.getElementById("response").style.color = "red";
+            document.getElementById("response").innerText = "Hubo un error al procesar la solicitud.";
+            console.error("Error al enviar el formulario:", error);
+        });
+    }
+</script>
+
+
 					</div>
 					<div class="col-lg-4 col-md-12 col-sm-12">
 						<div class="footer-top-box">
