@@ -2660,8 +2660,17 @@ button,
 
 
 
+/* gasti y tomi */
+.loading-icon {
+    margin-left: 10px;
+    animation: spin 1s linear infinite;
+  }
 
-
+  /* Animación de carga */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
 
 

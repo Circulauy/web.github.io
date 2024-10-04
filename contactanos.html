@@ -230,6 +230,7 @@
                 <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí*" class="form-control" required></textarea>
               </div>
               <button id="submitBtn" class="btn hvr-hover" type="submit">Enviar</button>
+              <span id="loading-icon" class="loading-icon" style="display: none;">⏳</span>
               <!-- Contenedor para mensajes de éxito o error -->
               <div id="form-message" style="display:none; margin-top: 15px; color: green;">¡Tu mensaje ha sido enviado exitosamente!</div>
             </form>
@@ -258,11 +259,11 @@
       // Contenedor para los mensajes de estado
       const formMessage = document.getElementById("form-message");
       const submitBtn = document.getElementById("submitBtn");
-    //   const loadingIcon = document.getElementById("loading-icon");
+      const loadingIcon = document.getElementById("loading-icon");
 
       submitBtn.classList.add("loading");
       submitBtn.disabled = true;
-    //   loadingIcon.style.display = "inline-block";
+      loadingIcon.style.display = "inline-block";
 
 
       try {
