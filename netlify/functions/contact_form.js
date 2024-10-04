@@ -36,8 +36,8 @@ exports.handler = async (event) => {
   let transporter = nodemailer.createTransport({
     service: "gmail", // Cambia esto según el servicio de correo que utilices
     auth: {
-      user: "toni.robaina@gmail.com", // Cambia esto con el correo de origen
-      pass: process.env.SUPER_SECRET // Cambia esto con la contraseña de la aplicación
+      user: process.env.EMAIL_USER, // Cambia esto con el correo de origen
+      pass: process.env.EMAIL_PASS // Cambia esto con la contraseña de la aplicación
     },
   });
 

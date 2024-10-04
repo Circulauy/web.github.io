@@ -17,8 +17,8 @@ exports.handler = async function (event, context) {
     host: "smtp.gmail.com",
     port: 587,
     auth: {
-      user: "toni.robaina@gmail.com", // Reemplaza con tu correo
-      pass: "lznr ocgg fnoh qpuc", // Reemplaza con tu contraseña o con la App Password de Gmail si usas autenticación de 2 pasos
+      user: process.env.EMAIL_USER, // Reemplaza con tu correo
+      pass: process.env.EMAIL_PASS, // Reemplaza con tu contraseña o con la App Password de Gmail si usas autenticación de 2 pasos
     },
   });
 
