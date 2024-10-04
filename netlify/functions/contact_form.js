@@ -14,7 +14,6 @@ exports.handler = async (event) => {
   let formData;
   try {
     formData = JSON.parse(event.body); // Si `event.body` ya es JSON, no se necesita `parse`
-    console.log(formData)
   } catch (error) {
     console.error("Error al parsear el cuerpo de la solicitud:", error);
     return {
@@ -23,15 +22,13 @@ exports.handler = async (event) => {
     };
   }
 
-  const { nombre, email, motivo, mensaje } = formData;
-  console.log(formData)
-  console.log(email)
+  const { nombre, email1, motivo, mensaje } = formData;
 
   // Validar los datos del formulario
-  if (!nombre || !email || !motivo || !mensaje) {
+  if (!nombre || !email1 || !motivo || !mensaje) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: formData}),
+      body: JSON.stringify({ message: "Todos los campos son obligatorios"}),
     };
   }
 
