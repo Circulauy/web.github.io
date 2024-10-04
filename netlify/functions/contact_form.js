@@ -22,18 +22,13 @@ exports.handler = async (event) => {
     };
   }
 
-  const { nombre, email1, motivo, mensaje } = formData;
+  const { nombre, email, motivo, mensaje } = formData;
 
   // Validar los datos del formulario
-  if (!nombre || !motivo || !mensaje) {
+  if (!nombre || !email || !motivo || !mensaje) {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "Todos los campos son obligatorios"}),
-    };
-  } else if (!email1) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "email"}),
     };
   }
 
