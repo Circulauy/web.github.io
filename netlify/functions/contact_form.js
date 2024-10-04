@@ -24,6 +24,8 @@ exports.handler = async (event) => {
   }
 
   const { nombre, email, motivo, mensaje } = formData;
+  console.log(formData)
+  console.log(email)
 
   // Validar los datos del formulario
   if (!nombre || !email || !motivo || !mensaje) {
