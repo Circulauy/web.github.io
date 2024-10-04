@@ -238,52 +238,52 @@
       </div>
  <script>
     // Interceptar el evento submit del formulario y enviarlo como JSON
-    document.getElementById("contactForm").addEventListener("submit", async function(event) {
-      event.preventDefault(); // Prevenir el envío normal del formulario
+    // document.getElementById("contactForm").addEventListener("submit", async function(event) {
+    //   event.preventDefault(); // Prevenir el envío normal del formulario
 
-      // Obtener los valores de los campos del formulario
-      const nombre = document.getElementById("nombre").value;
-      const email = document.getElementById("email1").value;
-      const motivo = document.getElementById("motivo").value;
-      const mensaje = document.getElementById("mensaje").value;
+    //   // Obtener los valores de los campos del formulario
+    //   const nombre = document.getElementById("nombre").value;
+    //   const email = document.getElementById("email1").value;
+    //   const motivo = document.getElementById("motivo").value;
+    //   const mensaje = document.getElementById("mensaje").value;
 
-      // Crear el objeto de datos
-      const formData = { nombre, email, motivo, mensaje };
+    //   // Crear el objeto de datos
+    //   const formData = { nombre, email, motivo, mensaje };
 
-      // Contenedor para los mensajes de estado
-      const formMessage = document.getElementById("form-message");
+    //   // Contenedor para los mensajes de estado
+    //   const formMessage = document.getElementById("form-message");
       
-      try {
-        // Enviar los datos como JSON usando fetch
-        const response = await fetch("/.netlify/functions/contact_form", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+    //   try {
+    //     // Enviar los datos como JSON usando fetch
+    //     const response = await fetch("/.netlify/functions/contact_form", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(formData),
+    //     });
 
-        // Manejar la respuesta
-        const result = await response.json();
-        formMessage.style.display = "block"; // Mostrar el contenedor de mensajes
+    //     // Manejar la respuesta
+    //     const result = await response.json();
+    //     formMessage.style.display = "block"; // Mostrar el contenedor de mensajes
 
-        if (response.ok) {
-          // Mensaje de éxito
-          formMessage.style.color = "green";
-          formMessage.textContent = "¡Tu mensaje ha sido enviado exitosamente!";
-          // Limpiar los campos del formulario
-          document.getElementById("contactForm").reset();
-        } else {
-          // Mensaje de error si el servidor responde con error
-          formMessage.style.color = "red";
-          formMessage.textContent = "Error al enviar el mensaje: " + result.message;
-        }
-      } catch (error) {
-        // Mensaje de error si hay un problema con la solicitud
-        formMessage.style.display = "block";
-        formMessage.style.color = "red";
-        formMessage.textContent = "Error al enviar el formulario. Inténtalo de nuevo más tarde.";
-        console.error("Error:", error);
-      }
-    });
+    //     if (response.ok) {
+    //       // Mensaje de éxito
+    //       formMessage.style.color = "green";
+    //       formMessage.textContent = "¡Tu mensaje ha sido enviado exitosamente!";
+    //       // Limpiar los campos del formulario
+    //       document.getElementById("contactForm").reset();
+    //     } else {
+    //       // Mensaje de error si el servidor responde con error
+    //       formMessage.style.color = "red";
+    //       formMessage.textContent = "Error al enviar el mensaje: " + result.message;
+    //     }
+    //   } catch (error) {
+    //     // Mensaje de error si hay un problema con la solicitud
+    //     formMessage.style.display = "block";
+    //     formMessage.style.color = "red";
+    //     formMessage.textContent = "Error al enviar el formulario. Inténtalo de nuevo más tarde.";
+    //     console.error("Error:", error);
+    //   }
+    // });
   </script>
                 
       <!-- Columna de información de contacto -->
@@ -551,7 +551,7 @@
 
     // Obtener los valores de los campos del formulario
     const nombre = document.getElementById("nombre").value.trim();
-    const email = document.getElementById("email").value.trim();
+    const email = document.getElementById("email1").value.trim();
     const motivo = document.getElementById("motivo").value.trim();
     const mensaje = document.getElementById("mensaje").value.trim();
 
