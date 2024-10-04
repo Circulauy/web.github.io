@@ -37,7 +37,7 @@ exports.handler = async (event) => {
     service: "gmail", // Cambia esto según el servicio de correo que utilices
     auth: {
       user: "toni.robaina@gmail.com", // Cambia esto con el correo de origen
-      pass: "uxwf oqfy ugnm dilj", //process.env.SUPER_SECRET //  // Cambia esto con la contraseña de la aplicación
+      pass: process.env.SUPER_SECRET // "uxwf oqfy ugnm dilj", // Cambia esto con la contraseña de la aplicación
     },
   });
 
