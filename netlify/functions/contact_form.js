@@ -31,7 +31,7 @@ exports.handler = async (event) => {
   if (!nombre || !email || !motivo || !mensaje) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: `El nombre es ${nombre}, el mail es ${email}, el motivo es ${motivo} y el mensaje es ${mensaje}`}),
+      body: JSON.stringify({ message: formData}),
     };
   }
 
