@@ -14,6 +14,7 @@ exports.handler = async (event) => {
   let formData;
   try {
     formData = JSON.parse(event.body); // Si `event.body` ya es JSON, no se necesita `parse`
+    console.log(formData)
   } catch (error) {
     console.error("Error al parsear el cuerpo de la solicitud:", error);
     return {
