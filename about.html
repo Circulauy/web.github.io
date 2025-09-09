@@ -278,21 +278,12 @@
                 </div>
                 <div class="col-sm-6 col-lg-3">
                     <div class="hover-team">
-                        <div class="our-team"> <img src="images/img-1.jpg" alt="" />
+                        <div class="our-team"> <img src="images/Souto CV.jpg" alt="" />
                             <div class="team-content">
                                 <h3 class="title">Juan Souto</h3> <span class="post">Diseñador</span> </div>
                             <ul class="social">
                                 <li>
-                                    <a href="#" class="fab fa-facebook"></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="fab fa-twitter"></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="fab fa-google-plus"></a>
-                                </li>
-                                <li>
-                                    <a href="#" class="fab fa-youtube"></a>
+                                    <a href="https://www.linkedin.com/in/juan-souto/" target="_blank" class="fab fa-linkedin"
                                 </li>
                             </ul>
                             <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
@@ -560,7 +551,30 @@
                 document.getElementById('form-message').innerText = 'Error al enviar el correo.';
             });
         });
-    </script>
+        <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Owl Carousel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+$(document).ready(function(){
+  $(".main-instagram").owlCarousel({
+    items: 6,
+    loop: true,
+    autoplay: true,
+    autoplayTimeout: 2000,
+    dots: false,
+    nav: false,
+    responsive:{
+      0:{ items:2 },
+      600:{ items:4 },
+      1000:{ items:6 }
+    }
+  });
+});
+</script>
+
 </body>
 
 </html>
