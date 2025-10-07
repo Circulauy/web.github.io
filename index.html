@@ -558,7 +558,15 @@
     function update(now) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutCubic(progress);
+      function easeOutCubicEarly(t) {
+  // Factor 0.7 indica que la ralentización empieza cuando progress = 0.7
+  const factor = 0.7;
+  if (t < factor) return t / factor * 0.9; // avanzar rápido al inicio
+  // después del factor, desacelera hasta 1
+  const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
+  return eased;
+}
+
       const current = Math.floor(target * easedProgress);
 
       counter.textContent = "+" + current.toLocaleString() + suffix;
