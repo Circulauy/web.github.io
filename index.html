@@ -550,36 +550,63 @@
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
   // ---- FUNCIÓN DEL CONTADOR ----
-  const animateCounter = (counter) => {
-    const target = +counter.getAttribute("data-target");
-    const suffix = counter.textContent.replace(/[0-9\+\,]/g, "");
-    const startTime = performance.now();
+ // --- 1. Variables Globales (Ajusta estos valores) ---
+let startTime; // Debe ser 'undefined' al inicio.
+let animationStarted = false; // Bandera para evitar que se repita la animación.
+const duration = 3000; // Duración total de la animación en milisegundos (ej: 3 segundos).
+const startValue = 0;
+const endValue = 1800; // El valor final que deseas alcanzar.
+const counterElement = document.getElementById('miContador'); // 🔑 Usa el ID de tu elemento contador.
 
-    function update(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      function easeOutCubicEarly(t) {
-  // Factor 0.7 indica que la ralentización empieza cuando progress = 0.7
-  const factor = 0.7;
-  if (t < factor) return t / factor * 0.9; // avanzar rápido al inicio
-  // después del factor, desacelera hasta 1
-  const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
-  return eased;
+// --- 2. Función de Easing (Ralentización) ---
+function easeOutCubicEarly(t) {
+    // 🚨 Arreglo: Se cerró la función correctamente.
+    
+    // Factor 0.7 indica que la ralentización empieza cuando progress = 0.7
+    const factor = 0.7;
+    
+    if (t < factor) {
+        // Avanza rápido al inicio, cubre el 90% del recorrido en el 70% del tiempo.
+        return t / factor * 0.9;
+    } 
+    
+    // Después del factor, desacelera para cubrir el 10% restante.
+    // El 0.9 inicial establece la base (90% ya cubierto).
+    const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
+    return eased;
 }
 
-      const current = Math.floor(target * easedProgress);
-
-      counter.textContent = "+" + current.toLocaleString() + suffix;
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        counter.textContent = "+" + target.toLocaleString() + suffix;
-      }
+// --- 3. Función Principal de Actualización ---
+function update(now) {
+    // 🔑 ARREGLO CLAVE: Inicializa 'startTime' solo en la primera llamada.
+    // Esto asegura que el tiempo de inicio es el momento en que el Intersection Observer lo activa.
+    if (startTime === undefined) {
+        startTime = now; 
     }
 
-    requestAnimationFrame(update);
-  };
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    // 🔑 Uso de la función de easing para obtener el progreso ajustado.
+    const easedProgress = easeOutCubicEarly(progress);
+    
+    // Cálculo del valor actual.
+    const currentValue = startValue + (endValue - startValue) * easedProgress;
+
+    // 4. Actualización del DOM.
+    if (counterElement) {
+        // Muestra el número redondeado y con formato de miles.
+        counterElement.textContent = Math.floor(currentValue).toLocaleString('es-ES'); 
+    }
+
+    // 5. Ciclo de Animación: Si no ha terminado, solicita el siguiente cuadro.
+    if (progress < 1) {
+        requestAnimationFrame(update);
+    } else if (counterElement) {
+        // Si termina, asegura que el valor final sea exactamente el deseado.
+        counterElement.textContent = endValue.toLocaleString('es-ES');
+    }
+}
 
   // ---- INTERSECTION OBSERVER ----
   const observer = new IntersectionObserver(
