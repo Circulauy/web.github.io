@@ -550,107 +550,51 @@
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
   // ---- FUNCIÓN DEL CONTADOR ----
- // --- 1. Variables Globales (Ajusta estos valores) ---
-let startTime; // Debe ser 'undefined' al inicio.
-let animationStarted = false; // Bandera para evitar que se repita la animación.
-const duration = 3000; // Duración total de la animación en milisegundos (ej: 3 segundos).
-const startValue = 0;
-const endValue = 1800; // El valor final que deseas alcanzar.
-const counterElement = document.getElementById('miContador'); // 🔑 Usa el ID de tu elemento contador.
+  const animateCounter = (counter) => {
+    const target = +counter.getAttribute("data-target");
+    const suffix = counter.textContent.replace(/[0-9\+\,]/g, "");
+    const startTime = performance.now();
 
-// --- 2. Función de Easing (Ralentización) ---
-function easeOutCubicEarly(t) {
-    // 🚨 Arreglo: Se cerró la función correctamente.
-    
-    // Factor 0.7 indica que la ralentización empieza cuando progress = 0.7
-    const factor = 0.7;
-    
-    if (t < factor) {
-        // Avanza rápido al inicio, cubre el 90% del recorrido en el 70% del tiempo.
-        return t / factor * 0.9;
-    } 
-    
-    // Después del factor, desacelera para cubrir el 10% restante.
-    // El 0.9 inicial establece la base (90% ya cubierto).
-    const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
-    return eased;
-}
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutCubic(progress);
+      const current = Math.floor(target * easedProgress);
 
-// --- 3. Función Principal de Actualización ---
-function update(now) {
-    // 🔑 ARREGLO CLAVE: Inicializa 'startTime' solo en la primera llamada.
-    // Esto asegura que el tiempo de inicio es el momento en que el Intersection Observer lo activa.
-    if (startTime === undefined) {
-        startTime = now; 
-    }
+      counter.textContent = "+" + current.toLocaleString() + suffix;
 
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    
-    // 🔑 Uso de la función de easing para obtener el progreso ajustado.
-    const easedProgress = easeOutCubicEarly(progress);
-    
-    // Cálculo del valor actual.
-    const currentValue = startValue + (endValue - startValue) * easedProgress;
-
-    // 4. Actualización del DOM.
-    if (counterElement) {
-        // Muestra el número redondeado y con formato de miles.
-        counterElement.textContent = Math.floor(currentValue).toLocaleString('es-ES'); 
-    }
-
-    // 5. Ciclo de Animación: Si no ha terminado, solicita el siguiente cuadro.
-    if (progress < 1) {
+      if (progress < 1) {
         requestAnimationFrame(update);
-    } else if (counterElement) {
-        // Si termina, asegura que el valor final sea exactamente el deseado.
-        counterElement.textContent = endValue.toLocaleString('es-ES');
+      } else {
+        counter.textContent = "+" + target.toLocaleString() + suffix;
+      }
     }
-}
 
-  // ---- INTERSECTION OBSERVER CORREGIDO ----
+    requestAnimationFrame(update);
+  };
 
-const observer = new IntersectionObserver(
+  // ---- INTERSECTION OBSERVER ----
+  const observer = new IntersectionObserver(
     (entries, observer) => {
-        entries.forEach(entry => {
-            // Verifica que el elemento observado sea el contenedor donde debe iniciar la animación.
-            // Esto es crucial para la lógica de un solo contador global.
-            
-            // Usamos 'counterElement' (o su contenedor) como el 'target' del observer.
-            // Asumiendo que el 'target' del observer es el contenedor del contador:
-            
-            if (entry.isIntersecting && !animationStarted) {
-                
-                // 1. Marcar como iniciado
-                animationStarted = true;
-                
-                // 2. Iniciar el ciclo de animación usando la función 'update'
-                // 'now' se pasa automáticamente a 'update'.
-                requestAnimationFrame(update);
-                
-                // 3. Dejar de observar
-                observer.unobserve(entry.target);
-            }
-            
-            // 🚨 Si estás observando múltiples elementos, el código anterior era incorrecto.
-            // Si el observador está adjunto al CONTENEDOR del contador (entry.target es el contenedor):
-            // if (entry.isIntersecting) {
-            //     entry.target.classList.add("visible");
-            //     // Aquí iría el inicio de 'update' solo si el target es el contenedor correcto.
-            // }
-        });
-    }, 
-    { threshold: 0.1 } // Opciones de visibilidad (ajusta si es necesario)
-);
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
 
-// Asegúrate de que estás observando el elemento correcto:
-if (counterElement) {
-    // Si el contador es el elemento que quieres observar
-    observer.observe(counterElement); 
-} else {
-    // Si el contador no se encuentra, la animación nunca iniciará.
-    console.error("Error: La variable 'counterElement' es null. Asegúrate de que el ID 'miContador' exista en el HTML.");
-}
+          // Si el elemento contiene un contador, lo inicia
+          const counter = entry.target.querySelector("h3[id^='counter']");
+          if (counter) animateCounter(counter);
+
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.4 }
+  );
+
+  // Observamos todos los bloques de texto e imágenes
+  textBlocks.forEach(block => observer.observe(block));
+});
+
 </script>
 
 
