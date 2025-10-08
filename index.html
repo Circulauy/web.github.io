@@ -608,28 +608,49 @@ function update(now) {
     }
 }
 
-  // ---- INTERSECTION OBSERVER ----
-  const observer = new IntersectionObserver(
+  // ---- INTERSECTION OBSERVER CORREGIDO ----
+
+const observer = new IntersectionObserver(
     (entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
+        entries.forEach(entry => {
+            // Verifica que el elemento observado sea el contenedor donde debe iniciar la animación.
+            // Esto es crucial para la lógica de un solo contador global.
+            
+            // Usamos 'counterElement' (o su contenedor) como el 'target' del observer.
+            // Asumiendo que el 'target' del observer es el contenedor del contador:
+            
+            if (entry.isIntersecting && !animationStarted) {
+                
+                // 1. Marcar como iniciado
+                animationStarted = true;
+                
+                // 2. Iniciar el ciclo de animación usando la función 'update'
+                // 'now' se pasa automáticamente a 'update'.
+                requestAnimationFrame(update);
+                
+                // 3. Dejar de observar
+                observer.unobserve(entry.target);
+            }
+            
+            // 🚨 Si estás observando múltiples elementos, el código anterior era incorrecto.
+            // Si el observador está adjunto al CONTENEDOR del contador (entry.target es el contenedor):
+            // if (entry.isIntersecting) {
+            //     entry.target.classList.add("visible");
+            //     // Aquí iría el inicio de 'update' solo si el target es el contenedor correcto.
+            // }
+        });
+    }, 
+    { threshold: 0.1 } // Opciones de visibilidad (ajusta si es necesario)
+);
 
-          // Si el elemento contiene un contador, lo inicia
-          const counter = entry.target.querySelector("h3[id^='counter']");
-          if (counter) animateCounter(counter);
-
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.4 }
-  );
-
-  // Observamos todos los bloques de texto e imágenes
-  textBlocks.forEach(block => observer.observe(block));
-});
-
+// Asegúrate de que estás observando el elemento correcto:
+if (counterElement) {
+    // Si el contador es el elemento que quieres observar
+    observer.observe(counterElement); 
+} else {
+    // Si el contador no se encuentra, la animación nunca iniciará.
+    console.error("Error: La variable 'counterElement' es null. Asegúrate de que el ID 'miContador' exista en el HTML.");
+}
 </script>
 
 
