@@ -548,21 +548,27 @@
     // 🔑 1. AJUSTA LA DURACIÓN AQUÍ: Aumentamos a 3 segundos para una animación más notoria
     const duration = 3000; // Duración del contador en milisegundos (ej: 3 segundos)
 
-    // 🔑 2. FUNCIÓN DE EASING PERSONALIZADA (Ralentización Temprana)
-    // Esta función avanza rápido (90% del valor) y se frena en el 10% final.
-    const easeOutCubicEarly = (t) => {
-        // Factor 0.7: la ralentización comienza cuando t (el progreso) es 0.7
-        const factor = 0.7; 
-        
-        if (t < factor) {
-            // Avance rápido al inicio
-            return t / factor * 0.9; 
-        } 
-        
-        // Desaceleración en el tramo final
-        const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
-        return eased;
-    };
+   // Función de Easing con Desaceleración Final Amplificada
+const easeOutCubicEarly = (t) => {
+    // 1. Punto de Quiebre (Ajustable)
+    const factor = 0.7; 
+    
+    // 2. TRAMO RÁPIDO (t < 0.7)
+    if (t < factor) {
+        // Avance rápido (cubre el 90% del valor en el 70% del tiempo)
+        return t / factor * 0.9; 
+    } 
+    
+    // 3. TRAMO LENTO Y FRENADA (t >= 0.7)
+    // t_norm es el tiempo normalizado desde 0 a 1 para el tramo final
+    const t_norm = (t - factor) / (1 - factor); 
+    
+    // Aplicamos una curva de frenada (easeOutQuart) al tiempo restante (1 - t_norm)
+    // El 0.9 es la base (el 90% del valor ya cubierto).
+    const eased = 0.9 + (1 - Math.pow(1 - t_norm, 4)) * 0.1;
+    
+    return eased;
+};
 
     // ---- FUNCIÓN DEL CONTADOR ----
     const animateCounter = (counter) => {
