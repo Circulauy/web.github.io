@@ -542,59 +542,84 @@
         });
     }
     document.addEventListener("DOMContentLoaded", () => {
-  const counters = document.querySelectorAll("h3[id^='counter']");
-  const textBlocks = document.querySelectorAll(".blog-text, .blog-bottom-section img");
-  const duration = 2000; // duración del contador (ms)
+    const counters = document.querySelectorAll("h3[id^='counter']");
+    const textBlocks = document.querySelectorAll(".blog-text, .blog-bottom-section img");
+    
+    // 🔑 1. AJUSTA LA DURACIÓN AQUÍ: Aumentamos a 3 segundos para una animación más notoria
+    const duration = 3000; // Duración del contador en milisegundos (ej: 3 segundos)
 
-  // Easing cúbico suave
-  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    // 🔑 2. FUNCIÓN DE EASING PERSONALIZADA (Ralentización Temprana)
+    // Esta función avanza rápido (90% del valor) y se frena en el 10% final.
+    const easeOutCubicEarly = (t) => {
+        // Factor 0.7: la ralentización comienza cuando t (el progreso) es 0.7
+        const factor = 0.7; 
+        
+        if (t < factor) {
+            // Avance rápido al inicio
+            return t / factor * 0.9; 
+        } 
+        
+        // Desaceleración en el tramo final
+        const eased = 0.9 + ((t - factor) / (1 - factor)) * 0.1;
+        return eased;
+    };
 
-  // ---- FUNCIÓN DEL CONTADOR ----
-  const animateCounter = (counter) => {
-    const target = +counter.getAttribute("data-target");
-    const suffix = counter.textContent.replace(/[0-9\+\,]/g, "");
-    const startTime = performance.now();
+    // ---- FUNCIÓN DEL CONTADOR ----
+    const animateCounter = (counter) => {
+        const target = +counter.getAttribute("data-target");
+        // Capturamos el sufijo del texto inicial (ej: "M" o "k+")
+        const suffixMatch = counter.textContent.match(/[^0-9\+\,]+/);
+        const suffix = suffixMatch ? suffixMatch[0] : '';
+        const startTime = performance.now();
 
-    function update(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutCubic(progress);
-      const current = Math.floor(target * easedProgress);
+        function update(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // 🔑 3. USAMOS LA NUEVA FUNCIÓN DE EASING
+            const easedProgress = easeOutCubicEarly(progress); 
+            
+            const current = Math.floor(target * easedProgress);
 
-      counter.textContent = "+" + current.toLocaleString() + suffix;
+            counter.textContent = "+" + current.toLocaleString() + suffix;
 
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        counter.textContent = "+" + target.toLocaleString() + suffix;
-      }
-    }
-
-    requestAnimationFrame(update);
-  };
-
-  // ---- INTERSECTION OBSERVER ----
-  const observer = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-
-          // Si el elemento contiene un contador, lo inicia
-          const counter = entry.target.querySelector("h3[id^='counter']");
-          if (counter) animateCounter(counter);
-
-          observer.unobserve(entry.target);
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                // Aseguramos el valor final exacto.
+                counter.textContent = "+" + target.toLocaleString() + suffix;
+            }
         }
-      });
-    },
-    { threshold: 0.4 }
-  );
 
-  // Observamos todos los bloques de texto e imágenes
-  textBlocks.forEach(block => observer.observe(block));
+        requestAnimationFrame(update);
+    };
+
+    // ---- INTERSECTION OBSERVER ----
+    const observer = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+
+                    // Si el elemento contiene un contador, lo inicia
+                    const counter = entry.target.querySelector("h3[id^='counter']");
+                    // 🔑 Se agrega la bandera 'started' al elemento para evitar reinicios accidentales
+                    if (counter && !counter.classList.contains('started')) {
+                        animateCounter(counter);
+                        counter.classList.add('started'); // Marca el contador como iniciado
+                    }
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        // Threshold: ajusta este valor si quieres que inicie antes o después
+        { threshold: 0.4 } 
+    );
+
+    // Observamos todos los bloques de texto e imágenes
+    textBlocks.forEach(block => observer.observe(block));
 });
-
 </script>
 
 
