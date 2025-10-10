@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circula - Economía Circular y Talleres</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
+    <!-- Configure Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa',       // Fondo principal (casi blanco)
+                        'text-dark': '#333333',      // Texto principal
+                        'rp-teal': '#79C7C7',        // Recycled Plastic Teal (Acento temático)
+                        'rp-mint': '#A3E6BA',        // Recycled Plastic Mint (Acento para CTAs/Suave)
+                        'rp-blue-light': '#e0f7f7',  // Fondo de sección muy suave
+                        'rp-gray-soft': '#dddddd',   // Borde/línea suave (No usado para inputs)
+                        'rp-border-default': '#b5b5b5', // Nuevo borde más oscuro para inputs
+                        'mp-blue': '#009ee3', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                    },
+                    spacing: {
+                        '12': '3rem',
+                        '16': '4rem',
+                        '20': '5rem',
+                        '24': '6rem', 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for cleaner design */
+        html {
+            scroll-behavior: smooth;
+        }
+        .section-padding {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+        }
+        .title-style {
+            font-family: 'Patua One', cursive;
+            font-weight: 700; 
+            letter-spacing: -0.01em; 
+        }
+        .card-hover {
+            transition: all 0.3s ease-in-out;
+        }
+        .card-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(121, 199, 199, 0.3), 0 4px 6px -2px rgba(121, 199, 199, 0.05);
+            transform: translateY(-4px);
+        }
+        /* Ocultar todas las rutas inicialmente */
+        .page-content {
+            display: none;
+        }
+
+        /* Estilo para el modal de imagen */
+        #image-modal-content {
+            /* Eliminamos los límites de max-height/width del contenedor para que la imagen los defina */
+            /* Se ha trasladado la lógica de límite a la imagen misma en el HTML */
+        }
+        
+        /* Nuevo estilo para asegurar que la imagen se ajuste dentro del viewport */
+        #full-image {
+            max-height: 90vh; /* Limita la altura máxima al 90% del viewport */
+            max-width: 90vw;  /* Limita la anchura máxima al 90% del viewport */
+            width: auto;      /* Permite que el ancho se ajuste */
+            height: auto;     /* Permite que la altura se ajuste */
+            object-fit: contain; /* Asegura que la imagen se vea completa sin recortarse */
+        }
+    </style>
+</head>
+<body class="font-sans bg-bg-light text-text-dark">
+
+    <!-- Shopping Cart State (Kept for demonstration) -->
+    <div id="cart-count-storage" data-count="0" class="hidden"></div>
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            
+            <!-- Logo Grande (Estilo Circula) -->
+            <a href="#home" class="flex items-center text-text-dark hover:opacity-80 transition duration-200" onclick="route()">
+                <!-- Logo Image Placeholder -->
+                <!-- 
+                    REEMPLAZA ESTA URL CON LA IMAGEN DE TU LOGO HORIZONTAL. 
+                    Asegúrate de que la imagen incluya el texto "EcoCycle Solutions" 
+                    con la tipografía deseada para mantener el estilo.
+                -->
+                <img 
+                    src="images/logo.png" 
+                    alt="Logo EcoCycle Solutions" 
+                    class="h-8 sm:h-10 lg:h-12 object-contain"
+                >
+            </a>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden sm:flex space-x-8 text-base font-medium">
+                <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">INICIO</a>
+                <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">TALLERES</a>
+                <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">TIENDA</a>
+                <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">CONTACTO</a>
+            </nav>
+
+            <!-- Cart Icon and Mobile Menu Toggle -->
+            <div class="flex items-center space-x-4">
+                <!-- Cart Icon -->
+                <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showCartMessage()">
+                    <!-- Cart Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
+                    </svg>
+                    <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+                </div>
+
+                <!-- Mobile Menu Button (Visible on Mobile) -->
+                <button id="mobile-menu-button" class="sm:hidden p-2 text-text-dark focus:outline-none focus:ring-2 focus:ring-rp-teal rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Dropdown -->
+        <nav id="mobile-menu" class="sm:hidden hidden bg-white shadow-inner pb-2">
+            <a href="#home" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Inicio</a>
+            <a href="#talleres" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Talleres</a>
+            <a href="#tienda" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Tienda</a>
+            <a href="#contacto" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Contacto</a>
+        </nav>
+    </header>
+    
+    <!-- Modals (Hidden by Default) -->
+    
+    <!-- Modal para visualización de imagen completa (Zoom) -->
+    <!-- El modal está centrado con 'flex items-center justify-center' y usa fondo oscuro -->
+    <div id="image-modal" class="hidden fixed inset-0 bg-text-dark/90 flex items-center justify-center z-[120]">
+        <div id="image-modal-content" class="relative p-4"> <!-- Agregamos padding para evitar que toque los bordes -->
+            <!-- Botón de Cierre -->
+            <button onclick="hideImageModal()" class="absolute top-0 right-0 sm:-top-8 sm:right-0 text-white text-3xl font-bold opacity-80 hover:opacity-100 transition p-2">
+                &times;
+            </button>
+            <!-- La imagen ahora usa el estilo #full-image definido arriba -->
+            <img id="full-image" src="" alt="" class="rounded-lg shadow-2xl">
+            <p id="image-caption" class="text-white text-center mt-3 text-sm opacity-80"></p>
+        </div>
+    </div>
+
+    <!-- Modal para Carrito -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[100]">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm mx-4 transform transition-all duration-300 border border-rp-teal">
+            <h3 class="text-xl font-bold mb-3 text-rp-teal">Tu Carrito (Simulado)</h3>
+            <p id="cart-modal-message" class="text-text-dark mb-4">Actualmente tienes 0 artículo(s) en tu carrito. Este es un carrito simulado.</p>
+            <button onclick="hideCartMessage()" class="w-full py-2 bg-rp-teal text-white font-semibold rounded-lg hover:bg-rp-teal/90 transition">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Mercado Pago -->
+    <div id="mercadopago-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[110]">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg mx-4 transform transition-all duration-300 border-t-4 border-mp-blue">
+            <div class="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-mp-blue mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2Z" fill="rgb(0, 158, 227)"/><path d="M10.74 15.02L9.12 11.8L5.7 15.02L7.32 11.8L3.9 8.58L15.34 8.58L10.74 15.02Z" fill="#fff"/></svg>
+                <h3 class="text-2xl font-bold text-mp-blue title-style">PASARELA DE PAGOS (SIMULADA)</h3>
+            </div>
+            <p class="text-text-dark mb-4">
+                Estás a punto de pagar el producto: <strong id="product-name-display" class="text-rp-teal"></strong>.
+            </p>
+            <div class="p-4 bg-rp-blue-light border border-rp-teal/50 rounded-lg mb-6">
+                <p class="font-semibold text-mp-blue">Flujo de Mercado Pago:</p>
+                <p class="text-sm text-text-dark/80">Serías redirigido automáticamente a la página segura de Mercado Pago. **Esta web nunca toca tus datos financieros.**</p>
+            </div>
+            <div class="flex flex-col space-y-3">
+                <button 
+                    onclick="simulatedPaymentRedirect()" 
+                    class="py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md flex items-center justify-center title-style text-lg">
+                    Continuar a Mercado Pago
+                </button>
+                <button onclick="hideMercadoPagoModal()" class="py-2 bg-rp-gray-soft text-text-dark font-semibold rounded-lg hover:bg-rp-gray-soft/80 transition">Cancelar Compra</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MAIN CONTENT VIEWS -->
+    <main>
+        
+        <!-- HOME PAGE VIEW -->
+        <section id="view-home" data-route="home" class="page-content">
+
+            <!-- 1. Hero Section -->
+            <section class="relative section-padding pt-40 pb-40 flex items-center justify-center min-h-[70vh] border-b border-rp-gray-soft"
+                    style="background-image: url('images/fondo.jpeg'); background-size: cover; background-position: center;"
+            >
+                <div class="absolute inset-0 bg-white/0"></div>
+        
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
+                        Transformamos el Plástico en <span class="text-white">Materia Prima</span> de Valor
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto">
+                        Soluciones integrales de sostenibilidad, desde la recolección industrial hasta la educación y el comercio circular.
+                    </p>
+                    <a href="#talleres" class="inline-block px-10 py-4 bg-rp-teal text-text-dark text-lg font-bold rounded-full shadow-lg hover:bg-rp-teal/90 transition duration-300" onclick="route()">
+                        RESERVA TU TALLER
+                    </a>
+                </div>
+            </section>
+
+            <!-- 2. Dynamic Impact Counters Section -->
+            <section id="impact-stats" class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-4xl font-bold mb-12 title-style">NUESTRO <span class="text-rp-teal">IMPACTO</span> MEDIDO</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                        
+                        <!-- Stat 1: Plastic Recycled -->
+                        <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal">
+                            <div class="text-6xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
+                                <span class="text-6xl ml-1">+</span>
+                                <span id="counter-plastic">0</span>
+                            </div>
+                            <p class="text-2xl font-semibold mb-1">kg de plástico</p>
+                            <p class="text-gray-500">Reciclado y transformado en nuevos productos.</p>
+                            <!-- Hidden target value for JS -->
+                            <span data-target="350" data-unit=" kg" class="hidden"></span>
+                        </div>
+
+                        <!-- Stat 2: Space Saved -->
+                        <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal">
+                            <div class="text-6xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
+                                <span class="text-6xl ml-1">+</span>
+                                <span id="counter-space">0</span>
+                            </div>
+                            <p class="text-2xl font-semibold mb-1">bañeras llenas</p>
+                            <p class="text-gray-500">De espacio ahorrado en la usina de Montevideo.</p>
+                            <!-- Hidden target value for JS -->
+                            <span data-target="14" data-unit=" bañeras" class="hidden"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 3. About Us/Mission -->
+            <section id="about" class="bg-bg-light section-padding">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold mb-3 title-style">NUESTRA FILOSOFÍA <span class="text-rp-teal">MODERNA</span></h2>
+                        <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                            Aplicamos tecnología y diseño para hacer de la economía circular una realidad accesible para todos.
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-8 text-center">
+                        <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                            <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2A10 10 0 0 0 4.2 4.2a1 1 0 0 0-.2.8v3.4a1 1 0 0 0 1 1h3.4a1 1 0 0 0 .8-.2A10 10 0 0 0 12 2zm0 20a10 10 0 0 0 7.8-3.8 1 1 0 0 0-.8-.2h-3.4a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h3.4a1 1 0 0 0 .8-.2A10 10 0 0 0 12 22zm-7.8-3.8a1 1 0 0 0 .2.8v3.4a1 1 0 0 0 1 1h3.4a1 1 0 0 0 .8-.2A10 10 0 0 0 4.2 18.2z"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-text-dark">RECOGIDA INDUSTRIAL</h3>
+                            <p class="text-gray-600 text-sm">Gestión de residuos plásticos con trazabilidad total.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                            <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2h14.5a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-.5.5H6.5A2.5 2.5 0 0 0 4 19.5v1.5a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-19A2.5 2.5 0 0 1 4 2.5"></path><path d="M10 8h6M10 12h6M10 16h6"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-text-dark">EDUCACIÓN PRÁCTICA</h3>
+                            <p class="text-gray-600 text-sm">Talleres para concientizar y activar el cambio en jóvenes y profesionales.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                            <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 0 18.27 5.72M20 8.5C18.4 9 16 10.15 14 12c-2.7 2.5-4.5 4-5.5 5.25a2 2 0 0 1-2.5 0C4.5 17 2.5 15.25 2 13.5c1.5-1.5 3.5-2.5 6-3.5 2.5-1 4.5-1.5 6.5-1.5a7 7 0 0 1 3.5 1M2 13.5c.5 1.75 2.5 3.5 5.5 4.75a2 2 0 0 0 2.5 0c1-1.25 2.8-2.75 5.5-5.25 2-1.85 4.4-3 6-3.5"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-text-dark">TIENDA CIRCULAR</h3>
+                            <p class="text-gray-600 text-sm">Productos de diseño innovador hechos 100% con plásticos recuperados.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section> <!-- End HOME VIEW -->
+
+        <!-- TALLERES PAGE VIEW -->
+        <section id="view-talleres" data-route="talleres" class="page-content bg-rp-blue-light section-padding">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-text-dark mb-3 title-style">NUESTROS <span class="text-rp-teal">TALLERES</span></h2>
+                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                        Programas a medida para impulsar el cambio en cualquier entorno educativo o corporativo.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <!-- School Workshops Card -->
+                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                        <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Escuelas y Universidades</h3>
+                        <p class="mb-4 text-text-dark/90">
+                            Foco en la generación Z: actividades interactivas y proyectos de ciencia ciudadana para integrar la sostenibilidad.
+                        </p>
+                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                            <li>Proyectos de reprocesamiento de plástico local.</li>
+                            <li>Modelado de flujos de residuos.</li>
+                        </ul>
+                        <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
+                            PEDIR INFO PARA ESCUELAS
+                        </a>
+                    </div>
+
+                    <!-- Business Workshops Card -->
+                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                        <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Corporativos y ESG</h3>
+                        <p class="mb-4 text-text-dark/90">
+                            Entrenamientos especializados para equipos que implementen estrategias de Zero Waste y cumplan metas de sostenibilidad.
+                        </p>
+                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                            <li>Auditoría de Residuos Operacionales.</li>
+                            <li>Módulo de Ecoinnovación y Sourcing.</li>
+                        </ul>
+                        <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
+                            SOLICITAR AUDITORÍA
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section> <!-- End TALLERES VIEW -->
+
+        <!-- TIENDA PAGE VIEW -->
+        <section id="view-tienda" data-route="tienda" class="page-content bg-white section-padding">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold mb-3 title-style">PRODUCTOS <span class="text-rp-teal">REGENERADOS</span></h2>
+                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                        Cada producto es una prueba de que el plástico tiene más de una vida.
+                    </p>
+                </div>
+
+                <!-- Product Grid (Mock Products) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Product 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
+                        <div>
+                            <!-- AÑADIDO: cursor-pointer y onclick para el modal de imagen -->
+                            <img src="images/IMG_1032.jpg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
+                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl</h3>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                        </div>
+                        <button onclick="startCheckout('Bowl')" class="py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-sm">
+                            PAGAR CON MERCADO PAGO (Sim.)
+                        </button>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
+                        <div>
+                            <!-- AÑADIDO: cursor-pointer y onclick para el modal de imagen -->
+                            <img src="images/Posavasos.jpeg" alt="Posavasos (x6)" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
+                            <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos (x6)</h3>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                            <p class="text-gray-600 mb-4 text-sm">Pack de Posavasos realizados %100 a partir de plastico reciclado.</p>
+                        </div>
+                        <button onclick="startCheckout('Posavasos (x6)')" class="py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-sm">
+                            PAGAR CON MERCADO PAGO (Sim.)
+                        </button>
+                    </div>
+
+                </div>
+                
+                <div class="text-center mt-16">
+                    <button onclick="showCartMessage()" class="px-8 py-3 border-2 border-rp-teal text-rp-teal font-bold rounded-full hover:bg-rp-blue-light transition duration-300 title-style">
+                        VER TODO EL CATÁLOGO
+                    </button>
+                </div>
+            </div>
+        </section> <!-- End TIENDA VIEW -->
+
+        <!-- CONTACTO PAGE VIEW -->
+        <section id="view-contacto" data-route="contacto" class="page-content bg-rp-teal section-padding">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd8UEPoIXl_vwcuzFrojhzLIdmZI9-SnjYnWNij5HTrkI_J_w/viewform?embedded=true" width="840" height="1073" frameborder="0" marginheight="0" marginwidth="0" class="block mx-auto">Cargando…</iframe>
+        </section> <!-- End CONTACTO VIEW -->
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-text-dark text-white py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-4">
+                <p class="text-xl font-bold text-rp-teal title-style">Circula</p>
+            </div>
+            <div class="flex justify-center space-x-6 text-gray-400 mb-4 text-sm">
+                <a href="#" class="hover:text-rp-mint transition duration-200">PRIVACIDAD</a>
+                <a href="#" class="hover:text-rp-mint transition duration-200">TÉRMINOS</a>
+            </div>
+            <p class="text-sm text-gray-500">&copy; <span id="current-year"></span> Circula. Economía Circular.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- JavaScript para Contadores, Routing y Funcionalidad ---
+
+        // Establecer el año actual en el pie de página
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 1. Alternar Menú Móvil
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+
+
+        // 2. Lógica de Enrutamiento (Client-Side Routing)
+        const routes = ['home', 'talleres', 'tienda', 'contacto'];
+        
+        function route() {
+            // Obtiene el hash (ej: #tienda) y quita el '#'
+            let path = window.location.hash.substring(1) || 'home'; 
+            
+            if (!routes.includes(path)) {
+                path = 'home'; // Default to home if route is invalid
+            }
+
+            // Oculta todas las secciones
+            document.querySelectorAll('.page-content').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Muestra solo la sección correspondiente
+            const targetSection = document.getElementById(`view-${path}`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                window.scrollTo(0, 0); // Vuelve al inicio de la página
+            }
+        }
+        
+        // Escucha cambios de hash (navegación del navegador)
+        window.addEventListener('hashchange', route);
+        // Carga la ruta inicial al cargar la página
+        window.addEventListener('load', route);
+
+
+        // 3. Lógica del Contador Dinámico
+
+        /**
+         * Función para animar un valor numérico.
+         * @param {HTMLElement} element - El elemento span que mostrará el número.
+         * @param {number} start - Valor inicial (0).
+         * @param {number} end - Valor final (el objetivo).
+         * @param {string} unit - La unidad de medida a agregar.
+         * @param {number} duration - Duración de la animación en milisegundos.
+         */
+        function animateValue(element, start, end, unit, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                
+                // Usamos un factor de ralentización (más lento al final)
+                const easedProgress = 1 - Math.pow(1 - progress, 3); // Slows down near 1
+                
+                const currentValue = Math.floor(easedProgress * (end - start) + start);
+                element.textContent = currentValue.toLocaleString('es-ES'); // Formato de número local
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    element.textContent = end.toLocaleString('es-ES'); // Asegura el valor final exacto
+                }
+                
+                // Añadir la unidad después de la animación si es la final
+                if (progress >= 1 && unit) {
+                    element.textContent += unit;
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        const statsSection = document.getElementById('impact-stats');
+        let animationTriggered = false;
+
+        // Función para iniciar la animación de los contadores
+        function startCounters() {
+            if (animationTriggered) return;
+            animationTriggered = true; // Previene re-animación
+
+            const statElements = [
+                { id: 'counter-plastic', target: 350, unit: '' },
+                { id: 'counter-space', target: 14, unit: '' }
+            ];
+
+            statElements.forEach(stat => {
+                const element = document.getElementById(stat.id);
+                if (element) {
+                    animateValue(element, 0, stat.target, stat.unit, 2000); // 2 segundos de duración
+                }
+            });
+        }
+        
+        // Usar IntersectionObserver para detectar visibilidad
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
+                    startCounters();
+                    // Opcional: desconectar el observer si solo necesita ejecutarse una vez
+                    observer.unobserve(statsSection); 
+                }
+            });
+        }, { threshold: 0.5 }); // Se activa cuando el 50% de la sección es visible
+
+        // Solo observar si la sección de estadísticas existe
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+        
+        // 4. Lógica de Carrito y Pago (Simulado)
+        const cartCountDisplay = document.getElementById('cart-count');
+        const cartCountStorage = document.getElementById('cart-count-storage');
+        const cartModal = document.getElementById('cart-modal');
+        const cartModalMessage = document.getElementById('cart-modal-message');
+        const mercadopagoModal = document.getElementById('mercadopago-modal');
+        const productNameDisplay = document.getElementById('product-name-display');
+        const imageModal = document.getElementById('image-modal');
+        const fullImage = document.getElementById('full-image');
+        const imageCaption = document.getElementById('image-caption');
+
+
+        let totalItems = parseInt(cartCountStorage.getAttribute('data-count'));
+        let cartItems = []; 
+
+        function updateCartDisplay() {
+            totalItems = cartItems.length;
+            cartCountDisplay.textContent = totalItems;
+            cartCountStorage.setAttribute('data-count', totalItems);
+            cartModalMessage.textContent = `Actualmente tienes ${totalItems} artículo(s) en tu carrito. Este es un carrito simulado.`;
+        }
+
+        function startCheckout(name) {
+            cartItems.push({ name });
+            updateCartDisplay();
+            productNameDisplay.textContent = name;
+            mercadopagoModal.classList.remove('hidden');
+        }
+        
+        function simulatedPaymentRedirect() {
+            // Nota: Se utiliza alert() para simular la redirección a una pasarela externa
+            console.log('Pago simulado iniciado.');
+            // Usamos un modal en lugar de alert()
+            alert('¡Redirección a Mercado Pago simulada! El pago se procesaría externamente.');
+            hideMercadoPagoModal();
+            cartItems = [];
+            updateCartDisplay();
+        }
+
+        function showCartMessage() {
+            updateCartDisplay();
+            cartModal.classList.remove('hidden');
+        }
+
+        function hideCartMessage() {
+            cartModal.classList.add('hidden');
+        }
+
+        function hideMercadoPagoModal() {
+            mercadopagoModal.classList.add('hidden');
+        }
+
+        // 5. Lógica del Modal de Imagen (Nueva)
+        function showFullImage(src, alt) {
+            fullImage.src = src;
+            imageCaption.textContent = alt;
+            imageModal.classList.remove('hidden');
+        }
+
+        function hideImageModal() {
+            imageModal.classList.add('hidden');
+        }
+
+        // Cierra los modales si el usuario hace clic fuera o presiona ESC
+        window.onclick = function(event) {
+            if (event.target == cartModal) {
+                hideCartMessage();
+            }
+            if (event.target == mercadopagoModal) {
+                hideMercadoPagoModal();
+            }
+            if (event.target == imageModal) {
+                hideImageModal();
+            }
+        }
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideCartMessage();
+                hideMercadoPagoModal();
+                hideImageModal();
+            }
+        });
+        
+
+    </script>
+</body>
+</html>
