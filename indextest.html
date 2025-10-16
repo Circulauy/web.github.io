@@ -107,10 +107,11 @@
 
             <!-- Navigation Links (Desktop) -->
             <nav class="hidden sm:flex space-x-8 text-base font-medium">
-                <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">INICIO</a>
-                <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">TALLERES</a>
-                <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">TIENDA</a>
-                <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style" onclick="route()">CONTACTO</a>
+                <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" >INICIO</a>
+                <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style" >TALLERES</a>
+                <a href="#nosotros" class="hover:text-rp-teal transition duration-200 title-style" >SOBRE NOSOTROS</a>
+                <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style" >TIENDA</a>
+                <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style" >CONTACTO</a>
             </nav>
 
             <!-- Cart Icon and Mobile Menu Toggle -->
@@ -137,10 +138,11 @@
         
         <!-- Mobile Navigation Dropdown -->
         <nav id="mobile-menu" class="sm:hidden hidden bg-white shadow-inner pb-2">
-            <a href="#home" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Inicio</a>
-            <a href="#talleres" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Talleres</a>
-            <a href="#tienda" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Tienda</a>
-            <a href="#contacto" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="route(); toggleMobileMenu()">Contacto</a>
+            <a href="#home" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Inicio</a>
+            <a href="#talleres" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Talleres</a>
+            <a href="#nosotros" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Sobre Nosotros</a>
+            <a href="#tienda" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Tienda</a>
+            <a href="#contacto" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Contacto</a>
         </nav>
     </header>
     
@@ -202,7 +204,7 @@
 
             <!-- 1. Hero Section -->
             <section class="relative section-padding pt-40 pb-40 flex items-center justify-center min-h-[70vh] border-b border-rp-gray-soft"
-                    style="background-image: url('images/fondo.jpeg'); background-size: cover; background-position: center;"
+                    style="background-image: url('images/fondo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;"
             >
                 <div class="absolute inset-0 bg-white/0"></div>
         
@@ -391,6 +393,186 @@
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd8UEPoIXl_vwcuzFrojhzLIdmZI9-SnjYnWNij5HTrkI_J_w/viewform?embedded=true" width="840" height="1073" frameborder="0" marginheight="0" marginwidth="0" class="block mx-auto">Cargando…</iframe>
         </section> <!-- End CONTACTO VIEW -->
 
+        <!-- ABOUT US PAGE VIEW -->
+    <section id="view-nosotros" data-route="nosotros" class="page-content">
+    
+        <section class="relative section-padding pt-40 pb-40 flex flex-col min-h-[60vh] border-b border-rp-gray-soft"
+                style="background-image: url('images/FondoSobreNostoros.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;"
+        >
+            <div class="absolute inset-0 bg-text-dark/40"></div>
+            
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex-grow flex items-center justify-center h-full">
+                <div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
+                        Somos Circula<span class="text-rp-teal"></span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto">
+                        Circula es una iniciativa que nace para atacar la problemática de la gestión de residuos plásticos en nuestro país.
+                        Estamos convencidos de que la educación ambiental juega un rol fundamental en esta cuestión.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-bg-light section-padding">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold mb-3 title-style">NUESTROS <span class="text-rp-teal">SERVICIOS</span></h2>
+                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                        Transformamos la gestión de residuos con soluciones prácticas y sostenibles para empresas y comunidades.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">Asesoramiento</h3>
+            <p class="text-gray-600">Creamos planes o programas según las necesidades del cliente.</p>
+        </div>
+    </div>
+
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">Consultorías</h3>
+            <p class="text-gray-600">Asesoramos a empresas e instituciones que buscan mejorar o implementar una gestión integral de residuos sólidos.</p>
+        </div>
+    </div>
+
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a5 5 0 0 0-5 5c0 2.24 1.7 4.1 4 4.88V21h2v-9.12c2.3-.78 4-2.64 4-4.88a5 5 0 0 0-5-5z"></path>
+                <path d="M12 2V.5"></path>
+                <path d="M7 7h10"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">Capacitación</h3>
+            <p class="text-gray-600">Construimos junto con las instituciones, otro tipo de vínculo con los residuos plásticos.</p>
+        </div>
+    </div>
+    
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 4V1h20v3"></path>
+                <line x1="6" y1="7" x2="6" y2="23"></line>
+                <line x1="10" y1="7" x2="10" y2="23"></line>
+                <line x1="14" y1="7" x2="14" y2="23"></line>
+                <line x1="18" y1="7" x2="18" y2="23"></line>
+                <path d="M21 4H3v3h18z"></path>
+                <path d="M10 23h4"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">Talleres</h3>
+            <p class="text-gray-600">Fomentamos una cultura de responsabilidad ambiental, con prácticas sostenibles y nutrimos a la comunidad educativa con conocimiento.</p>
+        </div>
+    </div>
+
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17l-3 3-3-3"></path>
+                <path d="M7 17V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v13"></path>
+                <path d="M16 10h4l2 3v5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-5l2-3z"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">Recolección</h3>
+            <p class="text-gray-600">Realizamos recolección de diversos residuos plásticos.</p>
+        </div>
+    </div>
+
+    <div class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
+        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20"></path>
+                <path d="M17 17l-5 5-5-5"></path>
+                <path d="M17 7l-5-5-5 5"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold text-text-dark mb-1">De residuos a nuevos recursos</h3>
+            <p class="text-gray-600">Transformamos los residuos plásticos en materia prima de alta calidad, que se convertirá en productos de diseño.</p>
+        </div>
+    </div>
+</div>
+        </section>
+        <section id="equipo" class="bg-white section-padding border-b border-rp-gray-soft">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-3 title-style">NUESTRO<span class="text-rp-teal"> EQUIPO</span></h2>
+                <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                    Conoce a las personas que forman parte de Circula.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+                
+                <div class="flex flex-col items-center text-center">
+                    <img 
+                        src="images/Foto CV.jpg" 
+                        alt="Antonio Robaina" 
+                        class="w-40 h-40 object-cover rounded-full mb-4 border-4 border-rp-teal/50 shadow-lg"
+                    >
+                    <h3 class="text-xl font-bold text-text-dark">Antonio Robaina</h3>
+                    <p class="text-rp-teal font-medium mb-1">Director</p>
+                    <a href="https://www.linkedin.com/in/antonio-robaina-004b0a20a/" class="text-gray-500 hover:text-mp-blue transition duration-200 text-sm">in</a>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <img 
+                        src="images/Souto CV.jpg" 
+                        alt="Juan Souto" 
+                        class="w-40 h-40 object-cover rounded-full mb-4 border-4 border-rp-teal/50 shadow-lg"
+                    >
+                    <h3 class="text-xl font-bold text-text-dark">Juan Souto</h3>
+                    <p class="text-rp-teal font-medium mb-1">Diseñador</p>
+                    <a href="https://www.linkedin.com/in/juan-souto/" class="text-gray-500 hover:text-mp-blue transition duration-200 text-sm">in</a>
+                </div>
+
+                <div class="flex flex-col items-center text-center">
+                    <img 
+                        src="images/Emiliano CV.jpg" 
+                        alt="Emiliano Robaina" 
+                        class="w-40 h-40 object-cover rounded-full mb-4 border-4 border-rp-teal/50 shadow-lg"
+                    >
+                    <h3 class="text-xl font-bold text-text-dark">Emiliano Robaina</h3>
+                    <p class="text-rp-teal font-medium mb-1">Coordinador de Proyectos</p>
+                    <a href="https://www.linkedin.com/in/emiliano-robaina-489126322/" class="text-gray-500 hover:text-mp-blue transition duration-200 text-sm">in</a>
+                </div>
+            </div>
+            </div>
+    </section>
+</section>
+
     </main>
 
     <!-- Footer -->
@@ -424,7 +606,7 @@
 
 
         // 2. Lógica de Enrutamiento (Client-Side Routing)
-        const routes = ['home', 'talleres', 'tienda', 'contacto'];
+        const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros'];
         
         function route() {
             // Obtiene el hash (ej: #tienda) y quita el '#'
