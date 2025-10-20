@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Economía Circular y Talleres</title>
     
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
-    <!-- Configure Tailwind CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -42,28 +40,6 @@
     <style>
         /* Custom styles for cleaner design */
         html {
-        <style>
-    /* ... Tus estilos generales (section-padding, title-style, etc.) ... */
-
-    /* Regla específica para dispositivos móviles */
-    @media (max-width: 768px) {
-        .hero-section {
-            /* **CLAVE**: Ajusta el background-position para móvil.
-               Si las manos están en el centro-inferior de la imagen original,
-               necesitamos mover el foco hacia arriba en la pantalla vertical.
-               
-               Prueba con 'center 35%' o 'center 40%'. 'center 50%' es 'center center'.
-               Un valor más pequeño (ej. 35%) subirá la imagen y mostrará más el área inferior.
-            */
-            background-position: center 35% !important; 
-            
-            /* Sigue siendo importante tener background-attachment: scroll en móvil.
-               'fixed' causa problemas en muchos navegadores móviles y rompe la composición. */
-            background-attachment: scroll !important;
-        }
-    }
-</style>
-}
             scroll-behavior: smooth;
         }
         .section-padding {
@@ -88,12 +64,6 @@
         }
 
         /* Estilo para el modal de imagen */
-        #image-modal-content {
-            /* Eliminamos los límites de max-height/width del contenedor para que la imagen los defina */
-            /* Se ha trasladado la lógica de límite a la imagen misma en el HTML */
-        }
-        
-        /* Nuevo estilo para asegurar que la imagen se ajuste dentro del viewport */
         #full-image {
             max-height: 90vh; /* Limita la altura máxima al 90% del viewport */
             max-width: 90vw;  /* Limita la anchura máxima al 90% del viewport */
@@ -101,32 +71,44 @@
             height: auto;     /* Permite que la altura se ajuste */
             object-fit: contain; /* Asegura que la imagen se vea completa sin recortarse */
         }
+        
+        /* ========================================================= */
+        /* == MODIFICACIONES PARA IMAGEN DE FONDO SOLO EN MÓVILES == */
+        /* ========================================================= */
+        
+        /* Clase base: Asegura que NO haya imagen por defecto en desktop */
+        .bg-mobile-hero {
+            background-image: none; 
+            background-repeat: no-repeat;
+        }
+
+        /* Media Query: Aplicar la imagen SOLO en pantallas pequeñas (768px o menos) */
+        @media (max-width: 768px) {
+            .bg-mobile-hero {
+                /* 🚨 INSERTA AQUÍ LA RUTA A TU IMAGEN CUADRADA */
+                background-image: url('images/img para movil.jpg'); 
+                
+                background-position: center bottom; /* Centra horizontalmente, pega abajo */
+                background-size: contain; /* Muestra la imagen completa sin recortar */
+                background-attachment: scroll; /* Se desplaza con el contenido */
+            }
+        }
     </style>
 </head>
-<body class="font-sans bg-bg-light text-text-dark">
-
-    <!-- Shopping Cart State (Kept for demonstration) -->
+<body class="font-sans bg-bg-light text-text-dark **bg-mobile-hero**">
+    
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
-    <!-- Header & Navigation -->
     <header class="sticky top-0 z-50 bg-white shadow-md">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             
-            <!-- Logo Grande (Estilo Circula) -->
             <a href="#home" class="flex items-center text-text-dark hover:opacity-80 transition duration-200" onclick="route()">
-                <!-- Logo Image Placeholder -->
-                <!-- 
-                    REEMPLAZA ESTA URL CON LA IMAGEN DE TU LOGO HORIZONTAL. 
-                    Asegúrate de que la imagen incluya el texto "EcoCycle Solutions" 
-                    con la tipografía deseada para mantener el estilo.
-                -->
                 <img 
                     src="images/logo.png" 
                     alt="Logo EcoCycle Solutions" 
                     class="h-8 sm:h-10 lg:h-12 object-contain"
                 >
             </a>
-
             <!-- Navigation Links (Desktop) -->
             <nav class="hidden sm:flex space-x-8 text-base font-medium">
                 <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" >INICIO</a>
