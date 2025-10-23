@@ -1,69 +1,83 @@
 // netlify/functions/create-preference.js
 
-const MP = require('mercadopago');
-const MercadoPago = MP.default || MP; 
+const mercadopago = require('mercadopago');
 
-let mp; // Definir la variable aquí
-
-try {
-    // Intenta la inicialización
-    mp = new MercadoPago(process.env.MP_ACCESS_TOKEN);
-} catch (e) {
-    // Si falla la inicialización (por token inválido o problema de clase/constructor)
-    console.error("ERROR CRÍTICO DE INICIALIZACIÓN MP:", e.message); 
-    // Como esto está fuera del handler, no podemos devolver un 500 aquí,
-    // solo nos ayuda a diagnosticar el problema en la terminal.
-} 
+// ************************************************
+// 1. CONFIGURACIÓN ESTÁTICA (REQUERIDA POR v1.5.17)
+// Inicialización fuera del handler para eficiencia.
+// ************************************************
+mercadopago.configure({
+    access_token: process.env.MP_ACCESS_TOKEN 
+});
 
 // La función handler es el punto de entrada para todas las Netlify Functions
 exports.handler = async (event, context) => {
     
-    // VERIFICACIÓN CLAVE: Muestra si el token es nulo ANTES de usarlo.
+    // VERIFICACIÓN DEL TOKEN DE ACCESO
     if (!process.env.MP_ACCESS_TOKEN) {
-        console.error("ERROR: El token no fue cargado en el entorno local (Netlify Dev).");
+        console.error("ERROR: MP_ACCESS_TOKEN no está definido. Revisa .env o la configuración de Netlify.");
         return { 
             statusCode: 500, 
             body: JSON.stringify({ error: "Fallo de configuración: Token de MP ausente." }) 
         };
     }
     
-    // 2. Comprobación y Extracción de Datos
-    // ... (Tu lógica de extracción de datos)
+    // 2. VALIDACIÓN DEL MÉTODO HTTP
+    if (event.httpMethod !== 'POST') {
+        return { statusCode: 405, body: 'Método no permitido' };
+    }
+
+    // 3. EXTRACCIÓN Y PARSEO DE DATOS DEL FRONT-END
+    let data;
+    try {
+        data = JSON.parse(event.body);
+    } catch (error) {
+        return { statusCode: 400, body: 'Cuerpo de solicitud JSON inválido' };
+    }
+
+    const { productName, price } = data;
+
+    if (!productName || !price) {
+        return { statusCode: 400, body: 'Faltan datos del producto (productName y price).' };
+    }
     
-    // 3. Crear el Objeto de Preferencia
+    // 4. CREACIÓN DEL OBJETO DE PREFERENCIA DE MERCADO PAGO
     const YOUR_NETLIFY_URL = "https://circula.uy"; 
+
     let preference = {
-        // **IMPORTANTE: Asegúrate que esta estructura sea válida para Mercado Pago**
         items: [{
-            title: 'Producto Ejemplo', // Ejemplo de datos
-            unit_price: 100.00,       // Ejemplo de datos
+            title: productName,
+            unit_price: parseFloat(price),
             quantity: 1,
+            currency_id: "UYU"
         }],
         
-        back_urls: { 
-            success: `${YOUR_NETLIFY_URL}/#tienda?status=success`,
-            failure: `${YOUR_NETLIFY_URL}/#tienda?status=failure`,
-            pending: `${YOUR_NETLIFY_URL}/#tienda?status=pending`,
-        },
-        auto_return: "approved",
+        // URLs a las que el usuario es redirigido después del pago
+        payer: {
+        email: "test_circula_dev@testuser.com" // Email de prueba obligatorio
+    },
     };
 
     try {
-        // 4. Llamar a la API de Mercado Pago
-        const response = await mp.preferences.create(preference); 
+        // 5. LLAMADA A LA API DE MERCADO PAGO
+        // Usamos el objeto estático 'mercadopago' que se configuró arriba
+        const response = await mercadopago.preferences.create(preference);
         
-        // 5. Devolver el ID de preferencia
-        // ... (Tu respuesta exitosa 200)
-        return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ preferenceId: response.body.id }) };
+        // 6. DEVOLVER ID DE PREFERENCIA AL FRONT-END
+        return {
+            statusCode: 200,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ preferenceId: response.body.id })
+        };
 
     } catch (error) {
-        // MUESTRA EL MENSAJE DE ERROR REAL DE MP EN TU TERMINAL
-        console.error("Error al crear preferencia de MP (Detalle de API):", error.message || error.toString()); 
+        // Captura errores de la API (ej. token inválido, datos mal formados, etc.)
+        console.error("Error REAL de la API de MP:", error.message || error.toString()); 
         
         return {
             statusCode: 500,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ error: "Error interno: Falla de la API de Mercado Pago. Verifique el token." })
+            body: JSON.stringify({ error: "Error interno del servidor al crear preferencia." })
         };
     }
 };
