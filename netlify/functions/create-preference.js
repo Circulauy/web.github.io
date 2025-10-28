@@ -35,22 +35,21 @@ exports.handler = async (event, context) => {
         return { statusCode: 400, body: 'Cuerpo de solicitud JSON inválido' };
     }
 
-    const { productName, price } = data;
-
-    if (!productName || !price) {
-        return { statusCode: 400, body: 'Faltan datos del producto (productName y price).' };
+    const { items } = data;
+    
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        // Cambiamos la validación para verificar el carrito
+        return { 
+            statusCode: 400, 
+            body: JSON.stringify({ error: 'Faltan datos: No se encontró la lista de ítems del carrito.' }) 
+        };
     }
     
     // 4. CREACIÓN DEL OBJETO DE PREFERENCIA DE MERCADO PAGO
     const YOUR_NETLIFY_URL = "https://circula.uy"; 
 
     let preference = {
-        items: [{
-            title: productName,
-            unit_price: parseFloat(price),
-            quantity: 1,
-            currency_id: "UYU"
-        }],
+        items: items,
         
         // URLs a las que el usuario es redirigido después del pago
         payer: {
