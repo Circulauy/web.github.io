@@ -51,6 +51,13 @@ exports.handler = async (event, context) => {
     let preference = {
         items: items,
         
+        back_urls: {
+            // El usuario será redirigido a estas URLs
+            success: `${YOUR_NETLIFY_URL}/success.html`,
+            failure: `${YOUR_NETLIFY_URL}/failure.html`,
+            pending: `${YOUR_NETLIFY_URL}/pending.html`,
+        },
+        auto_return: 'approved',
         // URLs a las que el usuario es redirigido después del pago
         payer: {
         email: "test_circula_dev@testuser.com" // Email de prueba obligatorio

@@ -118,7 +118,7 @@
             </nav>
 
             <div class="flex items-center space-x-4">
-                <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showFullCartModal()">
+                <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -348,88 +348,328 @@
                     </div>
                 </div>
             </div>
-        </section> <section id="view-tienda" data-route="tienda" class="page-content bg-white section-padding">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-5xl font-bold mb-3 title-style">PRODUCTOS <span class="text-rp-teal">DE DISEÑO 100% RECICLADOS</span></h2>
-                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
-                        Cada producto es una prueba de que el plástico tiene más de una vida.
-                    </p>
-                </div>
+        </section> 
+        <section id="view-tienda" data-route="tienda" class="page-content bg-white section-padding">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-bold mb-3 title-style">PRODUCTOS <span class="text-rp-teal">DE DISEÑO 100% RECICLADOS</span></h2>
+            <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                Cada producto es una prueba de que el plástico tiene más de una vida.
+            </p>
+        </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-azul">
+                <div>
+                    <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl Azul" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
                     
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
-                        <div>
-                            <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Azul</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
-                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
-                        </div>
-                        <button 
-                            onclick="addItemToCart('Bowl Azul', 450.00)" 
-                            class="py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
-                        <div>
-                            <img src="images/Tienda/Bowl Blanco Arriba.jpeg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Blanco</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
-                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
-                        </div>
-                        <button onclick="addItemToCart('Bowl Blanco', 450.00)" class="py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
-                        <div>
-                            <img src="images/Tienda/Bowl Blanco Arriba.jpeg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Gris</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
-                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
-                        </div>
-                        <button onclick="addItemToCart('Bowl Gris', 450.00)" class="py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
-                        <div>
-                            <img src="images/Tienda/Bowl Naranja Arriba.jpeg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Rojo</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
-                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
-                        </div>
-                        <button onclick="addItemToCart('Bowl Rojo', 450.00)" class="py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
-                        <div>
-                            <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" onclick="showFullImage(this.src, this.alt)">
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Navideño</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
-                            <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
-                        </div>
-                        <button onclick="addItemToCart('Bowl Navideño', 450.00)" class="py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm">
-                            AGREGAR AL CARRITO
-                        </button>
-                    </div>
-
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Azul</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
                 </div>
-                
-                <div class="text-center mt-16">
-                    <button onclick="showFullCartModal()" class="px-8 py-3 border-2 border-rp-teal text-rp-teal font-bold rounded-full hover:bg-rp-blue-light transition duration-300 title-style">
-                        VER MI CARRITO
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-azul"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Azul', 450.00, document.getElementById('qty-bowl-azul').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
                     </button>
                 </div>
             </div>
-        </section> <section id="view-contacto" data-route="contacto" class="page-content bg-rp-teal section-padding">
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-blanco">
+                <div>
+                    <img src="images/Tienda/Bowl Blanco Arriba.jpeg" alt="Bowl Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Blanco', 450.00, 'images/Tienda/Bowl Blanco Arriba.jpeg', 'Diseño minimalista y limpio. Hecho con plástico reciclado HDPE. Una adición esencial y ecológica a tu cocina.', ['images/Tienda/Bowl Blanco Arriba.jpeg','images/Tienda/Bowl Blanco Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Blanco</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-blanco"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Blanco', 450.00, document.getElementById('qty-bowl-blanco').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-gris">
+                <div>
+                    <img src="images/Tienda/Bowl Gris Arriba.jpeg" alt="Bowl Gris" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Gris', 450.00, 'images/Tienda/Bowl Gris Arriba.jpeg', 'Tono sobrio y elegante. Ideal para ensaladas o frutas. Fabricado 100% con plásticos recuperados de la usina.', ['images/Tienda/Bowl Gris Arriba.jpeg','images/Tienda/Bowl Gris Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Gris</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-gris"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Gris', 450.00, document.getElementById('qty-bowl-gris').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-navideno">
+                <div>
+                    <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl Navideño" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Navideño</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-navideno"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Navideño', 450.00, document.getElementById('qty-bowl-navideno').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-negro">
+                <div>
+                    <img src="images/Tienda/Bowl Negro Arriba.jpeg" alt="Bowl Negro" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Negro', 450.00, 'images/Tienda/Bowl Negro Arriba.jpeg', 'Elegante acabado negro para un estilo moderno y sostenible.', ['images/Tienda/Bowl Negro Arriba.jpeg','images/Tienda/Bowl Negro Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Negro</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-negro"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Negro', 450.00, document.getElementById('qty-bowl-negro').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-naranja">
+                <div>
+                    <img src="images/Tienda/Bowl Naranja Arriba.jpeg" alt="Bowl Naranja" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Naranja', 450.00, 'images/Tienda/Bowl Naranja Arriba.jpeg', 'Color vibrante que trae alegría a la mesa. Hecho con plástico recuperado.', ['images/Tienda/Bowl Naranja Arriba.jpeg','images/Tienda/Bowl Naranja Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Naranja</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-naranja"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Naranja', 450.00, document.getElementById('qty-bowl-naranja').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-verde">
+                <div>
+                    <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Bowl Verde" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Verde</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-bowl-verde"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Bowl Verde', 450.00, document.getElementById('qty-bowl-verde').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-azul-blanco">
+                <div>
+                    <img src="images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg" alt="Posavasos Azul y Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Posavasos Azul Blanco', 400.00, 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg', 'Set de posavasos con diseño de mármol azul y blanco. Protege tus superficies con estilo reciclado. Venta por unidad o set.', ['images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg','images/Tienda/Posavasos azul y Blanco.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Azul y Blanco</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-posavasos-azul-blanco"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Posavasos Azul Blanco', 400.00, document.getElementById('qty-posavasos-azul-blanco').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-azul-celeste">
+                <div>
+                    <img src="images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg" alt="Posavasos Azul y Celeste" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Posavasos Azul Celeste', 400.00, 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg', 'Combinación marina de azul y celeste. Se venden en sets de 6 unidades, perfectos para reuniones.', ['images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg','images/Tienda/Posavasos azul y Celeste.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Azul y Celeste (6 unidades)</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-posavasos-azul-celeste"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Posavasos Azul Celeste', 400.00, document.getElementById('qty-posavasos-azul-celeste').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-blanco">
+                <div>
+                    <img src="images/Tienda/Posavasos Blanco Etiqueta.jpeg" alt="Posavasos Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Posavasos Blanco', 400.00, 'images/Tienda/Posavasos Blanco Etiqueta.jpeg', 'Puros y funcionales. Set de 6 unidades ideales para el día a día. Simula el mármol natural.', ['images/Tienda/Posavasos Blanco Etiqueta.jpeg','images/Tienda/Posavasos Blanco.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Blanco (6 unidades)</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-posavasos-blanco"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Posavasos Blanco', 400.00, document.getElementById('qty-posavasos-blanco').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-gris">
+                <div>
+                    <img src="images/Tienda/Posavasos Gris Etiqueta.jpeg" alt="Posavasos Gris" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Posavasos Gris', 400.00, 'images/Tienda/Posavasos Gris Etiqueta.jpeg', 'Elegante acabado gris carbón. Resistencia y diseño que cuidan el planeta. Se venden en sets de 6.', ['images/Tienda/Posavasos Gris Etiqueta.jpeg','images/Tienda/Posavasos Gris.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Gris (6 unidades)</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-posavasos-gris"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Posavasos Gris', 400.00, document.getElementById('qty-posavasos-gris').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-rosado">
+                <div>
+                    <img src="images/Tienda/Posavasos Rosado Etiqueta.jpeg" alt="Posavasos Rosado" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                        onclick="routeToProductDetail('Posavasos Rosado', 400.00, 'images/Tienda/Posavasos Rosado Etiqueta.jpeg', 'Tono rosado suave, añadiendo un toque de color y conciencia ecológica a tu mesa. Se venden en sets de 6.', ['images/Tienda/Posavasos Rosado Etiqueta.jpeg','images/Tienda/Posavasos Rosado.jpeg'])">
+                    <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Rosado (6 unidades)</h3>
+                    <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
+                    <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-2">
+                    <input 
+                        type="number" 
+                        id="qty-posavasos-rosado"
+                        min="1" 
+                        value="1" 
+                        class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                    <button 
+                        onclick="addItemFromShop('Posavasos Rosado', 400.00, document.getElementById('qty-posavasos-rosado').value)" 
+                        class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                        AGREGAR AL CARRITO
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        <div class="text-center mt-16">
+            <button onclick="" class="px-8 py-3 border-2 border-rp-teal text-rp-teal font-bold rounded-full hover:bg-rp-blue-light transition duration-300 title-style">
+                VER MI CARRITO
+            </button>
+        </div>
+    </div>
+</section>
+        <section id="view-contacto" data-route="contacto" class="page-content bg-rp-teal section-padding">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
         <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border-t-4 border-rp-mint">
             
@@ -675,7 +915,64 @@
         </div>
     </section>
     
-</section> 
+</section>
+<section id="view-detalle" data-route="detalle" class="page-content bg-bg-light section-padding pt-32 pb-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-8">
+            <a href="#tienda" class="text-rp-teal hover:text-rp-teal/80 transition flex items-center" onclick="route()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a la Tienda
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-8 rounded-xl shadow-lg">
+            
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-md mb-4 rounded-lg shadow-md border border-rp-gray-soft overflow-hidden">
+                    <div class="aspect-w-4 aspect-h-3"> 
+                        <img id="detail-main-image" src="" alt="Imagen principal del producto" 
+                             class="object-cover w-full h-full rounded-lg"
+                        >
+                    </div>
+                </div>
+                
+                <div id="detail-thumbnails" class="flex space-x-3 overflow-x-auto p-1 w-full max-w-md justify-center">
+                    </div>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Tienda Circular / Productos Reciclados</p>
+                <h1 id="detail-title" class="text-5xl font-bold text-text-dark mb-4 title-style">Nombre del Producto</h1>
+                
+                <p id="detail-price" class="text-4xl text-rp-teal font-extrabold mb-8">$0.00</p>
+                
+                <h2 class="text-xl font-bold text-text-dark mb-2">Descripción:</h2>
+                <p id="detail-description" class="text-gray-600 mb-8">Descripción detallada del producto.</p>
+
+                <div class="flex items-center space-x-4 mb-8 border-t pt-4">
+                    <label class="font-semibold text-text-dark">Cantidad:</label>
+                    <input 
+                        type="number" 
+                        id="detail-qty-input"
+                        min="1" 
+                        value="1" 
+                        class="w-20 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark"
+                        onchange="validateQuantity(this)"
+                    >
+                </div>
+                
+                <button 
+                    id="detail-add-to-cart-button"
+                    class="w-full py-4 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-lg flex items-center justify-center">
+                    AGREGAR AL CARRITO
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
 
     </main>
 
@@ -692,11 +989,11 @@
         </div>
     </footer>
 
-    <script>
+<script>
     // --- JavaScript para Contadores, Routing y Funcionalidad ---
     const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference'; // No cambiar, es la ruta relativa
 
-    // Elementos de la UI
+    // Elementos de la UI general
     const cartCountDisplay = document.getElementById('cart-count');
     const cartItemsList = document.getElementById('cart-items-list');
     const cartTotalDisplay = document.getElementById('cart-total');
@@ -713,9 +1010,19 @@
     const toastContent = document.getElementById('toast-content');
     const toastMessage = document.getElementById('toast-message');
 
+    // Elementos de la nueva vista Detalle
+    const detailTitle = document.getElementById('detail-title');
+    const detailPrice = document.getElementById('detail-price');
+    const detailDescription = document.getElementById('detail-description');
+    const detailMainImage = document.getElementById('detail-main-image');
+    const detailQtyInput = document.getElementById('detail-qty-input');
+    const detailAddToCartButton = document.getElementById('detail-add-to-cart-button');
+    const detailThumbnailsContainer = document.getElementById('detail-thumbnails'); // Galería de miniaturas
+
     // 🚨 Estructura principal del carrito
     let cartItems = []; 
     let currentPreferenceId = null;
+    let currentProductData = {}; 
 
 
     // ===================================
@@ -734,21 +1041,23 @@
     }
     mobileMenuButton.addEventListener('click', toggleMobileMenu);
 
-    // Rutas (Client-Side Routing)
-    const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros'];
+    // Rutas (Añadimos 'detalle')
+    const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle'];
     
     function route() {
         let path = window.location.hash.substring(1) || 'home'; 
         
-        if (!routes.includes(path)) {
+        if (!routes.includes(path.split('?')[0])) { 
             path = 'home';
         }
+        
+        let currentRoute = path.split('?')[0];
 
         document.querySelectorAll('.page-content').forEach(section => {
             section.style.display = 'none';
         });
 
-        const targetSection = document.getElementById(`view-${path}`);
+        const targetSection = document.getElementById(`view-${currentRoute}`);
         if (targetSection) {
             targetSection.style.display = 'block';
             window.scrollTo(0, 0); 
@@ -756,10 +1065,91 @@
     }
     
     window.addEventListener('hashchange', route);
+    
+    /**
+     * Valida que la cantidad mínima sea 1 en inputs de número.
+     */
+    function validateQuantity(inputElement) {
+        if (inputElement.value < 1 || isNaN(inputElement.value)) {
+            inputElement.value = 1;
+        }
+    }
+
+    // ===================================
+    // === 2. LÓGICA DE DETALLE DE PRODUCTO Y GALERÍA ===
+    // ===================================
+
+    /**
+     * Asigna la imagen de miniatura seleccionada al marco principal.
+     * @param {string} newSrc - Nueva URL de la imagen.
+     */
+    function selectThumbnail(newSrc) {
+        detailMainImage.src = newSrc;
+        
+        // Resaltar la miniatura activa
+        document.querySelectorAll('#detail-thumbnails img').forEach(img => {
+            img.classList.remove('border-2', 'border-rp-teal');
+        });
+        const selectedImg = document.querySelector(`#detail-thumbnails img[src="${newSrc}"]`);
+        if (selectedImg) {
+            selectedImg.classList.add('border-2', 'border-rp-teal');
+        }
+    }
+
+    /**
+     * Navega a la vista de detalle del producto y carga sus datos.
+     */
+    function routeToProductDetail(name, price, mainImageUrl, description, allImages) {
+        // 1. Guarda los datos del producto actual
+        currentProductData = { name, price, mainImageUrl, description };
+
+        // 2. Rellena la vista de detalle
+        detailTitle.textContent = name;
+        detailPrice.textContent = `$${price.toFixed(2)}`;
+        detailDescription.textContent = description;
+        detailQtyInput.value = 1; 
+
+        // 3. Limpia y construye la galería de miniaturas
+        detailThumbnailsContainer.innerHTML = ''; 
+        const imagesToDisplay = allImages || [mainImageUrl];
+
+        imagesToDisplay.forEach((imgSrc, index) => {
+            const imgElement = document.createElement('img');
+            imgElement.src = imgSrc;
+            imgElement.alt = `Miniatura ${index + 1} de ${name}`;
+            imgElement.classList.add(
+                'w-16', 'h-16', 'object-contain', 'rounded-lg', 
+                'cursor-pointer', 'transition', 'duration-150',
+                'hover:opacity-80'
+            );
+            imgElement.onclick = () => selectThumbnail(imgSrc);
+            
+            detailThumbnailsContainer.appendChild(imgElement);
+        });
+
+        // 4. Establece la imagen principal (y selecciona la primera miniatura)
+        selectThumbnail(mainImageUrl);
+
+        // 5. Asigna la acción al botón de compra de la página de detalle
+        detailAddToCartButton.onclick = () => {
+            const quantity = parseInt(detailQtyInput.value);
+            addItemToCart(name, price, quantity);
+        };
+        
+        // 6. Cambia la ruta
+        window.location.hash = '#detalle';
+        route();
+    }
+    
+    // Función intermedia para el botón de la tienda (llama a addItemToCart)
+    function addItemFromShop(name, price, quantity) {
+        const qty = parseInt(quantity);
+        addItemToCart(name, price, qty);
+    }
 
 
     // ===================================
-    // === 2. LÓGICA DEL CARRITO ===
+    // === 3. LÓGICA DEL CARRITO ===
     // ===================================
 
     function getCartTotalItems() {
@@ -772,21 +1162,22 @@
 
     /**
      * 🛒 Agrega un ítem al carrito y actualiza la interfaz.
-     * @param {string} name - Nombre del producto.
-     * @param {number} price - Precio unitario.
-     * @param {number} [quantity=1] - Cantidad a agregar.
      */
     function addItemToCart(name, price, quantity = 1) {
-        const item = cartItems.find(i => i.name === name);
+        // Aseguramos que la cantidad sea un número válido y mínimo 1
+        let qty = Math.max(1, parseInt(quantity));
 
-        if (item) {
-            item.quantity += quantity;
+        const itemIndex = cartItems.findIndex(i => i.name === name);
+
+        if (itemIndex > -1) {
+            // Si el ítem ya existe, incrementamos la cantidad por la cantidad solicitada
+            cartItems[itemIndex].quantity += qty; 
         } else {
-            cartItems.push({ name, price, quantity });
+            // Si es un ítem nuevo, lo agregamos con la cantidad solicitada
+            cartItems.push({ name, price, quantity: qty });
         }
         
-        // 🔔 Usa la notificación flotante
-        showToastNotification(name);
+        showToastNotification(name, qty);
 
         updateCartDisplay();
     }
@@ -798,30 +1189,26 @@
         if (index > -1 && index < cartItems.length) {
             cartItems.splice(index, 1);
             updateCartDisplay();
-            updateCartModal(); // Refresca el modal inmediatamente
+            updateCartModal();
         }
     }
 
     /**
      * 🛒 Actualiza el ícono del carrito en el header Y el botón de Checkout.
-     * 🚨 CORREGIDO: Lógica para inicializar y sincronizar el botón de pago.
      */
     function updateCartDisplay() {
         const totalItems = getCartTotalItems();
         cartCountDisplay.textContent = totalItems;
         
-        // Lógica del botón de Checkout
         checkoutButton.disabled = totalItems === 0;
         cartCountCheckout.textContent = totalItems;
 
         if (totalItems > 0) {
             checkoutButton.textContent = `Pagar con Mercado Pago (${totalItems})`;
-            // Aseguramos que el color sea el de MP cuando hay ítems
             checkoutButton.classList.remove('bg-rp-teal');
             checkoutButton.classList.add('bg-mp-blue');
         } else {
             checkoutButton.textContent = 'Carrito Vacío';
-            // Usamos el color de la marca (rp-teal) cuando está vacío y deshabilitado
             checkoutButton.classList.remove('bg-mp-blue');
             checkoutButton.classList.add('bg-rp-teal');
         }
@@ -833,7 +1220,7 @@
     function updateCartModal() {
         const total = calculateCartTotal();
         cartTotalDisplay.textContent = `$${total.toFixed(2)}`;
-        cartItemsList.innerHTML = ''; // Limpia la lista anterior
+        cartItemsList.innerHTML = '';
 
         if (cartItems.length === 0) {
             cartItemsList.innerHTML = `<p class="text-center text-gray-500 py-4">Tu carrito está vacío. ¡Agrega algunos productos!</p>`;
@@ -857,11 +1244,11 @@
                 cartItemsList.insertAdjacentHTML('beforeend', itemHtml);
             });
         }
-        updateCartDisplay(); // Sincroniza el display cada vez que se actualiza el modal
+        updateCartDisplay();
     }
 
     /**
-     * 💰 Inicia el Checkout de Mercado Pago con TODOS los ítems del carrito.
+     * 💰 Inicia el Checkout de Mercado Pago
      */
     async function checkoutCartMP() {
         if (cartItems.length === 0) {
@@ -869,12 +1256,10 @@
             return;
         }
 
-        // 1. Deshabilitar el botón de pago para evitar doble clic
         checkoutButton.disabled = true;
         checkoutButton.textContent = 'Procesando...';
         currentPreferenceId = null;
         
-        // 2. Transformar los ítems del carrito al formato esperado por la función de Netlify
         const itemsForMP = cartItems.map(item => ({
             title: item.name,
             unit_price: item.price,
@@ -882,13 +1267,11 @@
         }));
 
         try {
-            // 3. Realizar la llamada HTTP POST a la Netlify Function con todos los ítems
             const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // Enviar la lista de ítems al backend
                 body: JSON.stringify({ items: itemsForMP }), 
             });
 
@@ -900,7 +1283,6 @@
             const data = await response.json();
             currentPreferenceId = data.preferenceId;
 
-            // 4. Redirigir a Mercado Pago
             const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${currentPreferenceId}`;
             
             hideFullCartModal();
@@ -910,63 +1292,50 @@
             console.error("Fallo al obtener Preferencia de MP:", error);
             alert(`Error de Pago: No se pudo iniciar la transacción. Revisa la consola para detalles. ${error.message}`);
         } finally {
-            // 5. Restaurar el botón (Si no se redirigió, el usuario puede reintentar)
-            updateCartDisplay(); // Llama a la función para restaurar el texto y el estado del botón
+            updateCartDisplay();
         }
     }
 
 
     // ===================================
-    // === 3. MANEJO DE MODALES Y TOAST ===
+    // === 4. MANEJO DE MODALES Y TOAST ===
     // ===================================
 
     /**
      * Muestra la notificación flotante al agregar un ítem al carrito.
      */
-    function showToastNotification(productName) {
-        // 1. Configura el mensaje
+    function showToastNotification(productName, quantity) {
         const totalItems = getCartTotalItems();
-        toastMessage.textContent = `${productName} añadido. Total: ${totalItems} ítem(s).`;
+        toastMessage.textContent = `${quantity}x ${productName} añadido. Total: ${totalItems} ítem(s).`;
         
-        // 2. Muestra el contenedor y prepara la animación
         toastNotification.classList.remove('hidden');
         
-        void toastContent.offsetWidth; // Fuerza reflow
+        void toastContent.offsetWidth; 
 
-        // 3. Inicia la animación de entrada
         toastContent.classList.remove('translate-x-full', 'opacity-0');
         toastContent.classList.add('translate-x-0', 'opacity-100');
 
-        // 4. Temporizador para ocultar (5 segundos)
         setTimeout(() => {
-            // Inicia la animación de salida
             toastContent.classList.remove('translate-x-0', 'opacity-100');
             toastContent.classList.add('translate-x-full', 'opacity-0');
 
-            // Oculta el contenedor después de que termine la animación
             setTimeout(() => {
                 toastNotification.classList.add('hidden');
             }, 300); 
 
         }, 5000); 
     }
-
-    /**
-     * Muestra el modal del carrito.
-     */
+    
     function showFullCartModal() {
         updateCartModal();
         fullCartModal.classList.remove('hidden');
     }
-
-    /**
-     * Oculta el modal del carrito.
-     */
+    
     function hideFullCartModal() {
         fullCartModal.classList.add('hidden');
     }
     
-    // Funciones de modales de utilería (sin cambios)
+    // Funciones de modales de utilería (Mantenidas)
     function showFullImage(src, alt) {
         fullImage.src = src;
         imageCaption.textContent = alt;
@@ -979,8 +1348,7 @@
         mercadopagoModal.classList.add('hidden');
     }
 
-
-    // Cierra los modales si el usuario hace clic fuera o presiona ESC
+    // Cierre con Clic Fuera o ESC (Mantenido)
     window.onclick = function(event) {
         if (event.target == fullCartModal) {
             hideFullCartModal();
@@ -998,7 +1366,7 @@
     });
 
     // ===================================
-    // === 4. LÓGICA DEL CONTADOR (MANTENIDA) ===
+    // === 5. LÓGICA DEL CONTADOR DINÁMICO ===
     // ===================================
 
     function animateValue(element, start, end, unit, duration) {
@@ -1056,7 +1424,7 @@
         observer.observe(statsSection);
     }
     
-    // 🚨 CORRECCIÓN CLAVE: Inicializar el carrito y las rutas al cargar la página
+    // 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
     window.addEventListener('load', () => {
         route();
         updateCartDisplay(); 
