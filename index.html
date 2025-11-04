@@ -169,6 +169,35 @@
         </div>
     </div>
 
+    <div id="buyer-data-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[115]">
+    <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full mx-4 transform transition-all duration-300 border-t-4 border-rp-teal">
+        <h3 class="text-2xl font-bold text-rp-teal title-style mb-4">Información de Contacto</h3>
+        <p class="text-text-dark mb-4 text-sm">Necesitamos estos datos para enviar la confirmación y contactarte sobre la entrega.</p>
+        
+        <form id="buyer-data-form" class="space-y-4">
+            <div>
+                <label for="buyer-name" class="block text-sm font-medium text-text-dark mb-1">Nombre Completo</label>
+                <input type="text" id="buyer-name" required 
+                       class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
+                       placeholder="Tu Nombre">
+            </div>
+            <div>
+                <label for="buyer-email" class="block text-sm font-medium text-text-dark mb-1">Correo Electrónico</label>
+                <input type="email" id="buyer-email" required 
+                       class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
+                       placeholder="tu.correo@ejemplo.com">
+            </div>
+            
+            <button type="submit" class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style">
+                Continuar al Pago
+            </button>
+        </form>
+        <button onclick="hideBuyerDataModal()" class="w-full py-2 mt-3 text-text-dark/80 hover:text-text-dark transition">
+            Cancelar
+        </button>
+    </div>
+</div>
+
     <div id="full-cart-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[110]">
         <div class="bg-white p-6 rounded-xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 border border-rp-teal">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -186,7 +215,7 @@
                 </div>
 
                 <button 
-                    onclick="checkoutCartMP()" 
+                    onclick="showBuyerDataModal()" 
                     id="checkout-cart-button"
                     class="w-full py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md flex items-center justify-center title-style text-lg disabled:opacity-50 disabled:cursor-not-allowed">
                     Pagar con Mercado Pago (<span id="cart-count-checkout">0</span>)
@@ -990,446 +1019,480 @@
     </footer>
 
 <script>
-    // --- JavaScript para Contadores, Routing y Funcionalidad ---
-    const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference'; // No cambiar, es la ruta relativa
+   // --- JavaScript para Contadores, Routing y Funcionalidad ---
+const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference'; // No cambiar, es la ruta relativa
 
-    // Elementos de la UI general
-    const cartCountDisplay = document.getElementById('cart-count');
-    const cartItemsList = document.getElementById('cart-items-list');
-    const cartTotalDisplay = document.getElementById('cart-total');
-    const fullCartModal = document.getElementById('full-cart-modal');
-    const checkoutButton = document.getElementById('checkout-cart-button');
-    const cartCountCheckout = document.getElementById('cart-count-checkout');
-    const imageModal = document.getElementById('image-modal');
-    const fullImage = document.getElementById('full-image');
-    const imageCaption = document.getElementById('image-caption');
-    const mercadopagoModal = document.getElementById('mercadopago-modal'); 
+// Elementos de la UI general
+const cartCountDisplay = document.getElementById('cart-count');
+const cartItemsList = document.getElementById('cart-items-list');
+const cartTotalDisplay = document.getElementById('cart-total');
+const fullCartModal = document.getElementById('full-cart-modal');
+const checkoutButton = document.getElementById('checkout-cart-button');
+const cartCountCheckout = document.getElementById('cart-count-checkout');
+const imageModal = document.getElementById('image-modal');
+const fullImage = document.getElementById('full-image');
+const imageCaption = document.getElementById('image-caption');
+const mercadopagoModal = document.getElementById('mercadopago-modal'); 
+
+// Elementos del Toast
+const toastNotification = document.getElementById('toast-notification');
+const toastContent = document.getElementById('toast-content');
+const toastMessage = document.getElementById('toast-message');
+
+// Elementos de la nueva vista Detalle
+const detailTitle = document.getElementById('detail-title');
+const detailPrice = document.getElementById('detail-price');
+const detailDescription = document.getElementById('detail-description');
+const detailMainImage = document.getElementById('detail-main-image');
+const detailQtyInput = document.getElementById('detail-qty-input');
+const detailAddToCartButton = document.getElementById('detail-add-to-cart-button');
+const detailThumbnailsContainer = document.getElementById('detail-thumbnails'); 
+
+// Elementos del Modal de Datos del Comprador (NUEVOS)
+const buyerDataModal = document.getElementById('buyer-data-modal');
+const buyerDataForm = document.getElementById('buyer-data-form');
+const buyerNameInput = document.getElementById('buyer-name');
+const buyerEmailInput = document.getElementById('buyer-email');
+
+// 🚨 Estructura principal del carrito
+let cartItems = []; 
+let currentPreferenceId = null;
+let currentProductData = {}; 
+
+
+// ===================================
+// === 1. UTILIDADES Y LÓGICA BÁSICA ===
+// ===================================
+
+// Establecer el año actual en el pie de página
+document.getElementById('current-year').textContent = new Date().getFullYear();
+
+// Alternar Menú Móvil
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+
+function toggleMobileMenu() {
+    mobileMenu.classList.toggle('hidden');
+}
+mobileMenuButton.addEventListener('click', toggleMobileMenu);
+
+// Rutas 
+const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle'];
+
+function route() {
+    let path = window.location.hash.substring(1) || 'home'; 
     
-    // Elementos del Toast
-    const toastNotification = document.getElementById('toast-notification');
-    const toastContent = document.getElementById('toast-content');
-    const toastMessage = document.getElementById('toast-message');
-
-    // Elementos de la nueva vista Detalle
-    const detailTitle = document.getElementById('detail-title');
-    const detailPrice = document.getElementById('detail-price');
-    const detailDescription = document.getElementById('detail-description');
-    const detailMainImage = document.getElementById('detail-main-image');
-    const detailQtyInput = document.getElementById('detail-qty-input');
-    const detailAddToCartButton = document.getElementById('detail-add-to-cart-button');
-    const detailThumbnailsContainer = document.getElementById('detail-thumbnails'); // Galería de miniaturas
-
-    // 🚨 Estructura principal del carrito
-    let cartItems = []; 
-    let currentPreferenceId = null;
-    let currentProductData = {}; 
-
-
-    // ===================================
-    // === 1. UTILIDADES Y LÓGICA BÁSICA ===
-    // ===================================
-
-    // Establecer el año actual en el pie de página
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-
-    // Alternar Menú Móvil
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    function toggleMobileMenu() {
-        mobileMenu.classList.toggle('hidden');
-    }
-    mobileMenuButton.addEventListener('click', toggleMobileMenu);
-
-    // Rutas (Añadimos 'detalle')
-    const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle'];
-    
-    function route() {
-        let path = window.location.hash.substring(1) || 'home'; 
-        
-        if (!routes.includes(path.split('?')[0])) { 
-            path = 'home';
-        }
-        
-        let currentRoute = path.split('?')[0];
-
-        document.querySelectorAll('.page-content').forEach(section => {
-            section.style.display = 'none';
-        });
-
-        const targetSection = document.getElementById(`view-${currentRoute}`);
-        if (targetSection) {
-            targetSection.style.display = 'block';
-            window.scrollTo(0, 0); 
-        }
+    if (!routes.includes(path.split('?')[0])) { 
+        path = 'home';
     }
     
-    window.addEventListener('hashchange', route);
+    let currentRoute = path.split('?')[0];
+
+    document.querySelectorAll('.page-content').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    const targetSection = document.getElementById(`view-${currentRoute}`);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+        window.scrollTo(0, 0); 
+    }
+}
+
+window.addEventListener('hashchange', route);
+
+/**
+ * Valida que la cantidad mínima sea 1 en inputs de número.
+ */
+function validateQuantity(inputElement) {
+    if (inputElement.value < 1 || isNaN(inputElement.value)) {
+        inputElement.value = 1;
+    }
+}
+
+
+// ===================================
+// === 2. LÓGICA DE DETALLE DE PRODUCTO Y GALERÍA ===
+// ===================================
+
+/**
+ * Asigna la imagen de miniatura seleccionada al marco principal.
+ */
+function selectThumbnail(newSrc) {
+    detailMainImage.src = newSrc;
     
-    /**
-     * Valida que la cantidad mínima sea 1 en inputs de número.
-     */
-    function validateQuantity(inputElement) {
-        if (inputElement.value < 1 || isNaN(inputElement.value)) {
-            inputElement.value = 1;
-        }
+    document.querySelectorAll('#detail-thumbnails img').forEach(img => {
+        img.classList.remove('border-2', 'border-rp-teal');
+    });
+    const selectedImg = document.querySelector(`#detail-thumbnails img[src="${newSrc}"]`);
+    if (selectedImg) {
+        selectedImg.classList.add('border-2', 'border-rp-teal');
     }
+}
 
-    // ===================================
-    // === 2. LÓGICA DE DETALLE DE PRODUCTO Y GALERÍA ===
-    // ===================================
+/**
+ * Navega a la vista de detalle del producto y carga sus datos.
+ */
+function routeToProductDetail(name, price, mainImageUrl, description, allImages) {
+    currentProductData = { name, price, mainImageUrl, description };
 
-    /**
-     * Asigna la imagen de miniatura seleccionada al marco principal.
-     * @param {string} newSrc - Nueva URL de la imagen.
-     */
-    function selectThumbnail(newSrc) {
-        detailMainImage.src = newSrc;
+    detailTitle.textContent = name;
+    detailPrice.textContent = `$${price.toFixed(2)}`;
+    detailDescription.textContent = description;
+    detailQtyInput.value = 1; 
+
+    detailThumbnailsContainer.innerHTML = ''; 
+    const imagesToDisplay = allImages || [mainImageUrl];
+
+    imagesToDisplay.forEach((imgSrc, index) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = imgSrc;
+        imgElement.alt = `Miniatura ${index + 1} de ${name}`;
+        imgElement.classList.add(
+            'w-16', 'h-16', 'object-contain', 'rounded-lg', 
+            'cursor-pointer', 'transition', 'duration-150',
+            'hover:opacity-80'
+        );
+        imgElement.onclick = () => selectThumbnail(imgSrc);
         
-        // Resaltar la miniatura activa
-        document.querySelectorAll('#detail-thumbnails img').forEach(img => {
-            img.classList.remove('border-2', 'border-rp-teal');
-        });
-        const selectedImg = document.querySelector(`#detail-thumbnails img[src="${newSrc}"]`);
-        if (selectedImg) {
-            selectedImg.classList.add('border-2', 'border-rp-teal');
-        }
-    }
+        detailThumbnailsContainer.appendChild(imgElement);
+    });
 
-    /**
-     * Navega a la vista de detalle del producto y carga sus datos.
-     */
-    function routeToProductDetail(name, price, mainImageUrl, description, allImages) {
-        // 1. Guarda los datos del producto actual
-        currentProductData = { name, price, mainImageUrl, description };
+    selectThumbnail(mainImageUrl);
 
-        // 2. Rellena la vista de detalle
-        detailTitle.textContent = name;
-        detailPrice.textContent = `$${price.toFixed(2)}`;
-        detailDescription.textContent = description;
-        detailQtyInput.value = 1; 
+    detailAddToCartButton.onclick = () => {
+        const quantity = parseInt(detailQtyInput.value);
+        addItemToCart(name, price, quantity);
+    };
+    
+    window.location.hash = '#detalle';
+    route();
+}
 
-        // 3. Limpia y construye la galería de miniaturas
-        detailThumbnailsContainer.innerHTML = ''; 
-        const imagesToDisplay = allImages || [mainImageUrl];
+// Función intermedia para el botón de la tienda (llama a addItemToCart)
+function addItemFromShop(name, price, quantity) {
+    const qty = parseInt(quantity);
+    addItemToCart(name, price, qty);
+}
 
-        imagesToDisplay.forEach((imgSrc, index) => {
-            const imgElement = document.createElement('img');
-            imgElement.src = imgSrc;
-            imgElement.alt = `Miniatura ${index + 1} de ${name}`;
-            imgElement.classList.add(
-                'w-16', 'h-16', 'object-contain', 'rounded-lg', 
-                'cursor-pointer', 'transition', 'duration-150',
-                'hover:opacity-80'
-            );
-            imgElement.onclick = () => selectThumbnail(imgSrc);
-            
-            detailThumbnailsContainer.appendChild(imgElement);
-        });
 
-        // 4. Establece la imagen principal (y selecciona la primera miniatura)
-        selectThumbnail(mainImageUrl);
+// ===================================
+// === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
+// ===================================
 
-        // 5. Asigna la acción al botón de compra de la página de detalle
-        detailAddToCartButton.onclick = () => {
-            const quantity = parseInt(detailQtyInput.value);
-            addItemToCart(name, price, quantity);
-        };
-        
-        // 6. Cambia la ruta
-        window.location.hash = '#detalle';
-        route();
+function getCartTotalItems() {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+}
+
+function calculateCartTotal() {
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+}
+
+/**
+ * 🛒 Agrega un ítem al carrito y actualiza la interfaz.
+ */
+function addItemToCart(name, price, quantity = 1) {
+    let qty = Math.max(1, parseInt(quantity));
+
+    const itemIndex = cartItems.findIndex(i => i.name === name);
+
+    if (itemIndex > -1) {
+        cartItems[itemIndex].quantity += qty; 
+    } else {
+        cartItems.push({ name, price, quantity: qty });
     }
     
-    // Función intermedia para el botón de la tienda (llama a addItemToCart)
-    function addItemFromShop(name, price, quantity) {
-        const qty = parseInt(quantity);
-        addItemToCart(name, price, qty);
-    }
+    showToastNotification(name, qty);
+    updateCartDisplay();
+}
 
-
-    // ===================================
-    // === 3. LÓGICA DEL CARRITO ===
-    // ===================================
-
-    function getCartTotalItems() {
-        return cartItems.reduce((total, item) => total + item.quantity, 0);
-    }
-
-    function calculateCartTotal() {
-        return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    }
-
-    /**
-     * 🛒 Agrega un ítem al carrito y actualiza la interfaz.
-     */
-    function addItemToCart(name, price, quantity = 1) {
-        // Aseguramos que la cantidad sea un número válido y mínimo 1
-        let qty = Math.max(1, parseInt(quantity));
-
-        const itemIndex = cartItems.findIndex(i => i.name === name);
-
-        if (itemIndex > -1) {
-            // Si el ítem ya existe, incrementamos la cantidad por la cantidad solicitada
-            cartItems[itemIndex].quantity += qty; 
-        } else {
-            // Si es un ítem nuevo, lo agregamos con la cantidad solicitada
-            cartItems.push({ name, price, quantity: qty });
-        }
-        
-        showToastNotification(name, qty);
-
+/**
+ * 🛒 Remueve un ítem del carrito (por índice).
+ */
+function removeItemFromCart(index) {
+    if (index > -1 && index < cartItems.length) {
+        cartItems.splice(index, 1);
         updateCartDisplay();
+        updateCartModal();
     }
+}
 
-    /**
-     * 🛒 Remueve un ítem del carrito (por índice).
-     */
-    function removeItemFromCart(index) {
-        if (index > -1 && index < cartItems.length) {
-            cartItems.splice(index, 1);
-            updateCartDisplay();
-            updateCartModal();
-        }
+/**
+ * 🛒 Actualiza el ícono del carrito en el header Y el botón de Checkout.
+ */
+function updateCartDisplay() {
+    const totalItems = getCartTotalItems();
+    cartCountDisplay.textContent = totalItems;
+    
+    checkoutButton.disabled = totalItems === 0;
+    cartCountCheckout.textContent = totalItems;
+
+    if (totalItems > 0) {
+        checkoutButton.textContent = `Pagar con Mercado Pago (${totalItems})`;
+        checkoutButton.classList.remove('bg-rp-teal');
+        checkoutButton.classList.add('bg-mp-blue');
+    } else {
+        checkoutButton.textContent = 'Carrito Vacío';
+        checkoutButton.classList.remove('bg-mp-blue');
+        checkoutButton.classList.add('bg-rp-teal');
     }
+}
 
-    /**
-     * 🛒 Actualiza el ícono del carrito en el header Y el botón de Checkout.
-     */
-    function updateCartDisplay() {
-        const totalItems = getCartTotalItems();
-        cartCountDisplay.textContent = totalItems;
-        
-        checkoutButton.disabled = totalItems === 0;
-        cartCountCheckout.textContent = totalItems;
+/**
+ * 🛒 Rellena el contenido del modal de carrito.
+ */
+function updateCartModal() {
+    const total = calculateCartTotal();
+    cartTotalDisplay.textContent = `$${total.toFixed(2)}`;
+    cartItemsList.innerHTML = '';
 
-        if (totalItems > 0) {
-            checkoutButton.textContent = `Pagar con Mercado Pago (${totalItems})`;
-            checkoutButton.classList.remove('bg-rp-teal');
-            checkoutButton.classList.add('bg-mp-blue');
-        } else {
-            checkoutButton.textContent = 'Carrito Vacío';
-            checkoutButton.classList.remove('bg-mp-blue');
-            checkoutButton.classList.add('bg-rp-teal');
-        }
-    }
-
-    /**
-     * 🛒 Rellena el contenido del modal de carrito.
-     */
-    function updateCartModal() {
-        const total = calculateCartTotal();
-        cartTotalDisplay.textContent = `$${total.toFixed(2)}`;
-        cartItemsList.innerHTML = '';
-
-        if (cartItems.length === 0) {
-            cartItemsList.innerHTML = `<p class="text-center text-gray-500 py-4">Tu carrito está vacío. ¡Agrega algunos productos!</p>`;
-        } else {
-            cartItems.forEach((item, index) => {
-                const itemTotal = (item.price * item.quantity).toFixed(2);
-                const itemHtml = `
-                    <div class="flex justify-between items-center border-b border-rp-gray-soft pb-2">
-                        <div class="flex-1">
-                            <p class="font-semibold text-text-dark">${item.name}</p>
-                            <p class="text-sm text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <span class="font-bold text-lg text-rp-teal">$${itemTotal}</span>
-                            <button onclick="removeItemFromCart(${index})" class="text-red-500 hover:text-red-700 font-bold ml-4 p-1 rounded-full hover:bg-red-100 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            </button>
-                        </div>
+    if (cartItems.length === 0) {
+        cartItemsList.innerHTML = `<p class="text-center text-gray-500 py-4">Tu carrito está vacío. ¡Agrega algunos productos!</p>`;
+    } else {
+        cartItems.forEach((item, index) => {
+            const itemTotal = (item.price * item.quantity).toFixed(2);
+            const itemHtml = `
+                <div class="flex justify-between items-center border-b border-rp-gray-soft pb-2">
+                    <div class="flex-1">
+                        <p class="font-semibold text-text-dark">${item.name}</p>
+                        <p class="text-sm text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
                     </div>
-                `;
-                cartItemsList.insertAdjacentHTML('beforeend', itemHtml);
-            });
-        }
-        updateCartDisplay();
+                    <div class="flex items-center space-x-3">
+                        <span class="font-bold text-lg text-rp-teal">$${itemTotal}</span>
+                        <button onclick="removeItemFromCart(${index})" class="text-red-500 hover:text-red-700 font-bold ml-4 p-1 rounded-full hover:bg-red-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            cartItemsList.insertAdjacentHTML('beforeend', itemHtml);
+        });
+    }
+    updateCartDisplay();
+}
+
+// Evento para procesar el formulario de datos del comprador
+buyerDataForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    processCheckout();
+});
+
+/**
+ * RECOLECTA LOS DATOS y llama al checkout final.
+ */
+function processCheckout() {
+    const name = buyerNameInput.value;
+    const email = buyerEmailInput.value;
+    
+    if (cartItems.length === 0 || !name || !email) {
+        alert("Error: El carrito está vacío o faltan datos del comprador.");
+        return;
     }
 
-    /**
-     * 💰 Inicia el Checkout de Mercado Pago
-     */
-    async function checkoutCartMP() {
-        if (cartItems.length === 0) {
-            alert("El carrito está vacío.");
-            return;
+    hideBuyerDataModal();
+    // LLAMADA FINAL: Enviamos los ítems Y los datos del comprador al backend
+    checkoutCartMP(name, email); 
+}
+
+
+/**
+ * 💰 Inicia el Checkout de Mercado Pago con TODOS los ítems y datos del comprador.
+ */
+async function checkoutCartMP(buyerName, buyerEmail) {
+    // Nota: El botón de checkout ya está deshabilitado si el carrito está vacío.
+    checkoutButton.textContent = 'Procesando...'; 
+    currentPreferenceId = null;
+    
+    const itemsForMP = cartItems.map(item => ({
+        title: item.name,
+        unit_price: item.price,
+        quantity: item.quantity
+    }));
+
+    try {
+        const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                items: itemsForMP, 
+                buyerName: buyerName,
+                buyerEmail: buyerEmail 
+            }), 
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Error HTTP: ${response.status}`);
         }
 
-        checkoutButton.disabled = true;
-        checkoutButton.textContent = 'Procesando...';
-        currentPreferenceId = null;
+        const data = await response.json();
+        currentPreferenceId = data.preferenceId;
+
+        const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${currentPreferenceId}`;
         
-        const itemsForMP = cartItems.map(item => ({
-            title: item.name,
-            unit_price: item.price,
-            quantity: item.quantity
-        }));
+        window.location.href = redirectUrl;
 
-        try {
-            const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ items: itemsForMP }), 
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`Error ${response.status}: ${errorData.error || 'Fallo desconocido del servidor.'}`);
-            }
-
-            const data = await response.json();
-            currentPreferenceId = data.preferenceId;
-
-            const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${currentPreferenceId}`;
-            
-            hideFullCartModal();
-            window.location.href = redirectUrl;
-
-        } catch (error) {
-            console.error("Fallo al obtener Preferencia de MP:", error);
-            alert(`Error de Pago: No se pudo iniciar la transacción. Revisa la consola para detalles. ${error.message}`);
-        } finally {
-            updateCartDisplay();
-        }
+    } catch (error) {
+        console.error("Fallo al obtener Preferencia de MP:", error);
+        alert(`Error de Pago: No se pudo iniciar la transacción. Revisa la consola para detalles. ${error.message}`);
+    } finally {
+        updateCartDisplay(); // Restaura el botón si hubo un error en la comunicación
     }
+}
 
 
-    // ===================================
-    // === 4. MANEJO DE MODALES Y TOAST ===
-    // ===================================
+// ===================================
+// === 4. MANEJO DE MODALES Y TOAST ===
+// ===================================
 
-    /**
-     * Muestra la notificación flotante al agregar un ítem al carrito.
-     */
-    function showToastNotification(productName, quantity) {
-        const totalItems = getCartTotalItems();
-        toastMessage.textContent = `${quantity}x ${productName} añadido. Total: ${totalItems} ítem(s).`;
-        
-        toastNotification.classList.remove('hidden');
-        
-        void toastContent.offsetWidth; 
+/**
+ * Muestra la notificación flotante al agregar un ítem al carrito.
+ */
+function showToastNotification(productName, quantity) {
+    const totalItems = getCartTotalItems();
+    toastMessage.textContent = `${quantity}x ${productName} añadido. Total: ${totalItems} ítem(s).`;
+    
+    toastNotification.classList.remove('hidden');
+    
+    void toastContent.offsetWidth; 
 
-        toastContent.classList.remove('translate-x-full', 'opacity-0');
-        toastContent.classList.add('translate-x-0', 'opacity-100');
+    toastContent.classList.remove('translate-x-full', 'opacity-0');
+    toastContent.classList.add('translate-x-0', 'opacity-100');
+
+    setTimeout(() => {
+        toastContent.classList.remove('translate-x-0', 'opacity-100');
+        toastContent.classList.add('translate-x-full', 'opacity-0');
 
         setTimeout(() => {
-            toastContent.classList.remove('translate-x-0', 'opacity-100');
-            toastContent.classList.add('translate-x-full', 'opacity-0');
+            toastNotification.classList.add('hidden');
+        }, 300); 
 
-            setTimeout(() => {
-                toastNotification.classList.add('hidden');
-            }, 300); 
+    }, 5000); 
+}
 
-        }, 5000); 
-    }
-    
-    function showFullCartModal() {
-        updateCartModal();
-        fullCartModal.classList.remove('hidden');
-    }
-    
-    function hideFullCartModal() {
-        fullCartModal.classList.add('hidden');
-    }
-    
-    // Funciones de modales de utilería (Mantenidas)
-    function showFullImage(src, alt) {
-        fullImage.src = src;
-        imageCaption.textContent = alt;
-        imageModal.classList.remove('hidden');
-    }
-    function hideImageModal() {
-        imageModal.classList.add('hidden');
-    }
-    function hideMercadoPagoModal() {
-        mercadopagoModal.classList.add('hidden');
-    }
+/**
+ * 🚨 MODIFICACIÓN CLAVE: Muestra el modal del carrito, cuyo botón ahora llama a showBuyerDataModal.
+ */
+function showFullCartModal() {
+    updateCartModal();
+    fullCartModal.classList.remove('hidden');
+}
 
-    // Cierre con Clic Fuera o ESC (Mantenido)
-    window.onclick = function(event) {
-        if (event.target == fullCartModal) {
-            hideFullCartModal();
+/**
+ * Muestra el modal de recolección de datos (NUEVO).
+ */
+function showBuyerDataModal() {
+    hideFullCartModal(); // Oculta el carrito
+    buyerDataModal.classList.remove('hidden');
+    buyerNameInput.focus();
+}
+
+function hideBuyerDataModal() {
+    buyerDataModal.classList.add('hidden');
+}
+
+function hideFullCartModal() {
+    fullCartModal.classList.add('hidden');
+}
+
+// Funciones de modales de utilería (Mantenidas)
+function showFullImage(src, alt) {
+    fullImage.src = src;
+    imageCaption.textContent = alt;
+    imageModal.classList.remove('hidden');
+}
+function hideImageModal() {
+    imageModal.classList.add('hidden');
+}
+function hideMercadoPagoModal() {
+    mercadopagoModal.classList.add('hidden');
+}
+
+// Cierre con Clic Fuera o ESC (AÑADIMOS EL NUEVO MODAL)
+window.onclick = function(event) {
+    if (event.target == fullCartModal) {
+        hideFullCartModal();
+    }
+    if (event.target == buyerDataModal) {
+        hideBuyerDataModal();
+    }
+    if (event.target == imageModal) {
+        hideImageModal();
+    }
+}
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        hideFullCartModal();
+        hideBuyerDataModal(); // NUEVO
+        hideMercadoPagoModal();
+        hideImageModal();
+    }
+});
+
+// ===================================
+// === 5. LÓGICA DEL CONTADOR DINÁMICO ===
+// ===================================
+
+function animateValue(element, start, end, unit, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3); 
+        const currentValue = Math.floor(easedProgress * (end - start) + start);
+        element.textContent = currentValue.toLocaleString('es-ES'); 
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            element.textContent = end.toLocaleString('es-ES'); 
         }
-        if (event.target == imageModal) {
-            hideImageModal();
+        
+        if (progress >= 1 && unit) {
+            element.textContent += unit;
         }
-    }
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            hideFullCartModal();
-            hideMercadoPagoModal();
-            hideImageModal();
+    };
+    window.requestAnimationFrame(step);
+}
+
+const statsSection = document.getElementById('impact-stats');
+let animationTriggered = false;
+
+function startCounters() {
+    if (animationTriggered) return;
+    animationTriggered = true; 
+
+    const statElements = [
+        { id: 'counter-plastic', target: 350, unit: '' },
+        { id: 'counter-space', target: 14, unit: '' }
+    ];
+
+    statElements.forEach(stat => {
+        const element = document.getElementById(stat.id);
+        if (element) {
+            animateValue(element, 0, stat.target, stat.unit, 2000); 
         }
     });
+}
 
-    // ===================================
-    // === 5. LÓGICA DEL CONTADOR DINÁMICO ===
-    // ===================================
-
-    function animateValue(element, start, end, unit, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const easedProgress = 1 - Math.pow(1 - progress, 3); 
-            const currentValue = Math.floor(easedProgress * (end - start) + start);
-            element.textContent = currentValue.toLocaleString('es-ES'); 
-            
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            } else {
-                element.textContent = end.toLocaleString('es-ES'); 
-            }
-            
-            if (progress >= 1 && unit) {
-                element.textContent += unit;
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-
-    const statsSection = document.getElementById('impact-stats');
-    let animationTriggered = false;
-
-    function startCounters() {
-        if (animationTriggered) return;
-        animationTriggered = true; 
-
-        const statElements = [
-            { id: 'counter-plastic', target: 350, unit: '' },
-            { id: 'counter-space', target: 14, unit: '' }
-        ];
-
-        statElements.forEach(stat => {
-            const element = document.getElementById(stat.id);
-            if (element) {
-                animateValue(element, 0, stat.target, stat.unit, 2000); 
-            }
-        });
-    }
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
-                startCounters();
-                observer.unobserve(statsSection); 
-            }
-        });
-    }, { threshold: 0.5 }); 
-
-    if (statsSection) {
-        observer.observe(statsSection);
-    }
-    
-    // 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
-    window.addEventListener('load', () => {
-        route();
-        updateCartDisplay(); 
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
+            startCounters();
+            observer.unobserve(statsSection); 
+        }
     });
+}, { threshold: 0.5 }); 
 
+if (statsSection) {
+    observer.observe(statsSection);
+}
+
+// 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
+window.addEventListener('load', () => {
+    route();
+    updateCartDisplay(); 
+});
 </script>
 </body>
 </html>
