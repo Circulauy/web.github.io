@@ -60,7 +60,7 @@ exports.handler = async (event, context) => {
         auto_return: 'approved',
         // URLs a las que el usuario es redirigido después del pago
         payer: {
-        email: "test_circula_dev@testuser.com" // Email de prueba obligatorio
+        email: "contacto@circula.uy" // Email de prueba obligatorio
     },
     };
 
