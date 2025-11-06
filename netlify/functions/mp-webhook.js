@@ -2,14 +2,12 @@
 
 const mercadopago = require('mercadopago');
 const nodemailer = require('nodemailer'); 
-// 🚨 Importa tu configuración de email aquí (transporter)
 
-// Configuración de Mercado Pago (Debe usar el Access Token de Producción)
 mercadopago.configure({
     access_token: process.env.MP_ACCESS_TOKEN 
 });
 
-// Configuración de Nodemailer (Mantenla consistente con tu create-preference.js)
+// Configuración de Nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail', 
     auth: {
@@ -19,66 +17,95 @@ const transporter = nodemailer.createTransport({
 });
 
 // Función auxiliar para enviar el email de Pago Aprobado (Al COMPRADOR)
-async function sendPaymentApprovedEmail(paymentId, buyerEmail) {
-    // 
+async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName, items) {
+    const total = items ? items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0).toFixed(2) : 'N/A';
+    const itemList = items ? items.map(item => `<li>${item.title} (${item.quantity} x $${item.unit_price.toFixed(2)})</li>`).join('') : 'Detalle no disponible';
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: buyerEmail, 
         subject: `✅ ¡Tu pago ha sido APROBADO! - Circula`,
         html: `
-            <h2>¡Pago Confirmado!</h2>
-            <p>Hemos recibido la confirmación de Mercado Pago de que tu pago (ID de transacción: ${paymentId}) ha sido <strong>APROBADO</strong>.</p>
+            <h2>Hola ${buyerName}, ¡Pago Confirmado!</h2>
+            <p>Hemos recibido la confirmación de Mercado Pago de que tu pago (ID: ${paymentId}) ha sido <strong>APROBADO</strong>.</p>
             <p>En breve, te contactaremos para coordinar la entrega de tus productos.</p>
+            <hr/>
+            <h3>Tu Pedido:</h3>
+            <ul>${itemList}</ul>
+            <p><strong>Total:</strong> $${total} UYU</p>
             <p>Gracias por tu compra.</p>
         `,
     };
     return transporter.sendMail(mailOptions);
 }
 
+// 🚨 NUEVA FUNCIÓN: Envía el email de Pago Aprobado (Al VENDEDOR)
+async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, items) {
+    const total = items ? items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0).toFixed(2) : 'N/A';
+    const itemList = items ? items.map(item => `<li>${item.title} (${item.quantity} x $${item.unit_price.toFixed(2)})</li>`).join('') : 'Detalle no disponible';
 
-// Punto de entrada del Webhook
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER, // Al vendedor (a ti)
+        subject: `🚨 ¡PAGO APROBADO! Nueva Orden Confirmada de ${buyerName}`,
+        html: `
+            <h2>¡PAGO APROBADO! Orden Confirmada</h2>
+            <p>Se ha confirmado el pago de una nueva orden a través de Mercado Pago.</p>
+            <p><strong>ID de Transacción:</strong> ${paymentId}</p>
+            <hr/>
+            <h3>Datos del Comprador:</h3>
+            <p><strong>Nombre:</strong> ${buyerName}</p>
+            <p><strong>Email:</strong> ${buyerEmail}</p>
+            <hr/>
+            <h3>Detalles del Pedido:</h3>
+            <ul>${itemList}</ul>
+            <p><strong>Total Pagado:</strong> $${total} UYU</p>
+            <p style="font-weight: bold; color: green;">✅ El pago fue exitoso. Proceda a contactar al comprador para coordinar la entrega.</p>
+        `,
+    };
+    return transporter.sendMail(mailOptions);
+}
+
+
 exports.handler = async (event, context) => {
-    // 1. Validar Método HTTP (Mercado Pago siempre usa POST)
+    // ... (Validaciones de método y query params)
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Método no permitido' };
     }
 
-    // 2. Extraer el ID de la Notificación de Mercado Pago
-    // MP envía la notificación como un parámetro de consulta (query parameter)
     const { id, topic } = event.queryStringParameters;
     
-    // Verificamos que sea una notificación de pago
     if (topic !== 'payment' || !id) {
-        // Devolvemos 200 OK para evitar que MP intente notificar de nuevo por un error nuestro
         return { statusCode: 200, body: 'Notificación ignorada o inválida' };
     }
 
     try {
-        // 3. Obtener el Detalle Completo del Pago desde la API de Mercado Pago
-        // Esta es la clave: le pedimos a MP el detalle usando el ID que nos enviaron.
         const paymentInfo = await mercadopago.payment.get(id);
         const payment = paymentInfo.body;
 
-        // 4. Procesar el Estado
+        // 🚨 CRÍTICO: Recuperar datos desde la metadata de la preferencia
+        const preferenceId = payment.metadata.preference_id;
+        const preferenceResponse = await mercadopago.preferences.get(preferenceId);
+        const metadata = preferenceResponse.body.metadata;
+
+        const buyerEmail = metadata.buyer_email || payment.payer.email;
+        const buyerName = metadata.buyer_name || 'Estimado Cliente';
+        const items = preferenceResponse.body.items; 
+
         if (payment.status === 'approved') {
             console.log(`✅ Pago APROBADO recibido: ${payment.id}`);
 
-            // 🚨 Acciones Críticas: 
             // 1. ENVIAR CONFIRMACIÓN FINAL AL COMPRADOR
-            await sendPaymentApprovedEmail(payment.id, payment.payer.email);
+            await sendPaymentApprovedEmailToBuyer(payment.id, buyerEmail, buyerName, items);
             
-            // 2. Aquí iría la lógica para actualizar tu base de datos si tuvieras una
+            // 2. 🚨 ENVIAR CONFIRMACIÓN FINAL AL VENDEDOR (Nueva acción)
+            await sendSellerConfirmationEmail(payment.id, buyerEmail, buyerName, items);
             
-        } else if (payment.status === 'pending') {
-            console.log(`🕒 Pago PENDIENTE recibido: ${payment.id}`);
-            // No hacemos nada si está pendiente, esperamos la siguiente notificación (APPROVED/REJECTED)
         } else if (payment.status === 'rejected') {
             console.log(`❌ Pago RECHAZADO: ${payment.id}`);
-            // Opcional: Enviar email al comprador/vendedor sobre el rechazo
+            // Opcional: Enviar email de rechazo aquí
         }
         
-        // 5. Devolver 200 OK
-        // SIEMPRE debemos responder 200 para decirle a MP que recibimos la notificación.
         return { 
             statusCode: 200, 
             body: JSON.stringify({ message: 'Notificación de pago procesada.' }) 
@@ -86,7 +113,6 @@ exports.handler = async (event, context) => {
 
     } catch (error) {
         console.error("Error al procesar el Webhook de MP:", error);
-        // Si hay un error interno, devolvemos 500. MP reintentará más tarde.
         return { statusCode: 500, body: 'Error interno del servidor.' };
     }
 };
