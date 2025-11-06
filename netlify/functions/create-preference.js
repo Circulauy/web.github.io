@@ -1,16 +1,20 @@
 // netlify/functions/create-preference.js
 
 const mercadopago = require('mercadopago');
+// const nodemailer = require('nodemailer'); // 🚨 ELIMINADO: Nodemailer ya no se necesita aquí.
 
 // 1. CONFIGURACIÓN DE MERCADO PAGO
 mercadopago.configure({
     access_token: process.env.MP_ACCESS_TOKEN 
 });
 
-// === HANDLER PRINCIPAL ===
+// ===========================================
+// === HANDLER PRINCIPAL (SOLO CREACIÓN DE PREFERENCIA) ===
+// ===========================================
 
 exports.handler = async (event, context) => {
     
+    // Verificación del Access Token (Mantenido)
     if (!process.env.MP_ACCESS_TOKEN) {
         return { 
             statusCode: 500, 
@@ -38,7 +42,9 @@ exports.handler = async (event, context) => {
         };
     }
     
-    // 4. CREACIÓN DEL OBJETO DE PREFERENCIA DE MERCADO PAGO
+    // 🚨 Generamos la Referencia Externa Única
+    const uniqueOrderId = `CIRCULA-${Date.now()}`;
+    
     const YOUR_NETLIFY_URL = "https://circula.uy"; 
 
     let preference = {
@@ -50,13 +56,17 @@ exports.handler = async (event, context) => {
         },
         auto_return: 'approved',
         
-        // CRÍTICO: URL para el Webhook de notificaciones
+        // Campo obligatorio para Conciliación Financiera
+        external_reference: uniqueOrderId, 
+        
+        // CRÍTICO: URL para el Webhook (Las notificaciones se enviarán aquí)
         notification_url: `${YOUR_NETLIFY_URL}/.netlify/functions/mp-webhook`, 
         
-        // CRÍTICO: Guardamos los datos del comprador para que el Webhook pueda usarlos
+        // CRÍTICO: Guardamos los datos del comprador y la referencia externa para el Webhook
         metadata: {
             buyer_email: buyerEmail,
-            buyer_name: buyerName
+            buyer_name: buyerName,
+            order_ref: uniqueOrderId
         },
         
         payer: {
@@ -68,7 +78,7 @@ exports.handler = async (event, context) => {
         // 5. LLAMADA A LA API DE MERCADO PAGO (Crear preferencia)
         const response = await mercadopago.preferences.create(preference);
         
-        // 6. 📧 ENVÍO DE EMAIL AL VENDEDOR ELIMINADO DE AQUÍ. AHORA LO HACE EL WEBHOOK.
+        // 6. 📧 ENVÍO DE EMAIL AL VENDEDOR ELIMINADO. SOLO RETORNAMOS LA PREFERENCIA.
         
         // 7. DEVOLVER ID DE PREFERENCIA AL FRONT-END
         return {
