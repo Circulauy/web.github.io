@@ -6,6 +6,8 @@
     <title>Circula - Economía Circular y Talleres</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
@@ -93,6 +95,176 @@
                 background-attachment: scroll; /* Se desplaza con el contenido */
             }
         }
+                /* --- Posicionamiento del Widget --- */
+        #whatsapp-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+        }
+
+        /* --- Estilo del Ícono de WhatsApp (Burbuja siempre visible) --- */
+        #whatsapp-icon {
+            background-color: #25D366; /* Verde de WhatsApp */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            /* Aseguramos que el icono sea visible sobre la caja de chat */
+            z-index: 10001; 
+        }
+
+        #whatsapp-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Estilo de la Ventana del Chat (Simulación de Móvil) --- */
+        #whatsapp-chat-box {
+            width: 320px; /* Ancho típico de un móvil pequeño */
+            height: 450px; /* Alto para simular una pantalla */
+            
+            background: white; 
+            border-radius: 20px; /* Bordes muy redondeados */
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            
+            position: absolute; 
+            bottom: 75px; /* Colócalo justo encima del ícono */
+            right: 0;
+            
+            /* Estructura interna */
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden; /* Oculta cualquier contenido que se desborde */
+        }
+
+        /* --- 1. Encabezado del Chat (Barra Superior de WhatsApp) --- */
+        #chat-header {
+            background-color: #075E54; /* Color de barra de WhatsApp */
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- ESTILOS NUEVOS PARA LA IMAGEN DE AVATAR --- */
+        #company-avatar {
+            /* Dimensiones adecuadas para un avatar de chat */
+            width: 38px;
+            height: 38px;
+            
+            /* HACER LA IMAGEN CIRCULAR */
+            border-radius: 50%;
+            
+            /* Añadir un borde sutil, como en WhatsApp */
+            border: 2px solid white;
+            
+            /* Aseguramos que la imagen cubra el área sin distorsionarse */
+            object-fit: cover;
+            
+            /* Espacio a la derecha del nombre */
+            margin-right: 10px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .contact-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* --- 2. Área de Mensajes (Fondo de WhatsApp) --- */
+        #message-area {
+            /* Fondo que simula el wallpaper de chat de WhatsApp */
+            
+            background-image: url('images/whastappweb.jpg'); /* Ruta a la imagen de fondo */
+            
+            /* Propiedades para repetir y cubrir el área */
+            background-repeat: repeat; /* La imagen de fondo de WA se repite */
+            background-size: contain;     /* Deja que la imagen se repita sin estirarse */
+            background-color: #ECE5DD; /* Color de respaldo si la imagen no carga */
+            
+            flex-grow: 1; /* Ocupa el espacio restante */
+            padding: 15px;
+            overflow-y: auto
+        }
+
+        /* Mensaje de bienvenida (simulación de burbuja) */
+        .initial-message {
+            background-color: #DCF8C6; /* Color de burbuja de mensaje enviado/propio */
+            padding: 8px 12px;
+            border-radius: 10px 10px 10px 0; /* Forma de burbuja */
+            max-width: 80%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.3;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- 3. Área de Entrada (Abajo) --- */
+        #input-container {
+            padding: 8px 15px;
+            background-color: #f0f0f0; /* Color gris claro para la base del input */
+            display: flex; 
+            align-items: flex-end; 
+        }
+
+        #mensaje-usuario {
+            flex-grow: 1; 
+            
+            /* Estética de WhatsApp Input */
+            background-color: white; /* Blanco para el área de escritura */
+            border: none;
+            border-radius: 20px; 
+            padding: 10px 12px;
+            margin-right: 8px; 
+            box-sizing: border-box;
+            resize: none; 
+            font-family: inherit;
+            line-height: 1.2;
+            max-height: 50px; 
+            font-size: 15px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo del botón de Enviar (circular) */
+        #whatsapp-chat-box button {
+            width: 44px; 
+            height: 44px; 
+            min-width: 44px; 
+            padding: 0;
+            
+            background-color: #075E54; 
+            color: white;
+            border: none;
+            border-radius: 50%; 
+            cursor: pointer;
+            font-size: 18px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s;
+        }
+
+        #whatsapp-chat-box button:hover {
+            background-color: #128C7E; 
+        }
     </style>
 </head>
 <body class="font-sans bg-bg-light text-text-dark **bg-mobile-hero**">
@@ -109,7 +281,7 @@
                     class="h-8 sm:h-10 lg:h-12 object-contain"
                 >
             </a>
-            <nav class="hidden sm:flex space-x-8 text-base font-medium">
+            <nav class="sm:flex space-x-8 text-base font-medium">
                 <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" >INICIO</a>
                 <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style" >TALLERES</a>
                 <a href="#nosotros" class="hover:text-rp-teal transition duration-200 title-style" >SOBRE NOSOTROS</a>
@@ -271,8 +443,31 @@
             <a href="#talleres" class="inline-block px-10 py-4 bg-rp-teal text-text-dark text-lg font-bold rounded-full shadow-lg hover:bg-rp-teal/90 transition duration-300" onclick="route()">
             RESERVÁ TU TALLER
             </a>
-</div>
+            </div>
             </section>
+            <section id="featured-project-video" class="relative h-[300vh] bg-black">
+    
+            <div id="video-pin-container" class="h-screen w-full sticky top-0 overflow-hidden">
+                
+                <video id="scroll-video" 
+                    class="absolute top-0 left-0 w-full h-full object-cover" 
+                    preload="auto" 
+                    muted 
+                    playsinline>
+                    <source src="images/video.mp4" type="video/mp4">
+                </video>
+                
+                <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
+                        ASÍ ES NUESTRO <span class="text-rp-teal">PROCESO</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+                        Cada etapa, desde la recolección hasta el producto final, está diseñada para maximizar el impacto positivo.
+                    </p>
+                </div>
+                
+            </div>
+        </section>
 
             <section id="impact-stats" class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -300,6 +495,88 @@
                             <span data-target="14" data-unit=" bañeras" class="hidden"></span>
                         </div>
                     </div>
+                </div>
+            </section>
+            <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center mb-16">
+                        <h2 class="text-5xl font-bold mb-3 title-style">NUESTROS <span class="text-rp-teal">DESTACADOS</span></h2>
+                        <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                            Diseño reciclado, perfecto para empezar a transformar tus espacios.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-azul-home">
+                            <div>
+                                <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl Azul Destacado" 
+                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                                    onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
+                                
+                                <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Azul</h3>
+                                <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                                <p class="text-gray-600 mb-4 text-sm">El clásico disruptivo, ahora en tu living.</p>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <button 
+                                    onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Descripción completa del bowl azul.', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])" 
+                                    class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                                    VER DETALLE
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="plato-rojo-home">
+                            <div>
+                                <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl Navideño Destacado" 
+                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                    onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
+                                
+                                <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Navideño</h3>
+                                <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                                <p class="text-gray-600 mb-4 text-sm">Edicion Especial con motivos rojos y verdes.</p>
+                            </div>
+                            <div class="mt-2">
+                                <button 
+                                    onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])" 
+                                    class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                                    VER DETALLE
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="florero-verde-home">
+                            <div>
+                                <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Bowl Verde Destacado" 
+                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                    onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
+                                
+                                <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Verde</h3>
+                                <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
+                                <p class="text-gray-600 mb-4 text-sm">Tono verde natural, simbolizando el compromiso con el medio ambiente.</p>
+                            </div>
+                            <div class="mt-2">
+                                <button 
+                                    onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])"
+                                    class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
+                                    VER DETALLE
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="text-center mt-16">
+                        <a href="#tienda" 
+                        onclick="route('tienda')" 
+                        class="inline-block px-10 py-4 bg-rp-mint text-text-dark text-lg font-bold rounded-full shadow-lg hover:bg-rp-teal transition duration-300 title-style border border-rp-teal">
+                            VER TODA LA COLECCIÓN
+                        </a>
+                    </div>
+                    
                 </div>
             </section>
 
@@ -1002,8 +1279,37 @@
         </div>
     </div>
 </section>
+                <div id="whatsapp-widget">
+                    <button id="whatsapp-icon" onclick="toggleChat()">
+                        <i class="fab fa-whatsapp"></i> 
+                    </button>
+                    
+                    <div id="whatsapp-chat-box" class="hidden"> 
+                        <div id="chat-header">
+                            <img id="company-avatar" src="images/logo whatsapp circula.jpg" alt="Foto de la Empresa"> 
+                            
+                            <div class="contact-info">
+                                <span class="contact-name">Circula</span>
+                                <span class="status">En línea</span>
+                            </div>
+                        </div>
 
-    </main>
+                        <div id="message-area">
+                            <div class="initial-message">¡Hola! ¿En qué podemos ayudarte hoy? Escribe tu mensaje abajo.</div>
+                        </div>
+
+                        <div id="input-container">
+                            <textarea id="mensaje-usuario" placeholder="Escribe un mensaje..." rows="1"></textarea>
+                            <button onclick="enviarWhatsApp()" title="Enviar mensaje">
+                                <i class="fas fa-paper-plane"></i> 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</main>
 
     <footer class="bg-text-dark text-white py-8">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -1021,6 +1327,7 @@
 <script>
    // --- JavaScript para Contadores, Routing y Funcionalidad ---
 const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference'; // No cambiar, es la ruta relativa
+const NUMERO_WHATSAPP = "598 99 395 724"; // Número de WhatsApp para contacto
 
 // Elementos de la UI general
 const cartCountDisplay = document.getElementById('cart-count');
@@ -1110,6 +1417,38 @@ function validateQuantity(inputElement) {
     }
 }
 
+// Logica Para el uso de whatsapp
+
+// Función para mostrar/ocultar la ventana del chat
+function toggleChat() {
+    const chatBox = document.getElementById('whatsapp-chat-box');
+    chatBox.classList.toggle('hidden'); // Alterna la clase 'hidden'
+}
+
+// Función para construir y abrir el enlace de WhatsApp
+function enviarWhatsApp() {
+    const mensajeUsuario = document.getElementById('mensaje-usuario').value;
+
+    if (mensajeUsuario.trim() === "") {
+        alert("Por favor, escribe un mensaje antes de enviarlo.");
+        return;
+    }
+    
+    // 1. Codificar el mensaje para la URL
+    const mensajeCodificado = encodeURIComponent(mensajeUsuario);
+
+    // 2. Construir la URL completa
+    const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensajeCodificado}`;
+
+    // 3. Abrir en una nueva pestaña
+    window.open(urlWhatsApp, '_blank');
+    
+    // Opcional: Ocultar el chat después de enviar
+    document.getElementById('whatsapp-chat-box').classList.add('hidden');
+    // Opcional: Limpiar el campo de texto
+    document.getElementById('mensaje-usuario').value = '';
+}
+
 
 // ===================================
 // === 2. LÓGICA DE DETALLE DE PRODUCTO Y GALERÍA ===
@@ -1174,6 +1513,50 @@ function addItemFromShop(name, price, quantity) {
     const qty = parseInt(quantity);
     addItemToCart(name, price, qty);
 }
+
+//LOGICA VIDEOSCROLL
+gsap.registerPlugin(ScrollTrigger);
+
+    const video = document.getElementById('scroll-video');
+    const videoText = document.getElementById('video-text-overlay');
+    const videoSection = document.getElementById('featured-project-video');
+
+    // 2. Esperamos a que el video esté listo para reproducir (metadata cargada)
+    video.addEventListener('loadedmetadata', function() {
+        
+        // Obtenemos la duración total del video
+        let videoDuration = video.duration;
+
+        // 3. Creamos la animación GSAP
+        // Animamos la propiedad 'currentTime' del video
+        gsap.to(video, {
+            currentTime: videoDuration, // Animamos desde 0 (implícito) hasta el final del video
+            ease: "none", // Sin aceleración, movimiento lineal
+            scrollTrigger: {
+                trigger: videoSection,         // El elemento que dispara la animación (la sección de 300vh)
+                pin: "#video-pin-container",   // "Pega" el contenedor del video (el de 100vh)
+                start: "top top",              // La animación empieza cuando el top de la sección llega al top de la pantalla
+                end: "bottom bottom",          // Termina cuando el bottom de la sección llega al bottom de la pantalla
+                scrub: true,                   // ¡Esta es la clave! Vincula la animación al scroll
+                anticipatePin: 1               // Ayuda a evitar saltos visuales
+            }
+        });
+
+        // (Opcional) Animación para que el texto desaparezca
+        gsap.to(videoText, {
+            opacity: 0,
+            ease: "none",
+            scrollTrigger: {
+                trigger: videoSection,
+                start: "center center", // Empieza a desaparecer cuando llegamos al 50%
+                end: "bottom bottom",
+                scrub: true
+            }
+        });
+    });
+
+    // (Opcional) Forzar la carga del video si está en caché
+    video.load()
 
 
 // ===================================
