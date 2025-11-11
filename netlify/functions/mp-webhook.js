@@ -84,7 +84,6 @@ exports.handler = async (event, context) => {
         return { statusCode: 405, body: 'Método no permitido' };
     }
 
-    // 🚨 Extraemos el ID del QUERY STRING (es la notificación ID)
     const { id, topic } = event.queryStringParameters;
     
     if (topic !== 'payment' || !id) {
@@ -96,30 +95,29 @@ exports.handler = async (event, context) => {
         const paymentInfo = await mercadopago.payment.get(id);
         const payment = paymentInfo.body;
 
-        // 2. Extraer el Preference ID del objeto de pago (campo 'external_reference')
-        const preferenceId = payment.external_reference; 
+        // 2. Obtener el ID de Preferencia REAL (CRÍTICO para la consulta de metadata)
+        // payment.preference_id contiene el ID en formato PREF-xxxxxx.
+        const preferenceId = payment.preference_id; 
         
-        // 🚨 CRÍTICO: Si el external_reference es null/vacío, fallamos aquí si no hay ID.
+        // 3. Si el ID de Preferencia no existe, no podemos buscar la metadata.
         if (!preferenceId) {
-             console.error("Error: external_reference (Preference ID) no encontrado en el pago.");
-             // Devolvemos 200 OK para no reintentar, pero registramos el error
-             return { statusCode: 200, body: 'Referencia externa no encontrada. Pago ignorado.' };
+             console.error("Error: preference_id no encontrado en el objeto de pago.");
+             return { statusCode: 200, body: 'ID de Preferencia no disponible. Ignorado.' };
         }
 
-
-        // 3. Obtener el Objeto de Preferencia (para recuperar METADATA y ITEMS)
+        // 4. Obtener el Objeto de Preferencia (para recuperar METADATA y ITEMS)
         const preferenceResponse = await mercadopago.preferences.get(preferenceId);
         const metadata = preferenceResponse.body.metadata;
         const items = preferenceResponse.body.items; 
 
-        // 4. Mapear los datos del comprador y la orden
+        // 5. Mapear los datos del comprador y la orden
         const buyerEmail = metadata.buyer_email;
         const buyerName = metadata.buyer_name;
-        const orderRef = metadata.order_ref;
+        const orderRef = metadata.order_ref; // Referencia Externa
         
         console.log(`Webhook ejecutado para Pago ID: ${payment.id}. Estado: ${payment.status}.`);
 
-        // 5. Procesar el Estado de Aprobación
+        // 6. Procesar el Estado de Aprobación
         if (payment.status === 'approved') {
             
             // A. ENVIAR CONFIRMACIÓN FINAL AL COMPRADOR
@@ -133,17 +131,16 @@ exports.handler = async (event, context) => {
             // Opcional: Enviar email de rechazo aquí
         }
         
-        // 6. Devolver 200 OK
+        // 7. Devolver 200 OK
         return { 
             statusCode: 200, 
             body: JSON.stringify({ message: 'Notificación de pago procesada.' }) 
         };
 
     } catch (error) {
-        // El error 404 de "Payment not found" (que vimos antes) cae aquí.
         console.error("Error al procesar el Webhook de MP:", error);
         
-        // Si hay un error interno del servidor, devolvemos 500 para que MP reintente.
+        // Devolvemos 500 para que MP reintente en caso de un fallo interno (ej. error de Nodemailer).
         return { statusCode: 500, body: 'Error interno del servidor.' };
     }
 };

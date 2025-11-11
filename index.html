@@ -272,7 +272,7 @@
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
     <header class="sticky top-0 z-50 bg-white shadow-md">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div  class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             
             <a href="#home" class="flex items-center text-text-dark hover:opacity-80 transition duration-200" onclick="route()">
                 <img 
@@ -445,29 +445,6 @@
             </a>
             </div>
             </section>
-            <section id="featured-project-video" class="relative h-[300vh] bg-black">
-    
-            <div id="video-pin-container" class="h-screen w-full sticky top-0 overflow-hidden">
-                
-                <video id="scroll-video" 
-                    class="absolute top-0 left-0 w-full h-full object-cover" 
-                    preload="auto" 
-                    muted 
-                    playsinline>
-                    <source src="images/video.mp4" type="video/mp4">
-                </video>
-                
-                <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8">
-                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
-                        ASÍ ES NUESTRO <span class="text-rp-teal">PROCESO</span>
-                    </h2>
-                    <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-                        Cada etapa, desde la recolección hasta el producto final, está diseñada para maximizar el impacto positivo.
-                    </p>
-                </div>
-                
-            </div>
-        </section>
 
             <section id="impact-stats" class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -497,6 +474,34 @@
                     </div>
                 </div>
             </section>
+        <section id="featured-project-video" class="relative h-[300vh] bg-rp-blue-light">
+    
+            <div id="video-pin-container" class="h-screen w-full 
+                                        flex items-center justify-center 
+                                        overflow-hidden">
+        
+                <div id="video-grow-container" class="relative w-[80vw] h-[80vh] 
+                                            rounded-xl shadow-2xl overflow-hidden"> 
+                    
+                    <video id="scroll-video" 
+                        class="absolute top-0 left-0 w-full h-full object-cover" 
+                        preload="auto" 
+                        muted 
+                        playsinline>
+                        <source src="images/video_optimizado_8M.mp4" type="video/mp4">
+                    </video>
+                    
+                    <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
+                            ASÍ SE VE TU PROYECTO CON
+                        </h2>
+                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-rp-teal title-style">NOSOTROS</h2>
+                    </div>
+                    
+                </div> 
+            </div> 
+        </section>
+            
             <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     
@@ -615,7 +620,8 @@
                     </div>
                 </div>
             </section>
-        </section> <section id="view-talleres" data-route="talleres" class="page-content bg-rp-blue-light section-padding">
+        </section> 
+        <section id="view-talleres" data-route="talleres" class="page-content bg-rp-blue-light section-padding">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-5xl font-bold text-text-dark mb-3 title-style">NUESTROS <span class="text-rp-teal">TALLERES</span></h2>
@@ -1517,48 +1523,94 @@ function addItemFromShop(name, price, quantity) {
 //LOGICA VIDEOSCROLL
 gsap.registerPlugin(ScrollTrigger);
 
-    const video = document.getElementById('scroll-video');
-    const videoText = document.getElementById('video-text-overlay');
-    const videoSection = document.getElementById('featured-project-video');
+// --- 1. Seleccionar todos los elementos ---
+const video = document.getElementById('scroll-video');
+const videoText = document.getElementById('video-text-overlay');
+const videoSection = document.getElementById('featured-project-video');
+const pinContainer = document.getElementById('video-pin-container');
+const growContainer = document.getElementById('video-grow-container'); // El contenedor que crece
 
-    // 2. Esperamos a que el video esté listo para reproducir (metadata cargada)
-    video.addEventListener('loadedmetadata', function() {
-        
-        // Obtenemos la duración total del video
-        let videoDuration = video.duration;
+// ⚠️ CAMBIA ESTOS SELECTORES por los de tu barra de navegación
+const mainHeader = document.querySelector('header'); 
+const headerLinks = document.querySelectorAll('header a'); 
 
-        // 3. Creamos la animación GSAP
-        // Animamos la propiedad 'currentTime' del video
-        gsap.to(video, {
-            currentTime: videoDuration, // Animamos desde 0 (implícito) hasta el final del video
-            ease: "none", // Sin aceleración, movimiento lineal
-            scrollTrigger: {
-                trigger: videoSection,         // El elemento que dispara la animación (la sección de 300vh)
-                pin: "#video-pin-container",   // "Pega" el contenedor del video (el de 100vh)
-                start: "top top",              // La animación empieza cuando el top de la sección llega al top de la pantalla
-                end: "bottom bottom",          // Termina cuando el bottom de la sección llega al bottom de la pantalla
-                scrub: true,                   // ¡Esta es la clave! Vincula la animación al scroll
-                anticipatePin: 1               // Ayuda a evitar saltos visuales
-            }
-        });
+// --- 2. Estados Iniciales ---
+gsap.set(videoText, { opacity: 0 }); // Texto invisible al inicio
+// Aseguramos que el header esté por encima del video (z-index)
+gsap.set(mainHeader, { zIndex: 100 }); 
 
-        // (Opcional) Animación para que el texto desaparezca
-        gsap.to(videoText, {
-            opacity: 0,
-            ease: "none",
-            scrollTrigger: {
-                trigger: videoSection,
-                start: "center center", // Empieza a desaparecer cuando llegamos al 50%
-                end: "bottom bottom",
-                scrub: true
-            }
-        });
+video.addEventListener('loadedmetadata', function() {
+    
+    let videoDuration = video.duration;
+
+    // --- ANIMACIÓN 1: "Grow" (El video crece a pantalla completa) ---
+    // Esto resuelve el problema del "mueble estático"
+    gsap.to(growContainer, { 
+        scale: 1.25, // 80vw * 1.25 = 100vw (pantalla completa)
+        borderRadius: 0, // Anima los bordes de redondeados a cuadrados
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            start: "top 75%", // Empieza a crecer cuando la sección entra en pantalla
+            end: "top top",   // Termina de crecer JUSTO cuando llega al borde superior
+            scrub: true
+        }
     });
 
-    // (Opcional) Forzar la carga del video si está en caché
-    video.load()
+    // --- ANIMACIÓN 2: "Text Fade-In" (El texto aparece) ---
+    // Ocurre al mismo tiempo que la animación "Grow"
+    gsap.to(videoText, {
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            start: "top 75%", // Empieza a aparecer
+            end: "top top",   // Termina de aparecer
+            scrub: true
+        }
+    });
 
+    // --- ANIMACIÓN 3: "Pin & Scrub" (El video se fija y reproduce) ---
+    // Esta animación es la principal y se activa DESPUÉS del "Grow"
+    gsap.to(video, {
+        currentTime: videoDuration,
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            pin: pinContainer, // Fija el contenedor de 100vh
+            start: "top top",  // Se activa solo al llegar al borde
+            end: "bottom bottom",
+            scrub: true,
+            anticipatePin: 1
+        }
+    });
 
+    // --- ANIMACIÓN 4: "Header Transition" (La barra de navegación) ---
+    // Se activa al mismo tiempo que el "Pin & Scrub"
+    gsap.to(mainHeader, {
+        backgroundColor: "transparent", // Se vuelve transparente
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            start: "top top",
+            end: "bottom bottom",
+            toggleActions: "play reverse play reverse"
+        }
+    });
+
+    gsap.to(headerLinks, {
+        color: "#FFFFFF", // Los enlaces se vuelven blancos
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            start: "top top",
+            end: "bottom bottom",
+            toggleActions: "play reverse play reverse"
+        }
+    });
+});
+
+video.load();
 // ===================================
 // === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
 // ===================================
