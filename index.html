@@ -76,26 +76,29 @@
         }
         
         /* ========================================================= */
-        /* == MODIFICACIONES PARA IMAGEN DE FONDO SOLO EN MÓVILES == */
-        /* ========================================================= */
-        
-        /* Clase base: Asegura que NO haya imagen por defecto en desktop */
-        .bg-mobile-hero {
-            background-image: none; 
-            background-repeat: no-repeat;
-        }
+/* == MANEJO DEL FONDO DEL HERO (DESKTOP Y MÓVIL) == */
+/* ========================================================= */
 
-        /* Media Query: Aplicar la imagen SOLO en pantallas pequeñas (768px o menos) */
-        @media (max-width: 768px) {
-            .bg-mobile-hero {
-                /* 🚨 INSERTA AQUÍ LA RUTA A TU IMAGEN CUADRADA */
-                background-image: url('images/img para movil.jpg'); 
-                
-                background-position: center bottom; /* Centra horizontalmente, pega abajo */
-                background-size: contain; /* Muestra la imagen completa sin recortar */
-                background-attachment: scroll; /* Se desplaza con el contenido */
-            }
+/* 1. Estilos por defecto (Desktop) - Los que movimos del HTML */
+#hero-section {
+    background-image: url('images/fondo.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* 2. Media Query: Aplicar la imagen SOLO en pantallas pequeñas (768px o menos) */
+    @media (max-width: 768px) {
+        #hero-section {
+            background-image: url('images/fondo_movil.jpg'); 
+            
+            /* background-position: center bottom; /* Esto puede ser el problema */
+            background-position: center; /* Intenta centrarla completamente */
+            background-size: cover;      /* ¡Cambiamos a cover! */
+            background-repeat: no-repeat;
+            background-attachment: scroll; 
         }
+    }
                 /* --- Posicionamiento del Widget --- */
         #whatsapp-widget {
             position: fixed;
@@ -276,7 +279,7 @@
     <img src="images/Logo C.png" alt="Cargando Circula..." class="max-w-[200px] animate-pulse">
 </div>
 
-<body class="font-sans bg-bg-light text-text-dark **bg-mobile-hero**">
+<body class="font-sans bg-bg-light text-text-dark">
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
@@ -436,11 +439,11 @@
         
         <section id="view-home" data-route="home" class="page-content">
 
-            <section class="relative section-padding pt-32 pb-16 md:pt-40 md:pb-40 
+            <section id="hero-section" class="relative section-padding pt-32 pb-16 md:pt-40 md:pb-40 
                 flex items-center justify-end
                 min-h-[70vh]
                 border-b border-rp-gray-soft"
-                style="background-image: url('images/fondo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;"
+>
             >
                 <div class="absolute inset-0 bg-white/0"></div>
         
