@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Economía Circular y Talleres</title>
 
-    <link rel="preload" href="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" as="video" type="video/mp4">
-
+  
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -269,6 +268,14 @@
         }
     </style>
 </head>
+
+<div id="preloader" class="fixed inset-0 z-[99999] bg-rp-blue-light 
+                          flex items-center justify-center 
+                          transition-opacity duration-500 ease-out">
+    
+    <img src="images/Logo C.png" alt="Cargando Circula..." class="max-w-[200px] animate-pulse">
+</div>
+
 <body class="font-sans bg-bg-light text-text-dark **bg-mobile-hero**">
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
@@ -486,13 +493,15 @@
         
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
     <video id="scroll-video" 
-        class="absolute top-0 left-0 w-full h-full object-cover" 
-        src="'https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4'" 
-        preload="auto" 
-        muted 
-        playsinline 
-        webkit-playsinline>
-        </video>
+    class="absolute top-0 left-0 w-full h-full object-cover" 
+    preload="auto" 
+    muted 
+    playsinline 
+    webkit-playsinline>
+    
+    <source src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" type="video/mp4">
+    
+</video>
     
     <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
         <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
@@ -1523,11 +1532,11 @@ function addItemFromShop(name, price, quantity) {
     addItemToCart(name, price, qty);
 }
 
-// =================================================
-// === LOGICA VIDEOSCROLL: VELOCIDAD MÁXIMA ===
-// =================================================
-gsap.registerPlugin(ScrollTrigger);
+// =========================================================
+// === LÓGICA DE INICIALIZACIÓN GLOBAL (POST-CARGA) ===
+// =========================================================
 
+// --- 1. Selectores de GSAP (globales) ---
 const video = document.getElementById('scroll-video');
 const videoText = document.getElementById('video-text-overlay');
 const videoSection = document.getElementById('featured-project-video');
@@ -1536,19 +1545,20 @@ const growContainer = document.getElementById('video-grow-container');
 const mainHeader = document.querySelector('header');
 const headerLinks = document.querySelectorAll('header a');
 
-const VIDEO_URL = 'https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4'; 
-
+// --- 2. Función de Inicialización de Animaciones (Solo se define) ---
 function initScrollAnimations() {
-    // 1. Configuración Inicial
+    // Esta función ahora se llama DESPUÉS de que todo carga
+    gsap.registerPlugin(ScrollTrigger);
+
     gsap.set(videoText, { opacity: 0 });
     gsap.set(mainHeader, { zIndex: 100 });
 
-    // Usamos una duración fija por defecto para calcular el scroll
-    // (El video se adaptará si dura más o menos, pero esto permite iniciar la animación YA)
-    let duration = 8; // Asumimos 8 segundos aprox
+    let duration = video.duration; 
+    if (!duration || duration === 0) {
+        console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
+        duration = 8; // Fallback por si la duración es 0
+    }
 
-    // 2. Timeline Principal (Estructura visual)
-    // Se activa INMEDIATAMENTE, no espera al video.
     let tl = gsap.timeline({
         scrollTrigger: {
             trigger: videoSection,
@@ -1560,11 +1570,9 @@ function initScrollAnimations() {
         }
     });
 
-    // Animación: Crecer contenedor y aparecer texto
     tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
       .to(videoText, { opacity: 1, ease: "none" }, 0);
 
-    // Animación: Header Transparente
     gsap.to(mainHeader, {
         backgroundColor: "transparent",
         scrollTrigger: {
@@ -1587,8 +1595,9 @@ function initScrollAnimations() {
         }
     });
 
-    // 3. Conexión del Video (Streaming)
-    // Usamos una función especial para no romper el video si no ha cargado un cuadro
+    video.pause();
+    video.currentTime = 0;
+
     gsap.to(video, {
         currentTime: duration,
         ease: "none",
@@ -1596,38 +1605,40 @@ function initScrollAnimations() {
             trigger: videoSection,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.1,
-            onUpdate: self => {
-                // Solo actualizamos el cuadro si el video tiene datos suficientes (readyState > 0)
-                // Si no ha cargado, se queda quieto en el Poster (imagen de fondo)
-                if (video.readyState >= 1) {
-                   try {
-                       // Sincronizamos el tiempo del video con el scroll
-                       video.currentTime = video.duration * self.progress;
-                   } catch(e) {
-                       console.log("Esperando buffer...");
-                   }
-                }
-            }
+            scrub: 0.1
         }
     });
     
+    // Refresco final
     ScrollTrigger.refresh();
 }
 
-// EJECUCIÓN INMEDIATA
-// Asignamos la fuente y arrancamos la animación de estructura sin esperar
-video.src = VIDEO_URL;
-video.load(); // Fuerza al navegador a empezar el streaming
-initScrollAnimations(); // Inicia los textos y el pin AHORA MISMO
+// --- 3. Listener de Carga Principal (El que controla todo) ---
+window.addEventListener('load', () => {
+    
+    // A. Tareas de renderizado
+    route();              // 1. Hacemos visible la página
+    updateCartDisplay();  // 2. Actualizamos el carrito
 
-// Listener opcional: Si el video carga metadatos, aseguramos que esté pausado y en inicio
-video.addEventListener('loadedmetadata', function() {
-    video.pause();
-    video.currentTime = 0;
-    // Pequeño fade-in para que no aparezca de golpe si cargó tarde
-    gsap.fromTo(video, {opacity: 0}, {opacity: 1, duration: 0.5});
+    // B. Tareas de animación
+    // (Llamamos a esto aquí, 'load' espera a que el video esté listo)
+    if(video) {
+        initScrollAnimations();
+    }
+
+    // C. Ocultar el preloader
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Le decimos que se desvanezca
+        preloader.style.opacity = '0';
+        
+        // Después de 600ms (0.1s más que la transición), lo eliminamos
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 600); 
+    }
 });
+
 // ===================================
 // === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
 // ===================================
