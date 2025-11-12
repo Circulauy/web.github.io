@@ -1550,7 +1550,6 @@ const preloader = document.getElementById('preloader');
 let isWindowLoaded = false;
 let isVideoReady = false;
 
-// --- 3. Función de Inicialización de Animaciones (Solo se define) ---
 function initScrollAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     gsap.set(videoText, { opacity: 0 });
@@ -1562,20 +1561,26 @@ function initScrollAnimations() {
         duration = 8;
     }
 
+    // --- Definimos el valor de suavizado ---
+    const SMOOTH_SCRUB_VALUE = 1.5; // <-- ¡Prueba cambiando este valor! (ej. 1, 1.5, 2)
+
+    // 2. Timeline Principal
     let tl = gsap.timeline({
         scrollTrigger: {
             trigger: videoSection,
             pin: pinContainer,
             start: "top top",
             end: "bottom bottom",
-            scrub: true,
+            scrub: SMOOTH_SCRUB_VALUE, // <-- APLICADO
             anticipatePin: 1
         }
     });
 
+    // Animación: Crecer contenedor y aparecer texto
     tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
       .to(videoText, { opacity: 1, ease: "none" }, 0);
 
+    // 3. Animación Header
     gsap.to(mainHeader, {
         backgroundColor: "transparent",
         scrollTrigger: {
@@ -1583,7 +1588,7 @@ function initScrollAnimations() {
             start: "top top",
             end: "bottom bottom",
             toggleActions: "play reverse play reverse",
-            scrub: true
+            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
         }
     });
 
@@ -1594,10 +1599,11 @@ function initScrollAnimations() {
             start: "top top",
             end: "bottom bottom",
             toggleActions: "play reverse play reverse",
-            scrub: true
+            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
         }
     });
 
+    // 4. Conexión del Video
     video.pause();
     video.currentTime = 0;
 
@@ -1608,7 +1614,7 @@ function initScrollAnimations() {
             trigger: videoSection,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.1
+            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
         }
     });
     
