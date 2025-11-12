@@ -480,25 +480,23 @@
                                         flex items-center justify-center 
                                         overflow-hidden">
         
-                <div id="video-grow-container" class="relative w-[80vw] h-[80vh] 
-                                            rounded-xl shadow-2xl overflow-hidden"> 
-                    
-                    <video id="scroll-video" 
-                        class="absolute top-0 left-0 w-full h-full object-cover" 
-                        preload="auto" 
-                        muted 
-                        playsinline>
-                        <source src="images/video_optimizado_8M.mp4" type="video/mp4">
-                    </video>
-                    
-                    <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8">
-                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
-                            ASÍ SE VE TU PROYECTO CON
-                        </h2>
-                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-rp-teal title-style">NOSOTROS</h2>
-                    </div>
-                    
-                </div> 
+                <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
+    <video id="scroll-video" 
+        class="absolute top-0 left-0 w-full h-full object-cover" 
+        src="images/salida_optimizada.mp4" 
+        preload="auto" 
+        muted 
+        playsinline 
+        webkit-playsinline>
+        </video>
+    
+    <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
+        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">
+            ASÍ SE VE TU PROYECTO CON
+        </h2>
+        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-rp-teal title-style">NOSOTROS</h2>
+    </div>
+</div>
             </div> 
         </section>
             
@@ -1520,76 +1518,65 @@ function addItemFromShop(name, price, quantity) {
     addItemToCart(name, price, qty);
 }
 
-//LOGICA VIDEOSCROLL
+// =================================================
+// === LOGICA VIDEOSCROLL (FINAL Y CORREGIDA) ===
+// =================================================
+// =================================================
+// === LOGICA VIDEOSCROLL (ESTRATEGIA BLOB) ===
+// =================================================
 gsap.registerPlugin(ScrollTrigger);
 
-// --- 1. Seleccionar todos los elementos ---
 const video = document.getElementById('scroll-video');
 const videoText = document.getElementById('video-text-overlay');
 const videoSection = document.getElementById('featured-project-video');
 const pinContainer = document.getElementById('video-pin-container');
-const growContainer = document.getElementById('video-grow-container'); // El contenedor que crece
+const growContainer = document.getElementById('video-grow-container');
+const mainHeader = document.querySelector('header');
+const headerLinks = document.querySelectorAll('header a');
 
-// ⚠️ CAMBIA ESTOS SELECTORES por los de tu barra de navegación
-const mainHeader = document.querySelector('header'); 
-const headerLinks = document.querySelectorAll('header a'); 
+// 🚨 CAMBIA ESTO POR LA RUTA REAL DE TU VIDEO OPTIMIZADO
+const VIDEO_URL = 'images/salida_optimizada.mp4'; 
 
-// --- 2. Estados Iniciales ---
-gsap.set(videoText, { opacity: 0 }); // Texto invisible al inicio
-// Aseguramos que el header esté por encima del video (z-index)
-gsap.set(mainHeader, { zIndex: 100 }); 
+function initScrollAnimations() {
+    console.log("Video listo. Iniciando animaciones...");
 
-video.addEventListener('loadedmetadata', function() {
-    
-    let videoDuration = video.duration;
+    // 1. Configuración inicial
+    gsap.set(videoText, { opacity: 0 });
+    gsap.set(mainHeader, { zIndex: 100 });
 
-    // --- ANIMACIÓN 1: "Grow" (El video crece a pantalla completa) ---
-    // Esto resuelve el problema del "mueble estático"
-    gsap.to(growContainer, { 
-        scale: 1.25, // 80vw * 1.25 = 100vw (pantalla completa)
-        borderRadius: 0, // Anima los bordes de redondeados a cuadrados
-        ease: "none",
+    // Duración segura
+    let videoDuration = video.duration || 5;
+
+    // 2. Timeline Principal
+    let tl = gsap.timeline({
         scrollTrigger: {
             trigger: videoSection,
-            start: "top 75%", // Empieza a crecer cuando la sección entra en pantalla
-            end: "top top",   // Termina de crecer JUSTO cuando llega al borde superior
+            start: "top 75%",
+            end: "top top",
             scrub: true
         }
     });
 
-    // --- ANIMACIÓN 2: "Text Fade-In" (El texto aparece) ---
-    // Ocurre al mismo tiempo que la animación "Grow"
-    gsap.to(videoText, {
-        opacity: 1,
-        ease: "none",
-        scrollTrigger: {
-            trigger: videoSection,
-            start: "top 75%", // Empieza a aparecer
-            end: "top top",   // Termina de aparecer
-            scrub: true
-        }
-    });
+    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
+      .to(videoText, { opacity: 1, ease: "none" }, 0);
 
-    // --- ANIMACIÓN 3: "Pin & Scrub" (El video se fija y reproduce) ---
-    // Esta animación es la principal y se activa DESPUÉS del "Grow"
+    // 3. Scrub del Video
     gsap.to(video, {
         currentTime: videoDuration,
         ease: "none",
         scrollTrigger: {
             trigger: videoSection,
-            pin: pinContainer, // Fija el contenedor de 100vh
-            start: "top top",  // Se activa solo al llegar al borde
+            pin: pinContainer,
+            start: "top top",
             end: "bottom bottom",
-            scrub: true,
+            scrub: 0.1, 
             anticipatePin: 1
         }
     });
 
-    // --- ANIMACIÓN 4: "Header Transition" (La barra de navegación) ---
-    // Se activa al mismo tiempo que el "Pin & Scrub"
+    // 4. Cambios en Header
     gsap.to(mainHeader, {
-        backgroundColor: "transparent", // Se vuelve transparente
-        ease: "none",
+        backgroundColor: "transparent",
         scrollTrigger: {
             trigger: videoSection,
             start: "top top",
@@ -1599,8 +1586,7 @@ video.addEventListener('loadedmetadata', function() {
     });
 
     gsap.to(headerLinks, {
-        color: "#FFFFFF", // Los enlaces se vuelven blancos
-        ease: "none",
+        color: "#FFFFFF",
         scrollTrigger: {
             trigger: videoSection,
             start: "top top",
@@ -1608,9 +1594,39 @@ video.addEventListener('loadedmetadata', function() {
             toggleActions: "play reverse play reverse"
         }
     });
-});
 
-video.load();
+    ScrollTrigger.refresh();
+}
+
+// --- CARGA FORZADA DEL VIDEO (BLOB) ---
+// Esto soluciona el problema de carga en Edge/Chrome
+fetch(VIDEO_URL)
+    .then(response => {
+        if (!response.ok) throw new Error("Error de red al cargar video");
+        return response.blob();
+    })
+    .then(blob => {
+        // Convertimos el archivo descargado en una URL local temporal
+        const blobUrl = URL.createObjectURL(blob);
+        video.src = blobUrl;
+        
+        video.onloadedmetadata = function() {
+            // Una vez que el video tiene datos, preparamos el primer frame
+            video.currentTime = 0;
+            video.pause();
+            initScrollAnimations();
+            
+            // Liberamos memoria cuando terminamos (opcional, pero buena práctica)
+            // URL.revokeObjectURL(blobUrl); 
+        };
+    })
+    .catch(error => {
+        console.error("Fallo crítico cargando el video:", error);
+        // Opcional: Ocultar el video y mostrar una imagen estática de respaldo
+        video.style.display = 'none';
+        growContainer.style.backgroundImage = "url('images/poster_video.jpg')"; // Pon una imagen de fondo
+        growContainer.style.backgroundSize = "cover";
+    });
 // ===================================
 // === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
 // ===================================
