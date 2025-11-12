@@ -12,34 +12,48 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'bg-light': '#fafafa',       // Fondo principal (casi blanco)
-                        'text-dark': '#333333',      // Texto principal
-                        'rp-teal': '#79C7C7',        // Recycled Plastic Teal (Acento temático)
-                        'rp-mint': '#A3E6BA',        // Recycled Plastic Mint (Acento para CTAs/Suave)
-                        'rp-blue-light': '#e0f7f7',  // Fondo de sección muy suave
-                        'rp-gray-soft': '#dddddd',   // Borde/línea suave (No usado para inputs)
-                        'rp-border-default': '#b5b5b5', // Nuevo borde más oscuro para inputs
-                        'mp-blue': '#009ee3', 
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Patua One', 'cursive'],
-                    },
-                    spacing: {
-                        '12': '3rem',
-                        '16': '4rem',
-                        '20': '5rem',
-                        '24': '6rem', 
+   
+<script>
+
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'bg-light': '#fafafa',
+                    'text-dark': '#333333',
+                    'rp-teal': '#79C7C7',
+                    'rp-mint': '#A3E6BA',
+                    'rp-blue-light': '#e0f7f7',
+                    'rp-gray-soft': '#dddddd',
+                    'rp-border-default': '#b5b5b5',
+                    'mp-blue': '#009ee3', 
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                    heading: ['Patua One', 'cursive'],
+                },
+                spacing: {
+                    '12': '3rem',
+                    '16': '4rem',
+                    '20': '5rem',
+                    '24': '6rem', 
+                },
+
+                // 🚨 ESTA ES LA PARTE AÑADIDA Y CORREGIDA 🚨
+                animation: {
+                    'infinite-scroll': 'infinite-scroll 25s linear infinite',
+                },
+                keyframes: {
+                    'infinite-scroll': {
+                        '0%': { transform: 'translateX(0)' },
+                        '100%': { transform: 'translateX(-100%)' },
                     }
                 }
-            }
-        }
-    </script>
+                
+            } // <- Cierre de 'extend'
+        } // <- Cierre de 'theme'
+    } // <- Cierre de 'tailwind.config'
+</script>
     <style>
         /* Custom styles for cleaner design */
         html {
@@ -1329,6 +1343,54 @@
                 </div>
                 
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+                <section id="clientes" class="bg-rp-blue-light section-padding border-t border-b border-rp-gray-soft">
+    
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <h2 class="text-3xl font-bold text-center text-text-dark/80 mb-12 title-style">
+            CONFIARON EN <span class="text-rp-teal">NOSOTROS</span>
+        </h2>
+        
+        <div class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+            
+            <ul class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll">
+                
+                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+
+                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+            </ul>
+
+            <ul class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll" aria-hidden="true">
+                
+                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                <li><img src="images/clientes/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+
+                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+            </ul>
+
+        </div>
+    </div>
+</section>
 
 </main>
 
