@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Economía Circular y Talleres</title>
-    
+
+    <link rel="preload" href="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" as="video" type="video/mp4">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -271,50 +273,52 @@
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
-    <header class="sticky top-0 z-50 bg-white shadow-md">
-        <div  class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            
-            <a href="#home" class="flex items-center text-text-dark hover:opacity-80 transition duration-200" onclick="route()">
-                <img 
-                    src="images/logo.png" 
-                    alt="Logo EcoCycle Solutions" 
-                    class="h-8 sm:h-10 lg:h-12 object-contain"
-                >
-            </a>
-            <nav class="sm:flex space-x-8 text-base font-medium">
-                <a href="#home" class="hover:text-rp-teal transition duration-200 title-style" >INICIO</a>
-                <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style" >TALLERES</a>
-                <a href="#nosotros" class="hover:text-rp-teal transition duration-200 title-style" >SOBRE NOSOTROS</a>
-                <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style" >TIENDA</a>
-                <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style" >CONTACTO</a>
-            </nav>
-
-            <div class="flex items-center space-x-4">
-                <div  class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showFullCartModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
-                    </svg>
-                    <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
-                </div>
-
-                <button id="mobile-menu-button" class="sm:hidden p-2 text-text-dark focus:outline-none focus:ring-2 focus:ring-rp-teal rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+    <header class="sticky top-0 z-50 bg-white shadow-md transition-colors duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
-        <nav id="mobile-menu" class="sm:hidden hidden bg-white shadow-inner pb-2">
-            <a href="#home" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Inicio</a>
-            <a href="#talleres" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Talleres</a>
-            <a href="#nosotros" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Sobre Nosotros</a>
-            <a href="#tienda" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Tienda</a>
-            <a href="#contacto" class="block px-4 py-2 text-lg hover:bg-rp-blue-light" onclick="toggleMobileMenu()">Contacto</a>
+        <a href="#home" class="flex items-center hover:opacity-80 transition duration-200" onclick="route()">
+            <img 
+                src="images/logo.png" 
+                alt="Logo EcoCycle Solutions" 
+                class="h-8 sm:h-10 lg:h-12 object-contain"
+            >
+        </a>
+
+        <nav class="flex max-md:hidden space-x-8 text-base font-medium text-text-dark">
+            <a href="#home" class="hover:text-rp-teal transition duration-200 title-style">INICIO</a>
+            <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style">TALLERES</a>
+            <a href="#nosotros" class="hover:text-rp-teal transition duration-200 title-style">SOBRE NOSOTROS</a>
+            <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style">TIENDA</a>
+            <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style">CONTACTO</a>
         </nav>
-    </header>
+
+        <div class="flex items-center space-x-4">
+            
+            <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showFullCartModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
+                </svg>
+                <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+            </div>
+
+            <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none focus:ring-2 focus:ring-rp-teal rounded-lg" onclick="toggleMobileMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <nav id="mobile-menu" class="hidden md:hidden bg-white shadow-inner border-t border-gray-100">
+        <a href="#home" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Inicio</a>
+        <a href="#talleres" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Talleres</a>
+        <a href="#nosotros" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
+        <a href="#tienda" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Tienda</a>
+        <a href="#contacto" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light" onclick="toggleMobileMenu(); route()">Contacto</a>
+    </nav>
+</header>
 
     <div id="toast-notification" class="fixed top-20 right-4 z-[1000] hidden">
         <div class="bg-white p-4 rounded-xl shadow-2xl border-l-4 border-rp-teal max-w-xs transition-opacity duration-300 transform translate-x-full opacity-0" id="toast-content">
@@ -474,7 +478,7 @@
                     </div>
                 </div>
             </section>
-        <section id="featured-project-video" class="relative h-[300vh] bg-rp-blue-light">
+        <section id="featured-project-video" class="relative h-[600vh] bg-rp-blue-light">
     
             <div id="video-pin-container" class="h-screen w-full 
                                         flex items-center justify-center 
@@ -483,7 +487,7 @@
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
     <video id="scroll-video" 
         class="absolute top-0 left-0 w-full h-full object-cover" 
-        src="images/salida_optimizada.mp4" 
+        src="'https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4'" 
         preload="auto" 
         muted 
         playsinline 
@@ -1378,14 +1382,15 @@ let currentProductData = {};
 // Establecer el año actual en el pie de página
 document.getElementById('current-year').textContent = new Date().getFullYear();
 
-// Alternar Menú Móvil
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const mobileMenu = document.getElementById('mobile-menu');
-
+// --- Alternar Menú Móvil ---
 function toggleMobileMenu() {
-    mobileMenu.classList.toggle('hidden');
+    // Buscamos el menú cada vez que se hace clic (más seguro)
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenu) {
+        mobileMenu.classList.toggle('hidden');
+    }
 }
-mobileMenuButton.addEventListener('click', toggleMobileMenu);
 
 // Rutas 
 const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle'];
@@ -1519,10 +1524,7 @@ function addItemFromShop(name, price, quantity) {
 }
 
 // =================================================
-// === LOGICA VIDEOSCROLL (FINAL Y CORREGIDA) ===
-// =================================================
-// =================================================
-// === LOGICA VIDEOSCROLL (ESTRATEGIA BLOB) ===
+// === LOGICA VIDEOSCROLL: VELOCIDAD MÁXIMA ===
 // =================================================
 gsap.registerPlugin(ScrollTrigger);
 
@@ -1534,54 +1536,43 @@ const growContainer = document.getElementById('video-grow-container');
 const mainHeader = document.querySelector('header');
 const headerLinks = document.querySelectorAll('header a');
 
-// 🚨 CAMBIA ESTO POR LA RUTA REAL DE TU VIDEO OPTIMIZADO
-const VIDEO_URL = 'images/salida_optimizada.mp4'; 
+const VIDEO_URL = 'https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4'; 
 
 function initScrollAnimations() {
-    console.log("Video listo. Iniciando animaciones...");
-
-    // 1. Configuración inicial
+    // 1. Configuración Inicial
     gsap.set(videoText, { opacity: 0 });
     gsap.set(mainHeader, { zIndex: 100 });
 
-    // Duración segura
-    let videoDuration = video.duration || 5;
+    // Usamos una duración fija por defecto para calcular el scroll
+    // (El video se adaptará si dura más o menos, pero esto permite iniciar la animación YA)
+    let duration = 8; // Asumimos 8 segundos aprox
 
-    // 2. Timeline Principal
+    // 2. Timeline Principal (Estructura visual)
+    // Se activa INMEDIATAMENTE, no espera al video.
     let tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: videoSection,
-            start: "top 75%",
-            end: "top top",
-            scrub: true
-        }
-    });
-
-    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
-      .to(videoText, { opacity: 1, ease: "none" }, 0);
-
-    // 3. Scrub del Video
-    gsap.to(video, {
-        currentTime: videoDuration,
-        ease: "none",
         scrollTrigger: {
             trigger: videoSection,
             pin: pinContainer,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.1, 
+            scrub: true,
             anticipatePin: 1
         }
     });
 
-    // 4. Cambios en Header
+    // Animación: Crecer contenedor y aparecer texto
+    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
+      .to(videoText, { opacity: 1, ease: "none" }, 0);
+
+    // Animación: Header Transparente
     gsap.to(mainHeader, {
         backgroundColor: "transparent",
         scrollTrigger: {
             trigger: videoSection,
             start: "top top",
             end: "bottom bottom",
-            toggleActions: "play reverse play reverse"
+            toggleActions: "play reverse play reverse",
+            scrub: true
         }
     });
 
@@ -1591,42 +1582,52 @@ function initScrollAnimations() {
             trigger: videoSection,
             start: "top top",
             end: "bottom bottom",
-            toggleActions: "play reverse play reverse"
+            toggleActions: "play reverse play reverse",
+            scrub: true
         }
     });
 
+    // 3. Conexión del Video (Streaming)
+    // Usamos una función especial para no romper el video si no ha cargado un cuadro
+    gsap.to(video, {
+        currentTime: duration,
+        ease: "none",
+        scrollTrigger: {
+            trigger: videoSection,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.1,
+            onUpdate: self => {
+                // Solo actualizamos el cuadro si el video tiene datos suficientes (readyState > 0)
+                // Si no ha cargado, se queda quieto en el Poster (imagen de fondo)
+                if (video.readyState >= 1) {
+                   try {
+                       // Sincronizamos el tiempo del video con el scroll
+                       video.currentTime = video.duration * self.progress;
+                   } catch(e) {
+                       console.log("Esperando buffer...");
+                   }
+                }
+            }
+        }
+    });
+    
     ScrollTrigger.refresh();
 }
 
-// --- CARGA FORZADA DEL VIDEO (BLOB) ---
-// Esto soluciona el problema de carga en Edge/Chrome
-fetch(VIDEO_URL)
-    .then(response => {
-        if (!response.ok) throw new Error("Error de red al cargar video");
-        return response.blob();
-    })
-    .then(blob => {
-        // Convertimos el archivo descargado en una URL local temporal
-        const blobUrl = URL.createObjectURL(blob);
-        video.src = blobUrl;
-        
-        video.onloadedmetadata = function() {
-            // Una vez que el video tiene datos, preparamos el primer frame
-            video.currentTime = 0;
-            video.pause();
-            initScrollAnimations();
-            
-            // Liberamos memoria cuando terminamos (opcional, pero buena práctica)
-            // URL.revokeObjectURL(blobUrl); 
-        };
-    })
-    .catch(error => {
-        console.error("Fallo crítico cargando el video:", error);
-        // Opcional: Ocultar el video y mostrar una imagen estática de respaldo
-        video.style.display = 'none';
-        growContainer.style.backgroundImage = "url('images/poster_video.jpg')"; // Pon una imagen de fondo
-        growContainer.style.backgroundSize = "cover";
-    });
+// EJECUCIÓN INMEDIATA
+// Asignamos la fuente y arrancamos la animación de estructura sin esperar
+video.src = VIDEO_URL;
+video.load(); // Fuerza al navegador a empezar el streaming
+initScrollAnimations(); // Inicia los textos y el pin AHORA MISMO
+
+// Listener opcional: Si el video carga metadatos, aseguramos que esté pausado y en inicio
+video.addEventListener('loadedmetadata', function() {
+    video.pause();
+    video.currentTime = 0;
+    // Pequeño fade-in para que no aparezca de golpe si cargó tarde
+    gsap.fromTo(video, {opacity: 0}, {opacity: 1, duration: 0.5});
+});
 // ===================================
 // === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
 // ===================================
