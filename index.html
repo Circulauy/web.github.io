@@ -1533,7 +1533,7 @@ function addItemFromShop(name, price, quantity) {
 }
 
 // =========================================================
-// === LÓGICA DE INICIALIZACIÓN GLOBAL (POST-CARGA) ===
+// === LÓGICA DE INICIALIZACIÓN GLOBAL (A PRUEBA DE MÓVILES) ===
 // =========================================================
 
 // --- 1. Selectores de GSAP (globales) ---
@@ -1544,19 +1544,22 @@ const pinContainer = document.getElementById('video-pin-container');
 const growContainer = document.getElementById('video-grow-container');
 const mainHeader = document.querySelector('header');
 const headerLinks = document.querySelectorAll('header a');
+const preloader = document.getElementById('preloader');
 
-// --- 2. Función de Inicialización de Animaciones (Solo se define) ---
+// --- 2. Banderas de Sincronización ---
+let isWindowLoaded = false;
+let isVideoReady = false;
+
+// --- 3. Función de Inicialización de Animaciones (Solo se define) ---
 function initScrollAnimations() {
-    // Esta función ahora se llama DESPUÉS de que todo carga
     gsap.registerPlugin(ScrollTrigger);
-
     gsap.set(videoText, { opacity: 0 });
     gsap.set(mainHeader, { zIndex: 100 });
 
     let duration = video.duration; 
     if (!duration || duration === 0) {
         console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
-        duration = 8; // Fallback por si la duración es 0
+        duration = 8;
     }
 
     let tl = gsap.timeline({
@@ -1609,35 +1612,57 @@ function initScrollAnimations() {
         }
     });
     
-    // Refresco final
     ScrollTrigger.refresh();
 }
 
-// --- 3. Listener de Carga Principal (El que controla todo) ---
-window.addEventListener('load', () => {
-    
-    // A. Tareas de renderizado
-    route();              // 1. Hacemos visible la página
-    updateCartDisplay();  // 2. Actualizamos el carrito
-
-    // B. Tareas de animación
-    // (Llamamos a esto aquí, 'load' espera a que el video esté listo)
-    if(video) {
-        initScrollAnimations();
-    }
-
-    // C. Ocultar el preloader
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        // Le decimos que se desvanezca
-        preloader.style.opacity = '0';
+// --- 4. El "Controlador" (Gatekeeper) ---
+// Esta función se llama dos veces, pero solo se ejecuta cuando AMBOS están listos.
+function checkAndLaunch() {
+    if (isWindowLoaded && isVideoReady) {
+        console.log("GSAP: ¡Todo listo! Lanzando sitio.");
         
-        // Después de 600ms (0.1s más que la transición), lo eliminamos
-        setTimeout(() => {
-            preloader.style.display = 'none';
-        }, 600); 
+        // A. Tareas de renderizado
+        route();
+        updateCartDisplay();
+        
+        // B. Tareas de animación (AHORA SÍ)
+        initScrollAnimations();
+
+        // C. Ocultar el preloader
+        if (preloader) {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 600); 
+        }
     }
+}
+
+// --- 5. Los Listeners (La "Carrera") ---
+
+// Listener 1: La Página (espera todas las imágenes, CSS, etc.)
+window.addEventListener('load', () => {
+    console.log("GSAP: window.load completado.");
+    isWindowLoaded = true;
+    checkAndLaunch(); // Intenta lanzar
 });
+
+// Listener 2: El Video (espera solo el video)
+if (video) {
+    // 'canplaythrough' es más robusto en móviles que 'canplay'
+    video.addEventListener('canplaythrough', () => {
+        console.log("GSAP: video.canplaythrough completado.");
+        isVideoReady = true;
+        checkAndLaunch(); // Intenta lanzar
+    }, { once: true });
+
+    // Forzamos al navegador a empezar a descargar el video
+    video.load(); 
+    
+} else {
+    // Si no hay video, no bloqueamos la carga
+    isVideoReady = true; 
+}
 
 // ===================================
 // === 3. LÓGICA DEL CARRITO Y CHECKOUT ===
