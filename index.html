@@ -44,11 +44,11 @@
                     'infinite-scroll': 'infinite-scroll 25s linear infinite',
                 },
                 keyframes: {
-                    'infinite-scroll': {
-                        '0%': { transform: 'translateX(0)' },
-                        '100%': { transform: 'translateX(-100%)' },
-                    }
+                'infinite-scroll': {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-50%)' },
                 }
+            }
                 
             } // <- Cierre de 'extend'
         } // <- Cierre de 'theme'
@@ -316,7 +316,35 @@
             <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style">CONTACTO</a>
         </nav>
 
-        <div class="flex items-center space-x-4">
+       <div class="flex items-center space-x-4">
+            
+            <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer" 
+               class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+
+        <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<g>
+
+<path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
+
+<path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8   c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
+
+<path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8   c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
+
+</g>
+
+</svg>
+                
+            </a>
+            
+           <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" 
+   class="max-md:hidden text-text-dark transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+    
+        <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+  <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+</svg>
+    
+            </a>
             
             <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showFullCartModal()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
@@ -341,6 +369,20 @@
         <a href="#nosotros" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
         <a href="#tienda" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Tienda</a>
         <a href="#contacto" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light" onclick="toggleMobileMenu(); route()">Contacto</a>
+        <div class="flex justify-center items-center space-x-6 py-4 border-t border-gray-100">
+            
+        <a href="https://www.instagram.com/circula.uy/" class="p-2 opacity-70 hover:opacity-100">
+                <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+  <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+</svg>
+        </a>
+        <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" class="p-2 opacity-70 hover:opacity-100">
+             <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+  <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+</svg>
+        </a>
+    </div>
+    </nav>
     </nav>
 </header>
 
@@ -535,7 +577,7 @@
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     
                     <div class="text-center mb-16">
-                        <h2 class="text-5xl font-bold mb-3 title-style">NUESTROS <span class="text-rp-teal">DESTACADOS</span></h2>
+                        <h2 class="text-5xl font-bold mb-3 title-style"> <span class="text-rp-teal">DESTACADOS</span></h2>
                         <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
                             Diseño reciclado, perfecto para empezar a transformar tus espacios.
                         </p>
@@ -1349,45 +1391,44 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         
         <h2 class="text-3xl font-bold text-center text-text-dark/80 mb-12 title-style">
-            CONFIARON EN <span class="text-rp-teal">NOSOTROS</span>
+            CONFIARON EN <span class="text-rp-teal">CIRCULA</span>
         </h2>
         
-        <div class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+        <div class="w-full overflow-hidden [mask-image:_linear_gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
             
-            <ul class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll">
-                
-                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+            <div class="inline-flex flex-nowrap animate-infinite-scroll">
 
-                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
-            </ul>
+                <ul class="flex items-center [&_li]:mx-8 [&_img]:max-w-none">
+                    <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+                </ul>
 
-            <ul class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll" aria-hidden="true">
-                
-                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
-                <li><img src="images/clientes/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+                <ul class="flex items-center [&_li]:mx-8 [&_img]:max-w-none" aria-hidden="true">
+                    <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
+                    <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
+                </ul>
 
-                <li><img src="images/logo-placeholder-1.png" alt="Logo Cliente 1" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-2.png" alt="Logo Cliente 2" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-3.png" alt="Logo Cliente 3" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-4.png" alt="Logo Cliente 4" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-5.png" alt="Logo Cliente 5" class="h-12 w-auto"></li>
-                <li><img src="images/logo-placeholder-6.png" alt="Logo Cliente 6" class="h-12 w-auto"></li>
-            </ul>
-
+            </div>
         </div>
     </div>
 </section>
@@ -1628,7 +1669,7 @@ function initScrollAnimations() {
     }
 
     // --- Definimos el valor de suavizado ---
-    const SMOOTH_SCRUB_VALUE = 2; // <-- ¡Prueba cambiando este valor! (ej. 1, 1.5, 2)
+    const SMOOTH_SCRUB_VALUE = 1; // <-- ¡Prueba cambiando este valor! (ej. 1, 1.5, 2)
 
     // 2. Timeline Principal
     let tl = gsap.timeline({
