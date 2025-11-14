@@ -297,7 +297,7 @@
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
-    <header class="sticky top-0 z-50 bg-white shadow-md transition-colors duration-300">
+    <header class="sticky top-0 z-50 bg-white shadow-md">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
         <a href="#home" class="flex items-center hover:opacity-80 transition duration-200" onclick="route()">
@@ -560,15 +560,23 @@
                                         overflow-hidden">
         
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
-    <video id="scroll-video" 
-    class="absolute top-0 left-0 w-full h-full object-cover" 
-    preload="auto" 
-    muted 
-    playsinline 
-    webkit-playsinline>
-    
-    <source src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" type="video/mp4">
-    
+    <video id="scroll-video" 
+    class="absolute top-0 left-0 w-full h-full object-cover" 
+    preload="auto" 
+    muted 
+    playsinline 
+    webkit-playsinline>
+
+        <source 
+        src="https://res.cloudinary.com/dbj43n6ih/video/upload/w_800,q_auto:good/v1762922472/salida_optimizada_f1vtel.mp4" 
+        type="video/mp4" 
+        media="(max-width: 768px)">
+
+        <source 
+        src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" 
+        type="video/mp4" 
+        media="(min-width: 769px)">
+    
 </video>
     
     <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
@@ -1670,12 +1678,12 @@ const mobileMenuDropdown = document.getElementById('mobile-menu'); // El menú d
 let isWindowLoaded = false;
 let isVideoReady = false;
 
-// ✅ INICIO DEL NUEVO BLOQUE ✅
+// ✅ PEGA ESTA FUNCIÓN (VERSIÓN CORREGIDA SIN TYPOS) ✅
 
 function initScrollAnimations() {
     gsap.registerPlugin(ScrollTrigger);
     gsap.set(videoText, { opacity: 0 });
-    gsap.set(mainHeader, { zIndex: 100 }); // Asegura que el header esté por encima
+    gsap.set(mainHeader, { zIndex: 100 }); 
 
     let duration = video.duration; 
     if (!duration || duration === 0) {
@@ -1683,54 +1691,100 @@ function initScrollAnimations() {
         duration = 8;
     }
 
-    // --- Definimos el valor de suavizado ---
-    const SMOOTH_SCRUB_VALUE = 1.5;
+    // Volvemos al valor original para un scroll más "directo"
+    const SMOOTH_SCRUB_VALUE = 1.5; 
+    const TWEEN_DURATION = 0.3; 
 
-    // =================================================================
-    // === 1. LÍNEA DE TIEMPO ÚNICA ===
-    // Creamos UNA sola timeline con UN solo ScrollTrigger
-    // =================================================================
+    // --- Colores Originales (para la reversión) ---
+    const originalColor = "#333333"; // text-dark
+    const originalBg = "#FFFFFF";    // bg-white
+    const originalCartColor = "#79C7C7"; // rp-teal
+    const originalFilter = "invert(0)";
+
+    // --- Colores Destino ---
+    const targetColor = "#FFFFFF";
+    const transparentBg = "transparent";
+    const targetFilter = "invert(1) brightness(100)";
+
+    // 1. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
     let tl = gsap.timeline({
         scrollTrigger: {
             trigger: videoSection,
             pin: pinContainer,
             start: "top top",
             end: "bottom bottom",
-            scrub: SMOOTH_SCRUB_VALUE, // <-- Controla la suavidad y la reversa
+            scrub: SMOOTH_SCRUB_VALUE, // <-- Usando 1.5
             anticipatePin: 1
         }
     });
-
-    // =================================================================
-    // === 2. AÑADIMOS TODAS LAS ANIMACIONES A LA TIMELINE ===
-    // El ", 0" al final hace que todas empiecen al mismo tiempo.
-    // =================================================================
-
-    // A. Animación: Crecer contenedor y aparecer texto
+    
+    // Animaciones de la timeline principal (Video, Texto, Zoom)
     tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
-      .to(videoText, { opacity: 1, ease: "none" }, 0);
+      .to(videoText, { opacity: 1, ease: "none" }, 0)
+      .to(video, { currentTime: duration, ease: "none" }, 0);
 
-    // B. Animación Header (Fondos transparentes)
-    tl.to(mainHeader, { backgroundColor: "transparent", ease: "none" }, 0);
-    tl.to(mobileMenuDropdown, { backgroundColor: "transparent", ease: "none" }, 0);
 
-    // C. Animación Header (Iconos y Texto a blanco)
-    tl.to(headerLinks, { color: "#FFFFFF", ease: "none" }, 0);
-    tl.to(mobileMenuButton, { color: "#FFFFFF", ease: "none" }, 0);
-    tl.to(cartIconSVG, { color: "#FFFFFF", ease: "none" }, 0);
-    tl.to(headerLogo, { filter: "invert(1) brightness(100)", ease: "none" }, 0);
-    
-    // D. Animación del Video (sincronizada con el scroll)
-    video.pause();
-    video.currentTime = 0;
-    tl.to(video, { currentTime: duration, ease: "none" }, 0);
+    // 2. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
+    const headerTrigger = {
+        trigger: videoSection, 
+        start: "top top",
+        end: "bottom bottom",
+        toggleActions: "play reverse play reverse"
+    };
 
-    // Refrescar ScrollTrigger después de armar la timeline
+    // Fondo del Header
+    gsap.to(mainHeader, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Fondo del Menú Desplegable
+    gsap.to(mobileMenuDropdown, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Links del Desktop
+    const desktopHeaderLinks = document.querySelectorAll('header > div > nav.max-md\\:hidden a');
+    gsap.to(desktopHeaderLinks, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Botón de Hamburguesa
+    gsap.to(mobileMenuButton, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Icono del Carrito
+    gsap.to(cartIconSVG, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Logo (AQUÍ ESTABA EL ERROR 't')
+    gsap.to(headerLogo, { 
+        filter: targetFilter, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+    
+    // Links del Menú Desplegable (AQUÍ ESTABA EL ERROR 's')
+    const mobileMenuDropdownLinks = document.querySelectorAll('nav#mobile-menu a');
+    gsap.to(mobileMenuDropdownLinks, {
+        color: targetColor, 
+        duration: TWEEN_DURATION,
+        scrollTrigger: headerTrigger
+    });
+
     ScrollTrigger.refresh();
 }
-
-// ✅ FIN DEL NUEVO BLOQUE ✅
-
 // --- 4. El "Controlador" (Gatekeeper) ---
 // Esta función se llama dos veces, pero solo se ejecuta cuando AMBOS están listos.
 function checkAndLaunch() {
@@ -1765,19 +1819,47 @@ window.addEventListener('load', () => {
 
 // Listener 2: El Video (espera solo el video)
 if (video) {
-    // 'canplaythrough' es más robusto en móviles que 'canplay'
-    video.addEventListener('canplaythrough', () => {
-        console.log("GSAP: video.canplaythrough completado.");
-        isVideoReady = true;
-        checkAndLaunch(); // Intenta lanzar
-    }, { once: true });
+    // 'canplaythrough' es más robusto en móviles que 'canplay'
+    video.addEventListener('canplaythrough', () => {
+        console.log("GSAP: video.canplaythrough completado.");
+        isVideoReady = true;
+        checkAndLaunch(); // Intenta lanzar
+    }, { once: true });
 
-    // Forzamos al navegador a empezar a descargar el video
-    video.load(); 
-    
+    // Ya no forzamos la carga, el HTML (preload="auto") lo hace solo.
+    // video.load(); // <---- ✅ LÍNEA ELIMINADA O COMENTADA
+    
 } else {
+    // ...
     // Si no hay video, no bloqueamos la carga
     isVideoReady = true; 
+}// --- 5. Los Listeners (La "Carrera") ---
+
+// Listener 1: La Página (espera todas las imágenes, CSS, etc.)
+window.addEventListener('load', () => {
+    console.log("GSAP: window.load completado.");
+    isWindowLoaded = true;
+    checkAndLaunch(); // Intenta lanzar
+});
+
+// Listener 2: El Video (espera solo el video)
+if (video) {
+    // 1. CAMBIO DE EVENTO: 'loadeddata' es MUCHO más rápido y confiable
+    // que 'canplaythrough' en móviles. Se dispara en cuanto el video
+    // tiene el primer frame, que es todo lo que necesitamos.
+    video.addEventListener('loadeddata', () => { 
+        console.log("GSAP: video.loadeddata completado."); // <-- Mensaje cambiado
+        isVideoReady = true;
+        checkAndLaunch(); // Intenta lanzar
+    }, { once: true });
+
+    // 2. LÍNEA ELIMINADA: Ya no forzamos la carga.
+    // El HTML (preload="auto") se encargará de esto.
+    // video.load(); // <---- ✅ LÍNEA ELIMINADA O COMENTADA
+    
+} else {
+    // Si no hay video, no bloqueamos la carga
+    isVideoReady = true; 
 }
 
 // ===================================
