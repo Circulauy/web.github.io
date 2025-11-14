@@ -1804,22 +1804,23 @@ function checkAndLaunch() {
 
 // Listener 1: La Página (espera todas las imágenes, CSS, etc.)
 window.addEventListener('load', () => {
-    console.log("GSAP: window.load completado.");
-    isWindowLoaded = true;
-    checkAndLaunch(); // Intenta lanzar
+    console.log("GSAP: window.load completado.");
+    isWindowLoaded = true;
+    checkAndLaunch(); // Intenta lanzar
 });
 
 // Listener 2: El Video (espera solo el video)
 if (video) {
-    // 'canplaythrough' es más robusto en móviles que 'canplay'
-    video.addEventListener('canplaythrough', () => {
-        console.log("GSAP: video.canplaythrough completado.");
+    // 🚨 CAMBIO DE EVENTO: 'loadeddata' es más rápido y confiable
+    // que 'canplaythrough' en móviles. Se dispara con el primer frame.
+    video.addEventListener('loadeddata', () => { // <--- ✅ SOLUCIÓN
+        console.log("GSAP: video.loadeddata completado."); // Mensaje cambiado
         isVideoReady = true;
         checkAndLaunch(); // Intenta lanzar
     }, { once: true });
 
-    // Ya no forzamos la carga, el HTML (preload="auto") lo hace solo.
-    // video.load(); // <---- ✅ LÍNEA ELIMINADA O COMENTADA
+    // Esto se queda comentado. El HTML (preload="auto") se encarga.
+    // video.load(); 
     
 } else {
     // Si no hay video, no bloqueamos la carga
