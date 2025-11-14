@@ -560,23 +560,15 @@
                                         overflow-hidden">
         
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
-    <video id="scroll-video" 
-    class="absolute top-0 left-0 w-full h-full object-cover" 
-    preload="auto" 
-    muted 
-    playsinline 
-    webkit-playsinline>
-
-        <source 
-        src="https://res.cloudinary.com/dbj43n6ih/video/upload/w_800,q_auto:good/v1762922472/salida_optimizada_f1vtel.mp4" 
-        type="video/mp4" 
-        media="(max-width: 768px)">
-
-        <source 
-        src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" 
-        type="video/mp4" 
-        media="(min-width: 769px)">
-    
+    <video id="scroll-video" 
+    class="absolute top-0 left-0 w-full h-full object-cover" 
+    preload="auto" 
+    muted 
+    playsinline 
+    webkit-playsinline>
+    
+    <source src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" type="video/mp4">
+    
 </video>
     
     <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
@@ -1678,10 +1670,17 @@ const mobileMenuDropdown = document.getElementById('mobile-menu'); // El menú d
 let isWindowLoaded = false;
 let isVideoReady = false;
 
-// ✅ PEGA ESTA FUNCIÓN (VERSIÓN CORREGIDA SIN TYPOS) ✅
+// ✅ PEGA ESTA NUEVA FUNCIÓN COMPLETA ✅
 
 function initScrollAnimations() {
     gsap.registerPlugin(ScrollTrigger);
+
+    // =======================================================
+    // === 1. AJUSTES GLOBALES DE SCROLLTRIGGER ===
+    // lagSmoothing (500ms) "absorbe" los saltos bruscos del scroll en móvil
+    // =======================================================
+    ScrollTrigger.defaults({ lagSmoothing: 500, autoRefreshEvents: "DOMContentLoaded,load,resize" });
+
     gsap.set(videoText, { opacity: 0 });
     gsap.set(mainHeader, { zIndex: 100 }); 
 
@@ -1691,8 +1690,11 @@ function initScrollAnimations() {
         duration = 8;
     }
 
-    // Volvemos al valor original para un scroll más "directo"
-    const SMOOTH_SCRUB_VALUE = 1.5; 
+    // =======================================================
+    // === 2. VALOR DE SCRUB AUMENTADO ===
+    // Subimos de 1.5 a 2.5 para más suavidad
+    // =======================================================
+    const SMOOTH_SCRUB_VALUE = 2.5; // <-- MÁS SUAVE
     const TWEEN_DURATION = 0.3; 
 
     // --- Colores Originales (para la reversión) ---
@@ -1706,17 +1708,19 @@ function initScrollAnimations() {
     const transparentBg = "transparent";
     const targetFilter = "invert(1) brightness(100)";
 
-    // 1. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
+    // 3. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
     let tl = gsap.timeline({
         scrollTrigger: {
             trigger: videoSection,
             pin: pinContainer,
             start: "top top",
             end: "bottom bottom",
-            scrub: SMOOTH_SCRUB_VALUE, // <-- Usando 1.5
+            scrub: SMOOTH_SCRUB_VALUE, // <-- Usa el nuevo valor 2.5
             anticipatePin: 1
         }
     });
+
+    // ... (El resto de la función se mantiene igual) ...
     
     // Animaciones de la timeline principal (Video, Texto, Zoom)
     tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
@@ -1724,9 +1728,11 @@ function initScrollAnimations() {
       .to(video, { currentTime: duration, ease: "none" }, 0);
 
 
-    // 2. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
+    // 4. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
+    const headerScrub = 0.5; 
+
     const headerTrigger = {
-        trigger: videoSection, 
+        trigger: videoSection,
         start: "top top",
         end: "bottom bottom",
         toggleActions: "play reverse play reverse"
@@ -1768,14 +1774,14 @@ function initScrollAnimations() {
         scrollTrigger: headerTrigger 
     });
 
-    // Logo (AQUÍ ESTABA EL ERROR 't')
+    // Logo
     gsap.to(headerLogo, { 
         filter: targetFilter, 
         duration: TWEEN_DURATION, 
         scrollTrigger: headerTrigger 
     });
     
-    // Links del Menú Desplegable (AQUÍ ESTABA EL ERROR 's')
+    // Links del Menú Desplegable
     const mobileMenuDropdownLinks = document.querySelectorAll('nav#mobile-menu a');
     gsap.to(mobileMenuDropdownLinks, {
         color: targetColor, 
