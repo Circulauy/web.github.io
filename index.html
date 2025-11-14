@@ -1819,17 +1819,18 @@ window.addEventListener('load', () => {
 
 // Listener 2: El Video (espera solo el video)
 if (video) {
-    // 'canplaythrough' es más robusto en móviles que 'canplay'
-    video.addEventListener('canplaythrough', () => {
-        console.log("GSAP: video.canplaythrough completado.");
-        isVideoReady = true;
-        checkAndLaunch(); // Intenta lanzar
-    }, { once: true });
+    // 'canplaythrough' es más robusto en móviles que 'canplay'
+    video.addEventListener('canplaythrough', () => {
+        console.log("GSAP: video.canplaythrough completado.");
+        isVideoReady = true;
+        checkAndLaunch(); // Intenta lanzar
+    }, { once: true });
 
-    // Forzamos al navegador a empezar a descargar el video
-    video.load(); 
-    
+    // Ya no forzamos la carga, el HTML (preload="auto") lo hace solo.
+    // video.load(); // <---- ✅ LÍNEA ELIMINADA O COMENTADA
+    
 } else {
+    // ...
     // Si no hay video, no bloqueamos la carga
     isVideoReady = true; 
 }
