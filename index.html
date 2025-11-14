@@ -1833,6 +1833,33 @@ if (video) {
     // ...
     // Si no hay video, no bloqueamos la carga
     isVideoReady = true; 
+}// --- 5. Los Listeners (La "Carrera") ---
+
+// Listener 1: La Página (espera todas las imágenes, CSS, etc.)
+window.addEventListener('load', () => {
+    console.log("GSAP: window.load completado.");
+    isWindowLoaded = true;
+    checkAndLaunch(); // Intenta lanzar
+});
+
+// Listener 2: El Video (espera solo el video)
+if (video) {
+    // 1. CAMBIO DE EVENTO: 'loadeddata' es MUCHO más rápido y confiable
+    // que 'canplaythrough' en móviles. Se dispara en cuanto el video
+    // tiene el primer frame, que es todo lo que necesitamos.
+    video.addEventListener('loadeddata', () => { 
+        console.log("GSAP: video.loadeddata completado."); // <-- Mensaje cambiado
+        isVideoReady = true;
+        checkAndLaunch(); // Intenta lanzar
+    }, { once: true });
+
+    // 2. LÍNEA ELIMINADA: Ya no forzamos la carga.
+    // El HTML (preload="auto") se encargará de esto.
+    // video.load(); // <---- ✅ LÍNEA ELIMINADA O COMENTADA
+    
+} else {
+    // Si no hay video, no bloqueamos la carga
+    isVideoReady = true; 
 }
 
 // ===================================
