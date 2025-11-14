@@ -48,31 +48,26 @@ exports.handler = async (event, context) => {
     const YOUR_NETLIFY_URL = "https://circula.uy"; 
 
     let preference = {
-        items: items,
-        back_urls: {
-            success: `${YOUR_NETLIFY_URL}/success.html`,
-            failure: `${YOUR_NETLIFY_URL}/failure.html`,
-            pending: `${YOUR_NETLIFY_URL}/pending.html`,
-        },
-        auto_return: 'approved',
-        
-        // Campo obligatorio para Conciliación Financiera
-        external_reference: uniqueOrderId, 
-        
-        // CRÍTICO: URL para el Webhook (Las notificaciones se enviarán aquí)
-        notification_url: `${YOUR_NETLIFY_URL}/.netlify/functions/mp-webhook`, 
-        
-        // CRÍTICO: Guardamos los datos del comprador y la referencia externa para el Webhook
-        metadata: {
-            buyer_email: buyerEmail,
-            buyer_name: buyerName,
-            order_ref: uniqueOrderId
-        },
-        
-        payer: {
-            email: buyerEmail 
-        },
-    };
+    items: items,
+    back_urls: {
+        success: `${YOUR_NETLIFY_URL}/success.html`,
+        failure: `${YOUR_NETLIFY_URL}/failure.html`,
+        pending: `${YOUR_NETLIFY_URL}/pending.html`,
+    },
+    auto_return: 'approved',
+
+    external_reference: JSON.stringify({
+        buyer_email: buyerEmail,
+        buyer_name: buyerName,
+        order_ref: uniqueOrderId
+    }),
+
+    notification_url: `${YOUR_NETLIFY_URL}/.netlify/functions/mp-webhook`, 
+
+    payer: {
+        email: buyerEmail
+    },
+};
 
     try {
         // 5. LLAMADA A LA API DE MERCADO PAGO (Crear preferencia)
