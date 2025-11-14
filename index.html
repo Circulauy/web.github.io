@@ -297,7 +297,7 @@
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
-    <header class="sticky top-0 z-50 bg-white shadow-md transition-colors duration-300">
+    <header class="sticky top-0 z-50 bg-white shadow-md">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
         <a href="#home" class="flex items-center hover:opacity-80 transition duration-200" onclick="route()">
@@ -560,15 +560,23 @@
                                         overflow-hidden">
         
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
-    <video id="scroll-video" 
-    class="absolute top-0 left-0 w-full h-full object-cover" 
-    preload="auto" 
-    muted 
-    playsinline 
-    webkit-playsinline>
-    
-    <source src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" type="video/mp4">
-    
+    <video id="scroll-video" 
+    class="absolute top-0 left-0 w-full h-full object-cover" 
+    preload="auto" 
+    muted 
+    playsinline 
+    webkit-playsinline>
+
+        <source 
+        src="https://res.cloudinary.com/dbj43n6ih/video/upload/w_800,q_auto:good/v1762922472/salida_optimizada_f1vtel.mp4" 
+        type="video/mp4" 
+        media="(max-width: 768px)">
+
+        <source 
+        src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4" 
+        type="video/mp4" 
+        media="(min-width: 769px)">
+    
 </video>
     
     <div id="video-text-overlay" class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
@@ -1660,82 +1668,123 @@ const growContainer = document.getElementById('video-grow-container');
 const mainHeader = document.querySelector('header');
 const headerLinks = document.querySelectorAll('header a');
 const preloader = document.getElementById('preloader');
+// Selectores para los íconos del header (móvil y desktop)
+const headerLogo = document.querySelector('header a img');
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const cartIconSVG = document.querySelector('div[onclick="showFullCartModal()"] svg');
+const mobileMenuDropdown = document.getElementById('mobile-menu'); // El menú desplegable
 
 // --- 2. Banderas de Sincronización ---
 let isWindowLoaded = false;
 let isVideoReady = false;
 
+// ✅ PEGA ESTA FUNCIÓN (VERSIÓN CORREGIDA SIN TYPOS) ✅
+
 function initScrollAnimations() {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.set(videoText, { opacity: 0 });
-    gsap.set(mainHeader, { zIndex: 100 });
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.set(videoText, { opacity: 0 });
+    gsap.set(mainHeader, { zIndex: 100 }); 
 
-    let duration = video.duration; 
-    if (!duration || duration === 0) {
-        console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
-        duration = 8;
-    }
+    let duration = video.duration; 
+    if (!duration || duration === 0) {
+        console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
+        duration = 8;
+    }
 
-    // --- Definimos el valor de suavizado ---
-    const SMOOTH_SCRUB_VALUE = 1; // <-- ¡Prueba cambiando este valor! (ej. 1, 1.5, 2)
+    // Volvemos al valor original para un scroll más "directo"
+    const SMOOTH_SCRUB_VALUE = 1.5; 
+    const TWEEN_DURATION = 0.3; 
 
-    // 2. Timeline Principal
-    let tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: videoSection,
-            pin: pinContainer,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: SMOOTH_SCRUB_VALUE, // <-- APLICADO
-            anticipatePin: 1
-        }
-    });
+    // --- Colores Originales (para la reversión) ---
+    const originalColor = "#333333"; // text-dark
+    const originalBg = "#FFFFFF";    // bg-white
+    const originalCartColor = "#79C7C7"; // rp-teal
+    const originalFilter = "invert(0)";
 
-    // Animación: Crecer contenedor y aparecer texto
-    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
-      .to(videoText, { opacity: 1, ease: "none" }, 0);
+    // --- Colores Destino ---
+    const targetColor = "#FFFFFF";
+    const transparentBg = "transparent";
+    const targetFilter = "invert(1) brightness(100)";
 
-    // 3. Animación Header
-    gsap.to(mainHeader, {
-        backgroundColor: "transparent",
-        scrollTrigger: {
-            trigger: videoSection,
-            start: "top top",
-            end: "bottom bottom",
-            toggleActions: "play reverse play reverse",
-            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
-        }
-    });
-
-    gsap.to(headerLinks, {
-        color: "#FFFFFF",
-        scrollTrigger: {
-            trigger: videoSection,
-            start: "top top",
-            end: "bottom bottom",
-            toggleActions: "play reverse play reverse",
-            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
-        }
-    });
-
-    // 4. Conexión del Video
-    video.pause();
-    video.currentTime = 0;
-
-    gsap.to(video, {
-        currentTime: duration,
-        ease: "none",
-        scrollTrigger: {
-            trigger: videoSection,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: SMOOTH_SCRUB_VALUE // <-- APLICADO
-        }
-    });
+    // 1. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
+    let tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: videoSection,
+            pin: pinContainer,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: SMOOTH_SCRUB_VALUE, // <-- Usando 1.5
+            anticipatePin: 1
+        }
+    });
     
-    ScrollTrigger.refresh();
-}
+    // Animaciones de la timeline principal (Video, Texto, Zoom)
+    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
+      .to(videoText, { opacity: 1, ease: "none" }, 0)
+      .to(video, { currentTime: duration, ease: "none" }, 0);
 
+
+    // 2. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
+    const headerTrigger = {
+        trigger: videoSection, 
+        start: "top top",
+        end: "bottom bottom",
+        toggleActions: "play reverse play reverse"
+    };
+
+    // Fondo del Header
+    gsap.to(mainHeader, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Fondo del Menú Desplegable
+    gsap.to(mobileMenuDropdown, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Links del Desktop
+    const desktopHeaderLinks = document.querySelectorAll('header > div > nav.max-md\\:hidden a');
+    gsap.to(desktopHeaderLinks, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Botón de Hamburguesa
+    gsap.to(mobileMenuButton, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Icono del Carrito
+    gsap.to(cartIconSVG, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+
+    // Logo (AQUÍ ESTABA EL ERROR 't')
+    gsap.to(headerLogo, { 
+        filter: targetFilter, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+    
+    // Links del Menú Desplegable (AQUÍ ESTABA EL ERROR 's')
+    const mobileMenuDropdownLinks = document.querySelectorAll('nav#mobile-menu a');
+    gsap.to(mobileMenuDropdownLinks, {
+        color: targetColor, 
+        duration: TWEEN_DURATION,
+        scrollTrigger: headerTrigger
+    });
+
+    ScrollTrigger.refresh();
+}
 // --- 4. El "Controlador" (Gatekeeper) ---
 // Esta función se llama dos veces, pero solo se ejecuta cuando AMBOS están listos.
 function checkAndLaunch() {
