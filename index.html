@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Economía Circular y Talleres</title>
 
-  
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
-   
+    
 <script>
 
     tailwind.config = {
@@ -38,8 +38,6 @@
                     '20': '5rem',
                     '24': '6rem', 
                 },
-
-                // 🚨 ESTA ES LA PARTE AÑADIDA Y CORREGIDA 🚨
                 animation: {
                     'infinite-scroll': 'infinite-scroll 25s linear infinite',
                 },
@@ -55,6 +53,157 @@
     } // <- Cierre de 'tailwind.config'
 </script>
     <style>
+
+/* ========================================================= */
+/* == CSS CORREGIDO PARA EL CARRITO (MÓVIL Y DESKTOP) == */
+/* ========================================================= */
+
+/* --- 1. ESTILOS BASE (MÓVIL-FIRST) --- */
+
+/* Fila de Encabezados (Oculta en móvil por defecto) */
+#cart-header-row {
+    display: none; 
+    background-color: #f3f4f6;
+    border-bottom: 1px solid #d1d5db;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Fila de Producto (Vertical en móvil) */
+.cart-item-row {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    gap: 0.5rem;
+}
+.cart-item-row:hover {
+    background-color: #f9f9f9;
+}
+
+/* Bloque Producto (Imagen + Nombre) */
+.cart-item-product {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Bloque de datos solo para móvil (Precio + Cantidad) */
+.cart-item-mobile-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 68px; /* 56px de imagen + 12px de gap */
+    padding-top: 0.5rem;
+}
+.cart-item-mobile-data > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+.cart-item-mobile-data .label {
+    color: #6B7280;
+    font-weight: 500;
+}
+.cart-item-mobile-data .value {
+    font-weight: 700;
+    color: #333333;
+}
+.cart-item-mobile-data .qty-box {
+    background-color: #f3f4f6;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e7eb;
+}
+
+/* Celdas de Desktop (Ocultas en móvil por defecto) */
+.cart-item-desktop-price,
+.cart-item-desktop-qty,
+.cart-item-desktop-total {
+    display: none;
+}
+
+
+/* --- 2. VISTA DE ESCRITORIO (min-width: 640px) --- */
+@media (min-width: 640px) {
+
+    /* Encabezado se vuelve tabla (grid) */
+    #cart-header-row {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 columnas */
+        gap: 1rem;
+        align-items: center;
+    }
+
+    /* Reglas de alineación para el ENCABEZADO */
+    #cart-header-row > div:nth-child(1) {
+        grid-column: span 2 / span 2; /* "Producto" ocupa 2 columnas */
+        text-align: left;
+    }
+    #cart-header-row > div:nth-child(2) {
+        text-align: center; /* "Precio" */
+    }
+    #cart-header-row > div:nth-child(3) {
+        text-align: center; /* "Cant." */
+    }
+    #cart-header-row > div:nth-child(4) {
+        text-align: right; /* "Total" */
+    }
+
+    /* Fila de Producto se vuelve tabla (grid) */
+    .cart-item-row {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 columnas */
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .cart-item-product {
+        grid-column: span 2 / span 2; /* sm:col-span-2 */
+    }
+
+    /* Ocultar el bloque de datos de móvil */
+    .cart-item-mobile-data {
+        display: none;
+    }
+
+    /* Mostrar las celdas de desktop */
+    .cart-item-desktop-price,
+    .cart-item-desktop-qty,
+    .cart-item-desktop-total {
+        display: block; /* Mostrar celda */
+    }
+
+    /* Estilos de alineación para la tabla de desktop */
+    .cart-item-desktop-price {
+        text-align: center;
+        color: #4B5563; /* text-gray-600 */
+        font-weight: 500; /* font-medium */
+    }
+    .cart-item-desktop-qty {
+        display: flex; 
+        justify-content: center;
+    }
+    .cart-item-desktop-qty-box {
+        background-color: #f3f4f6;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        border: 1px solid #e5e7eb;
+    }
+    .cart-item-desktop-total {
+        text-align: right;
+        font-weight: 700; /* font-bold */
+        font-size: 1.125rem; /* text-lg */
+        color: #79C7C7; /* text-rp-teal */
+ }
+    }
         /* Custom styles for cleaner design */
         html {
             scroll-behavior: smooth;
@@ -82,38 +231,32 @@
 
         /* Estilo para el modal de imagen */
         #full-image {
-            max-height: 90vh; /* Limita la altura máxima al 90% del viewport */
-            max-width: 90vw; /* Limita la anchura máxima al 90% del viewport */
-            width: auto; /* Permite que el ancho se ajuste */
-            height: auto; /* Permite que la altura se ajuste */
-            object-fit: contain; /* Asegura que la imagen se vea completa sin recortarse */
+            max-height: 90vh;
+            max-width: 90vw;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
         
         /* ========================================================= */
-/* == MANEJO DEL FONDO DEL HERO (DESKTOP Y MÓVIL) == */
-/* ========================================================= */
-
-/* 1. Estilos por defecto (Desktop) - Los que movimos del HTML */
-#hero-section {
-    background-image: url('images/fondo.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-/* 2. Media Query: Aplicar la imagen SOLO en pantallas pequeñas (768px o menos) */
-    @media (max-width: 768px) {
+        /* == MANEJO DEL FONDO DEL HERO (DESKTOP Y MÓVIL) == */
+        /* ========================================================= */
         #hero-section {
-            background-image: url('images/fondo_movil.jpg'); 
-            
-            /* background-position: center bottom; /* Esto puede ser el problema */
-            background-position: center; /* Intenta centrarla completamente */
-            background-size: cover;      /* ¡Cambiamos a cover! */
-            background-repeat: no-repeat;
-            background-attachment: scroll; 
+            background-image: url('images/fondo.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
-    }
-                /* --- Posicionamiento del Widget --- */
+        @media (max-width: 768px) {
+            #hero-section {
+                background-image: url('images/fondo_movil.jpg'); 
+                background-position: center;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: scroll; 
+            }
+        }
+        /* --- Posicionamiento del Widget --- */
         #whatsapp-widget {
             position: fixed;
             bottom: 20px;
@@ -123,7 +266,7 @@
 
         /* --- Estilo del Ícono de WhatsApp (Burbuja siempre visible) --- */
         #whatsapp-icon {
-            background-color: #25D366; /* Verde de WhatsApp */
+            background-color: #25D366;
             color: white;
             border: none;
             border-radius: 50%;
@@ -133,66 +276,47 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
-            /* Aseguramos que el icono sea visible sobre la caja de chat */
             z-index: 10001; 
         }
-
         #whatsapp-icon:hover {
             transform: scale(1.05);
         }
-
         .hidden {
             display: none !important;
         }
 
         /* --- Estilo de la Ventana del Chat (Simulación de Móvil) --- */
         #whatsapp-chat-box {
-            width: 320px; /* Ancho típico de un móvil pequeño */
-            height: 450px; /* Alto para simular una pantalla */
-            
+            width: 320px;
+            height: 450px;
             background: white; 
-            border-radius: 20px; /* Bordes muy redondeados */
+            border-radius: 20px;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
-            
             position: absolute; 
-            bottom: 75px; /* Colócalo justo encima del ícono */
+            bottom: 75px;
             right: 0;
-            
-            /* Estructura interna */
             display: flex; 
             flex-direction: column;
-            overflow: hidden; /* Oculta cualquier contenido que se desborde */
+            overflow: hidden;
         }
 
         /* --- 1. Encabezado del Chat (Barra Superior de WhatsApp) --- */
         #chat-header {
-            background-color: #075E54; /* Color de barra de WhatsApp */
+            background-color: #075E54;
             color: white;
             padding: 10px 15px;
             display: flex;
             align-items: center;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-
-        /* --- ESTILOS NUEVOS PARA LA IMAGEN DE AVATAR --- */
         #company-avatar {
-            /* Dimensiones adecuadas para un avatar de chat */
             width: 38px;
             height: 38px;
-            
-            /* HACER LA IMAGEN CIRCULAR */
             border-radius: 50%;
-            
-            /* Añadir un borde sutil, como en WhatsApp */
             border: 2px solid white;
-            
-            /* Aseguramos que la imagen cubra el área sin distorsionarse */
             object-fit: cover;
-            
-            /* Espacio a la derecha del nombre */
             margin-right: 10px;
         }
-
         .contact-info {
             display: flex;
             flex-direction: column;
@@ -208,25 +332,18 @@
 
         /* --- 2. Área de Mensajes (Fondo de WhatsApp) --- */
         #message-area {
-            /* Fondo que simula el wallpaper de chat de WhatsApp */
-            
-            background-image: url('images/whastappweb.jpg'); /* Ruta a la imagen de fondo */
-            
-            /* Propiedades para repetir y cubrir el área */
-            background-repeat: repeat; /* La imagen de fondo de WA se repite */
-            background-size: contain;     /* Deja que la imagen se repita sin estirarse */
-            background-color: #ECE5DD; /* Color de respaldo si la imagen no carga */
-            
-            flex-grow: 1; /* Ocupa el espacio restante */
+            background-image: url('images/whastappweb.jpg');
+            background-repeat: repeat;
+            background-size: contain;
+            background-color: #ECE5DD;
+            flex-grow: 1;
             padding: 15px;
-            overflow-y: auto
+            overflow-y: auto;
         }
-
-        /* Mensaje de bienvenida (simulación de burbuja) */
         .initial-message {
-            background-color: #DCF8C6; /* Color de burbuja de mensaje enviado/propio */
+            background-color: #DCF8C6;
             padding: 8px 12px;
-            border-radius: 10px 10px 10px 0; /* Forma de burbuja */
+            border-radius: 10px 10px 10px 0;
             max-width: 80%;
             margin-bottom: 10px;
             font-size: 14px;
@@ -237,16 +354,13 @@
         /* --- 3. Área de Entrada (Abajo) --- */
         #input-container {
             padding: 8px 15px;
-            background-color: #f0f0f0; /* Color gris claro para la base del input */
+            background-color: #f0f0f0;
             display: flex; 
             align-items: flex-end; 
         }
-
         #mensaje-usuario {
             flex-grow: 1; 
-            
-            /* Estética de WhatsApp Input */
-            background-color: white; /* Blanco para el área de escritura */
+            background-color: white;
             border: none;
             border-radius: 20px; 
             padding: 10px 12px;
@@ -266,7 +380,6 @@
             height: 44px; 
             min-width: 44px; 
             padding: 0;
-            
             background-color: #075E54; 
             color: white;
             border: none;
@@ -279,16 +392,16 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             transition: background-color 0.2s;
         }
-
         #whatsapp-chat-box button:hover {
             background-color: #128C7E; 
         }
+        
     </style>
 </head>
 
 <div id="preloader" class="fixed inset-0 z-[99999] bg-rp-blue-light 
-                          flex items-center justify-center 
-                          transition-opacity duration-500 ease-out">
+                            flex items-center justify-center 
+                            transition-opacity duration-500 ease-out">
     
     <img src="images/Logo C.png" alt="Cargando Circula..." class="max-w-[200px] animate-pulse">
 </div>
@@ -320,41 +433,54 @@
             
             <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer" 
                class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-
-        <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-<g>
-
-<path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
-
-<path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8   c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
-
-<path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8   c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
-
-</g>
-
-</svg>
-                
+                <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g>
+                <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
+                <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 	c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
+                <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 	c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
+                </g>
+                </svg>
             </a>
             
            <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" 
-   class="max-md:hidden text-text-dark transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-    
-        <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
-  <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
-</svg>
-    
+               class="max-md:hidden text-text-dark transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+                <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+                </svg>
             </a>
             
-            <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="showFullCartModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
-                </svg>
-                <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+            <div id="cart-dropdown-container" class="relative group">
+                <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200" onclick="route('carrito')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
+                    </svg>
+                    <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+                </div>
+            
+                <div id="cart-dropdown" class="absolute right-0 mt-3 w-72 origin-top-right bg-white border border-rp-teal/50 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
+                    <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2">Resumen de Compra</h4>
+                    
+                    <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
+                        <p class="text-gray-500 text-center">Tu carrito está vacío.</p>
+                    </div>
+            
+                    <div id="dropdown-summary" class="border-t pt-2">
+                        <div class="flex justify-between font-bold text-lg mb-3">
+                            <span>Total:</span>
+                            <span id="dropdown-total" class="text-mp-blue">$0.00</span>
+                        </div>
+                        
+                        <button onclick="showBuyerDataModal(); hideDropdown();" class="w-full py-2 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md title-style text-sm mb-2">
+                            Finalizar Compra
+                        </button>
+                        <button onclick="route('carrito'); hideDropdown();" class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style text-sm">
+                            Ver Carrito Completo
+                        </button>
+                    </div>
+                </div>
             </div>
-
             <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none focus:ring-2 focus:ring-rp-teal rounded-lg" onclick="toggleMobileMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -372,22 +498,18 @@
         <div class="flex justify-center items-center space-x-6 py-4 border-t border-gray-100">
             
         <a href="https://www.instagram.com/circula.uy/" class="p-2 opacity-70 hover:opacity-100">
-         <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-<g>
-
-<path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
-
-<path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8   c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
-
-<path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8   c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
-
-</g>
+           <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g>
+            <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
+            <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 	c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
+            <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 	c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
+            </g>
+           </svg>
         </a>
         <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" class="p-2 opacity-70 hover:opacity-100">
              <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
-  <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
-</svg>
+                 <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+            </svg>
         </a>
     </div>
     </nav>
@@ -421,7 +543,7 @@
 
     <div id="buyer-data-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[115]">
     <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full mx-4 transform transition-all duration-300 border-t-4 border-rp-teal">
-        <h3 class="text-2xl font-bold text-rp-teal title-style mb-4">Información de Contacto</h3>
+        <h3 class="text-2xl font-bold text-rp-teal title-style mb-4">Información de Contacto y Envío</h3>
         <p class="text-text-dark mb-4 text-sm">Necesitamos estos datos para enviar la confirmación y contactarte sobre la entrega.</p>
         
         <form id="buyer-data-form" class="space-y-4">
@@ -438,6 +560,126 @@
                        placeholder="tu.correo@ejemplo.com">
             </div>
             
+            <div class="pt-4 border-t border-rp-gray-soft/50">
+                <label for="delivery-option" class="block text-sm font-bold text-text-dark mb-2">Selecciona la Opción de Entrega *</label>
+                <select id="delivery-option" required
+                        class="w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none"
+                        onchange="toggleDeliveryFields()">
+                    <option value="" disabled selected>Elige un método</option>
+                    <option value="pickup">Pick Up (Retiro en Local)</option>
+                    <option value="montevideo">Envío dentro de Montevideo</option>
+                    <option value="interior">Envío al Interior</option>
+                </select>
+            </div>
+
+<div id="delivery-details-container" class="hidden space-y-4">
+    
+    <div id="location-picker-container">
+        <label for="location-select-main" class="block text-sm font-medium text-text-dark mb-1" id="location-label">Barrio / Departamento *</label>
+        
+        <select id="buyer-district-select" class="hidden w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none">
+            <option value="" disabled selected>-- Selecciona un Barrio --</option>
+            <option value="Aguada">Aguada</option>
+            <option value="Aires Puros">Aires Puros</option>
+            <option value="Arroyo Seco">Arroyo Seco</option>
+            <option value="Atahualpa">Atahualpa</option>
+            <option value="Bañados de Carrasco">Bañados de Carrasco</option>
+            <option value="Barra de Carrasco">Barra de Carrasco</option>
+            <option value="Barrio Jardín">Barrio Jardín</option>
+            <option value="Barrio Sur">Barrio Sur</option>
+            <option value="Belvedere">Belvedere</option>
+            <option value="Bolívar">Bolívar</option>
+            <option value="Buceo">Buceo</option>
+            <option value="Brazo Oriental">Brazo Oriental</option>
+            <option value="Carrasco">Carrasco</option>
+            <option value="Carrasco Norte">Carrasco Norte</option>
+            <option value="Casabó">Casabó</option>
+            <option value="Casavalle">Casavalle</option>
+            <option value="Cerrito de la Victoria">Cerrito de la Victoria</option>
+            <option value="Cerro">Cerro</option>
+            <option value="Ciudad Vieja">Ciudad Vieja</option>
+            <option value="Colón">Colón</option>
+            <option value="Conciliación">Conciliación</option>
+            <option value="Crucecita">Crucecita</option>
+            <option value="Cuchilla de Ladra">Cuchilla de Ladra</option>
+            <option value="Curva de Maroñas">Curva de Maroñas</option>
+            <option value="Flor de Maroñas">Flor de Maroñas</option>
+            <option value="García">García</option>
+            <option value="Gómez">Gómez</option>
+            <option value="Ituzaingó">Ituzaingó</option>
+            <option value="Jacinto Vera">Jacinto Vera</option>
+            <option value="Jardines del Hipódromo">Jardines del Hipódromo</option>
+            <option value="La Blanqueada">La Blanqueada</option>
+            <option value="La Comercial">La Comercial</option>
+            <option value="La Figurita">La Figurita</option>
+            <option value="La Paloma">La Paloma</option>
+            <option value="La Teja">La Teja</option>
+            <option value="Larrañaga">Larrañaga</option>
+            <option value="Las Acacias">Las Acacias</option>
+            <option value="Las Canteras">Las Canteras</option>
+            <option value="Lezica">Lezica</option>
+            <option value="Malvín">Malvín</option>
+            <option value="Malvín Norte">Malvín Norte</option>
+            <option value="Manga">Manga</option>
+            <option value="Maroñas">Maroñas</option>
+            <option value="Melilla">Melilla</option>
+            <option value="Mercado Modelo">Mercado Modelo</option>
+            <option value="Nuevo París">Nuevo París</option>
+            <option value="Palermo">Palermo</option>
+            <option value="Paso de la Arena">Paso de la Arena</option>
+            <option value="Paso de las Duranas">Paso de las Duranas</option>
+            <option value="Peñarol">Peñarol</option>
+            <option value="Piedras Blancas">Piedras Blancas</option>
+            <option value="Pocitos">Pocitos</option>
+            <option value="Punta Carretas">Punta Carretas</option>
+            <option value="Punta de Rieles">Punta de Rieles</option>
+            <option value="Punta Gorda">Punta Gorda</option>
+            <option value="Prado">Prado</option>
+            <option value="Reducto">Reducto</option>
+            <option value="Sayago">Sayago</option>
+            <option value="Unión">Unión</option>
+            <option value="Villa Española">Villa Española</option>
+            <option value="Villa García">Villa García</option>
+            <option value="Viuda de Maroñas">Viuda de Maroñas</option>
+        </select>
+
+        <select id="buyer-department-select" class="hidden w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none">
+            <option value="" disabled selected>-- Selecciona un Departamento --</option>
+            <option value="Artigas">Artigas</option>
+            <option value="Canelones">Canelones</option>
+            <option value="Cerro Largo">Cerro Largo</option>
+            <option value="Colonia">Colonia</option>
+            <option value="Durazno">Durazno</option>
+            <option value="Flores">Flores</option>
+            <option value="Florida">Florida</option>
+            <option value="Lavalleja">Lavalleja</option>
+            <option value="Maldonado">Maldonado</option>
+            <option value="Paysandú">Paysandú</option>
+            <option value="Río Negro">Río Negro</option>
+            <option value="Rivera">Rivera</option>
+            <option value="Rocha">Rocha</option>
+            <option value="Salto">Salto</option>
+            <option value="San José">San José</option>
+            <option value="Soriano">Soriano</option>
+            <option value="Tacuarembó">Tacuarembó</option>
+            <option value="Treinta y Tres">Treinta y Tres</option>
+        </select>
+        
+        <div id="localidad-text-container" class="hidden">
+            <label for="buyer-localidad-text" class="block text-sm font-medium text-text-dark mb-1" id="localidad-text-label">Localidad / Barrio *</label>
+            <input type="text" id="buyer-localidad-text"
+                class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
+                placeholder="Ej: Ciudad de Salto o Colonia del Sacramento">
+        </div>
+    </div>
+
+    <div>
+        <label for="buyer-address-text" class="block text-sm font-medium text-text-dark mb-1">Dirección Completa *</label>
+        <input type="text" id="buyer-address-text"
+               class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
+               placeholder="Calle, número, apartamento/casa">
+    </div>
+</div>
             <button type="submit" class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style">
                 Continuar al Pago
             </button>
@@ -447,33 +689,6 @@
         </button>
     </div>
 </div>
-
-    <div id="full-cart-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[110]">
-        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 border border-rp-teal">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="text-2xl font-bold text-rp-teal title-style">🛒 Tu Carrito de Compras</h3>
-                <button onclick="hideFullCartModal()" class="text-text-dark text-3xl font-bold hover:text-rp-teal transition">&times;</button>
-            </div>
-
-            <div id="cart-items-list" class="max-h-80 overflow-y-auto mb-4 space-y-3">
-                </div>
-
-            <div id="cart-summary" class="border-t pt-4">
-                <div class="flex justify-between font-bold text-xl mb-4">
-                    <span>Total:</span>
-                    <span id="cart-total" class="text-mp-blue">$0.00</span>
-                </div>
-
-                <button 
-                    onclick="showBuyerDataModal()" 
-                    id="checkout-cart-button"
-                    class="w-full py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md flex items-center justify-center title-style text-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    Pagar con Mercado Pago (<span id="cart-count-checkout">0</span>)
-                </button>
-            </div>
-            
-        </div>
-    </div>
 
     <div id="mercadopago-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[110]">
         <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg mx-4 transform transition-all duration-300 border-t-4 border-mp-blue">
@@ -507,13 +722,13 @@
                 flex items-center justify-end
                 min-h-[70vh]
                 border-b border-rp-gray-soft"
->
+
             >
                 <div class="absolute inset-0 bg-white/0"></div>
         
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                     <h1 class="text-4xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
-                            Transformamos la basura plástica en <span class="text-white">Materia Prima</span> de Valor
+                                Transformamos la basura plástica en <span class="text-white">Materia Prima</span> de Valor
                     </h1>
                 <p class="text-base md:text-xl text-white/80 mb-10 max-w-3xl mx-auto">
                 Proyectos integrales para empresas e instituciones educativas.
@@ -553,11 +768,11 @@
                 </div>
             </section>
      <section id="featured-project-video" 
-         class="relative h-[300vh] lg:h-[600vh] bg-rp-blue-light">
+           class="relative h-[300vh] lg:h-[600vh] bg-rp-blue-light">
     
             <div id="video-pin-container" class="h-screen w-full 
-                                        flex items-center justify-center 
-                                        overflow-hidden">
+                                         flex items-center justify-center 
+                                         overflow-hidden">
         
                 <div id="video-grow-container" class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light"> 
     <video id="scroll-video" 
@@ -580,8 +795,7 @@
 </div>
             </div> 
         </section>
-            
-            <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft">
+             <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     
                     <div class="text-center mb-16">
@@ -596,8 +810,8 @@
                         <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-azul-home">
                             <div>
                                 <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl Azul Destacado" 
-                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                                    onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
+                                     class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
+                                     onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
                                 
                                 <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Azul</h3>
                                 <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
@@ -616,8 +830,8 @@
                         <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="plato-rojo-home">
                             <div>
                                 <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl Navideño Destacado" 
-                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
-                                    onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
+                                     class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                     onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
                                 
                                 <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Navideño</h3>
                                 <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
@@ -635,8 +849,8 @@
                         <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="florero-verde-home">
                             <div>
                                 <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Bowl Verde Destacado" 
-                                    class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
-                                    onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
+                                     class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                     onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
                                 
                                 <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Verde</h3>
                                 <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
@@ -699,48 +913,48 @@
                     </div>
                 </div>
             </section>
-        </section> 
+           </section> 
         <section id="view-talleres" data-route="talleres" class="page-content bg-rp-blue-light section-padding">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-5xl font-bold text-text-dark mb-3 title-style">NUESTROS <span class="text-rp-teal">TALLERES</span></h2>
-                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
-                        Proyectos a medida para impulsar el cambio real y sostenible en cualquier entorno educativo o corporativo.
-                    </p>
-                </div>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-bold text-text-dark mb-3 title-style">NUESTROS <span class="text-rp-teal">TALLERES</span></h2>
+            <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                Proyectos a medida para impulsar el cambio real y sostenible en cualquier entorno educativo o corporativo.
+            </p>
+        </div>
 
-                <div class="grid md:grid-cols-2 gap-10">
-                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
-                        <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Escuelas y Universidades</h3>
-                        <p class="mb-4 text-text-dark/90">
-                            Actividades interactivas y proyectos interdisciplinarios para integrar la sostenibilidad en la cotideanidad.
-                        </p>
-                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
-                            <li>Proyectos de recuperación de plástico local.</li>
-                            <li>Modelado de flujos de residuos sólidos.</li>
-                        </ul>
-                        <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
-                            SOLICITAR INFO
-                        </a>
-                    </div>
-
-                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
-                        <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Empresas e instituciones</h3>
-                        <p class="mb-4 text-text-dark/90">
-                            Capacitación especializada para equipos que implementen estrategias de Zero Waste y cumplan metas de sostenibilidad.
-                        </p>
-                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
-                            <li>Auditoría de Residuos.</li>
-                            <li>Talleres interactivos para transformar los hábitos de los colaboradores.</li>
-                        </ul>
-                        <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
-                            SOLICITAR INFO
-                        </a>
-                    </div>
-                </div>
+        <div class="grid md:grid-cols-2 gap-10">
+            <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Escuelas y Universidades</h3>
+                <p class="mb-4 text-text-dark/90">
+                    Actividades interactivas y proyectos interdisciplinarios para integrar la sostenibilidad en la cotideanidad.
+                </p>
+                <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                    <li>Proyectos de recuperación de plástico local.</li>
+                    <li>Modelado de flujos de residuos sólidos.</li>
+                </ul>
+                <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
+                    SOLICITAR INFO
+                </a>
             </div>
-        </section> 
-        <section id="view-tienda" data-route="tienda" class="page-content bg-white section-padding">
+
+            <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                <h3 class="text-3xl font-bold text-rp-teal mb-4 title-style">Empresas e instituciones</h3>
+                <p class="mb-4 text-text-dark/90">
+                    Capacitación especializada para equipos que implementen estrategias de Zero Waste y cumplan metas de sostenibilidad.
+                </p>
+                <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                    <li>Auditoría de Residuos.</li>
+                    <li>Talleres interactivos para transformar los hábitos de los colaboradores.</li>
+                </ul>
+                <a href="#contacto" class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition" onclick="route()">
+                    SOLICITAR INFO
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+     <section id="view-tienda" data-route="tienda" class="page-content bg-white section-padding">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-5xl font-bold mb-3 title-style">PRODUCTOS <span class="text-rp-teal">DE DISEÑO 100% RECICLADOS</span></h2>
@@ -754,7 +968,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-azul">
                 <div>
                     <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl Azul" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Azul', 450.00, 'images/Tienda/Bowl Azul Arriba.jpeg', 'Un clásico disruptivo en tono azul vibrante. Fabricado con 100% de plástico reciclado post-consumo. ¡Ideal para ensaladas o snacks!', ['images/Tienda/Bowl Azul Arriba.jpeg','images/Tienda/Bowl Azul Costado.jpeg'])">
                     
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Azul</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
@@ -770,7 +984,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Azul', 450.00, document.getElementById('qty-bowl-azul').value)" 
+                        onclick="addItemFromShop('Bowl Azul', 450.00, document.getElementById('qty-bowl-azul').value, 'images/Tienda/Bowl Azul Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -780,7 +994,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-blanco">
                 <div>
                     <img src="images/Tienda/Bowl Blanco Arriba.jpeg" alt="Bowl Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Blanco', 450.00, 'images/Tienda/Bowl Blanco Arriba.jpeg', 'Diseño minimalista y limpio. Hecho con plástico reciclado HDPE. Una adición esencial y ecológica a tu cocina.', ['images/Tienda/Bowl Blanco Arriba.jpeg','images/Tienda/Bowl Blanco Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Blanco', 450.00, 'images/Tienda/Bowl Blanco Arriba.jpeg', 'Diseño minimalista y limpio. Hecho con plástico reciclado HDPE. Una adición esencial y ecológica a tu cocina.', ['images/Tienda/Bowl Blanco Arriba.jpeg','images/Tienda/Bowl Blanco Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Blanco</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -795,7 +1009,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Blanco', 450.00, document.getElementById('qty-bowl-blanco').value)" 
+                        onclick="addItemFromShop('Bowl Blanco', 450.00, document.getElementById('qty-bowl-blanco').value, 'images/Tienda/Bowl Blanco Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -805,7 +1019,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-gris">
                 <div>
                     <img src="images/Tienda/Bowl Gris Arriba.jpeg" alt="Bowl Gris" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Gris', 450.00, 'images/Tienda/Bowl Gris Arriba.jpeg', 'Tono sobrio y elegante. Ideal para ensaladas o frutas. Fabricado 100% con plásticos recuperados de la usina.', ['images/Tienda/Bowl Gris Arriba.jpeg','images/Tienda/Bowl Gris Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Gris', 450.00, 'images/Tienda/Bowl Gris Arriba.jpeg', 'Tono sobrio y elegante. Ideal para ensaladas o frutas. Fabricado 100% con plásticos recuperados de la usina.', ['images/Tienda/Bowl Gris Arriba.jpeg','images/Tienda/Bowl Gris Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Gris</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -820,7 +1034,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Gris', 450.00, document.getElementById('qty-bowl-gris').value)" 
+                        onclick="addItemFromShop('Bowl Gris', 450.00, document.getElementById('qty-bowl-gris').value, 'images/Tienda/Bowl Gris Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -830,7 +1044,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-navideno">
                 <div>
                     <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl Navideño" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Navideño', 450.00, 'images/Tienda/Bowl Navideño Arriba.jpeg', 'Edición especial con motivos rojos y verdes. Un detalle ecológico para las fiestas.', ['images/Tienda/Bowl Navideño Arriba.jpeg','images/Tienda/Bowl Navideño Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Navideño</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -845,7 +1059,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Navideño', 450.00, document.getElementById('qty-bowl-navideno').value)" 
+                        onclick="addItemFromShop('Bowl Navideño', 450.00, document.getElementById('qty-bowl-navideno').value, 'images/Tienda/Bowl Navideño Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -855,7 +1069,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-negro">
                 <div>
                     <img src="images/Tienda/Bowl Negro Arriba.jpeg" alt="Bowl Negro" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Negro', 450.00, 'images/Tienda/Bowl Negro Arriba.jpeg', 'Elegante acabado negro para un estilo moderno y sostenible.', ['images/Tienda/Bowl Negro Arriba.jpeg','images/Tienda/Bowl Negro Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Negro', 450.00, 'images/Tienda/Bowl Negro Arriba.jpeg', 'Elegante acabado negro para un estilo moderno y sostenible.', ['images/Tienda/Bowl Negro Arriba.jpeg','images/Tienda/Bowl Negro Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Negro</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -870,7 +1084,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Negro', 450.00, document.getElementById('qty-bowl-negro').value)" 
+                        onclick="addItemFromShop('Bowl Negro', 450.00, document.getElementById('qty-bowl-negro').value, 'images/Tienda/Bowl Negro Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -880,7 +1094,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-naranja">
                 <div>
                     <img src="images/Tienda/Bowl Naranja Arriba.jpeg" alt="Bowl Naranja" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Naranja', 450.00, 'images/Tienda/Bowl Naranja Arriba.jpeg', 'Color vibrante que trae alegría a la mesa. Hecho con plástico recuperado.', ['images/Tienda/Bowl Naranja Arriba.jpeg','images/Tienda/Bowl Naranja Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Naranja', 450.00, 'images/Tienda/Bowl Naranja Arriba.jpeg', 'Color vibrante que trae alegría a la mesa. Hecho con plástico recuperado.', ['images/Tienda/Bowl Naranja Arriba.jpeg','images/Tienda/Bowl Naranja Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Naranja</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -895,7 +1109,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Naranja', 450.00, document.getElementById('qty-bowl-naranja').value)" 
+                        onclick="addItemFromShop('Bowl Naranja', 450.00, document.getElementById('qty-bowl-naranja').value, 'images/Tienda/Bowl Naranja Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -905,7 +1119,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="bowl-verde">
                 <div>
                     <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Bowl Verde" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
+                         onclick="routeToProductDetail('Bowl Verde', 450.00, 'images/Tienda/Bowl Verde Arriba.jpeg', 'Tono verde natural, simbolizando el compromiso con el medio ambiente.', ['images/Tienda/Bowl Verde Arriba.jpeg','images/Tienda/Bowl Verde Costado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Bowl Verde</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$450</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -920,7 +1134,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Bowl Verde', 450.00, document.getElementById('qty-bowl-verde').value)" 
+                        onclick="addItemFromShop('Bowl Verde', 450.00, document.getElementById('qty-bowl-verde').value, 'images/Tienda/Bowl Verde Arriba.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -930,7 +1144,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-azul-blanco">
                 <div>
                     <img src="images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg" alt="Posavasos Azul y Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Posavasos Azul Blanco', 400.00, 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg', 'Set de posavasos con diseño de mármol azul y blanco. Protege tus superficies con estilo reciclado. Venta por unidad o set.', ['images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg','images/Tienda/Posavasos azul y Blanco.jpeg'])">
+                         onclick="routeToProductDetail('Posavasos Azul Blanco', 400.00, 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg', 'Set de posavasos con diseño de mármol azul y blanco. Protege tus superficies con estilo reciclado. Venta por unidad o set.', ['images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg','images/Tienda/Posavasos azul y Blanco.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Azul y Blanco</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -945,7 +1159,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Posavasos Azul Blanco', 400.00, document.getElementById('qty-posavasos-azul-blanco').value)" 
+                        onclick="addItemFromShop('Posavasos Azul Blanco', 400.00, document.getElementById('qty-posavasos-azul-blanco').value, 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -955,7 +1169,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-azul-celeste">
                 <div>
                     <img src="images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg" alt="Posavasos Azul y Celeste" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Posavasos Azul Celeste', 400.00, 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg', 'Combinación marina de azul y celeste. Se venden en sets de 6 unidades, perfectos para reuniones.', ['images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg','images/Tienda/Posavasos azul y Celeste.jpeg'])">
+                         onclick="routeToProductDetail('Posavasos Azul Celeste', 400.00, 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg', 'Combinación marina de azul y celeste. Se venden en sets de 6 unidades, perfectos para reuniones.', ['images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg','images/Tienda/Posavasos azul y Celeste.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Azul y Celeste (6 unidades)</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -970,7 +1184,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Posavasos Azul Celeste', 400.00, document.getElementById('qty-posavasos-azul-celeste').value)" 
+                        onclick="addItemFromShop('Posavasos Azul Celeste', 400.00, document.getElementById('qty-posavasos-azul-celeste').value, 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -980,7 +1194,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-blanco">
                 <div>
                     <img src="images/Tienda/Posavasos Blanco Etiqueta.jpeg" alt="Posavasos Blanco" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Posavasos Blanco', 400.00, 'images/Tienda/Posavasos Blanco Etiqueta.jpeg', 'Puros y funcionales. Set de 6 unidades ideales para el día a día. Simula el mármol natural.', ['images/Tienda/Posavasos Blanco Etiqueta.jpeg','images/Tienda/Posavasos Blanco.jpeg'])">
+                         onclick="routeToProductDetail('Posavasos Blanco', 400.00, 'images/Tienda/Posavasos Blanco Etiqueta.jpeg', 'Puros y funcionales. Set de 6 unidades ideales para el día a día. Simula el mármol natural.', ['images/Tienda/Posavasos Blanco Etiqueta.jpeg','images/Tienda/Posavasos Blanco.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Blanco (6 unidades)</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -995,7 +1209,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Posavasos Blanco', 400.00, document.getElementById('qty-posavasos-blanco').value)" 
+                        onclick="addItemFromShop('Posavasos Blanco', 400.00, document.getElementById('qty-posavasos-blanco').value, 'images/Tienda/Posavasos Blanco Etiqueta.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -1005,7 +1219,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-gris">
                 <div>
                     <img src="images/Tienda/Posavasos Gris Etiqueta.jpeg" alt="Posavasos Gris" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Posavasos Gris', 400.00, 'images/Tienda/Posavasos Gris Etiqueta.jpeg', 'Elegante acabado gris carbón. Resistencia y diseño que cuidan el planeta. Se venden en sets de 6.', ['images/Tienda/Posavasos Gris Etiqueta.jpeg','images/Tienda/Posavasos Gris.jpeg'])">
+                         onclick="routeToProductDetail('Posavasos Gris', 400.00, 'images/Tienda/Posavasos Gris Etiqueta.jpeg', 'Elegante acabado gris carbón. Resistencia y diseño que cuidan el planeta. Se venden en sets de 6.', ['images/Tienda/Posavasos Gris Etiqueta.jpeg','images/Tienda/Posavasos Gris.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Gris (6 unidades)</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -1020,7 +1234,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Posavasos Gris', 400.00, document.getElementById('qty-posavasos-gris').value)" 
+                        onclick="addItemFromShop('Posavasos Gris', 400.00, document.getElementById('qty-posavasos-gris').value, 'images/Tienda/Posavasos Gris Etiqueta.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -1030,7 +1244,7 @@
             <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between" data-product-id="posavasos-rosado">
                 <div>
                     <img src="images/Tienda/Posavasos Rosado Etiqueta.jpeg" alt="Posavasos Rosado" class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer" 
-                        onclick="routeToProductDetail('Posavasos Rosado', 400.00, 'images/Tienda/Posavasos Rosado Etiqueta.jpeg', 'Tono rosado suave, añadiendo un toque de color y conciencia ecológica a tu mesa. Se venden en sets de 6.', ['images/Tienda/Posavasos Rosado Etiqueta.jpeg','images/Tienda/Posavasos Rosado.jpeg'])">
+                         onclick="routeToProductDetail('Posavasos Rosado', 400.00, 'images/Tienda/Posavasos Rosado Etiqueta.jpeg', 'Tono rosado suave, añadiendo un toque de color y conciencia ecológica a tu mesa. Se venden en sets de 6.', ['images/Tienda/Posavasos Rosado Etiqueta.jpeg','images/Tienda/Posavasos Rosado.jpeg'])">
                     <h3 class="text-xl font-bold text-text-dark mb-1">Posavasos Rosado (6 unidades)</h3>
                     <p class="text-rp-teal font-semibold mb-3 text-lg">$400</p>
                     <p class="text-gray-600 mb-4 text-sm">Fabricado con 100% de plástico reciclado post-consumo.</p>
@@ -1045,7 +1259,7 @@
                         onchange="validateQuantity(this)"
                     >
                     <button 
-                        onclick="addItemFromShop('Posavasos Rosado', 400.00, document.getElementById('qty-posavasos-rosado').value)" 
+                        onclick="addItemFromShop('Posavasos Rosado', 400.00, document.getElementById('qty-posavasos-rosado').value, 'images/Tienda/Posavasos Rosado Etiqueta.jpeg')" 
                         class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-sm flex items-center justify-center">
                         AGREGAR AL CARRITO
                     </button>
@@ -1054,7 +1268,7 @@
             
         </div>
         <div class="text-center mt-16">
-            <button onclick="" class="px-8 py-3 border-2 border-rp-teal text-rp-teal font-bold rounded-full hover:bg-rp-blue-light transition duration-300 title-style">
+            <button onclick="route('carrito')" class="px-8 py-3 border-2 border-rp-teal text-rp-teal font-bold rounded-full hover:bg-rp-blue-light transition duration-300 title-style">
                 VER MI CARRITO
             </button>
         </div>
@@ -1138,10 +1352,11 @@
             </form>
         </div>
         </div>
-</section> <section id="view-nosotros" data-route="nosotros" class="page-content">
-    
+</section> 
+<section id="view-nosotros" data-route="nosotros" class="page-content">
+        
     <section class="relative section-padding pt-40 pb-40 flex flex-col min-h-[60vh] border-b border-rp-gray-soft"
-            style="background-image: url('images/FondoSobreNostoros.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;"
+                style="background-image: url('images/FondoSobreNostoros.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;"
     >
         <div class="absolute inset-0 bg-text-dark/40"></div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex-grow flex items-center justify-center h-full">
@@ -1307,11 +1522,12 @@
     </section>
     
 </section>
+
 <section id="view-detalle" data-route="detalle" class="page-content bg-bg-light section-padding pt-32 pb-20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mb-8">
-            <a href="#tienda" class="text-rp-teal hover:text-rp-teal/80 transition flex items-center" onclick="route()">
+            <a href="#tienda" class="text-rp-teal hover:text-rp-teal/80 transition flex items-center" onclick="route('tienda')">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -1363,6 +1579,96 @@
             </div>
         </div>
     </div>
+</section>
+
+<section id="view-carrito" data-route="carrito" class="page-content bg-bg-light section-padding pt-32 pb-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex justify-between items-center text-center mb-10 border-b border-rp-gray-soft pb-6 overflow-x-auto">
+            <div class="flex flex-col items-center min-w-[80px]">
+                <span class="w-10 h-10 rounded-full bg-rp-teal text-white flex items-center justify-center font-bold text-lg shadow-md mb-2">1</span>
+                <span class="font-bold text-text-dark text-xs md:text-sm">CARRITO</span>
+            </div>
+            <div class="flex-1 h-1 bg-rp-teal/50 mx-2 rounded"></div>
+            <div class="flex flex-col items-center min-w-[80px] opacity-60">
+                <span class="w-10 h-10 rounded-full border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-lg mb-2">2</span>
+                <span class="font-bold text-gray-500 text-xs md:text-sm">DATOS</span>
+            </div>
+            <div class="flex-1 h-1 bg-gray-200 mx-2 rounded"></div>
+            <div class="flex flex-col items-center min-w-[80px] opacity-60">
+                <span class="w-10 h-10 rounded-full border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-lg mb-2">3</span>
+                <span class="font-bold text-gray-500 text-xs md:text-sm">ESTADO</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+            
+            <div class="w-full lg:w-3/5">
+                <div class="bg-white rounded-xl shadow-lg border border-rp-gray-soft overflow-hidden">
+                    
+<div id="cart-header-row" class="hidden sm:!grid sm:!grid-cols-5 sm:gap-4 sm:items-center bg-gray-100 border-b border-gray-300 px-6 py-3 font-bold text-sm text-gray-700 uppercase tracking-wider">
+    
+    <div class="sm:col-span-2 text-left pl-2">
+        PRODUCTO
+    </div>
+    
+    <div class="text-center">
+        PRECIO
+    </div>
+    
+    <div class="text-center">
+        CANT.
+    </div>
+    
+    <div class="text-right pr-2">
+        TOTAL
+    </div>
+
+</div>
+<div id="cart-items-list-page" class="divide-y divide-rp-gray-soft min-h-[100px] bg-white">
+    </div>
+                    
+                    <div class="p-6 bg-gray-50 border-t border-rp-gray-soft">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <input type="text" placeholder="Código de descuento" class="w-full sm:w-1/2 px-4 py-3 border border-rp-border-default rounded-lg outline-none bg-white focus:ring-2 focus:ring-rp-teal transition">
+                            <div class="flex gap-4 w-full sm:w-auto justify-end">
+                                <button class="bg-text-dark text-white font-bold py-3 px-6 rounded-lg hover:bg-text-dark/80 transition shadow text-sm">APLICAR</button>
+                                <button id="clear-cart-button" onclick="clearCart()" class="text-red-500 font-bold hover:text-red-700 text-sm transition py-3">VACIAR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <div class="w-full lg:w-2/5 sticky top-24">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl border-t-4 border-rp-teal">
+                    <h2 class="text-2xl font-bold mb-6 text-text-dark title-style border-b pb-4">RESUMEN</h2>
+                    <div class="space-y-4 mb-6 text-text-dark/80">
+                        <div class="flex justify-between items-center">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal-page" class="font-bold text-lg">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Envío</span>
+                            <span class="text-rp-teal text-sm font-semibold cursor-pointer hover:underline">Calculado al final</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
+                        <span class="text-text-dark">TOTAL</span>
+                        <span id="cart-total-page" class="text-mp-blue">$0.00</span>
+                    </div>
+                    <button onclick="showBuyerDataModal()" class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1">
+                        FINALIZAR COMPRA
+                    </button>
+                    <button onclick="route('tienda')" class="w-full bg-transparent border-2 border-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg hover:border-rp-teal hover:text-rp-teal transition text-center">
+                        Seguir Comprando
+                    </button>
+                </div>
+                <div class="mt-6 text-center opacity-60">
+                     <p class="text-xs text-gray-400 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        Pago 100% seguro con Mercado Pago
+                     </p>
+                </div>
+            </div> </div> </div>
 </section>
                 <div id="whatsapp-widget">
                     <button id="whatsapp-icon" onclick="toggleChat()">
@@ -1457,21 +1763,12 @@
     </footer>
 
 <script>
-   // --- JavaScript para Contadores, Routing y Funcionalidad ---
+    // --- JavaScript para Contadores, Routing y Funcionalidad ---
 const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference'; // No cambiar, es la ruta relativa
 const NUMERO_WHATSAPP = "59899395724"; // Número de WhatsApp para contacto
 
 // Elementos de la UI general
 const cartCountDisplay = document.getElementById('cart-count');
-const cartItemsList = document.getElementById('cart-items-list');
-const cartTotalDisplay = document.getElementById('cart-total');
-const fullCartModal = document.getElementById('full-cart-modal');
-const checkoutButton = document.getElementById('checkout-cart-button');
-const cartCountCheckout = document.getElementById('cart-count-checkout');
-const imageModal = document.getElementById('image-modal');
-const fullImage = document.getElementById('full-image');
-const imageCaption = document.getElementById('image-caption');
-const mercadopagoModal = document.getElementById('mercadopago-modal'); 
 
 // Elementos del Toast
 const toastNotification = document.getElementById('toast-notification');
@@ -1485,18 +1782,40 @@ const detailDescription = document.getElementById('detail-description');
 const detailMainImage = document.getElementById('detail-main-image');
 const detailQtyInput = document.getElementById('detail-qty-input');
 const detailAddToCartButton = document.getElementById('detail-add-to-cart-button');
-const detailThumbnailsContainer = document.getElementById('detail-thumbnails'); 
+const detailThumbnailsContainer = document.getElementById('detail-thumbnails'); 
 
-// Elementos del Modal de Datos del Comprador (NUEVOS)
+// ⭐ SELECTORES DE DROPDOWN DE HOVER (MANTENIDOS) ⭐
+const cartDropdown = document.getElementById('cart-dropdown');
+const dropdownItemsList = document.getElementById('dropdown-items-list');
+const dropdownTotalDisplay = document.getElementById('dropdown-total');
+
+// ⭐ SELECTORES DE LA NUEVA PÁGINA DE CARRITO (#view-carrito) ⭐
+const cartItemsListPage = document.getElementById('cart-items-list-page');
+const cartSubtotalPage = document.getElementById('cart-subtotal-page');
+const cartTotalPage = document.getElementById('cart-total-page');
+const clearCartButton = document.getElementById('clear-cart-button'); // Botón de limpiar carrito
+
+// Elementos del Modal de Datos del Comprador (ACTUALIZADOS)
 const buyerDataModal = document.getElementById('buyer-data-modal');
 const buyerDataForm = document.getElementById('buyer-data-form');
 const buyerNameInput = document.getElementById('buyer-name');
 const buyerEmailInput = document.getElementById('buyer-email');
+// ⭐ NUEVOS SELECTORES DE ENVÍO (LÓGICA MIXTA) ⭐
+const deliveryOptionSelect = document.getElementById('delivery-option');
+const deliveryDetailsContainer = document.getElementById('delivery-details-container');
+const buyerDepartmentSelect = document.getElementById('buyer-department-select');
+const buyerDistrictSelect = document.getElementById('buyer-district-select');   
+const buyerLocalidadText = document.getElementById('buyer-localidad-text');      
+const buyerAddressText = document.getElementById('buyer-address-text');          
+const locationLabel = document.getElementById('location-label');                
+const localidadTextLabel = document.getElementById('localidad-text-label'); 
+const localidadTextContainer = document.getElementById('localidad-text-container'); // Contenedor del input de texto
+
 
 // 🚨 Estructura principal del carrito
-let cartItems = []; 
+let cartItems = []; 
 let currentPreferenceId = null;
-let currentProductData = {}; 
+let currentProductData = {};
 
 
 // ===================================
@@ -1508,78 +1827,74 @@ document.getElementById('current-year').textContent = new Date().getFullYear();
 
 // --- Alternar Menú Móvil ---
 function toggleMobileMenu() {
-    // Buscamos el menú cada vez que se hace clic (más seguro)
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenu) {
-        mobileMenu.classList.toggle('hidden');
-    }
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenu) {
+        mobileMenu.classList.toggle('hidden');
+    }
 }
 
-// Rutas 
-const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle'];
+// Rutas (CORREGIDO: 'carrito' añadido)
+const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle', 'carrito'];
 
-function route() {
-    let path = window.location.hash.substring(1) || 'home'; 
-    
-    if (!routes.includes(path.split('?')[0])) { 
-        path = 'home';
-    }
-    
-    let currentRoute = path.split('?')[0];
+// Función de Ruteo (CORREGIDA: Llama a updateCartPage)
+function route(newRoute) {
+    let path = newRoute || window.location.hash.substring(1) || 'home'; 
+    
+    if (!routes.includes(path.split('?')[0])) { 
+        path = 'home';
+    }
+    
+    let currentRoute = path.split('?')[0];
 
-    document.querySelectorAll('.page-content').forEach(section => {
-        section.style.display = 'none';
-    });
+    document.querySelectorAll('.page-content').forEach(section => {
+        section.style.display = 'none';
+    });
 
-    const targetSection = document.getElementById(`view-${currentRoute}`);
-    if (targetSection) {
-        targetSection.style.display = 'block';
-        window.scrollTo(0, 0); 
-    }
+    const targetSection = document.getElementById(`view-${currentRoute}`);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+        window.scrollTo(0, 0); 
+    }
+    
+    // Si la nueva ruta es el carrito, lo actualizamos
+    if (currentRoute === 'carrito') {
+        updateCartPage(); 
+    }
+    
+    // Solo actualiza el hash si la nueva ruta es válida
+    if (routes.includes(currentRoute)) {
+        window.location.hash = `#${currentRoute}`;
+    }
 }
 
-window.addEventListener('hashchange', route);
+window.addEventListener('hashchange', () => route()); // Llama a route sin argumentos para manejar el hash
 
 /**
- * Valida que la cantidad mínima sea 1 en inputs de número.
- */
+* Valida que la cantidad mínima sea 1 en inputs de número.
+*/
 function validateQuantity(inputElement) {
-    if (inputElement.value < 1 || isNaN(inputElement.value)) {
-        inputElement.value = 1;
-    }
+    if (inputElement.value < 1 || isNaN(inputElement.value)) {
+        inputElement.value = 1;
+    }
 }
 
 // Logica Para el uso de whatsapp
-
-// Función para mostrar/ocultar la ventana del chat
 function toggleChat() {
-    const chatBox = document.getElementById('whatsapp-chat-box');
-    chatBox.classList.toggle('hidden'); // Alterna la clase 'hidden'
+    const chatBox = document.getElementById('whatsapp-chat-box');
+    chatBox.classList.toggle('hidden');
 }
-
-// Función para construir y abrir el enlace de WhatsApp
 function enviarWhatsApp() {
-    const mensajeUsuario = document.getElementById('mensaje-usuario').value;
-
-    if (mensajeUsuario.trim() === "") {
-        alert("Por favor, escribe un mensaje antes de enviarlo.");
-        return;
-    }
-    
-    // 1. Codificar el mensaje para la URL
-    const mensajeCodificado = encodeURIComponent(mensajeUsuario);
-
-    // 2. Construir la URL completa
-    const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensajeCodificado}`;
-
-    // 3. Abrir en una nueva pestaña
-    window.open(urlWhatsApp, '_blank');
-    
-    // Opcional: Ocultar el chat después de enviar
-    document.getElementById('whatsapp-chat-box').classList.add('hidden');
-    // Opcional: Limpiar el campo de texto
-    document.getElementById('mensaje-usuario').value = '';
+    const mensajeUsuario = document.getElementById('mensaje-usuario').value;
+    if (mensajeUsuario.trim() === "") {
+        alert("Por favor, escribe un mensaje antes de enviarlo.");
+        return;
+    }
+    const mensajeCodificado = encodeURIComponent(mensajeUsuario);
+    const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensajeCodificado}`;
+    window.open(urlWhatsApp, '_blank');
+    document.getElementById('whatsapp-chat-box').classList.add('hidden');
+    document.getElementById('mensaje-usuario').value = '';
 }
 
 
@@ -1588,63 +1903,63 @@ function enviarWhatsApp() {
 // ===================================
 
 /**
- * Asigna la imagen de miniatura seleccionada al marco principal.
- */
+* Asigna la imagen de miniatura seleccionada al marco principal.
+*/
 function selectThumbnail(newSrc) {
-    detailMainImage.src = newSrc;
-    
-    document.querySelectorAll('#detail-thumbnails img').forEach(img => {
-        img.classList.remove('border-2', 'border-rp-teal');
-    });
-    const selectedImg = document.querySelector(`#detail-thumbnails img[src="${newSrc}"]`);
-    if (selectedImg) {
-        selectedImg.classList.add('border-2', 'border-rp-teal');
-    }
+    detailMainImage.src = newSrc;
+    
+    document.querySelectorAll('#detail-thumbnails img').forEach(img => {
+        img.classList.remove('border-2', 'border-rp-teal');
+    });
+    const selectedImg = document.querySelector(`#detail-thumbnails img[src="${newSrc}"]`);
+    if (selectedImg) {
+        selectedImg.classList.add('border-2', 'border-rp-teal');
+    }
 }
 
 /**
- * Navega a la vista de detalle del producto y carga sus datos.
- */
+* Navega a la vista de detalle del producto y carga sus datos.
+*/
 function routeToProductDetail(name, price, mainImageUrl, description, allImages) {
-    currentProductData = { name, price, mainImageUrl, description };
+    currentProductData = { name, price, mainImageUrl, description };
 
-    detailTitle.textContent = name;
-    detailPrice.textContent = `$${price.toFixed(2)}`;
-    detailDescription.textContent = description;
-    detailQtyInput.value = 1; 
+    detailTitle.textContent = name;
+    detailPrice.textContent = `$${price.toFixed(2)}`;
+    detailDescription.textContent = description;
+    detailQtyInput.value = 1; 
 
-    detailThumbnailsContainer.innerHTML = ''; 
-    const imagesToDisplay = allImages || [mainImageUrl];
+    detailThumbnailsContainer.innerHTML = ''; 
+    const imagesToDisplay = allImages || [mainImageUrl];
 
-    imagesToDisplay.forEach((imgSrc, index) => {
-        const imgElement = document.createElement('img');
-        imgElement.src = imgSrc;
-        imgElement.alt = `Miniatura ${index + 1} de ${name}`;
-        imgElement.classList.add(
-            'w-16', 'h-16', 'object-contain', 'rounded-lg', 
-            'cursor-pointer', 'transition', 'duration-150',
-            'hover:opacity-80'
-        );
-        imgElement.onclick = () => selectThumbnail(imgSrc);
-        
-        detailThumbnailsContainer.appendChild(imgElement);
-    });
+    imagesToDisplay.forEach((imgSrc, index) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = imgSrc;
+        imgElement.alt = `Miniatura ${index + 1} de ${name}`;
+        imgElement.classList.add(
+            'w-16', 'h-16', 'object-contain', 'rounded-lg', 
+            'cursor-pointer', 'transition', 'duration-150',
+            'hover:opacity-80'
+        );
+        imgElement.onclick = () => selectThumbnail(imgSrc);
+        
+        detailThumbnailsContainer.appendChild(imgElement);
+    });
 
-    selectThumbnail(mainImageUrl);
+    selectThumbnail(mainImageUrl);
 
-    detailAddToCartButton.onclick = () => {
-        const quantity = parseInt(detailQtyInput.value);
-        addItemToCart(name, price, quantity);
-    };
-    
-    window.location.hash = '#detalle';
-    route();
+    detailAddToCartButton.onclick = () => {
+        const quantity = parseInt(detailQtyInput.value);
+        // Ahora pasamos la URL de la imagen principal
+        addItemToCart(name, price, quantity, mainImageUrl);
+    };
+    
+    route('detalle'); // Llama a la función de ruteo
 }
 
 // Función intermedia para el botón de la tienda (llama a addItemToCart)
-function addItemFromShop(name, price, quantity) {
-    const qty = parseInt(quantity);
-    addItemToCart(name, price, qty);
+function addItemFromShop(name, price, quantity, imageUrl) {
+    const qty = parseInt(quantity);
+    addItemToCart(name, price, qty, imageUrl);
 }
 
 // =========================================================
@@ -1663,181 +1978,170 @@ const preloader = document.getElementById('preloader');
 // Selectores para los íconos del header (móvil y desktop)
 const headerLogo = document.querySelector('header a img');
 const mobileMenuButton = document.getElementById('mobile-menu-button');
-const cartIconSVG = document.querySelector('div[onclick="showFullCartModal()"] svg');
-const mobileMenuDropdown = document.getElementById('mobile-menu'); // El menú desplegable
+// CORREGIDO: Selector de GSAP para el ícono del carrito
+const cartIconSVG = document.querySelector('#cart-dropdown-container div[onclick="route(\'carrito\')"] svg');
+const mobileMenuDropdown = document.getElementById('mobile-menu');
 
 // --- 2. Banderas de Sincronización ---
 let isWindowLoaded = false;
 let isVideoReady = false;
 
-// ✅ PEGA ESTA NUEVA FUNCIÓN COMPLETA ✅
 
 function initScrollAnimations() {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger);
 
     // =======================================================
-    // === 1. AJUSTES GLOBALES DE SCROLLTRIGGER ===
+    // === 1. AJUSTES GLOBALES DE SCROLLTRIGGER ===
     // lagSmoothing (500ms) "absorbe" los saltos bruscos del scroll en móvil
     // =======================================================
-    ScrollTrigger.defaults({ lagSmoothing: 500, autoRefreshEvents: "DOMContentLoaded,load,resize" });
+    ScrollTrigger.defaults({ lagSmoothing: 500, autoRefreshEvents: "DOMContentLoaded,load,resize" });
 
-    gsap.set(videoText, { opacity: 0 });
-    gsap.set(mainHeader, { zIndex: 100 }); 
+    gsap.set(videoText, { opacity: 0 });
+    gsap.set(mainHeader, { zIndex: 100 }); 
 
-    let duration = video.duration; 
-    if (!duration || duration === 0) {
-        console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
-        duration = 8;
-    }
+    let duration = video.duration; 
+    if (!duration || duration === 0) {
+        console.warn("GSAP: Duración de video no válida, usando 8s fallback.");
+        duration = 8;
+    }
 
     // =======================================================
     // === 2. VALOR DE SCRUB AUMENTADO ===
     // Subimos de 1.5 a 2.5 para más suavidad
     // =======================================================
-    const SMOOTH_SCRUB_VALUE = 2.5; // <-- MÁS SUAVE
-    const TWEEN_DURATION = 0.3; 
+    const SMOOTH_SCRUB_VALUE = 2.5; // <-- MÁS SUAVE
+    const TWEEN_DURATION = 0.3; 
 
-    // --- Colores Originales (para la reversión) ---
-    const originalColor = "#333333"; // text-dark
-    const originalBg = "#FFFFFF";    // bg-white
-    const originalCartColor = "#79C7C7"; // rp-teal
-    const originalFilter = "invert(0)";
+    // --- Colores Originales (para la reversión) ---
+    const originalColor = "#333333"; // text-dark
+    const originalBg = "#FFFFFF";    // bg-white
+    const originalCartColor = "#79C7C7"; // rp-teal
+    const originalFilter = "invert(0)";
 
-    // --- Colores Destino ---
-    const targetColor = "#FFFFFF";
-    const transparentBg = "transparent";
-    const targetFilter = "invert(1) brightness(100)";
+    // --- Colores Destino ---
+    const targetColor = "#FFFFFF";
+    const transparentBg = "transparent";
+    const targetFilter = "invert(1) brightness(100)";
 
-    // 3. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
-    let tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: videoSection,
-            pin: pinContainer,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: SMOOTH_SCRUB_VALUE, // <-- Usa el nuevo valor 2.5
-            anticipatePin: 1
-        }
-    });
+    // 3. TIMELINE PRINCIPAL (PINNING & VIDEO SCRUB)
+    let tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: videoSection,
+            pin: pinContainer,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: SMOOTH_SCRUB_VALUE, // <-- Usa el nuevo valor 2.5
+            anticipatePin: 1
+        }
+    });
 
     // ... (El resto de la función se mantiene igual) ...
     
-    // Animaciones de la timeline principal (Video, Texto, Zoom)
-    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
-      .to(videoText, { opacity: 1, ease: "none" }, 0)
-      .to(video, { currentTime: duration, ease: "none" }, 0);
+    // Animaciones de la timeline principal (Video, Texto, Zoom)
+    tl.to(growContainer, { scale: 1.25, borderRadius: 0, ease: "none" }, 0)
+      .to(videoText, { opacity: 1, ease: "none" }, 0)
+      .to(video, { currentTime: duration, ease: "none" }, 0);
 
 
-    // 4. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
-    const headerScrub = 0.5; 
+    // 4. ANIMACIONES DEL HEADER (SEPARADAS, CON TOGGLEACTIONS)
+    const headerScrub = 0.5; 
 
-    const headerTrigger = {
-        trigger: videoSection,
-        start: "top top",
-        end: "bottom bottom",
-        toggleActions: "play reverse play reverse"
-    };
+    const headerTrigger = {
+        trigger: videoSection,
+        start: "top top",
+        end: "bottom bottom",
+        toggleActions: "play reverse play reverse"
+    };
 
-    // Fondo del Header
-    gsap.to(mainHeader, { 
-        backgroundColor: transparentBg, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
+    // Fondo del Header
+    gsap.to(mainHeader, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
 
-    // Fondo del Menú Desplegable
-    gsap.to(mobileMenuDropdown, { 
-        backgroundColor: transparentBg, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
+    // Fondo del Menú Desplegable
+    gsap.to(mobileMenuDropdown, { 
+        backgroundColor: transparentBg, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
 
-    // Links del Desktop
-    const desktopHeaderLinks = document.querySelectorAll('header > div > nav.max-md\\:hidden a');
-    gsap.to(desktopHeaderLinks, { 
-        color: targetColor, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
+    // Links del Desktop
+    const desktopHeaderLinks = document.querySelectorAll('header > div > nav.max-md\\:hidden a');
+    gsap.to(desktopHeaderLinks, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
 
-    // Botón de Hamburguesa
-    gsap.to(mobileMenuButton, { 
-        color: targetColor, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
+    // Botón de Hamburguesa
+    gsap.to(mobileMenuButton, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
 
-    // Icono del Carrito
-    gsap.to(cartIconSVG, { 
-        color: targetColor, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
+    // Icono del Carrito
+    gsap.to(cartIconSVG, { 
+        color: targetColor, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
 
-    // Logo
-    gsap.to(headerLogo, { 
-        filter: targetFilter, 
-        duration: TWEEN_DURATION, 
-        scrollTrigger: headerTrigger 
-    });
-    
-    // Links del Menú Desplegable
-    const mobileMenuDropdownLinks = document.querySelectorAll('nav#mobile-menu a');
-    gsap.to(mobileMenuDropdownLinks, {
-        color: targetColor, 
-        duration: TWEEN_DURATION,
-        scrollTrigger: headerTrigger
-    });
+    // Logo
+    gsap.to(headerLogo, { 
+        filter: targetFilter, 
+        duration: TWEEN_DURATION, 
+        scrollTrigger: headerTrigger 
+    });
+    
+    // Links del Menú Desplegable
+    const mobileMenuDropdownLinks = document.querySelectorAll('nav#mobile-menu a');
+    gsap.to(mobileMenuDropdownLinks, {
+        color: targetColor, 
+        duration: TWEEN_DURATION,
+        scrollTrigger: headerTrigger
+    });
 
-    ScrollTrigger.refresh();
-}
-// --- 4. El "Controlador" (Gatekeeper) ---
-// Esta función se llama dos veces, pero solo se ejecuta cuando AMBOS están listos.
-function checkAndLaunch() {
-    if (isWindowLoaded && isVideoReady) {
-        console.log("GSAP: ¡Todo listo! Lanzando sitio.");
-        
-        // A. Tareas de renderizado
-        route();
-        updateCartDisplay();
-        
-        // B. Tareas de animación (AHORA SÍ)
-        initScrollAnimations();
-
-        // C. Ocultar el preloader
-        if (preloader) {
-            preloader.style.opacity = '0';
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 600); 
-        }
+    ScrollTrigger.refresh();
     }
+// --- 4. El "Controlador" (Gatekeeper) ---
+function checkAndLaunch() {
+    if (isWindowLoaded && isVideoReady) {
+        console.log("GSAP: ¡Todo listo! Lanzando sitio.");
+        
+        route();
+        updateCartDisplay();
+        updateCartPage(); // Llama a updateCartPage al cargar
+        
+        initScrollAnimations();
+
+        if (preloader) {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 600); 
+        }
+    }
 }
 
 // --- 5. Los Listeners (La "Carrera") ---
-
-// Listener 1: La Página (espera todas las imágenes, CSS, etc.)
 window.addEventListener('load', () => {
-    console.log("GSAP: window.load completado.");
-    isWindowLoaded = true;
-    checkAndLaunch(); // Intenta lanzar
+    console.log("GSAP: window.load completado.");
+    isWindowLoaded = true;
+    checkAndLaunch();
 });
 
-// Listener 2: El Video (espera solo el video)
 if (video) {
-    // 'canplaythrough' es más robusto en móviles que 'canplay'
-    video.addEventListener('canplaythrough', () => {
-        console.log("GSAP: video.canplaythrough completado.");
-        isVideoReady = true;
-        checkAndLaunch(); // Intenta lanzar
-    }, { once: true });
-
-    // Forzamos al navegador a empezar a descargar el video
-    video.load(); 
-    
+    video.addEventListener('canplaythrough', () => {
+        console.log("GSAP: video.canplaythrough completado.");
+        isVideoReady = true;
+        checkAndLaunch();
+    }, { once: true });
+    video.load(); 
 } else {
-    // Si no hay video, no bloqueamos la carga
-    isVideoReady = true; 
+    isVideoReady = true; 
 }
 
 // ===================================
@@ -1845,183 +2149,321 @@ if (video) {
 // ===================================
 
 function getCartTotalItems() {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
 }
 
 function calculateCartTotal() {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
 }
 
 /**
- * 🛒 Agrega un ítem al carrito y actualiza la interfaz.
- */
-function addItemToCart(name, price, quantity = 1) {
-    let qty = Math.max(1, parseInt(quantity));
+* 🛒 Agrega un ítem al carrito y actualiza la interfaz.
+*/
+function addItemToCart(name, price, quantity = 1, imageUrl) {
+    let qty = Math.max(1, parseInt(quantity));
+    const itemIndex = cartItems.findIndex(i => i.name === name);
 
-    const itemIndex = cartItems.findIndex(i => i.name === name);
-
-    if (itemIndex > -1) {
-        cartItems[itemIndex].quantity += qty; 
-    } else {
-        cartItems.push({ name, price, quantity: qty });
-    }
-    
-    showToastNotification(name, qty);
-    updateCartDisplay();
+    if (itemIndex > -1) {
+        cartItems[itemIndex].quantity += qty;
+        // Opcional: actualizar la imagen si se agrega desde otra página
+        if (imageUrl) cartItems[itemIndex].imageUrl = imageUrl;
+    } else {
+        // Guardamos la URL de la imagen en el objeto del carrito
+        cartItems.push({ name, price, quantity: qty, imageUrl: imageUrl });
+    }
+    
+    showToastNotification(name, qty);
+    updateCartDisplay();
+    updateCartPage(); 
+    updateCartDropdown();   
 }
 
 /**
- * 🛒 Remueve un ítem del carrito (por índice).
- */
+* 🛒 Remueve un ítem del carrito (por índice).
+*/
 function removeItemFromCart(index) {
-    if (index > -1 && index < cartItems.length) {
-        cartItems.splice(index, 1);
-        updateCartDisplay();
-        updateCartModal();
-    }
+    if (index > -1 && index < cartItems.length) {
+        cartItems.splice(index, 1);
+        updateCartDisplay();
+        updateCartPage(); 
+        updateCartDropdown(); 
+    }
 }
 
 /**
- * 🛒 Actualiza el ícono del carrito en el header Y el botón de Checkout.
- */
-function updateCartDisplay() {
-    const totalItems = getCartTotalItems();
-    cartCountDisplay.textContent = totalItems;
-    
-    checkoutButton.disabled = totalItems === 0;
-    cartCountCheckout.textContent = totalItems;
-
-    if (totalItems > 0) {
-        checkoutButton.textContent = `Pagar con Mercado Pago (${totalItems})`;
-        checkoutButton.classList.remove('bg-rp-teal');
-        checkoutButton.classList.add('bg-mp-blue');
-    } else {
-        checkoutButton.textContent = 'Carrito Vacío';
-        checkoutButton.classList.remove('bg-mp-blue');
-        checkoutButton.classList.add('bg-rp-teal');
-    }
+* 🛒 Lógica para vaciar el carrito completamente.
+*/
+function clearCart() {
+    if (confirm("¿Estás seguro de que quieres vaciar el carrito?")) {
+        cartItems = [];
+        updateCartPage();
+    }
 }
 
 /**
- * 🛒 Rellena el contenido del modal de carrito.
- */
-function updateCartModal() {
-    const total = calculateCartTotal();
-    cartTotalDisplay.textContent = `$${total.toFixed(2)}`;
-    cartItemsList.innerHTML = '';
+* 🛒 Actualiza el contenido del resumen de carrito (el dropdown de hover).
+*/
+function updateCartDropdown() {
+    // Si el elemento no existe (porque se eliminó), no hace nada.
+    if (!dropdownTotalDisplay || !dropdownItemsList) return; 
 
-    if (cartItems.length === 0) {
-        cartItemsList.innerHTML = `<p class="text-center text-gray-500 py-4">Tu carrito está vacío. ¡Agrega algunos productos!</p>`;
-    } else {
-        cartItems.forEach((item, index) => {
-            const itemTotal = (item.price * item.quantity).toFixed(2);
+    const total = calculateCartTotal();
+    dropdownTotalDisplay.textContent = `$${total.toFixed(2)}`;
+    dropdownItemsList.innerHTML = '';
+    
+    if (cartItems.length === 0) {
+        dropdownItemsList.innerHTML = `<p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>`;
+    } else {
+        const itemsToShow = cartItems.slice(0, 3); 
+        
+        itemsToShow.forEach(item => {
+           const itemTotal = (item.price * item.quantity).toFixed(2);
+            
             const itemHtml = `
-                <div class="flex justify-between items-center border-b border-rp-gray-soft pb-2">
-                    <div class="flex-1">
-                        <p class="font-semibold text-text-dark">${item.name}</p>
-                        <p class="text-sm text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                <div class="flex justify-between items-center text-text-dark space-x-2">
+                    <div class="flex items-center space-x-2 overflow-hidden">
+                        <img src="${item.imageUrl}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
+                        <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
                     </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="font-bold text-lg text-rp-teal">$${itemTotal}</span>
-                        <button onclick="removeItemFromCart(${index})" class="text-red-500 hover:text-red-700 font-bold ml-4 p-1 rounded-full hover:bg-red-100 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
+                    <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
                 </div>
             `;
-            cartItemsList.insertAdjacentHTML('beforeend', itemHtml);
-        });
-    }
-    updateCartDisplay();
+            dropdownItemsList.insertAdjacentHTML('beforeend', itemHtml);
+        });
+
+        if (cartItems.length > 3) {
+            const remaining = cartItems.length - 3;
+            dropdownItemsList.insertAdjacentHTML('beforeend', 
+                `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`
+            );
+        }
+    }
+}
+
+// ⭐ Pequeña función de utilidad para ocultar el dropdown después de un click
+function hideDropdown() {
+    const dropdownContainer = document.getElementById('cart-dropdown'); 
+    if (dropdownContainer) {
+        dropdownContainer.classList.add('scale-95', 'opacity-0', 'invisible');
+        dropdownContainer.classList.remove('scale-100', 'opacity-100', 'visible');
+    }
+}
+
+/**
+* 🛒 Actualiza el ícono del carrito en el header Y el botón de Checkout.
+*/
+function updateCartDisplay() {
+    const totalItems = getCartTotalItems();
+    cartCountDisplay.textContent = totalItems;
+    
+    // CORREGIDO: Verificamos si los botones del dropdown existen antes de actualizarlos
+    if (dropdownTotalDisplay) {
+        const checkoutButtonDropdown = document.querySelector('#dropdown-summary button[onclick*="showBuyerDataModal"]');
+        if (checkoutButtonDropdown) {
+            checkoutButtonDropdown.disabled = totalItems === 0;
+        }
+    }
+}
+
+
+/**
+* 🛒 Rellena el contenido de la PÁGINA de carrito.
+*/
+function updateCartPage() {
+    const total = calculateCartTotal();
+    const subtotal = total; 
+    
+    // Verificamos que los elementos existan antes de actualizarlos
+    if (cartTotalPage && cartSubtotalPage && cartItemsListPage) {
+        cartTotalPage.textContent = `$${total.toFixed(2)}`;
+        cartSubtotalPage.textContent = `$${subtotal.toFixed(2)}`;
+        cartItemsListPage.innerHTML = ''; // Limpiar lista
+
+        if (cartItems.length === 0) {
+            cartItemsListPage.innerHTML = `
+                <div class="py-12 text-center text-gray-500">
+                    <p class="text-xl mb-4">¡Tu carrito está vacío!</p>
+                    <button onclick="route('tienda')" class="bg-rp-teal text-white font-bold py-3 px-6 rounded-lg hover:bg-rp-teal/90 transition">
+                        Volver a la Tienda
+                    </button>
+                </div>
+            `;
+        } else {
+            
+            cartItems.forEach((item, index) => {
+                // ✅ CORREGIDO: Declarado una sola vez
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                
+                // ✅ CORREGIDO: Este es el template HTML limpio y responsive
+      const itemPageHtml = `
+<div class="cart-item-row">
+
+    <div class="cart-item-product sm:col-span-2">
+        <img src="${item.imageUrl}" alt="${item.name}"
+             class="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-lg border border-gray-200 shadow-sm flex-shrink-0">
+        
+        <div class="flex flex-col min-w-0 flex-grow">
+            <span class="font-bold text-text-dark text-sm sm:text-base leading-tight truncate pr-2">${item.name}</span>
+            <button onclick="removeItemFromCart(${index})"
+                    class="text-left text-xs text-red-500 hover:text-red-700 font-medium mt-1 underline">
+                Eliminar
+            </button>
+        </div>
+    </div>
+
+    <div class="cart-item-mobile-data">
+        <div>
+            <span class="label">Precio:</span>
+            <span class="value">$${item.price.toFixed(2)}</span>
+        </div>
+        <div>
+            <span class="label">Cantidad:</span>
+            <div class="qty-box">
+                ${item.quantity}
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-item-desktop-price">
+        $${item.price.toFixed(2)}
+    </div>
+
+    <div class="cart-item-desktop-qty">
+        <div class="cart-item-desktop-qty-box">
+            ${item.quantity}
+        </div>
+    </div>
+
+    <div class="cart-item-desktop-total">
+        $${itemTotal}
+    </div>
+
+</div>
+`;
+                cartItemsListPage.insertAdjacentHTML('beforeend', itemPageHtml);
+            });
+        }
+    }
+    
+    // Siempre actualiza los contadores globales
+    updateCartDisplay(); 
+    updateCartDropdown(); 
 }
 
 // Evento para procesar el formulario de datos del comprador
 buyerDataForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    processCheckout();
+    e.preventDefault();
+    processCheckout();
 });
 
 /**
- * RECOLECTA LOS DATOS y llama al checkout final.
- */
+* RECOLECTA LOS DATOS y llama al checkout final.
+*/
 function processCheckout() {
-    const name = buyerNameInput.value;
-    const email = buyerEmailInput.value;
-    
-    if (cartItems.length === 0 || !name || !email) {
-        alert("Error: El carrito está vacío o faltan datos del comprador.");
+    const name = buyerNameInput.value;
+    const email = buyerEmailInput.value;
+    
+    const deliveryOption = deliveryOptionSelect.value;
+    
+    let locationSource = ''; 
+    let localOrDistrictValue = ''; 
+    const address = buyerAddressText.value; 
+    
+    // Captura los valores dinámicamente
+    if (deliveryOption === 'montevideo') {
+        locationSource = 'Montevideo'; 
+        localOrDistrictValue = buyerDistrictSelect.value; 
+    } else if (deliveryOption === 'interior') {
+        locationSource = buyerDepartmentSelect.value; 
+        localOrDistrictValue = buyerLocalidadText.value; 
+    }
+    
+    // Validación de campos generales
+    if (cartItems.length === 0 || !name || !email || !deliveryOption) {
+        alert("Error: El carrito está vacío o faltan datos obligatorios.");
         return;
     }
-
-    hideBuyerDataModal();
-    // LLAMADA FINAL: Enviamos los ítems Y los datos del comprador al backend
-    checkoutCartMP(name, email); 
+    // Validación condicional de campos de envío
+    if ((deliveryOption === 'montevideo' || deliveryOption === 'interior') && 
+        (!locationSource || !localOrDistrictValue || !address)) {
+         alert("Error: Faltan datos de envío obligatorios (Departamento/Barrio, Localidad o Dirección Completa).");
+         return;
+    }
+    
+    hideBuyerDataModal();
+    
+    const finalDistrictValue = deliveryOption === 'montevideo' 
+        ? `Montevideo, Barrio: ${localOrDistrictValue}` 
+        : `${locationSource}, Localidad: ${localOrDistrictValue}`;
+        
+    checkoutCartMP(name, email, deliveryOption, finalDistrictValue, address); 
 }
 
 
 /**
- * 💰 Inicia el Checkout de Mercado Pago con TODOS los ítems y datos del comprador.
- */
-async function checkoutCartMP(buyerName, buyerEmail) {
-    // Nota: El botón de checkout ya está deshabilitado si el carrito está vacío.
-    checkoutButton.textContent = 'Procesando...'; 
-    currentPreferenceId = null;
-    
-    const itemsForMP = cartItems.map(item => ({
-        title: item.name,
-        unit_price: item.price,
-        quantity: item.quantity
-    }));
+* 💰 Inicia el Checkout de Mercado Pago con TODOS los ítems, datos del comprador y envío.
+*/
+async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, address) { 
+    // No necesitamos actualizar checkoutButton.textContent aquí
+    currentPreferenceId = null;
+    
+    const itemsForMP = cartItems.map(item => ({
+        title: item.name,
+        unit_price: item.price,
+         quantity: item.quantity
+    }));
 
-    try {
-        const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                items: itemsForMP, 
-                buyerName: buyerName,
-                buyerEmail: buyerEmail 
-            }), 
-        });
+    try {
+        const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                items: itemsForMP, 
+                buyerName: buyerName,
+                buyerEmail: buyerEmail,
+              deliveryOption: deliveryOption,
+                district: district,
+                address: address
+            }), 
+        });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error HTTP: ${response.status}`);
-        }
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Error HTTP: ${response.status}`);
+        }
 
-        const data = await response.json();
-        currentPreferenceId = data.preferenceId;
+        const data = await response.json();
+        currentPreferenceId = data.preferenceId;
 
-        const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${currentPreferenceId}`;
-        
-        window.location.href = redirectUrl;
+        const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${currentPreferenceId}`;
+        
+        window.location.href = redirectUrl;
 
-    } catch (error) {
-        console.error("Fallo al obtener Preferencia de MP:", error);
-        alert(`Error de Pago: No se pudo iniciar la transacción. Revisa la consola para detalles. ${error.message}`);
-    } finally {
-        updateCartDisplay(); // Restaura el botón si hubo un error en la comunicación
-    }
+    } catch (error) {
+        console.error("Fallo al obtener Preferencia de MP:", error);
+        alert(`Error de Pago: No se pudo iniciar la transacción. Revisa la consola para detalles. ${error.message}`);
+    } finally {
+        updateCartDisplay(); // Restaura el contador del ícono
+    }
 }
-
 
 // ===================================
 // === 4. MANEJO DE MODALES Y TOAST ===
 // ===================================
 
 /**
- * Muestra la notificación flotante al agregar un ítem al carrito.
- */
+* Muestra la notificación flotante al agregar un ítem al carrito.
+*/
 function showToastNotification(productName, quantity) {
-    const totalItems = getCartTotalItems();
-    toastMessage.textContent = `${quantity}x ${productName} añadido. Total: ${totalItems} ítem(s).`;
-    
-    toastNotification.classList.remove('hidden');
-    
-    void toastContent.offsetWidth; 
+    const totalItems = getCartTotalItems();
+    toastMessage.textContent = `${quantity}x ${productName} añadido. Total: ${totalItems} ítem(s).`;
+    
+    toastNotification.classList.remove('hidden');
+    
+  void toastContent.offsetWidth; 
 
     toastContent.classList.remove('translate-x-full', 'opacity-0');
-    toastContent.classList.add('translate-x-0', 'opacity-100');
+    // LA LÍNEA DUPLICADA CON 'iOS' FUE ELIMINADA
 
     setTimeout(() => {
         toastContent.classList.remove('translate-x-0', 'opacity-100');
@@ -2031,66 +2473,114 @@ function showToastNotification(productName, quantity) {
             toastNotification.classList.add('hidden');
         }, 300); 
 
-    }, 5000); 
+    }, 5000);
 }
 
 /**
- * 🚨 MODIFICACIÓN CLAVE: Muestra el modal del carrito, cuyo botón ahora llama a showBuyerDataModal.
- */
-function showFullCartModal() {
-    updateCartModal();
-    fullCartModal.classList.remove('hidden');
+* Muestra/Oculta campos de dirección y altera los selectores/inputs.
+*/
+function toggleDeliveryFields() {
+    const selectedOption = deliveryOptionSelect.value;
+    
+    // 1. Ocultar y deshabilitar todos los campos de envío/dirección por defecto
+    deliveryDetailsContainer.classList.add('hidden');
+    buyerAddressText.removeAttribute('required');
+    
+    buyerDepartmentSelect.classList.add('hidden');
+    buyerDistrictSelect.classList.add('hidden');
+    localidadTextContainer.classList.add('hidden'); // Oculta el contenedor del input de texto
+    
+    buyerDepartmentSelect.removeAttribute('required');
+    buyerDistrictSelect.removeAttribute('required');
+    buyerLocalidadText.removeAttribute('required');
+    
+    // 2. Comportamiento condicional
+if (selectedOption === 'montevideo' || selectedOption === 'interior') {
+        
+        // Mostrar el contenedor de detalles y hacer la dirección obligatoria
+        deliveryDetailsContainer.classList.remove('hidden');
+        buyerAddressText.setAttribute('required', 'required');
+
+        if (selectedOption === 'montevideo') {
+          // Lógica para Montevideo: Selector de Barrios
+            
+            locationLabel.textContent = 'Barrio de Montevideo *';
+            
+            buyerDistrictSelect.classList.remove('hidden');
+            
+            // Ocultar campo de texto libre y departamento
+            buyerDepartmentSelect.classList.add('hidden');
+            localidadTextContainer.classList.add('hidden');
+            buyerLocalidadText.removeAttribute('required');
+
+
+        } else if (selectedOption === 'interior') {
+            // Lógica para Interior: Selector de Departamentos + Texto libre para Localidad
+            
+            locationLabel.textContent = 'Departamento *';
+            localidadTextContainer.classList.remove('hidden'); // Muestra el contenedor del input de texto
+            localidadTextLabel.textContent = 'Localidad (Ej: Ciudad de Salto) *';
+            
+            buyerDepartmentSelect.classList.remove('hidden');
+            
+            buyerLocalidadText.classList.remove('hidden'); // Muestra el input de texto
+            buyerLocalidadText.setAttribute('required', 'required');
+            
+            // Ocultar selector de Barrios
+            buyerDistrictSelect.classList.add('hidden');
+            buyerDistrictSelect.removeAttribute('required');
+        }
+    }
 }
 
 /**
- * Muestra el modal de recolección de datos (NUEVO).
- */
+* Muestra el modal de recolección de datos.
+*/
 function showBuyerDataModal() {
-    hideFullCartModal(); // Oculta el carrito
-    buyerDataModal.classList.remove('hidden');
-    buyerNameInput.focus();
+    buyerDataModal.classList.remove('hidden');
+    buyerNameInput.focus();
 }
 
 function hideBuyerDataModal() {
-    buyerDataModal.classList.add('hidden');
+    buyerDataModal.classList.add('hidden');
 }
 
+/**
+* Función de limpieza: Se mantiene para evitar errores de referencia.
+*/
 function hideFullCartModal() {
-    fullCartModal.classList.add('hidden');
+    // Función vacía para evitar errores.
 }
+
 
 // Funciones de modales de utilería (Mantenidas)
 function showFullImage(src, alt) {
-    fullImage.src = src;
-    imageCaption.textContent = alt;
-    imageModal.classList.remove('hidden');
+    fullImage.src = src;
+    imageCaption.textContent = alt;
+    imageModal.classList.remove('hidden');
 }
 function hideImageModal() {
-    imageModal.classList.add('hidden');
+    imageModal.classList.add('hidden');
 }
 function hideMercadoPagoModal() {
-    mercadopagoModal.classList.add('hidden');
+    mercadopagoModal.classList.add('hidden');
 }
 
-// Cierre con Clic Fuera o ESC (AÑADIMOS EL NUEVO MODAL)
+// Cierre con Clic Fuera o ESC (CORREGIDO)
 window.onclick = function(event) {
-    if (event.target == fullCartModal) {
-        hideFullCartModal();
-    }
-    if (event.target == buyerDataModal) {
-        hideBuyerDataModal();
-    }
-    if (event.target == imageModal) {
-        hideImageModal();
-    }
+    if (event.target == buyerDataModal) {
+        hideBuyerDataModal();
+    }
+    if (event.target == imageModal) {
+        hideImageModal();
+    }
 }
 document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        hideFullCartModal();
-        hideBuyerDataModal(); // NUEVO
-        hideMercadoPagoModal();
-        hideImageModal();
-    }
+   if (event.key === 'Escape') {
+        hideBuyerDataModal(); 
+        hideMercadoPagoModal(); 
+        hideImageModal();
+    }
 });
 
 // ===================================
@@ -2102,18 +2592,16 @@ function animateValue(element, start, end, unit, duration) {
     const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const easedProgress = 1 - Math.pow(1 - progress, 3); 
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
         const currentValue = Math.floor(easedProgress * (end - start) + start);
-        element.textContent = currentValue.toLocaleString('es-ES'); 
-        
+        element.textContent = currentValue.toLocaleString('es-ES');
         if (progress < 1) {
             window.requestAnimationFrame(step);
         } else {
-            element.textContent = end.toLocaleString('es-ES'); 
-        }
-        
-        if (progress >= 1 && unit) {
-            element.textContent += unit;
+            element.textContent = end.toLocaleString('es-ES');
+            if (unit) {
+                element.textContent += unit;
+            }
         }
     };
     window.requestAnimationFrame(step);
@@ -2123,39 +2611,39 @@ const statsSection = document.getElementById('impact-stats');
 let animationTriggered = false;
 
 function startCounters() {
-    if (animationTriggered) return;
-    animationTriggered = true; 
+    if (animationTriggered) return;
+    animationTriggered = true; 
 
-    const statElements = [
-        { id: 'counter-plastic', target: 350, unit: '' },
-        { id: 'counter-space', target: 14, unit: '' }
-    ];
+    const statElements = [
+        { id: 'counter-plastic', target: 350, unit: '' },
+        { id: 'counter-space', target: 14, unit: '' }
+    ];
 
-    statElements.forEach(stat => {
-        const element = document.getElementById(stat.id);
-        if (element) {
-            animateValue(element, 0, stat.target, stat.unit, 2000); 
-        }
-    });
+    statElements.forEach(stat => {
+        const element = document.getElementById(stat.id);
+        if (element) {
+            animateValue(element, 0, stat.target, stat.unit, 2000); 
+        }
+    });
 }
 
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
-            startCounters();
-            observer.unobserve(statsSection); 
-        }
-    });
-}, { threshold: 0.5 }); 
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
+            startCounters();
+            observer.unobserve(statsSection); 
+        }
+    });
+}, { threshold: 0.5 }); 
 
 if (statsSection) {
-    observer.observe(statsSection);
+    observer.observe(statsSection);
 }
 
 // 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
 window.addEventListener('load', () => {
-    route();
-    updateCartDisplay(); 
+    route();
+    updateCartDisplay(); 
 });
 </script>
 </body>
