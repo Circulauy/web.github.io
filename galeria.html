@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circula - Historia y Proceso</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patua+One&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa',
+                        'text-dark': '#333333',
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA',
+                        'rp-blue-light': '#e0f7f7',
+                        'rp-dark-blue': '#2c5e5e',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- Base --- */
+        body { overflow-x: hidden; background-color: #f8fafc; }
+        .title-style { font-family: 'Patua One', cursive; letter-spacing: -0.02em; }
+        
+        /* --- Contenedor de Fondo Interactivo --- */
+        #background-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+            background: radial-gradient(circle at top left, #ffffff, #f1f5f9);
+        }
+        .plastic-particle {
+            position: absolute; border-radius: 50%;
+            background: linear-gradient(135deg, rgba(121, 199, 199, 0.4), rgba(163, 230, 186, 0.2));
+            backdrop-filter: blur(2px);
+            box-shadow: inset 2px 2px 10px rgba(255,255,255,0.5);
+        }
+
+        /* --- Línea de Tiempo Central --- */
+        .timeline-container {
+            position: relative;
+        }
+        /* Línea base (gris) */
+        .timeline-line-bg {
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+            background-color: #e2e8f0; transform: translateX(-50%); z-index: 0;
+        }
+        /* Línea de progreso (Teal - se llena con scroll) */
+        .timeline-line-progress {
+            position: absolute; left: 50%; top: 0; width: 2px; height: 0%;
+            background: linear-gradient(to bottom, #79C7C7, #2c5e5e);
+            transform: translateX(-50%); z-index: 1;
+            box-shadow: 0 0 10px rgba(121, 199, 199, 0.5);
+        }
+        /* Puntos en la línea */
+        .timeline-dot {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 20px; border-radius: 50%;
+            background-color: white; border: 4px solid #e2e8f0;
+            z-index: 2; transition: border-color 0.3s, transform 0.3s;
+        }
+        .timeline-dot.active {
+            border-color: #79C7C7; transform: translateX(-50%) scale(1.3);
+            box-shadow: 0 0 15px rgba(121, 199, 199, 0.4);
+        }
+
+        /* --- Glassmorphism Cards --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- 3D Tilt --- */
+        .card-3d-wrap { perspective: 1000px; }
+        .card-3d-inner { transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+
+        /* ========================================= */
+        /* === ESTILOS WIDGET WHATSAPP (CORREGIDO) === */
+        /* ========================================= */
+        
+        /* 1. Contenedor Principal (Fijo en la esquina) */
+        #whatsapp-widget {
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            z-index: 99999; /* Encima de todo */
+        }
+
+        /* 2. Botón Redondo (El icono que desapareció) */
+        #whatsapp-icon {
+            background-color: #25D366; 
+            color: white; 
+            border: none; 
+            border-radius: 50%;
+            width: 60px; 
+            height: 60px; 
+            font-size: 30px; 
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+            transition: transform 0.3s ease;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            position: relative;
+            z-index: 10001;
+        }
+        #whatsapp-icon:hover { 
+            transform: scale(1.05); 
+        }
+
+        /* 3. Ventana del Chat */
+        #whatsapp-chat-box {
+            width: 320px; 
+            height: 450px; 
+            background: white; 
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4); 
+            position: absolute; 
+            bottom: 75px; /* Arriba del botón */
+            right: 0; 
+            display: flex; /* Por defecto es flex para organizar contenido */
+            flex-direction: column; 
+            overflow: hidden;
+            z-index: 10000;
+        }
+
+        /* 4. REGLA DE ORO: Ocultar chat si tiene la clase .hidden */
+        /* Esta regla fuerza a ocultar el chat aunque tenga display: flex arriba */
+        #whatsapp-chat-box.hidden {
+            display: none !important;
+        }
+
+        /* --- Estilos internos del chat --- */
+        #chat-header {
+            background-color: #075E54; 
+            color: white; 
+            padding: 10px 15px;
+            display: flex; 
+            align-items: center; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        #company-avatar {
+            width: 38px; 
+            height: 38px; 
+            border-radius: 50%; 
+            border: 2px solid white;
+            object-fit: cover; 
+            margin-right: 10px;
+        }
+        .contact-info { display: flex; flex-direction: column; }
+        .contact-name { font-weight: bold; font-size: 16px; }
+        .status { font-size: 12px; opacity: 0.8; }
+
+        #message-area {
+            background-image: url('images/whastappweb.jpg');
+            background-repeat: repeat; 
+            background-size: contain; 
+            background-color: #ECE5DD;
+            flex-grow: 1; 
+            padding: 15px; 
+            overflow-y: auto;
+        }
+        .initial-message {
+            background-color: #DCF8C6; 
+            padding: 8px 12px; 
+            border-radius: 10px 10px 10px 0;
+            max-width: 80%; 
+            margin-bottom: 10px; 
+            font-size: 14px; 
+            line-height: 1.3;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+        
+        #input-container {
+            padding: 8px 15px; 
+            background-color: #f0f0f0; 
+            display: flex; 
+            align-items: flex-end; 
+        }
+        #mensaje-usuario {
+            flex-grow: 1; 
+            background-color: white; 
+            border: none; 
+            border-radius: 20px; 
+            padding: 10px 12px; 
+            margin-right: 8px; 
+            box-sizing: border-box; 
+            resize: none; 
+            font-family: inherit; 
+            line-height: 1.2; 
+            max-height: 50px; 
+            font-size: 15px; 
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+        #whatsapp-chat-box button {
+            width: 44px; height: 44px; min-width: 44px; padding: 0;
+            background-color: #075E54; color: white; border: none; 
+            border-radius: 50%; cursor: pointer; font-size: 18px; 
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: background-color 0.2s;
+        }
+        #whatsapp-chat-box button:hover { background-color: #128C7E; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="font-sans text-text-dark antialiased">
+
+    <div id="background-canvas"></div>
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        
+        <a href="index.html#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200" onclick="route()">
+            <img 
+                src="images/logo.png" 
+                alt="Logo Circula" 
+                class="h-8 sm:h-10 lg:h-11 object-contain"
+            >
+            </a>
+
+        <nav class="flex max-md:hidden space-x-8">
+            <a href="index.html#home" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Inicio</a>
+            <a href="index.html#talleres" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Talleres</a>
+            <a href="index.html#nosotros" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Nosotros</a>
+            
+            <a href="index.html#galeria.html" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Galería</a>
+            
+            <a href="index.html#tienda" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Tienda</a>
+            <a href="index.html#contacto" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Contacto</a>
+        </nav>
+
+        <div class="flex items-center space-x-4">
+            
+            <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer" 
+               class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+                <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
+                    <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
+                    <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
+                    <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
+                </svg>
+            </a>
+            
+            <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" 
+               class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+                <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
+                     <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+                </svg>
+            </a>
+            
+
+            <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none rounded-lg" onclick="toggleMobileMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <nav id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
+        <a href="index.html#home" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Inicio</a>
+        <a href="index.html#talleres" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Talleres</a>
+        <a href="index.html#nosotros" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
+        <a href="index.html#galeria.html" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
+        <a href="index.html#tienda" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Tienda</a>
+        <a href="index.html#contacto" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light" onclick="toggleMobileMenu(); route()">Contacto</a>
+    </nav>
+</header>
+
+    <main>
+        <section class="h-screen flex flex-col items-center justify-center relative px-4">
+            <div class="text-center z-10 card-3d-wrap">
+                <div class="card-3d-inner p-10">
+                    <span class="text-rp-teal font-bold tracking-[0.3em] uppercase mb-4 block text-sm opacity-0" id="hero-subtitle">Transparencia Radical</span>
+                    <h1 class="text-5xl md:text-8xl font-bold title-style text-text-dark mb-6 leading-tight opacity-0" id="hero-title">
+                        NUESTRA <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-rp-teal to-rp-dark-blue">HISTORIA</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 max-w-xl mx-auto opacity-0" id="hero-desc">
+                        Desliza para recorrer el camino de la transformación.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 animate-bounce text-rp-teal opacity-60">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+            </div>
+        </section>
+
+        <section class="relative py-20 container mx-auto px-4 sm:px-6" id="timeline-section">
+            
+            <div class="timeline-container absolute inset-0 h-full w-full pointer-events-none hidden md:block">
+                <div class="timeline-line-bg"></div>
+                <div class="timeline-line-progress" id="line-progress"></div>
+            </div>
+
+            <div class="timeline-item relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-24 items-center mb-32 md:mb-48">
+                <div class="timeline-dot hidden md:block top-1/2" data-index="1"></div>
+
+                <div class="order-2 md:order-1 card-3d-wrap w-full">
+                    <div class="card-3d-inner relative h-[400px] w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/50 group cursor-pointer">
+                        <img src="images/FondoSobreNostoros.jpeg" alt="Origen" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                            <span class="text-white font-bold">2020: El Comienzo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2 text-left">
+                    <span class="text-6xl font-bold text-gray-200 absolute -top-10 -left-4 z-[-1]">01</span>
+                    <div class="glass-card p-8 rounded-2xl relative">
+                        <h2 class="text-3xl md:text-4xl font-bold title-style mb-4 text-text-dark">El Origen</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Nacimos con una misión clara: las playas de Uruguay no podían esperar más. Comenzamos organizando limpiezas comunitarias, pero pronto entendimos que <strong>recolectar no era suficiente</strong>; necesitábamos cerrar el ciclo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-24 items-center mb-32 md:mb-48">
+                <div class="timeline-dot hidden md:block top-1/2" data-index="2"></div>
+
+                <div class="order-1 text-left md:text-right">
+                    <span class="text-6xl font-bold text-gray-200 absolute -top-10 -right-4 z-[-1]">02</span>
+                    <div class="glass-card p-8 rounded-2xl relative">
+                        <h2 class="text-3xl md:text-4xl font-bold title-style mb-4 text-text-dark">Ingeniería Circular</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Desarrollamos tecnología propia para procesar HDPE y PP. Trituramos, lavamos y fundimos el plástico a temperaturas controladas, creando una "pasta" maleable que conserva colores vibrantes y propiedades mecánicas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="order-2 card-3d-wrap w-full">
+                    <div class="card-3d-inner relative h-[400px] w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/50 group cursor-pointer">
+                        <img src="images/fondo.jpeg" alt="Proceso" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg shadow text-xs font-bold text-rp-teal transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300">
+                            Triturado
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-24 items-center mb-32 md:mb-48">
+                <div class="timeline-dot hidden md:block top-1/2" data-index="3"></div>
+
+                <div class="order-2 md:order-1 card-3d-wrap w-full">
+                    <div class="card-3d-inner relative h-[400px] w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/50 group cursor-pointer">
+                        <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Impacto" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2 text-left">
+                    <span class="text-6xl font-bold text-gray-200 absolute -top-10 -left-4 z-[-1]">03</span>
+                    <div class="glass-card p-8 rounded-2xl relative">
+                        <h2 class="text-3xl md:text-4xl font-bold title-style mb-4 text-text-dark">Impacto Real</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Cada objeto que fabricamos evita que cientos de gramos de plástico terminen en vertederos. Además, nuestros talleres educan a la próxima generación de consumidores conscientes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center relative z-10 py-20">
+                <h2 class="text-4xl font-bold title-style mb-8 text-text-dark">SÉ PARTE DEL <span class="text-rp-teal">CAMBIO</span></h2>
+                <a href="index.html#tienda" class="inline-block px-10 py-4 bg-text-dark text-white font-bold rounded-full hover:bg-rp-teal transition-colors duration-300 shadow-xl hover:shadow-rp-teal/30 transform hover:-translate-y-1">
+                    Ver Productos
+                </a>
+            </div>
+
+
+        </section>
+    </main>
+
+    
+    <footer class="bg-text-dark text-white py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-4">
+                <p class="text-xl font-bold text-rp-teal title-style">Circula</p>
+            </div>
+            <div class="flex justify-center space-x-6 text-gray-400 mb-4 text-sm">
+                <a href="#" class="hover:text-rp-mint transition duration-200">PRIVACIDAD</a>
+                <a href="#" class="hover:text-rp-mint transition duration-200">TÉRMINOS</a>
+            </div>
+            <p class="text-sm text-gray-500">&copy; <span id="current-year"></span> Circula. Economía Circular.</p>
+        </div>
+    </footer>
+    <div id="whatsapp-widget">
+        <button id="whatsapp-icon" onclick="toggleChat()">
+            <i class="fab fa-whatsapp"></i> 
+        </button>
+    
+        <div id="whatsapp-chat-box" class="hidden"> 
+            <div id="chat-header">
+                <img id="company-avatar" src="images/logo whatsapp circula.jpg" alt="Circula"> 
+                
+                <div class="contact-info">
+                    <span class="contact-name">Circula</span>
+                    <span class="status">En línea</span>
+                </div>
+            </div>
+
+            <div id="message-area">
+                <div class="initial-message">¡Hola! ¿En qué podemos ayudarte hoy? Escribe tu mensaje abajo.</div>
+            </div>
+
+            <div id="input-container">
+                <textarea id="mensaje-usuario" placeholder="Escribe un mensaje..." rows="1"></textarea>
+                <button onclick="enviarWhatsApp()" title="Enviar mensaje">
+                    <i class="fas fa-paper-plane"></i> 
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NUMERO_WHATSAPP = "59899395724"; // Número de WhatsApp para contacto
+        function toggleChat() {
+         const chatBox = document.getElementById('whatsapp-chat-box');
+         chatBox.classList.toggle('hidden');
+        }
+        function enviarWhatsApp() {
+         const mensajeUsuario = document.getElementById('mensaje-usuario').value;
+         if (mensajeUsuario.trim() === "") {
+             alert("Por favor, escribe un mensaje antes de enviarlo.");
+             return;
+         }
+            const mensajeCodificado = encodeURIComponent(mensajeUsuario);
+            const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensajeCodificado}`;
+            window.open(urlWhatsApp, '_blank');
+            document.getElementById('whatsapp-chat-box').classList.add('hidden');
+            document.getElementById('mensaje-usuario').value = '';
+        }
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- 1. FONDO INTERACTIVO (Partículas de Plástico) ---
+        function initBackground() {
+            const container = document.getElementById('background-canvas');
+            const particleCount = 25; // Cantidad de elementos
+            const colors = ['#79C7C7', '#A3E6BA', '#009ee3', '#e2e8f0']; // Colores marca
+
+            for (let i = 0; i < particleCount; i++) {
+                const div = document.createElement('div');
+                div.classList.add('plastic-particle');
+                
+                // Propiedades aleatorias
+                const size = gsap.utils.random(20, 100);
+                const bg = colors[Math.floor(Math.random() * colors.length)];
+                
+                gsap.set(div, {
+                    width: size,
+                    height: size,
+                    backgroundColor: bg,
+                    opacity: gsap.utils.random(0.1, 0.4),
+                    left: gsap.utils.random(0, 100) + '%',
+                    top: gsap.utils.random(0, 100) + '%',
+                    filter: `blur(${gsap.utils.random(2, 10)}px)`
+                });
+                
+                container.appendChild(div);
+
+                // Animación Flotante (Bucle infinito)
+                gsap.to(div, {
+                    y: gsap.utils.random(-100, 100),
+                    x: gsap.utils.random(-50, 50),
+                    rotation: gsap.utils.random(0, 360),
+                    duration: gsap.utils.random(10, 20),
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            }
+
+            // Interactividad con el Mouse (Efecto de repulsión suave)
+            container.addEventListener('mousemove', (e) => {
+                const particles = document.querySelectorAll('.plastic-particle');
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+
+                particles.forEach(p => {
+                    const rect = p.getBoundingClientRect();
+                    const pX = rect.left + rect.width / 2;
+                    const pY = rect.top + rect.height / 2;
+                    
+                    const distX = mouseX - pX;
+                    const distY = mouseY - pY;
+                    const distance = Math.sqrt(distX*distX + distY*distY);
+
+                    if (distance < 200) { // Radio de efecto
+                        const force = (200 - distance) / 200;
+                        const moveX = distX * force * -0.2; // Mover en dirección opuesta
+                        const moveY = distY * force * -0.2;
+                        
+                        gsap.to(p, { x: `+=${moveX}`, y: `+=${moveY}`, duration: 0.5, overwrite: 'auto' });
+                    }
+                });
+            });
+        }
+
+        // --- 2. ANIMACIONES DE SCROLL ---
+        function initScrollAnimations() {
+            // Hero Fade In
+            const tl = gsap.timeline();
+            tl.to("#hero-subtitle", { opacity: 1, y: 0, duration: 1, ease: "power2.out" })
+              .to("#hero-title", { opacity: 1, y: 0, duration: 1 }, "-=0.7")
+              .to("#hero-desc", { opacity: 1, y: 0, duration: 1 }, "-=0.7");
+
+            // LÍNEA DE PROGRESO (Se llena al hacer scroll)
+            const timelineSection = document.getElementById("timeline-section");
+            const lineProgress = document.getElementById("line-progress");
+            const dots = document.querySelectorAll(".timeline-dot");
+
+            gsap.fromTo(lineProgress, 
+                { height: "0%" },
+                {
+                    height: "100%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: timelineSection,
+                        start: "top center",
+                        end: "bottom center",
+                        scrub: 0.5
+                    }
+                }
+            );
+
+            // Activar puntos cuando la línea pasa por ellos
+            dots.forEach(dot => {
+                ScrollTrigger.create({
+                    trigger: dot,
+                    start: "top center",
+                    onEnter: () => dot.classList.add("active"),
+                    onLeaveBack: () => dot.classList.remove("active")
+                });
+            });
+
+            // Revelar Items (Fade Up)
+            const items = document.querySelectorAll(".timeline-item");
+            items.forEach(item => {
+                gsap.fromTo(item.children, 
+                    { y: 50, opacity: 0 },
+                    {
+                        y: 0, opacity: 1, duration: 1, stagger: 0.2,
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 80%",
+                        }
+                    }
+                );
+            });
+        }
+
+        // --- 3. EFECTO TILT 3D (Mouse Hover) ---
+        function init3DTilt() {
+            const cards = document.querySelectorAll('.card-3d-wrap');
+            
+            cards.forEach(card => {
+                const inner = card.querySelector('.card-3d-inner');
+                
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    
+                    gsap.to(inner, {
+                        rotationY: x * 20, // Rota en eje Y
+                        rotationX: -y * 20, // Rota en eje X
+                        scale: 1.02,
+                        transformPerspective: 1000,
+                        ease: "power1.out",
+                        duration: 0.5
+                    });
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(inner, {
+                        rotationY: 0,
+                        rotationX: 0,
+                        scale: 1,
+                        ease: "power1.out",
+                        duration: 0.5
+                    });
+                });
+            });
+        }
+
+        // INIT
+        window.addEventListener('load', () => {
+            initBackground();
+            initScrollAnimations();
+            init3DTilt();
+        });
+
+    </script>
+</body>
+</html>

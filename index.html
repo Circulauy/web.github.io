@@ -5,53 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Economía Circular y Talleres</title>
 
-    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
-    
-<script>
 
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    'bg-light': '#fafafa',
-                    'text-dark': '#333333',
-                    'rp-teal': '#79C7C7',
-                    'rp-mint': '#A3E6BA',
-                    'rp-blue-light': '#e0f7f7',
-                    'rp-gray-soft': '#dddddd',
-                    'rp-border-default': '#b5b5b5',
-                    'mp-blue': '#009ee3', 
-                },
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'],
-                    heading: ['Patua One', 'cursive'],
-                },
-                spacing: {
-                    '12': '3rem',
-                    '16': '4rem',
-                    '20': '5rem',
-                    '24': '6rem', 
-                },
-                animation: {
-                    'infinite-scroll': 'infinite-scroll 25s linear infinite',
-                },
-                keyframes: {
-                'infinite-scroll': {
-                    '0%': { transform: 'translateX(0)' },
-                    '100%': { transform: 'translateX(-50%)' },
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa',
+                        'text-dark': '#333333',
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA',
+                        'rp-blue-light': '#e0f7f7',
+                        'rp-gray-soft': '#dddddd',
+                        'rp-border-default': '#b5b5b5',
+                        'mp-blue': '#009ee3', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                    },
+                    spacing: {
+                        '12': '3rem',
+                        '16': '4rem',
+                        '20': '5rem',
+                        '24': '6rem', 
+                    },
+                    animation: {
+                        'infinite-scroll': 'infinite-scroll 25s linear infinite',
+                    },
+                    keyframes: {
+                        'infinite-scroll': {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
                 }
             }
-                
-            } // <- Cierre de 'extend'
-        } // <- Cierre de 'theme'
-    } // <- Cierre de 'tailwind.config'
-</script>
+        }
+    </script>
     <style>
 
 /* ========================================================= */
@@ -410,42 +409,43 @@
     
     <div id="cart-count-storage" data-count="0" class="hidden"></div>
 
-    <header class="sticky top-0 z-50 bg-white shadow-md">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
-        <a href="#home" class="flex items-center hover:opacity-80 transition duration-200" onclick="route()">
+        <a href="#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200" onclick="route()">
             <img 
                 src="images/logo.png" 
                 alt="Logo Circula" 
-                class="h-8 sm:h-10 lg:h-12 object-contain"
+                class="h-8 sm:h-10 lg:h-11 object-contain"
             >
         </a>
 
-        <nav class="flex max-md:hidden space-x-8 text-base font-medium text-text-dark">
-            <a href="#home" class="hover:text-rp-teal transition duration-200 title-style">INICIO</a>
-            <a href="#talleres" class="hover:text-rp-teal transition duration-200 title-style">TALLERES</a>
-            <a href="#nosotros" class="hover:text-rp-teal transition duration-200 title-style">SOBRE NOSOTROS</a>
-            <a href="#tienda" class="hover:text-rp-teal transition duration-200 title-style">TIENDA</a>
-            <a href="#contacto" class="hover:text-rp-teal transition duration-200 title-style">CONTACTO</a>
+        <nav class="flex max-md:hidden space-x-8">
+            <a href="#home" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Inicio</a>
+            <a href="#talleres" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Talleres</a>
+            <a href="#nosotros" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Nosotros</a>
+            
+            <a href="galeria.html" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Galería</a>
+            
+            <a href="#tienda" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Tienda</a>
+            <a href="#contacto" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Contacto</a>
         </nav>
 
-       <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4">
             
             <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer" 
                class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <g>
-                <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
-                <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 	c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
-                <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 	c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
-                </g>
+                <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
+                    <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
+                    <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
+                    <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
                 </svg>
             </a>
             
-           <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" 
-               class="max-md:hidden text-text-dark transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
+            <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" 
+               class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
+                <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
+                     <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
                 </svg>
             </a>
             
@@ -459,29 +459,27 @@
                     <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
                 </div>
             
-                <div id="cart-dropdown" class="absolute right-0 mt-3 w-72 origin-top-right bg-white border border-rp-teal/50 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
-                    <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2">Resumen de Compra</h4>
-                    
+                <div id="cart-dropdown" class="absolute right-0 mt-3 w-72 origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
+                    <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 title-style">Resumen</h4>
                     <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
                         <p class="text-gray-500 text-center">Tu carrito está vacío.</p>
                     </div>
-            
                     <div id="dropdown-summary" class="border-t pt-2">
                         <div class="flex justify-between font-bold text-lg mb-3">
                             <span>Total:</span>
                             <span id="dropdown-total" class="text-mp-blue">$0.00</span>
                         </div>
-                        
-                        <button onclick="showBuyerDataModal(); hideDropdown();" class="w-full py-2 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md title-style text-sm mb-2">
+                        <button onclick="route('datos'); hideDropdown();" class="w-full py-2 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md title-style text-sm mb-2">
                             Finalizar Compra
                         </button>
                         <button onclick="route('carrito'); hideDropdown();" class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style text-sm">
-                            Ver Carrito Completo
+                            Ver Carrito
                         </button>
                     </div>
                 </div>
             </div>
-            <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none focus:ring-2 focus:ring-rp-teal rounded-lg" onclick="toggleMobileMenu()">
+
+            <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none rounded-lg" onclick="toggleMobileMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -489,30 +487,13 @@
         </div>
     </div>
     
-    <nav id="mobile-menu" class="hidden md:hidden bg-white shadow-inner border-t border-gray-100">
-        <a href="#home" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Inicio</a>
-        <a href="#talleres" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Talleres</a>
-        <a href="#nosotros" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
-        <a href="#tienda" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light border-b border-gray-100" onclick="toggleMobileMenu(); route()">Tienda</a>
-        <a href="#contacto" class="block px-6 py-3 text-lg text-text-dark hover:bg-rp-blue-light" onclick="toggleMobileMenu(); route()">Contacto</a>
-        <div class="flex justify-center items-center space-x-6 py-4 border-t border-gray-100">
-            
-        <a href="https://www.instagram.com/circula.uy/" class="p-2 opacity-70 hover:opacity-100">
-           <svg fill="#000000" width="25px" height="25px" viewBox="0 0 32 32" id="Camada_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g>
-            <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z"/>
-            <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 	c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z"/>
-            <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 	c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z"/>
-            </g>
-           </svg>
-        </a>
-        <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer" class="p-2 opacity-70 hover:opacity-100">
-             <svg fill="#000000" width="25px" height="25px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z"/>
-            </svg>
-        </a>
-    </div>
-    </nav>
+    <nav id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
+        <a href="#home" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Inicio</a>
+        <a href="#talleres" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Talleres</a>
+        <a href="#nosotros" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
+        <a href="galeria.html" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
+        <a href="#tienda" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50" onclick="toggleMobileMenu(); route()">Tienda</a>
+        <a href="#contacto" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light" onclick="toggleMobileMenu(); route()">Contacto</a>
     </nav>
 </header>
 
@@ -541,179 +522,6 @@
         </div>
     </div>
 
-    <div id="buyer-data-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[115]">
-    <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full mx-4 transform transition-all duration-300 border-t-4 border-rp-teal">
-        <h3 class="text-2xl font-bold text-rp-teal title-style mb-4">Información de Contacto y Envío</h3>
-        <p class="text-text-dark mb-4 text-sm">Necesitamos estos datos para enviar la confirmación y contactarte sobre la entrega.</p>
-        
-        <form id="buyer-data-form" class="space-y-4">
-            <div>
-                <label for="buyer-name" class="block text-sm font-medium text-text-dark mb-1">Nombre Completo</label>
-                <input type="text" id="buyer-name" required 
-                       class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
-                       placeholder="Tu Nombre">
-            </div>
-            <div>
-                <label for="buyer-email" class="block text-sm font-medium text-text-dark mb-1">Correo Electrónico</label>
-                <input type="email" id="buyer-email" required 
-                       class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
-                       placeholder="tu.correo@ejemplo.com">
-            </div>
-            
-            <div class="pt-4 border-t border-rp-gray-soft/50">
-                <label for="delivery-option" class="block text-sm font-bold text-text-dark mb-2">Selecciona la Opción de Entrega *</label>
-                <select id="delivery-option" required
-                        class="w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none"
-                        onchange="toggleDeliveryFields()">
-                    <option value="" disabled selected>Elige un método</option>
-                    <option value="pickup">Pick Up (Retiro en Local)</option>
-                    <option value="montevideo">Envío dentro de Montevideo</option>
-                    <option value="interior">Envío al Interior</option>
-                </select>
-            </div>
-
-<div id="delivery-details-container" class="hidden space-y-4">
-    
-    <div id="location-picker-container">
-        <label for="location-select-main" class="block text-sm font-medium text-text-dark mb-1" id="location-label">Barrio / Departamento *</label>
-        
-        <select id="buyer-district-select" class="hidden w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none">
-            <option value="" disabled selected>-- Selecciona un Barrio --</option>
-            <option value="Aguada">Aguada</option>
-            <option value="Aires Puros">Aires Puros</option>
-            <option value="Arroyo Seco">Arroyo Seco</option>
-            <option value="Atahualpa">Atahualpa</option>
-            <option value="Bañados de Carrasco">Bañados de Carrasco</option>
-            <option value="Barra de Carrasco">Barra de Carrasco</option>
-            <option value="Barrio Jardín">Barrio Jardín</option>
-            <option value="Barrio Sur">Barrio Sur</option>
-            <option value="Belvedere">Belvedere</option>
-            <option value="Bolívar">Bolívar</option>
-            <option value="Buceo">Buceo</option>
-            <option value="Brazo Oriental">Brazo Oriental</option>
-            <option value="Carrasco">Carrasco</option>
-            <option value="Carrasco Norte">Carrasco Norte</option>
-            <option value="Casabó">Casabó</option>
-            <option value="Casavalle">Casavalle</option>
-            <option value="Cerrito de la Victoria">Cerrito de la Victoria</option>
-            <option value="Cerro">Cerro</option>
-            <option value="Ciudad Vieja">Ciudad Vieja</option>
-            <option value="Colón">Colón</option>
-            <option value="Conciliación">Conciliación</option>
-            <option value="Crucecita">Crucecita</option>
-            <option value="Cuchilla de Ladra">Cuchilla de Ladra</option>
-            <option value="Curva de Maroñas">Curva de Maroñas</option>
-            <option value="Flor de Maroñas">Flor de Maroñas</option>
-            <option value="García">García</option>
-            <option value="Gómez">Gómez</option>
-            <option value="Ituzaingó">Ituzaingó</option>
-            <option value="Jacinto Vera">Jacinto Vera</option>
-            <option value="Jardines del Hipódromo">Jardines del Hipódromo</option>
-            <option value="La Blanqueada">La Blanqueada</option>
-            <option value="La Comercial">La Comercial</option>
-            <option value="La Figurita">La Figurita</option>
-            <option value="La Paloma">La Paloma</option>
-            <option value="La Teja">La Teja</option>
-            <option value="Larrañaga">Larrañaga</option>
-            <option value="Las Acacias">Las Acacias</option>
-            <option value="Las Canteras">Las Canteras</option>
-            <option value="Lezica">Lezica</option>
-            <option value="Malvín">Malvín</option>
-            <option value="Malvín Norte">Malvín Norte</option>
-            <option value="Manga">Manga</option>
-            <option value="Maroñas">Maroñas</option>
-            <option value="Melilla">Melilla</option>
-            <option value="Mercado Modelo">Mercado Modelo</option>
-            <option value="Nuevo París">Nuevo París</option>
-            <option value="Palermo">Palermo</option>
-            <option value="Paso de la Arena">Paso de la Arena</option>
-            <option value="Paso de las Duranas">Paso de las Duranas</option>
-            <option value="Peñarol">Peñarol</option>
-            <option value="Piedras Blancas">Piedras Blancas</option>
-            <option value="Pocitos">Pocitos</option>
-            <option value="Punta Carretas">Punta Carretas</option>
-            <option value="Punta de Rieles">Punta de Rieles</option>
-            <option value="Punta Gorda">Punta Gorda</option>
-            <option value="Prado">Prado</option>
-            <option value="Reducto">Reducto</option>
-            <option value="Sayago">Sayago</option>
-            <option value="Unión">Unión</option>
-            <option value="Villa Española">Villa Española</option>
-            <option value="Villa García">Villa García</option>
-            <option value="Viuda de Maroñas">Viuda de Maroñas</option>
-        </select>
-
-        <select id="buyer-department-select" class="hidden w-full px-4 py-2 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150 appearance-none">
-            <option value="" disabled selected>-- Selecciona un Departamento --</option>
-            <option value="Artigas">Artigas</option>
-            <option value="Canelones">Canelones</option>
-            <option value="Cerro Largo">Cerro Largo</option>
-            <option value="Colonia">Colonia</option>
-            <option value="Durazno">Durazno</option>
-            <option value="Flores">Flores</option>
-            <option value="Florida">Florida</option>
-            <option value="Lavalleja">Lavalleja</option>
-            <option value="Maldonado">Maldonado</option>
-            <option value="Paysandú">Paysandú</option>
-            <option value="Río Negro">Río Negro</option>
-            <option value="Rivera">Rivera</option>
-            <option value="Rocha">Rocha</option>
-            <option value="Salto">Salto</option>
-            <option value="San José">San José</option>
-            <option value="Soriano">Soriano</option>
-            <option value="Tacuarembó">Tacuarembó</option>
-            <option value="Treinta y Tres">Treinta y Tres</option>
-        </select>
-        
-        <div id="localidad-text-container" class="hidden">
-            <label for="buyer-localidad-text" class="block text-sm font-medium text-text-dark mb-1" id="localidad-text-label">Localidad / Barrio *</label>
-            <input type="text" id="buyer-localidad-text"
-                class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
-                placeholder="Ej: Ciudad de Salto o Colonia del Sacramento">
-        </div>
-    </div>
-
-    <div>
-        <label for="buyer-address-text" class="block text-sm font-medium text-text-dark mb-1">Dirección Completa *</label>
-        <input type="text" id="buyer-address-text"
-               class="w-full px-4 py-2 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition duration-150"
-               placeholder="Calle, número, apartamento/casa">
-    </div>
-</div>
-            <button type="submit" class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style">
-                Continuar al Pago
-            </button>
-        </form>
-        <button onclick="hideBuyerDataModal()" class="w-full py-2 mt-3 text-text-dark/80 hover:text-text-dark transition">
-            Cancelar
-        </button>
-    </div>
-</div>
-
-    <div id="mercadopago-modal" class="hidden fixed inset-0 bg-text-dark/70 flex items-center justify-center z-[110]">
-        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg mx-4 transform transition-all duration-300 border-t-4 border-mp-blue">
-            <div class="flex items-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-mp-blue mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2Z" fill="rgb(0, 158, 227)"/><path d="M10.74 15.02L9.12 11.8L5.7 15.02L7.32 11.8L3.9 8.58L15.34 8.58L10.74 15.02Z" fill="#fff"/></svg>
-                <h3 class="text-2xl font-bold text-mp-blue title-style">PASARELA DE PAGOS (Simulada)</h3>
-            </div>
-            <p class="text-text-dark mb-4">
-                Estás a punto de pagar tu carrito. Serás redirigido a la pasarela segura de Mercado Pago.
-            </p>
-            <div class="p-4 bg-rp-blue-light border border-rp-teal/50 rounded-lg mb-6">
-                <p class="font-semibold text-mp-blue">Flujo de Mercado Pago:</p>
-                <p class="text-sm text-text-dark/80">Serías redirigido automáticamente a la página segura de Mercado Pago. **Esta web nunca toca tus datos financieros.**</p>
-            </div>
-            <div class="flex flex-col space-y-3">
-                <button 
-                    onclick="simulatedPaymentRedirect()" 
-                    class="py-3 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition shadow-md flex items-center justify-center title-style text-lg">
-                    Continuar a Mercado Pago
-                </button>
-                <button onclick="hideMercadoPagoModal()" class="py-2 bg-rp-gray-soft text-text-dark font-semibold rounded-lg hover:bg-rp-gray-soft/80 transition">Cancelar Compra</button>
-            </div>
-        </div>
-    </div>
-    
     <main>
         
         <section id="view-home" data-route="home" class="page-content">
@@ -1655,7 +1463,7 @@
                         <span class="text-text-dark">TOTAL</span>
                         <span id="cart-total-page" class="text-mp-blue">$0.00</span>
                     </div>
-                    <button onclick="showBuyerDataModal()" class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1">
+                    <button onclick="route('datos')" class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1">
                         FINALIZAR COMPRA
                     </button>
                     <button onclick="route('tienda')" class="w-full bg-transparent border-2 border-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg hover:border-rp-teal hover:text-rp-teal transition text-center">
@@ -1669,6 +1477,233 @@
                      </p>
                 </div>
             </div> </div> </div>
+</section>
+<section id="view-datos" data-route="datos" class="page-content bg-bg-light section-padding pt-32 pb-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex justify-between items-center text-center mb-10 border-b border-rp-gray-soft pb-6 overflow-x-auto">
+            <div class="flex flex-col items-center min-w-[80px] cursor-pointer opacity-60 hover:opacity-100 transition" onclick="route('carrito')">
+                <span class="w-10 h-10 rounded-full border-2 border-rp-teal text-rp-teal flex items-center justify-center font-bold text-lg mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                </span>
+                <span class="font-bold text-rp-teal text-xs md:text-sm">CARRITO</span>
+            </div>
+            
+            <div class="flex-1 h-1 bg-rp-teal mx-2 rounded"></div>
+            
+            <div class="flex flex-col items-center min-w-[80px]">
+                <span class="w-10 h-10 rounded-full bg-rp-teal text-white flex items-center justify-center font-bold text-lg shadow-md mb-2">2</span>
+                <span class="font-bold text-text-dark text-xs md:text-sm">DATOS</span>
+            </div>
+            
+            <div class="flex-1 h-1 bg-gray-200 mx-2 rounded"></div>
+            
+            <div class="flex flex-col items-center min-w-[80px] opacity-60">
+                <span class="w-10 h-10 rounded-full border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-lg mb-2">3</span>
+                <span class="font-bold text-gray-500 text-xs md:text-sm">PAGO</span>
+            </div>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-8 items-start max-w-6xl mx-auto">
+            
+            <div class="w-full lg:w-3/5">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-rp-teal">
+                    <h3 class="text-2xl font-bold text-text-dark title-style mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-rp-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Información de Envío
+                    </h3>
+                    
+                    <form id="checkout-form" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="buyer-name" class="block text-sm font-medium text-text-dark mb-1">Nombre Completo *</label>
+                                <input type="text" id="buyer-name" required 
+                                    class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
+                                    placeholder="Tu Nombre">
+                            </div>
+                            <div>
+                                <label for="buyer-email" class="block text-sm font-medium text-text-dark mb-1">Correo Electrónico *</label>
+                                <input type="email" id="buyer-email" required 
+                                    class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
+                                    placeholder="tu@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-rp-gray-soft/50">
+                            <label for="delivery-option" class="block text-sm font-bold text-text-dark mb-2">Método de Entrega *</label>
+                            <div class="relative">
+                                <select id="delivery-option" required
+                                        class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none cursor-pointer"
+                                        onchange="toggleDeliveryFields()">
+                                    <option value="" disabled selected>Selecciona una opción...</option>
+                                    <option value="pickup">Pick Up (Retiro en Local Pocitos - Gratis)</option>
+                                    <option value="montevideo">Envío dentro de Montevideo (+$270)</option>
+                                    <option value="interior">Envío al Interior (+$300)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="delivery-details-container" class="hidden space-y-5 bg-rp-blue-light/30 p-5 rounded-lg border border-rp-teal/20 animate-fade-in">
+                            
+                            <div id="location-picker-container">
+                                <label id="location-label" class="block text-sm font-medium text-text-dark mb-1">Ubicación *</label>
+                                
+                                <div id="montevideo-select-wrapper" class="hidden">
+                                    <select id="buyer-district-select" class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                                        <option value="" disabled selected>-- Selecciona un Barrio --</option>
+                                        <option value="Aguada">Aguada</option>
+                                        <option value="Aires Puros">Aires Puros</option>
+                                        <option value="Arroyo Seco">Arroyo Seco</option>
+                                        <option value="Atahualpa">Atahualpa</option>
+                                        <option value="Bañados de Carrasco">Bañados de Carrasco</option>
+                                        <option value="Barra de Carrasco">Barra de Carrasco</option>
+                                        <option value="Barrio Jardín">Barrio Jardín</option>
+                                        <option value="Barrio Sur">Barrio Sur</option>
+                                        <option value="Belvedere">Belvedere</option>
+                                        <option value="Buceo">Buceo</option>
+                                        <option value="Brazo Oriental">Brazo Oriental</option>
+                                        <option value="Carrasco">Carrasco</option>
+                                        <option value="Carrasco Norte">Carrasco Norte</option>
+                                        <option value="Casabó">Casabó</option>
+                                        <option value="Casavalle">Casavalle</option>
+                                        <option value="Cerrito de la Victoria">Cerrito de la Victoria</option>
+                                        <option value="Cerro">Cerro</option>
+                                        <option value="Ciudad Vieja">Ciudad Vieja</option>
+                                        <option value="Colón">Colón</option>
+                                        <option value="Conciliación">Conciliación</option>
+                                        <option value="Curva de Maroñas">Curva de Maroñas</option>
+                                        <option value="Flor de Maroñas">Flor de Maroñas</option>
+                                        <option value="Ituzaingó">Ituzaingó</option>
+                                        <option value="Jacinto Vera">Jacinto Vera</option>
+                                        <option value="Jardines del Hipódromo">Jardines del Hipódromo</option>
+                                        <option value="La Blanqueada">La Blanqueada</option>
+                                        <option value="La Comercial">La Comercial</option>
+                                        <option value="La Figurita">La Figurita</option>
+                                        <option value="La Paloma">La Paloma</option>
+                                        <option value="La Teja">La Teja</option>
+                                        <option value="Larrañaga">Larrañaga</option>
+                                        <option value="Las Acacias">Las Acacias</option>
+                                        <option value="Las Canteras">Las Canteras</option>
+                                        <option value="Lezica">Lezica</option>
+                                        <option value="Malvín">Malvín</option>
+                                        <option value="Malvín Norte">Malvín Norte</option>
+                                        <option value="Manga">Manga</option>
+                                        <option value="Maroñas">Maroñas</option>
+                                        <option value="Melilla">Melilla</option>
+                                        <option value="Mercado Modelo">Mercado Modelo</option>
+                                        <option value="Nuevo París">Nuevo París</option>
+                                        <option value="Palermo">Palermo</option>
+                                        <option value="Paso de la Arena">Paso de la Arena</option>
+                                        <option value="Paso de las Duranas">Paso de las Duranas</option>
+                                        <option value="Peñarol">Peñarol</option>
+                                        <option value="Piedras Blancas">Piedras Blancas</option>
+                                        <option value="Pocitos">Pocitos</option>
+                                        <option value="Punta Carretas">Punta Carretas</option>
+                                        <option value="Punta de Rieles">Punta de Rieles</option>
+                                        <option value="Punta Gorda">Punta Gorda</option>
+                                        <option value="Prado">Prado</option>
+                                        <option value="Reducto">Reducto</option>
+                                        <option value="Sayago">Sayago</option>
+                                        <option value="Unión">Unión</option>
+                                        <option value="Villa Española">Villa Española</option>
+                                        <option value="Villa García">Villa García</option>
+                                        <option value="Flor de Maroñas">Flor de Maroñas</option>
+                                        </select>
+                                </div>
+
+                                <div id="interior-select-wrapper" class="hidden space-y-3">
+                                    <select id="buyer-department-select" class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                                        <option value="" disabled selected>-- Selecciona un Departamento --</option>
+                                        <option value="Artigas">Artigas</option>
+                                        <option value="Canelones">Canelones</option>
+                                        <option value="Cerro Largo">Cerro Largo</option>
+                                        <option value="Colonia">Colonia</option>
+                                        <option value="Durazno">Durazno</option>
+                                        <option value="Flores">Flores</option>
+                                        <option value="Florida">Florida</option>
+                                        <option value="Lavalleja">Lavalleja</option>
+                                        <option value="Maldonado">Maldonado</option>
+                                        <option value="Paysandú">Paysandú</option>
+                                        <option value="Río Negro">Río Negro</option>
+                                        <option value="Rivera">Rivera</option>
+                                        <option value="Rocha">Rocha</option>
+                                        <option value="Salto">Salto</option>
+                                        <option value="San José">San José</option>
+                                        <option value="Soriano">Soriano</option>
+                                        <option value="Tacuarembó">Tacuarembó</option>
+                                        <option value="Treinta y Tres">Treinta y Tres</option>
+                                        </select>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-text-dark mb-1">Ciudad / Localidad *</label>
+                                        <input type="text" id="buyer-localidad-text"
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition"
+                                            placeholder="Ej: Ciudad de la Costa, Piriápolis...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="buyer-address-text" class="block text-sm font-medium text-text-dark mb-1">Dirección Completa (Calle y Número) *</label>
+                                <input type="text" id="buyer-address-text"
+                                    class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition"
+                                    placeholder="Ej: Av. 18 de Julio 1234, Apto 101">
+                            </div>
+                            
+                            <div>
+                                <label for="buyer-notes" class="block text-sm font-medium text-text-dark mb-1">Notas para el envío (Opcional)</label>
+                                <textarea id="buyer-notes" rows="2" class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition" placeholder="Ej: Tocar timbre gris, dejar en portería..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mt-6 flex justify-start">
+                     <button onclick="route('carrito')" class="text-rp-teal font-bold hover:underline flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Volver al Carrito
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-2/5 sticky top-24">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl border border-rp-gray-soft">
+                    <h2 class="text-xl font-bold mb-6 text-text-dark title-style border-b pb-4">RESUMEN DEL PEDIDO</h2>
+                    
+                    <div id="checkout-items-summary" class="space-y-3 mb-6 max-h-48 overflow-y-auto text-sm pr-2">
+                        </div>
+
+                    <div class="space-y-3 mb-6 text-text-dark/80 border-t border-rp-gray-soft pt-4">
+                        <div class="flex justify-between items-center">
+                            <span>Subtotal</span>
+                            <span id="checkout-subtotal" class="font-bold">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Envío</span>
+                            <span id="checkout-shipping" class="text-rp-teal text-sm font-semibold">A calcular</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
+                        <span class="text-text-dark">TOTAL</span>
+                        <span id="checkout-total" class="text-mp-blue">$0.00</span>
+                    </div>
+                    
+                    <button onclick="submitCheckoutForm()" 
+                            class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2">
+                        FINALIZAR COMPRA
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </button>
+                    
+                    <p class="text-xs text-center text-gray-400 mt-4">
+                        Al hacer clic, serás redirigido a Mercado Pago para completar tu compra de forma segura.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
                 <div id="whatsapp-widget">
                     <button id="whatsapp-icon" onclick="toggleChat()">
@@ -1700,7 +1735,7 @@
                 
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-                <section id="clientes" class="bg-rp-blue-light section-padding border-t border-b border-rp-gray-soft">
+    <section id="clientes" class="bg-rp-blue-light section-padding border-t border-b border-rp-gray-soft">
     
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -1797,7 +1832,7 @@ const clearCartButton = document.getElementById('clear-cart-button'); // Botón 
 
 // Elementos del Modal de Datos del Comprador (ACTUALIZADOS)
 const buyerDataModal = document.getElementById('buyer-data-modal');
-const buyerDataForm = document.getElementById('buyer-data-form');
+const buyerDataForm = document.getElementById('checkout-form');
 const buyerNameInput = document.getElementById('buyer-name');
 const buyerEmailInput = document.getElementById('buyer-email');
 // ⭐ NUEVOS SELECTORES DE ENVÍO (LÓGICA MIXTA) ⭐
@@ -1816,6 +1851,12 @@ const localidadTextContainer = document.getElementById('localidad-text-container
 let cartItems = []; 
 let currentPreferenceId = null;
 let currentProductData = {};
+const SHIPPING_RATES = {
+    'montevideo': 270,
+    'interior': 300,
+    'pickup': 0
+};
+let currentShippingCost = 0;
 
 
 // ===================================
@@ -1835,7 +1876,7 @@ function toggleMobileMenu() {
 }
 
 // Rutas (CORREGIDO: 'carrito' añadido)
-const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle', 'carrito'];
+const routes = ['home', 'talleres', 'tienda', 'contacto', 'nosotros', 'detalle', 'carrito', 'datos'];
 
 // Función de Ruteo (CORREGIDA: Llama a updateCartPage)
 function route(newRoute) {
@@ -1861,6 +1902,9 @@ function route(newRoute) {
     if (currentRoute === 'carrito') {
         updateCartPage(); 
     }
+    if (currentRoute === 'datos') {
+        updateCheckoutDisplay(); // <--- NUEVA FUNCIÓN PARA LLENAR EL RESUMEN LATERAL
+    }
     
     // Solo actualiza el hash si la nueva ruta es válida
     if (routes.includes(currentRoute)) {
@@ -2293,8 +2337,7 @@ function updateCartPage() {
             cartItems.forEach((item, index) => {
                 // ✅ CORREGIDO: Declarado una sola vez
                 const itemTotal = (item.price * item.quantity).toFixed(2);
-                
-                // ✅ CORREGIDO: Este es el template HTML limpio y responsive
+              
       const itemPageHtml = `
 <div class="cart-item-row">
 
@@ -2421,7 +2464,7 @@ async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, a
                 items: itemsForMP, 
                 buyerName: buyerName,
                 buyerEmail: buyerEmail,
-              deliveryOption: deliveryOption,
+                deliveryOption: deliveryOption,
                 district: district,
                 address: address
             }), 
@@ -2479,59 +2522,58 @@ function showToastNotification(productName, quantity) {
 /**
 * Muestra/Oculta campos de dirección y altera los selectores/inputs.
 */
+/**
+
+/**
+ * Muestra/Oculta campos de dirección Y actualiza precios
+ */
 function toggleDeliveryFields() {
-    const selectedOption = deliveryOptionSelect.value;
-    
-    // 1. Ocultar y deshabilitar todos los campos de envío/dirección por defecto
-    deliveryDetailsContainer.classList.add('hidden');
-    buyerAddressText.removeAttribute('required');
-    
-    buyerDepartmentSelect.classList.add('hidden');
-    buyerDistrictSelect.classList.add('hidden');
-    localidadTextContainer.classList.add('hidden'); // Oculta el contenedor del input de texto
-    
-    buyerDepartmentSelect.removeAttribute('required');
-    buyerDistrictSelect.removeAttribute('required');
-    buyerLocalidadText.removeAttribute('required');
-    
-    // 2. Comportamiento condicional
-if (selectedOption === 'montevideo' || selectedOption === 'interior') {
-        
-        // Mostrar el contenedor de detalles y hacer la dirección obligatoria
-        deliveryDetailsContainer.classList.remove('hidden');
-        buyerAddressText.setAttribute('required', 'required');
+    const deliverySelect = document.getElementById('delivery-option');
+    const selectedOption = deliverySelect.value;
+    
+    // --- Lógica de visualización de campos (MANTENIDA) ---
+    const deliveryDetailsContainer = document.getElementById('delivery-details-container');
+    const buyerAddressText = document.getElementById('buyer-address-text');
+    const buyerDepartmentSelect = document.getElementById('buyer-department-select');
+    const buyerDistrictSelect = document.getElementById('buyer-district-select');
+    const buyerLocalidadText = document.getElementById('buyer-localidad-text');
+    const locationLabel = document.getElementById('location-label');
+    
+    const montevideoWrapper = document.getElementById('montevideo-select-wrapper'); // Asumiendo que usas el wrapper de tu HTML anterior
+    const interiorWrapper = document.getElementById('interior-select-wrapper');     // Asumiendo que usas el wrapper de tu HTML anterior
 
-        if (selectedOption === 'montevideo') {
-          // Lógica para Montevideo: Selector de Barrios
-            
+    // Reset básico
+    deliveryDetailsContainer.classList.add('hidden');
+    buyerAddressText.removeAttribute('required');
+    if(montevideoWrapper) montevideoWrapper.classList.add('hidden');
+    if(interiorWrapper) interiorWrapper.classList.add('hidden');
+    
+    if (selectedOption === 'montevideo' || selectedOption === 'interior') {
+        deliveryDetailsContainer.classList.remove('hidden');
+        buyerAddressText.setAttribute('required', 'required');
+
+        if (selectedOption === 'montevideo') {
             locationLabel.textContent = 'Barrio de Montevideo *';
-            
-            buyerDistrictSelect.classList.remove('hidden');
-            
-            // Ocultar campo de texto libre y departamento
-            buyerDepartmentSelect.classList.add('hidden');
-            localidadTextContainer.classList.add('hidden');
-            buyerLocalidadText.removeAttribute('required');
+            if(montevideoWrapper) montevideoWrapper.classList.remove('hidden');
+            // Ajustar requeridos
+            if(buyerDistrictSelect) buyerDistrictSelect.setAttribute('required', 'required');
+            if(buyerDepartmentSelect) buyerDepartmentSelect.removeAttribute('required');
+            if(buyerLocalidadText) buyerLocalidadText.removeAttribute('required');
 
+        } else if (selectedOption === 'interior') {
+            locationLabel.textContent = 'Departamento y Localidad *';
+            if(interiorWrapper) interiorWrapper.classList.remove('hidden');
+            // Ajustar requeridos
+            if(buyerDepartmentSelect) buyerDepartmentSelect.setAttribute('required', 'required');
+            if(buyerLocalidadText) buyerLocalidadText.setAttribute('required', 'required');
+            if(buyerDistrictSelect) buyerDistrictSelect.removeAttribute('required');
+        }
+    }
 
-        } else if (selectedOption === 'interior') {
-            // Lógica para Interior: Selector de Departamentos + Texto libre para Localidad
-            
-            locationLabel.textContent = 'Departamento *';
-            localidadTextContainer.classList.remove('hidden'); // Muestra el contenedor del input de texto
-            localidadTextLabel.textContent = 'Localidad (Ej: Ciudad de Salto) *';
-            
-            buyerDepartmentSelect.classList.remove('hidden');
-            
-            buyerLocalidadText.classList.remove('hidden'); // Muestra el input de texto
-            buyerLocalidadText.setAttribute('required', 'required');
-            
-            // Ocultar selector de Barrios
-            buyerDistrictSelect.classList.add('hidden');
-            buyerDistrictSelect.removeAttribute('required');
-        }
-    }
+    // --- NUEVO: Llamamos a actualizar los números del resumen ---
+    updateCheckoutDisplay(); 
 }
+
 
 /**
 * Muestra el modal de recolección de datos.
@@ -2611,33 +2653,55 @@ const statsSection = document.getElementById('impact-stats');
 let animationTriggered = false;
 
 function startCounters() {
-    if (animationTriggered) return;
-    animationTriggered = true; 
+    if (animationTriggered) return;
+    animationTriggered = true; // Previene que la animación se ejecute más de una vez
 
-    const statElements = [
-        { id: 'counter-plastic', target: 350, unit: '' },
-        { id: 'counter-space', target: 14, unit: '' }
-    ];
+    // Lista de contadores a animar (usando los IDs que ya tienes)
+    const counters = [
+        { id: 'counter-plastic', target: 350 }, // kg de plástico
+        { id: 'counter-space', target: 14 }   // bañeras llenas
+    ];
 
-    statElements.forEach(stat => {
-        const element = document.getElementById(stat.id);
-        if (element) {
-            animateValue(element, 0, stat.target, stat.unit, 2000); 
-        }
-    });
+    counters.forEach(stat => {
+        const displayElement = document.getElementById(stat.id);
+        if (displayElement) {
+            
+            // 1. Inicializar el valor actual de GSAP en 0
+            let current = { value: 0 };
+            displayElement.textContent = "0";
+
+            // 2. Usar GSAP para animar el valor
+            gsap.to(current, {
+                value: stat.target,
+                duration: 2, 
+                ease: "power1.out",
+                roundProps: "value",
+                onUpdate: () => {
+                    // Actualiza el texto del <span> con el valor animado
+                    displayElement.textContent = current.value.toLocaleString('es-ES');
+                },
+                onComplete: () => {
+                    // Asegura el valor final exacto
+                    displayElement.textContent = stat.target.toLocaleString('es-ES');
+                }
+            });
+        }
+    });
 }
 
+// El Observer se mantiene igual y funciona correctamente
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
-            startCounters();
-            observer.unobserve(statsSection); 
-        }
-    });
-}, { threshold: 0.5 }); 
+    entries.forEach(entry => {
+        // Asegúrate de que el contenedor de estadísticas sea visible (threshold: 0.5)
+        if (entry.isIntersecting && entry.target.id === 'impact-stats' && !animationTriggered) {
+            startCounters();
+            observer.unobserve(statsSection); 
+        }
+    });
+}, { threshold: 0.5 }); 
 
 if (statsSection) {
-    observer.observe(statsSection);
+    observer.observe(statsSection);
 }
 
 // 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
@@ -2645,6 +2709,110 @@ window.addEventListener('load', () => {
     route();
     updateCartDisplay(); 
 });
+/**
+ * Rellena el resumen lateral en la página de DATOS (Paso 2)
+ */
+function updateCheckoutDisplay() {
+    const summaryContainer = document.getElementById('checkout-items-summary');
+    const subtotalEl = document.getElementById('checkout-subtotal');
+    const shippingEl = document.getElementById('checkout-shipping'); // Elemento del costo de envío
+    const totalEl = document.getElementById('checkout-total');
+    const deliverySelect = document.getElementById('delivery-option'); // El select
+    
+    if(!summaryContainer) return;
+
+    // 1. Renderizar Items (Igual que antes)
+    summaryContainer.innerHTML = '';
+    const subtotal = calculateCartTotal(); // Esto es solo suma de productos
+    
+    cartItems.forEach(item => {
+        const itemHTML = `
+            <div class="flex justify-between items-center text-xs text-text-dark">
+                <div class="flex items-center gap-2">
+                    <div class="bg-gray-100 p-1 rounded border border-gray-200">
+                        <img src="${item.imageUrl}" class="w-8 h-8 object-cover" alt="img">
+                    </div>
+                    <span>${item.quantity} x ${item.name}</span>
+                </div>
+                <span class="font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+        `;
+        summaryContainer.insertAdjacentHTML('beforeend', itemHTML);
+    });
+
+    // 2. Calcular Envío
+    let shippingCost = 0;
+    let shippingText = 'A calcular'; // Texto por defecto
+    const selectedOption = deliverySelect ? deliverySelect.value : '';
+
+    // Si hay una opción válida seleccionada en SHIPPING_RATES
+    if (selectedOption && SHIPPING_RATES[selectedOption] !== undefined) {
+        shippingCost = SHIPPING_RATES[selectedOption];
+        
+        if (shippingCost === 0) {
+            shippingText = 'Gratis';
+        } else {
+            shippingText = `$${shippingCost.toFixed(2)}`;
+        }
+        
+        // Quitamos el estilo de "A calcular" si ya hay precio
+        shippingEl.classList.remove('text-rp-teal', 'text-sm'); 
+        shippingEl.classList.add('font-bold');
+    } else {
+        // Restauramos estilos si no hay selección
+        shippingEl.classList.add('text-rp-teal', 'text-sm');
+    }
+
+    // 3. Calcular Total Final
+    const total = subtotal + shippingCost;
+
+    // 4. Actualizar DOM
+    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    shippingEl.textContent = shippingText;
+    totalEl.textContent = `$${total.toFixed(2)}`;
+}
+
+/**
+ * Función wrapper para enviar el formulario desde el botón externo
+ */
+function submitCheckoutForm() {
+    // Validamos el formulario manualmente
+    const form = document.getElementById('checkout-form');
+    if (form.checkValidity()) {
+        processCheckoutPage(); // Llamamos a la lógica de procesamiento
+    } else {
+        form.reportValidity(); // Muestra los errores nativos del navegador en los inputs
+    }
+}
+
+/**
+ * Procesa los datos de la NUEVA página y lanza Mercado Pago
+ */
+function processCheckoutPage() {
+    const name = document.getElementById('buyer-name').value;
+    const email = document.getElementById('buyer-email').value;
+    const deliveryOption = document.getElementById('delivery-option').value;
+    const address = document.getElementById('buyer-address-text').value || 'Retiro en local';
+    
+    let district = '';
+    
+    // Lógica de dirección
+    if (deliveryOption === 'montevideo') {
+        district = `Montevideo - ${document.getElementById('buyer-district-select').value}`;
+    } else if (deliveryOption === 'interior') {
+        district = `${document.getElementById('buyer-department-select').value} - ${document.getElementById('buyer-localidad-text').value}`;
+    } else {
+        district = 'Pick Up / Retiro en Tienda';
+    }
+
+    if (cartItems.length === 0) {
+        alert("Tu carrito está vacío.");
+        return;
+    }
+
+    // Llamada a la función original de checkoutMP (que ya tienes en tu código)
+    checkoutCartMP(name, email, deliveryOption, district, address);
+}
 </script>
 </body>
 </html>

@@ -8,8 +8,21 @@
     "nodemailer": "^6.7.2"
   },
   "scripts": {
-    "start": "netlify dev"
+    "start": "netlify dev",
+    "dev": "tailwindcss -i ./src/input.css -o ./output.css --watch"
   },
   "author": "Tu Nombre",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Circulauy/web.github.io.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Circulauy/web.github.io/issues"
+  },
+  "homepage": "https://github.com/Circulauy/web.github.io#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.1.17"
+  }
 }
