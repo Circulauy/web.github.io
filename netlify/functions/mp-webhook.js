@@ -23,55 +23,76 @@ const transporter = nodemailer.createTransport({
 // FUNCIONES EMAIL
 // ===========================================
 
-// Email comprador
+// 1. Email comprador (Confirmación simple)
 async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName, items, orderRef) {
     const total = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0).toFixed(2);
 
     const itemList = items
-        .map(item => `<li>${item.title} (${item.quantity} x $${item.unit_price})</li>`)
+        .map(item => `<li style="margin-bottom: 5px;">${item.title} <br><small>(${item.quantity} x $${item.unit_price})</small></li>`)
         .join('');
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: buyerEmail,
-        subject: `✅ ¡Tu pago ha sido APROBADO! - Circula`,
+        subject: `✅ ¡Pago Confirmado! Pedido #${orderRef}`,
         html: `
-            <h2>Hola ${buyerName}, ¡Pago Confirmado!</h2>
-            <p>Hemos recibido la confirmación de que tu pago (ID: ${paymentId}) fue <strong>APROBADO</strong>.</p>
-            <p>Referencia interna: <strong>${orderRef}</strong></p>
-            <hr/>
-            <h3>Tu Pedido:</h3>
-            <ul>${itemList}</ul>
-            <p><strong>Total:</strong> $${total} UYU</p>
+            <div style="font-family: Arial, sans-serif; color: #333;">
+                <h2 style="color: #79C7C7;">¡Hola ${buyerName}!</h2>
+                <p>Hemos recibido la confirmación de tu pago (ID: <strong>${paymentId}</strong>).</p>
+                <p>Referencia de pedido: <strong>${orderRef}</strong></p>
+                <hr style="border: 1px solid #eee; margin: 20px 0;"/>
+                <h3>Tu Resumen:</h3>
+                <ul>${itemList}</ul>
+                <p style="font-size: 18px;"><strong>Total Abonado: $${total} UYU</strong></p>
+                <p>Pronto nos pondremos en contacto contigo para coordinar la entrega.</p>
+                <p><em>Equipo Circula</em></p>
+            </div>
         `
     };
 
     return transporter.sendMail(mailOptions);
 }
 
-// Email vendedor
-async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, items, orderRef) {
+// 2. Email vendedor (DETALLADO CON DATOS DE ENVÍO)
+async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, items, orderRef, shippingInfo) {
     const total = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0).toFixed(2);
 
     const itemList = items
-        .map(item => `<li>${item.title} (${item.quantity} x $${item.unit_price})</li>`)
+        .map(item => `<li style="margin-bottom: 5px;"><strong>${item.title}</strong> <br> Cantidad: ${item.quantity} | Precio Unit: $${item.unit_price}</li>`)
         .join('');
+
+    // Traducir el tipo de envío para que se lea mejor
+    let deliveryLabel = "No especificado";
+    if (shippingInfo.type === 'montevideo') deliveryLabel = "🚛 Envío Montevideo";
+    else if (shippingInfo.type === 'interior') deliveryLabel = "🚚 Envío Interior";
+    else if (shippingInfo.type === 'pickup') deliveryLabel = "🏪 Retiro en Local (Pick Up)";
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER,
-        subject: `🚨 ¡NUEVO PAGO APROBADO! Orden de ${buyerName}`,
+        to: process.env.EMAIL_USER, // Se envía al dueño de la tienda
+        subject: `🚨 NUEVA VENTA (${deliveryLabel}) - Ref: ${orderRef}`,
         html: `
-            <h2>Nuevo pago aprobado</h2>
-            <p><strong>ID de Transacción:</strong> ${paymentId}</p>
-            <p><strong>Referencia Interna:</strong> ${orderRef}</p>
-            <hr/>
-            <h3>Datos del comprador:</h3>
-            <p>${buyerName} (${buyerEmail})</p>
-            <hr/>
-            <h3>Detalles del pedido:</h3>
-            <ul>${itemList}</ul>
-            <p><strong>Total pagado:</strong> $${total} UYU</p>
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px;">
+                <h2 style="background-color: #79C7C7; color: white; padding: 10px; border-radius: 5px;">¡Nueva Venta Aprobada! 🎉</h2>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <p style="margin: 5px 0;"><strong>ID Transacción MP:</strong> ${paymentId}</p>
+                    <p style="margin: 5px 0;"><strong>Referencia Interna:</strong> ${orderRef}</p>
+                    <p style="margin: 5px 0;"><strong>Total Cobrado:</strong> <span style="color: #009ee3; font-weight: bold; font-size: 16px;">$${total} UYU</span></p>
+                </div>
+
+                <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">📦 Datos de Envío / Entrega</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 8px;"><strong>Método:</strong> ${deliveryLabel}</li>
+                    <li style="margin-bottom: 8px;"><strong>Destinatario:</strong> ${buyerName}</li>
+                    <li style="margin-bottom: 8px;"><strong>Email:</strong> <a href="mailto:${buyerEmail}">${buyerEmail}</a></li>
+                    <li style="margin-bottom: 8px;"><strong>Zona / Barrio / Localidad:</strong> ${shippingInfo.district}</li>
+                    <li style="margin-bottom: 8px;"><strong>Dirección Completa:</strong> <br> ${shippingInfo.address}</li>
+                </ul>
+
+                <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px;">🛒 Productos Vendidos</h3>
+                <ul>${itemList}</ul>
+            </div>
         `
     };
 
@@ -90,49 +111,63 @@ exports.handler = async (event) => {
 
     const { id, topic } = event.queryStringParameters;
 
-    if (topic !== "payment" || !id) {
-        return { statusCode: 200, body: "Notificación ignorada." };
+    // Mercado Pago suele enviar 'topic=payment' o 'type=payment'
+    if ((topic !== "payment" && event.queryStringParameters.type !== "payment") || !id) {
+        return { statusCode: 200, body: "Notificación ignorada (no es payment)." };
     }
 
     try {
-        // 1. Obtener el pago
+        // 1. Obtener la información completa del pago desde Mercado Pago
         const paymentInfo = await mercadopago.payment.get(id);
         const payment = paymentInfo.body;
 
-        console.log("Pago recibido:", payment.id, payment.status);
+        console.log("Pago recibido:", payment.id, "Estado:", payment.status);
 
-        // 2. Recuperar metadata desde external_reference
-        let metadata = {};
-        try {
-            metadata = JSON.parse(payment.external_reference);
-        } catch (e) {
-            console.warn("⚠ No se pudo parsear external_reference. Valor:", payment.external_reference);
-        }
+        // 2. Extraer Datos Principales
+        // create-preference.js guardó los datos clave en 'metadata'.
+        // MP suele devolver metadata en snake_case.
+        const metadata = payment.metadata || {};
 
-        const buyerName = metadata.buyer_name || payment.payer?.first_name || "Cliente";
-        const buyerEmail = metadata.buyer_email || payment.payer?.email;
-        const orderRef = metadata.order_ref || "SIN-REF";
+        // Recuperamos datos del comprador y referencia
+        const orderRef = metadata.order_id || payment.external_reference || "SIN-REF";
+        const buyerName = metadata.cliente_nombre || payment.payer?.name || "Cliente Desconocido";
+        
+        // Intentamos obtener el email de metadata, si no, del pagador de MP
+        const buyerEmail = payment.payer?.email || "sin-email@ejemplo.com";
 
-        // 3. Recuperar items del pago (esto SIEMPRE existe en MP)
+        // 3. Recuperar Datos de ENVÍO (NUEVO)
+        // Estos nombres de propiedades deben coincidir con create-preference.js
+        const shippingInfo = {
+            type: metadata.tipo_entrega || "No especificado",
+            district: metadata.zona_barrio || "No especificado",
+            address: metadata.direccion_completa || "No especificado"
+        };
+
+        // 4. Recuperar items
         const items = payment.additional_info?.items || [];
 
-        // Si no hay correo, no tiene sentido enviar email
-        if (!buyerEmail) {
-            console.error("❌ No se pudo obtener email del comprador.");
-        }
-
-        // 4. Procesar según estado del pago
+        // 5. Si el pago está APROBADO, enviamos los correos
         if (payment.status === "approved") {
+            console.log("✅ Pago aprobado. Iniciando envío de correos...");
 
-            console.log("✅ Pago aprobado. Enviando emails...");
+            // Enviar correo al COMPRADOR (Resumen simple)
+            try {
+                await sendPaymentApprovedEmailToBuyer(payment.id, buyerEmail, buyerName, items, orderRef);
+                console.log("📧 Email enviado al comprador.");
+            } catch (err) {
+                console.error("❌ Error enviando email al comprador:", err);
+            }
 
-            await sendPaymentApprovedEmailToBuyer(payment.id, buyerEmail, buyerName, items, orderRef);
-            await sendSellerConfirmationEmail(payment.id, buyerEmail, buyerName, items, orderRef);
-
-            console.log("📧 Emails enviados correctamente.");
+            // Enviar correo al VENDEDOR (Completo con dirección)
+            try {
+                await sendSellerConfirmationEmail(payment.id, buyerEmail, buyerName, items, orderRef, shippingInfo);
+                console.log("📧 Email enviado al vendedor.");
+            } catch (err) {
+                console.error("❌ Error enviando email al vendedor:", err);
+            }
 
         } else {
-            console.log(`Pago con estado ${payment.status}. No se envían emails.`);
+            console.log(`Pago con estado '${payment.status}'. No se envían emails.`);
         }
 
         return {
@@ -141,7 +176,9 @@ exports.handler = async (event) => {
         };
 
     } catch (error) {
-        console.error("❌ Error en webhook:", error);
-        return { statusCode: 500, body: "Error interno" };
+        console.error("❌ Error crítico en webhook:", error);
+        // Devolvemos 200 o 500. A veces devolver 500 hace que MP reintente muchas veces.
+        // Si es un error de código nuestro, mejor 500 para verlo en logs.
+        return { statusCode: 500, body: `Error interno: ${error.message}` };
     }
 };
