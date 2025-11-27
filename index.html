@@ -20,6 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -38,6 +39,7 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'], 
                     },
                     spacing: {
                         '12': '3rem',
@@ -431,15 +433,15 @@
             >
         </a>
 
-        <nav class="flex max-md:hidden space-x-8">
-            <a href="#home" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Inicio</a>
-            <a href="#talleres" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Talleres</a>
-            <a href="#nosotros" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Nosotros</a>
+        <nav class="flex max-md:hidden space-x-8 items-center">
+            <a href="#home" onclick="route('home')" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Inicio</a>
+            <a href="#talleres" onclick="route('talleres')" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Talleres</a>
+            <a href="#nosotros" onclick="route('nosotros')" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Nosotros</a>
             
-            <a href="galeria.html" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Galería</a>
+            <a href="galeria.html" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Galería</a>
             
-            <a href="#tienda" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Tienda</a>
-            <a href="#contacto" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Contacto</a>
+            <a href="#tienda" onclick="route('tienda')" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Tienda</a>
+            <a href="#contacto" onclick="route('contacto')" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Contacto</a>
         </nav>
 
         <div class="flex items-center space-x-4">
@@ -1976,12 +1978,20 @@ function route(newRoute) {
     if (routes.includes(currentRoute)) {
         window.location.hash = `#${currentRoute}`;
     }
-    // ✅ AGREGAR ESTO: Avisar a Google Analytics del cambio de página virtual
     if (typeof gtag === 'function') {
+        // Formateamos el título (Ej: "home" -> "Inicio", "tienda" -> "Tienda")
+        let pageTitle = 'Circula - ' + currentRoute.charAt(0).toUpperCase() + currentRoute.slice(1);
+        
+        // Creamos una ruta virtual limpia (Ej: "/tienda" en lugar de "/index.html#tienda")
+        let virtualPagePath = '/' + currentRoute;
+
         gtag('event', 'page_view', {
-            page_title: 'Circula - ' + currentRoute.charAt(0).toUpperCase() + currentRoute.slice(1),
-            page_path: '/' + currentRoute
+            page_title: pageTitle,
+            page_location: window.location.href, // URL completa actual
+            page_path: virtualPagePath           // La ruta que verás en los reportes
         });
+        
+        console.log(`GA4 Evento enviado: Vista de página -> ${virtualPagePath}`);
     }
 }
 
@@ -2248,6 +2258,13 @@ window.addEventListener('load', () => {
     console.log("GSAP: window.load completado.");
     isWindowLoaded = true;
     checkAndLaunch();
+});
+
+document.fonts.ready.then(function () {
+    console.log("Fuentes cargadas: Recalculando GSAP");
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+    }
 });
 
 if (video) {

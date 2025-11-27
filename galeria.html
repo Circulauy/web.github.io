@@ -13,6 +13,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patua+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
 
     <script>
         tailwind.config = {
@@ -29,6 +31,7 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
                     }
                 }
             }
@@ -240,15 +243,15 @@
             >
             </a>
 
-        <nav class="flex max-md:hidden space-x-8">
-            <a href="index.html#home" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Inicio</a>
-            <a href="index.html#talleres" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Talleres</a>
-            <a href="index.html#nosotros" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Nosotros</a>
+        <nav class="flex max-md:hidden space-x-8 items-center">
+            <a href="index.html#home" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Inicio</a>
+            <a href="index.html#talleres"  class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Talleres</a>
+            <a href="#nosotros" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Nosotros</a>
             
-            <a href="index.html#galeria.html" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Galería</a>
+            <a href="galeria.html" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Galería</a>
             
-            <a href="index.html#tienda" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Tienda</a>
-            <a href="index.html#contacto" onclick="route()" class="font-sans font-bold text-xs tracking-[0.15em] text-text-dark hover:text-rp-teal transition duration-200 uppercase">Contacto</a>
+            <a href="index.html#tienda"  class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Tienda</a>
+            <a href="index.html#contacto"  class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Contacto</a>
         </nav>
 
         <div class="flex items-center space-x-4">
