@@ -41,24 +41,36 @@
         
         body { background-color: #f8fafc; overflow-x: hidden; }
         .title-style { font-family: 'Patua One', cursive; letter-spacing: -0.02em; }
-        
-        /* Fondo */
         #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at top left, #ffffff, #f1f5f9); }
         .plastic-particle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1)); backdrop-filter: blur(1px); }
 
-        /* --- ESTILOS RESPONSIVE (BROKEN GRID) --- */
-        #gallery-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            padding-bottom: 5rem;
-        }
-        .masonry-item {
-            width: 100%; height: 60vh; 
-            opacity: 0; transform: translateY(50px);
-        }
-        .pos-0, .pos-1, .pos-2, .pos-3, .pos-4 { margin: 0 !important; }
+        /* ========================================= */
+        /* === EFECTO MAZO DE CARTAS (MÓVIL) === */
+        /* ========================================= */
+        
+        @media (max-width: 1023px) {
+            #gallery-grid {
+                display: block; /* Bloque normal para permitir sticky */
+                padding-bottom: 20vh; /* Espacio extra al final */
+            }
 
+            .masonry-item {
+                position: sticky; /* LA MAGIA: Se pega al techo */
+                top: 15vh; /* Margen superior para que no tape el header */
+                height: 70vh; /* Ocupa casi toda la pantalla */
+                margin-bottom: 10vh; /* Espacio para el siguiente trigger */
+                
+                /* Sombra superior para separar las cartas visualmente */
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.1) !important; 
+                transform-origin: center top; /* Para el efecto de escala */
+            }
+
+            .img-wrapper {
+                height: 100% !important; /* Forzar altura completa de la tarjeta */
+            }
+        }
+
+        /* --- VISTA ESCRITORIO (BROKEN GRID) --- */
         @media (min-width: 1024px) {
             #gallery-grid {
                 display: grid;
@@ -66,7 +78,11 @@
                 grid-auto-rows: minmax(100px, auto); 
                 gap: 1.5rem;
             }
-            .masonry-item { height: auto; }
+            .masonry-item { 
+                position: relative; 
+                height: auto; 
+                margin-bottom: 0;
+            }
             .pos-0 { grid-column: 1 / span 5; grid-row: span 4; z-index: 1; }
             .pos-1 { grid-column: 4 / span 4; grid-row: span 3; z-index: 2; margin-top: 3rem !important; }
             .pos-2 { grid-column: 9 / span 4; grid-row: span 5; z-index: 1; margin-top: -4rem !important; }
@@ -74,10 +90,12 @@
             .pos-4 { grid-column: 10 / span 3; grid-row: span 3; z-index: 2; }
         }
 
+        /* --- ESTILOS COMUNES --- */
         .img-wrapper {
             position: relative; overflow: hidden; border-radius: 1.5rem;
             width: 100%; height: 100%; background-color: #e2e8f0;
             box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
         .parallax-img {
             height: 140%; width: 100%; object-fit: cover;
@@ -85,7 +103,6 @@
         }
         .item-overlay { background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0,0,0,0) 70%); }
         
-        /* Widget WhatsApp */
         #whatsapp-widget { position: fixed; bottom: 20px; right: 20px; z-index: 99999; }
         #whatsapp-icon { width: 60px; height: 60px; font-size: 30px; z-index: 10001; }
         #whatsapp-chat-box.hidden { display: none !important; }
@@ -209,7 +226,7 @@
         const gridContainer = document.getElementById('gallery-grid');
         const filterBtns = document.querySelectorAll('.filter-btn');
 
-        // Función Menú Móvil
+        // Menú Móvil
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobile-menu');
             if (mobileMenu) mobileMenu.classList.toggle('hidden');
@@ -258,6 +275,7 @@
                 const positionClass = `pos-${index % 5}`;
 
                 const el = document.createElement('div');
+                // IMPORTANTE: En móvil las clases 'pos-x' son ignoradas por el CSS media query
                 el.className = `masonry-item group cursor-pointer ${positionClass}`;
                 el.onclick = () => openLightbox({...item, img: imageUrl, title: titulo, category: categoria});
 
@@ -272,12 +290,38 @@
                 `;
                 gridContainer.appendChild(el);
 
-                gsap.fromTo(el, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%" } });
-                
-                const img = el.querySelector('.parallax-img');
-                const pSpeed = (window.innerWidth < 1024) ? 10 : (index % 2 === 0 ? 25 : 15); 
-                gsap.fromTo(img, { yPercent: -pSpeed }, { yPercent: pSpeed, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+                // --- LÓGICA DE ANIMACIÓN DIFERENCIADA ---
+                if (window.innerWidth >= 1024) {
+                    // PC: Animación Reveal y Parallax normal
+                    gsap.fromTo(el, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%" } });
+                    const img = el.querySelector('.parallax-img');
+                    const pSpeed = (index % 2 === 0 ? 25 : 15); 
+                    gsap.fromTo(img, { yPercent: -pSpeed }, { yPercent: pSpeed, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+                } else {
+                    // MÓVIL: Efecto "Stacked Cards" (Cartas que se oscurecen al irse atrás)
+                    gsap.to(el, {
+                        opacity: 1, // Aseguramos que sea visible
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 15vh", // Cuando llega a su posición sticky
+                            end: "bottom 15vh",
+                            scrub: true,
+                            onUpdate: (self) => {
+                                // A medida que scrolleamos y la siguiente tarjeta lo cubre
+                                // el progreso va de 0 a 1.
+                                // Achicamos un poco y oscurecemos la tarjeta actual.
+                                if(self.progress > 0) {
+                                    gsap.to(el, { scale: 1 - (self.progress * 0.05), filter: `brightness(${1 - (self.progress * 0.5)})`, duration: 0.1 });
+                                }
+                            }
+                        }
+                    });
+                    
+                    // En móvil aseguramos que se vea desde el inicio
+                    gsap.set(el, { opacity: 1, y: 0 });
+                }
             });
+            
             ScrollTrigger.refresh(); lenis.resize();
         }
 
