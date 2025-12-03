@@ -42,15 +42,13 @@
         }
         
         body { 
-            /* CAMBIO: Fondo oscuro para que si hay micro-huecos, no se noten */
-            background-color: #111; 
+            background-color: #000; /* Fondo negro para evitar destellos blancos */
             margin: 0; 
             padding: 0; 
             perspective: 2000px; 
             overflow-x: hidden;
         }
 
-        /* En PC el fondo debe seguir siendo claro */
         @media (min-width: 1024px) {
             body { background-color: #f8fafc; }
         }
@@ -60,7 +58,7 @@
         .plastic-particle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1)); backdrop-filter: blur(1px); }
 
         /* ============================================================ */
-        /* === VISTA MÓVIL: SOLUCIÓN FINAL "SOLID STACK" === */
+        /* === VISTA MÓVIL: EFECTO RESN "STACKING" PURO === */
         /* ============================================================ */
         @media (max-width: 1023px) {
             html, body { 
@@ -72,8 +70,9 @@
             #gallery-grid {
                 display: block;
                 padding: 0;
-                -webkit-perspective: 1500px; /* Perspectiva profunda */
-                perspective: 1500px; 
+                /* Perspectiva ajustada para que la rotación se note pero no deforme */
+                -webkit-perspective: 1000px;
+                perspective: 1000px; 
                 -webkit-transform-style: preserve-3d;
                 transform-style: preserve-3d;
             }
@@ -83,12 +82,11 @@
                 position: sticky;
                 position: -webkit-sticky; 
                 top: 0;
-                height: 100dvh; 
+                height: 100vh; /* Altura completa obligatoria */
                 width: 100%;
                 z-index: 1;
                 background: transparent; 
-                margin-bottom: 0; /* Cero margen para contacto total */
-                padding: 0;
+                margin: 0; padding: 0;
                 -webkit-transform: translate3d(0,0,0);
                 transform: translate3d(0,0,0);
             }
@@ -97,12 +95,12 @@
             .anim-wrapper {
                 width: 100%;
                 height: 100%;
-                background-color: #1a1a1a; /* Fondo oscuro de seguridad */
+                background-color: #000; 
                 overflow: hidden;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.5); /* Sombra sutil arriba */
+                /* Sombra superior para que la carta nueva proyecte sombra sobre la vieja */
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.8); 
                 
-                /* Bisagra arriba */
-                transform-origin: center top;
+                transform-origin: center top; /* Bisagra arriba */
                 -webkit-transform-origin: center top;
                 
                 will-change: transform, filter;
@@ -111,18 +109,14 @@
             }
 
             .img-wrapper { 
-                height: 100% !important; 
-                width: 100% !important; 
-                position: relative; 
-                overflow: hidden;
+                height: 100% !important; width: 100% !important; 
+                position: relative; overflow: hidden;
             }
             
+            /* Parallax: Imagen un poco más grande para moverse dentro */
             .parallax-img {
-                height: 130% !important; /* Más altura para parallax seguro */
-                width: 100%; 
-                object-fit: cover;
-                position: absolute; 
-                top: 0; left: 0;
+                height: 120% !important; width: 100%; object-fit: cover;
+                position: absolute; top: 0; left: 0;
                 -webkit-transform: translateZ(0);
                 transform: translateZ(0);
             }
@@ -134,21 +128,16 @@
             }
         }
 
-        /* --- VISTA ESCRITORIO (Sin cambios) --- */
+        /* --- VISTA ESCRITORIO --- */
         @media (min-width: 1024px) {
             #gallery-grid {
                 display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(100px, auto); gap: 1.5rem; padding-bottom: 5rem;
             }
             .masonry-item { position: relative; height: auto; margin-bottom: 0; top: auto; width: auto; background: transparent; box-shadow: none; height: auto !important; overflow: visible; z-index: 1;}
-            
-            .anim-wrapper {
-                width: 100%; height: 100%; border-radius: 1.5rem; overflow: hidden; position: relative; background-color: #e2e8f0;
-            }
-
+            .anim-wrapper { width: 100%; height: 100%; border-radius: 1.5rem; overflow: hidden; position: relative; background-color: #e2e8f0; }
             .img-wrapper { position: relative; overflow: hidden; width: 100%; height: 100%; }
             .parallax-img { height: 140%; width: 100%; object-fit: cover; position: absolute; top: -20%; left: 0; will-change: transform; }
             .item-overlay { background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0,0,0,0) 70%); border-radius: 1.5rem; }
-            
             .pos-0 { grid-column: 1 / span 5; grid-row: span 4; }
             .pos-1 { grid-column: 4 / span 4; grid-row: span 3; margin-top: 3rem !important; }
             .pos-2 { grid-column: 9 / span 4; grid-row: span 5; margin-top: -4rem !important; }
@@ -270,7 +259,6 @@
             if (mobileMenu) mobileMenu.classList.toggle('hidden');
         }
 
-        // --- LENIS SOLO EN PC ---
         if (window.innerWidth >= 1024) {
             const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true, mouseMultiplier: 0.8 });
             function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
@@ -305,7 +293,6 @@
             ScrollTrigger.getAll().forEach(t => t.kill());
             gridContainer.innerHTML = '';
             
-            // Altura mínima para asegurar scroll en móvil
             if(window.innerWidth < 1024) document.body.style.minHeight = "400vh";
 
             if(galleryItems.length === 0) { gridContainer.innerHTML = '<div class="w-full text-center py-20 text-gray-400">Cargando...</div>'; return; }
@@ -317,7 +304,6 @@
                 const titulo = item.title || "Proyecto";
                 const categoria = item.category || "General";
                 
-                // Z-Index: Cada tarjeta nueva DEBE estar encima de la anterior
                 const zIndex = index + 1; 
 
                 const el = document.createElement('div');
@@ -339,12 +325,12 @@
                 gridContainer.appendChild(el);
 
                 if (window.innerWidth >= 1024) {
-                    // PC: Animación Standard
+                    // PC
                     gsap.fromTo(el, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%" } });
                     const img = el.querySelector('.parallax-img');
                     gsap.fromTo(img, { yPercent: -15 }, { yPercent: 15, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
                 } else {
-                    // --- MÓVIL: EFECTO RESN "SOLID STACK" (CORREGIDO) ---
+                    // --- MÓVIL: CORRECCIÓN SIN HUECOS ---
                     const wrapper = el.querySelector('.anim-wrapper');
                     const img = el.querySelector('.parallax-img');
 
@@ -355,30 +341,29 @@
                         rotationX: 0
                     });
 
-                    // ANIMACIÓN DE TARJETA: SIN DESPLAZAMIENTO VERTICAL (y: 0)
-                    // Esto evita que se "despegue" del fondo
+                    // ANIMACIÓN PRINCIPAL
                     gsap.to(wrapper, {
-                        scale: 1,                   // NO ENCOGER (Mantiene el ancho/alto completo)
-                        rotationX: -20,             // Solo inclinación hacia atrás
-                        filter: "brightness(0.2)",  // Oscurecimiento agresivo
-                        y: 0,                       // NO MOVER (Vital para no abrir huecos)
+                        scale: 1,                   // MANTENER TAMAÑO (Evita el hueco abajo)
+                        rotationX: -10,             // Inclinación sutil hacia atrás
+                        filter: "brightness(0.5)",  // Oscurecer solo al 50% (no negro total)
+                        y: 0,                       // NO MOVER (Se queda quieto para que lo tapen)
                         
                         ease: "none",
                         scrollTrigger: {
                             trigger: el,            
-                            start: "top top",       // Cuando choca arriba
-                            end: "bottom top",      // Durante toda su altura
+                            start: "top top",       // Cuando llega arriba
+                            end: "bottom top",      // Hasta que se va completo
                             scrub: true,
                             invalidateOnRefresh: true
                         }
                     });
 
-                    // PARALLAX INTERNO
+                    // PARALLAX SUTIL
                     gsap.fromTo(img, 
                         { yPercent: 0, scale: 1 }, 
                         { 
-                            yPercent: 15,           // Desplaza solo la imagen dentro del marco
-                            scale: 1.1, 
+                            yPercent: 10,           // Mueve la imagen un poco
+                            scale: 1.05, 
                             ease: "none", 
                             scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true }
                         }
@@ -388,7 +373,6 @@
             ScrollTrigger.refresh();
         }
 
-        // Helper para abrir lightbox
         function openLightboxWrapper(element) {
             const data = element.querySelector('.data-store');
             if(data) openLightbox({ img: data.dataset.img, title: data.dataset.title, category: data.dataset.cat, desc: data.dataset.desc });
