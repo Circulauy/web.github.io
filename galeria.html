@@ -42,10 +42,12 @@
         }
         
         body { 
-            background-color: #000; /* Fondo negro para evitar destellos blancos */
+            /* Fondo oscuro para ocultar costuras */
+            background-color: #050505; 
             margin: 0; 
             padding: 0; 
-            perspective: 2000px; 
+            /* Perspectiva global para el escenario 3D */
+            perspective: 2500px; 
             overflow-x: hidden;
         }
 
@@ -58,52 +60,53 @@
         .plastic-particle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1)); backdrop-filter: blur(1px); }
 
         /* ============================================================ */
-        /* === VISTA MÓVIL: EFECTO RESN "STACKING" PURO === */
+        /* === VISTA MÓVIL: ARQUITECTURA "CARD DECK" VANGUARDISTA === */
         /* ============================================================ */
         @media (max-width: 1023px) {
-            html, body { 
-                height: auto; 
-                overflow-x: hidden; 
-                overscroll-behavior-y: none; 
-            }
+            html, body { height: auto; overflow-x: hidden; overscroll-behavior-y: none; }
             
             #gallery-grid {
                 display: block;
                 padding: 0;
-                /* Perspectiva ajustada para que la rotación se note pero no deforme */
-                -webkit-perspective: 1000px;
-                perspective: 1000px; 
+                /* El escenario 3D debe ser profundo */
+                -webkit-perspective: 2000px;
+                perspective: 2000px; 
                 -webkit-transform-style: preserve-3d;
                 transform-style: preserve-3d;
             }
 
-            /* EL ENVASE (STICKY) */
+            /* LA TARJETA MAESTRA (Sticky) */
             .masonry-item {
                 position: sticky;
                 position: -webkit-sticky; 
                 top: 0;
-                height: 100vh; /* Altura completa obligatoria */
+                height: 100vh; 
                 width: 100%;
-                z-index: 1;
+                z-index: 1; /* Se incrementará en JS */
                 background: transparent; 
                 margin: 0; padding: 0;
+                
+                /* Optimización GPU */
                 -webkit-transform: translate3d(0,0,0);
                 transform: translate3d(0,0,0);
+                will-change: transform;
             }
 
-            /* EL CONTENIDO (ANIMADO) */
+            /* EL CONTENEDOR VISUAL (Lo que rota) */
             .anim-wrapper {
                 width: 100%;
                 height: 100%;
                 background-color: #000; 
                 overflow: hidden;
-                /* Sombra superior para que la carta nueva proyecte sombra sobre la vieja */
-                box-shadow: 0 -10px 30px rgba(0,0,0,0.8); 
                 
-                transform-origin: center top; /* Bisagra arriba */
-                -webkit-transform-origin: center top;
+                /* Sombra física PROYECTADA hacia la tarjeta anterior */
+                box-shadow: 0 -25px 60px rgba(0,0,0,0.7); 
                 
-                will-change: transform, filter;
+                /* Bisagra SUPERIOR para efecto 'Deck' */
+                transform-origin: 50% 0%; 
+                -webkit-transform-origin: 50% 0%;
+                
+                will-change: transform;
                 -webkit-backface-visibility: hidden;
                 backface-visibility: hidden;
             }
@@ -111,9 +114,10 @@
             .img-wrapper { 
                 height: 100% !important; width: 100% !important; 
                 position: relative; overflow: hidden;
+                /* Capa sólida detrás de la imagen */
+                background: #111;
             }
             
-            /* Parallax: Imagen un poco más grande para moverse dentro */
             .parallax-img {
                 height: 120% !important; width: 100%; object-fit: cover;
                 position: absolute; top: 0; left: 0;
@@ -121,9 +125,21 @@
                 transform: translateZ(0);
             }
 
+            /* CAPA DE SOMBRA ACTIVA (Sustituye al brightness) */
+            .shadow-overlay {
+                position: absolute;
+                inset: 0;
+                background: #000;
+                opacity: 0; /* Empieza transparente */
+                pointer-events: none;
+                z-index: 10;
+                will-change: opacity;
+            }
+
             .item-overlay {
-                background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%) !important;
+                background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%) !important;
                 padding: 2rem !important; padding-bottom: 6rem !important;
+                z-index: 20;
                 pointer-events: none;
             }
         }
@@ -138,6 +154,8 @@
             .img-wrapper { position: relative; overflow: hidden; width: 100%; height: 100%; }
             .parallax-img { height: 140%; width: 100%; object-fit: cover; position: absolute; top: -20%; left: 0; will-change: transform; }
             .item-overlay { background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0,0,0,0) 70%); border-radius: 1.5rem; }
+            .shadow-overlay { display: none; } /* No sombra en PC */
+            
             .pos-0 { grid-column: 1 / span 5; grid-row: span 4; }
             .pos-1 { grid-column: 4 / span 4; grid-row: span 3; margin-top: 3rem !important; }
             .pos-2 { grid-column: 9 / span 4; grid-row: span 5; margin-top: -4rem !important; }
@@ -304,6 +322,7 @@
                 const titulo = item.title || "Proyecto";
                 const categoria = item.category || "General";
                 
+                // Z-INDEX CRÍTICO: Las nuevas deben tener un índice mayor para hacer sombra a las viejas
                 const zIndex = index + 1; 
 
                 const el = document.createElement('div');
@@ -314,6 +333,7 @@
                     <div class="anim-wrapper group cursor-pointer" onclick="openLightboxWrapper(this)">
                         <div class="img-wrapper">
                             <img src="${imageUrl}" alt="${titulo}" class="parallax-img" referrerpolicy="no-referrer" onerror="this.src='${PLACEHOLDER_IMG}'">
+                            <div class="shadow-overlay"></div>
                             <div class="item-overlay absolute inset-0 flex flex-col justify-end p-6">
                                 <span class="text-rp-mint text-[10px] font-bold uppercase tracking-wider mb-2">${categoria}</span>
                                 <h3 class="text-white font-heading text-4xl leading-none shadow-black drop-shadow-lg">${titulo}</h3>
@@ -330,42 +350,64 @@
                     const img = el.querySelector('.parallax-img');
                     gsap.fromTo(img, { yPercent: -15 }, { yPercent: 15, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
                 } else {
-                    // --- MÓVIL: CORRECCIÓN SIN HUECOS ---
+                    // --- MÓVIL: SISTEMA "CARD DECK" FÍSICO ---
                     const wrapper = el.querySelector('.anim-wrapper');
                     const img = el.querySelector('.parallax-img');
+                    const shadow = el.querySelector('.shadow-overlay');
 
+                    // Configuramos la física inicial
                     gsap.set(wrapper, { 
-                        transformOrigin: "center top", 
-                        transformPerspective: 1000,
+                        transformOrigin: "center top", // Bisagra arriba
+                        transformPerspective: 2000,
                         force3D: true,
-                        rotationX: 0
+                        rotationX: 0,
+                        scale: 1,
+                        z: 0
                     });
 
-                    // ANIMACIÓN PRINCIPAL
+                    // ANIMACIÓN DE "RETIRADA":
+                    // La tarjeta actual se queda quieta (sticky) y solo se inclina hacia atrás.
                     gsap.to(wrapper, {
-                        scale: 1,                   // MANTENER TAMAÑO (Evita el hueco abajo)
-                        rotationX: -10,             // Inclinación sutil hacia atrás
-                        filter: "brightness(0.5)",  // Oscurecer solo al 50% (no negro total)
-                        y: 0,                       // NO MOVER (Se queda quieto para que lo tapen)
+                        scale: 0.95,                // Reduce solo un 5% (imperceptible, pero da profundidad)
+                        rotationX: -10,             // Inclinación suave
                         
                         ease: "none",
                         scrollTrigger: {
                             trigger: el,            
                             start: "top top",       // Cuando llega arriba
-                            end: "bottom top",      // Hasta que se va completo
+                            end: "bottom top",      // Durante toda su altura
                             scrub: true,
                             invalidateOnRefresh: true
                         }
                     });
 
-                    // PARALLAX SUTIL
+                    // ANIMACIÓN DE SOMBRA:
+                    // En lugar de oscurecer toda la imagen, subimos la opacidad de una capa negra
+                    gsap.to(shadow, {
+                        opacity: 0.6,               // Oscurecer hasta el 60%
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top top",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    });
+
+                    // PARALLAX FLUIDO:
+                    // La imagen interna se mueve un poco más lento que el scroll para dar sensación de ventana
                     gsap.fromTo(img, 
-                        { yPercent: 0, scale: 1 }, 
+                        { yPercent: 0, scale: 1.05 }, 
                         { 
-                            yPercent: 10,           // Mueve la imagen un poco
+                            yPercent: 10,           
                             scale: 1.05, 
                             ease: "none", 
-                            scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true }
+                            scrollTrigger: { 
+                                trigger: el, 
+                                start: "top top", 
+                                end: "bottom top", 
+                                scrub: true 
+                            }
                         }
                     );
                 }
