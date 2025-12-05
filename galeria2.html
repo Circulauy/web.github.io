@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circula - Proyectos</title>
+    <title>Circula - WebGL Experience</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,269 +22,302 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7',
-                        'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-dark-blue': '#2c5e5e',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'],
-                    }
+                    colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-dark-blue': '#2c5e5e' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] }
                 }
             }
         }
     </script>
 
     <style>
-        /* --- LENIS SCROLL (Solo PC) --- */
-        @media (min-width: 1024px) {
-            html.lenis, html.lenis body { height: auto; }
-            .lenis.lenis-smooth { scroll-behavior: auto !important; }
-            .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-            .lenis.lenis-stopped { overflow: hidden; }
+        /* CSS MÍNIMO: El HTML es solo un fantasma para el layout */
+        body { margin: 0; padding: 0; background-color: #050505; overflow-x: hidden; }
+        
+        /* El Canvas vive detrás de todo */
+        #webgl-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
         }
-        
-        body { background-color: #f8fafc; overflow-x: hidden; margin: 0; padding: 0; }
-        .title-style { font-family: 'Patua One', cursive; letter-spacing: -0.02em; }
-        #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at top left, #ffffff, #f1f5f9); }
-        .plastic-particle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1)); backdrop-filter: blur(1px); }
 
-        /* ============================================================ */
-        /* === VISTA MÓVIL FLUIDA (ESTILO VIDEO REFERENCIA) === */
-        /* ============================================================ */
-        
+        /* --- LAYOUT GHOST (MÓVIL) --- */
         @media (max-width: 1023px) {
-            /* IMPORTANTE: Eliminamos scroll-snap para que sea fluido como el video */
-            html, body {
-                height: auto;
-                overflow-y: auto; 
-            }
-
-            main {
-                height: auto;
-                overflow: visible;
-            }
-
-            #hero-mobile-slide {
-                min-height: 60vh; /* Altura cómoda para la intro */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding-bottom: 2rem;
-            }
-
-            #gallery-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 5vh; /* Espacio entre fotos */
-                padding-bottom: 10vh;
-                padding-top: 2rem;
-            }
-
+            #gallery-grid { display: block; padding: 0; }
+            
             .masonry-item {
-                /* Altura del 75% para ver la siguiente entrando */
-                height: 75vh; 
-                width: 90%; /* Un poco de margen lateral queda elegante */
-                margin: 0 auto; /* Centrado */
-                position: relative;
-                overflow: hidden;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-                
-                /* Preparado para aceleración por hardware */
-                transform: translateZ(0); 
-                will-change: transform, filter;
-            }
-
-            .img-wrapper {
-                height: 100% !important;
-                width: 100% !important;
-                border-radius: 0;
+                /* Usamos Sticky CSS para calcular la posición, WebGL copiará esto */
+                position: sticky; top: 0;
+                height: 100vh; width: 100%;
+                z-index: 1;
+                /* Las imágenes HTML son invisibles, solo sirven para que Google las vea y para calcular el layout */
+                opacity: 0; 
+                pointer-events: none; /* Los clicks los manejaremos manualmente o via overlay */
             }
             
-            .parallax-img {
-                height: 120% !important; /* Un poco más grande para parallax interno suave */
-                width: 100%;
-                object-fit: cover;
-                top: -10%;
-                will-change: transform;
+            /* Overlay de texto visible sobre el canvas */
+            .text-overlay {
+                position: absolute; bottom: 0; left: 0; width: 100%;
+                padding: 2rem; padding-bottom: 6rem;
+                background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+                opacity: 1 !important; /* El texto SÍ se ve en HTML */
+                pointer-events: auto;
+                z-index: 10;
             }
-            
-            .item-overlay {
-                background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%) !important;
-                padding: 1.5rem !important;
-                opacity: 1 !important;
-            }
-            .item-overlay h3 { font-size: 2rem; color: white; }
-        }
-        .masonry-item {
-            perspective: 1200px; /* Activa profundidad 3D */
         }
 
-        .masonry-item .img-wrapper {
-            transform-style: preserve-3d;
-        }
-
-        .masonry-item .parallax-img {
-            transition: transform 0.6s ease, filter 0.6s ease;
-            backface-visibility: hidden;
-        }
-
-        /* --- VISTA ESCRITORIO --- */
+        /* --- LAYOUT PC (GRID) --- */
         @media (min-width: 1024px) {
-            #gallery-grid {
-                display: grid;
-                grid-template-columns: repeat(12, 1fr);
-                grid-auto-rows: minmax(100px, auto); 
-                gap: 1.5rem;
-                padding-bottom: 5rem;
-            }
-            .masonry-item { position: relative; height: auto; margin-bottom: 0; }
-            .img-wrapper { border-radius: 1.5rem; position: relative; overflow: hidden; width: 100%; height: 100%; background-color: #e2e8f0; }
-            .parallax-img { height: 140%; width: 100%; object-fit: cover; position: absolute; top: -20%; left: 0; will-change: transform; }
-            .item-overlay { background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0,0,0,0) 70%); }
-            
-            .pos-0 { grid-column: 1 / span 5; grid-row: span 4; z-index: 1; }
-            .pos-1 { grid-column: 4 / span 4; grid-row: span 3; z-index: 2; margin-top: 3rem !important; }
-            .pos-2 { grid-column: 9 / span 4; grid-row: span 5; z-index: 1; margin-top: -4rem !important; }
-            .pos-3 { grid-column: 2 / span 6; grid-row: span 3; z-index: 3; margin-top: -2rem !important; margin-left: 2rem; }
-            .pos-4 { grid-column: 10 / span 3; grid-row: span 3; z-index: 2; }
+            #gallery-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; padding-bottom: 5rem; }
+            .masonry-item { position: relative; height: 60vh; opacity: 0; } /* Invisible, WebGL renderiza */
+            .pos-0 { grid-column: 1 / span 5; } .pos-1 { grid-column: 4 / span 4; margin-top: 3rem; }
+            .pos-2 { grid-column: 9 / span 4; margin-top: -4rem; } .pos-3 { grid-column: 2 / span 6; margin-top: -2rem; margin-left: 2rem; }
+            .pos-4 { grid-column: 10 / span 3; }
+            /* En PC mostramos el texto flotante */
+            .text-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 2rem; color: white; opacity: 1 !important; }
         }
 
-        #whatsapp-widget { position: fixed; bottom: 20px; right: 20px; z-index: 99999; }
-        #whatsapp-icon { width: 60px; height: 60px; font-size: 30px; z-index: 10001; }
-        #whatsapp-chat-box.hidden { display: none !important; }
-        @media (max-width: 1023px) {
-        .masonry-item {
-            transform: translateZ(0); /* Reset seguro */
-        }
-    }
+        #loader-overlay { position: fixed; inset: 0; z-index: 99999; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; color: white; }
+        
+        /* Interfaz UI */
+        header { pointer-events: auto; }
     </style>
 </head>
 <body class="font-sans text-text-dark antialiased">
 
-    <div id="background-canvas"></div>
+    <canvas id="webgl-canvas"></canvas>
 
-    <header class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 w-full">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="index.html#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
-                <img src="images/logo.png" alt="Logo Circula" class="h-8 sm:h-10 lg:h-11 object-contain">
-            </a>
-            <nav class="flex max-md:hidden space-x-8 items-center">
-                <a href="index.html#home" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Inicio</a>
-                <a href="index.html#talleres" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Talleres</a>
-                <a href="index.html#nosotros" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Nosotros</a>
-                <a href="#" class="font-brand font-bold text-sm text-rp-teal transition duration-200">Galería</a>
-                <a href="index.html#tienda" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Tienda</a>
-                <a href="index.html#contacto" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Contacto</a>
+    <div id="loader-overlay">
+        <i class="fas fa-circle-notch fa-spin text-4xl text-rp-teal mb-4"></i>
+        <p class="font-brand tracking-widest text-xs uppercase">Iniciando Motor 3D...</p>
+    </div>
+
+    <header class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 w-full">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <img src="images/logo.png" alt="Logo" class="h-8 object-contain">
+            <nav class="max-md:hidden space-x-8 flex">
+                <a href="#" class="font-brand text-sm hover:text-rp-teal transition">Galería</a>
             </nav>
-            <div class="flex items-center space-x-4">
-                <a href="https://www.instagram.com/circula.uy/" target="_blank" class="max-md:hidden text-text-dark hover:text-rp-teal transition p-2 rounded-full hover:bg-rp-blue-light"><i class="fab fa-instagram text-lg"></i></a>
-                <a href="index.html#carrito" class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-rp-teal"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path></svg>
-                </a>
-                <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none rounded-lg" onclick="toggleMobileMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                </button>
-            </div>
         </div>
-        <nav id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
-            <a href="index.html#home" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Inicio</a>
-            <a href="index.html#talleres" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Talleres</a>
-            <a href="#" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
-            <a href="index.html#tienda" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Tienda</a>
-            <a href="index.html#contacto" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light">Contacto</a>
-        </nav>
     </header>
 
-    <main>
-        <section id="hero-mobile-slide" class="px-4 text-center relative z-10 bg-white md:bg-transparent md:h-auto md:pt-32 md:pb-12">
-            <span class="text-rp-teal font-extrabold tracking-[0.4em] uppercase mb-4 block text-xs" id="gallery-subtitle">Galería</span>
-            <h1 class="text-5xl md:text-8xl font-bold title-style text-text-dark mb-6 leading-none" id="gallery-title">
-                IMPACTO <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-rp-teal to-rp-dark-blue">VISUAL</span>
-            </h1>
-            <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10 font-light" id="gallery-desc">
-                Desliza para ver la transformación.
-            </p>
-            <div class="flex flex-wrap justify-center gap-2" id="gallery-filters">
-                <button class="filter-btn active px-6 py-2 rounded-full bg-text-dark text-white font-bold text-xs tracking-wide" data-filter="all">TODO</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="talleres">TALLERES</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="productos">PRODUCTOS</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="impacto">IMPACTO</button>
+    <main class="relative z-10">
+        <section class="px-4 text-center py-32 bg-white/0">
+            <h1 class="text-5xl md:text-8xl font-bold title-style text-white mb-6 mix-blend-difference">IMPACTO VISUAL</h1>
+            <div class="flex flex-wrap justify-center gap-2 mt-8">
+                <button class="filter-btn px-6 py-2 rounded-full bg-white text-black font-bold text-xs" data-filter="all">TODO</button>
             </div>
         </section>
 
-        <section class="container mx-auto px-0 md:px-6 lg:px-16 relative z-20">
-            <div id="gallery-grid">
-                <div class="h-64 flex items-center justify-center text-gray-400 font-light w-full">
-                    <i class="fas fa-circle-notch fa-spin mr-3 text-rp-teal"></i> Cargando...
-                </div>
-            </div>
+        <section class="container mx-auto px-0 relative z-20">
+            <div id="gallery-grid"></div>
         </section>
         
-        <footer class="bg-text-dark text-white py-12 border-t border-gray-800 relative z-30 md:block hidden">
-            <div class="container mx-auto px-4 text-center">
-                <p class="text-2xl font-bold text-rp-teal title-style mb-4">Circula</p>
-                <p class="text-sm text-gray-500 font-light">&copy; 2025 Circula.</p>
-            </div>
-        </footer>
-    </main>
+        <div class="h-screen"></div> </main>
 
-    <div id="lightbox" class="fixed inset-0 z-[100] hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-rp-dark-blue/95 backdrop-blur-xl" onclick="closeLightbox()"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <div class="relative bg-white rounded-[1.5rem] overflow-hidden shadow-2xl w-full max-w-5xl max-h-[80vh] flex flex-col md:flex-row pointer-events-auto transform scale-95" id="lightbox-content">
-                <div class="w-full md:w-3/5 h-[40vh] md:h-auto bg-gray-100 relative overflow-hidden">
-                    <img id="lb-img" src="" alt="" class="w-full h-full object-cover">
-                </div>
-                <div class="w-full md:w-2/5 p-8 flex flex-col justify-center bg-white relative">
-                    <button onclick="closeLightbox()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-text-dark">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <span id="lb-category" class="text-rp-teal font-extrabold uppercase tracking-widest text-xs mb-2 block">Categoría</span>
-                    <h3 id="lb-title" class="text-2xl md:text-3xl font-heading text-text-dark mb-4 leading-none">Título</h3>
-                    <p id="lb-desc" class="text-gray-500 text-sm mb-6 leading-relaxed font-light">Descripción...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script id="vertexShader" type="x-shader/x-vertex">
+        uniform float uTime;
+        uniform float uVelocity;
+        uniform vec2 uViewportSizes;
+        varying vec2 vUv;
+        varying float vElevation;
 
-    <div id="whatsapp-widget">
-        <button id="whatsapp-icon" onclick="toggleChat()" class="bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i class="fab fa-whatsapp"></i></button>
-        <div id="whatsapp-chat-box" class="hidden w-[300px] h-[400px] bg-white rounded-[20px] absolute bottom-[75px] right-0 flex flex-col overflow-hidden z-[10000] shadow-2xl">
-            <div class="bg-[#075E54] text-white p-4 flex items-center"><span class="font-bold">Circula</span></div>
-            <div class="bg-[#ECE5DD] flex-grow p-4 overflow-y-auto"><div class="bg-white p-3 rounded-lg shadow-sm text-sm inline-block">¡Hola! 👋 Escríbenos.</div></div>
-            <div class="p-3 bg-[#f0f0f0] flex items-center"><input type="text" id="mensaje-usuario" placeholder="Mensaje..." class="flex-grow p-2 rounded-full border-none outline-none text-sm mr-2"><button onclick="enviarWhatsApp()" class="text-[#075E54]"><i class="fas fa-paper-plane"></i></button></div>
-        </div>
-    </div>
+        void main() {
+            vUv = uv;
+            vec3 pos = position;
+
+            // EFECTO RESN: Curvatura basada en velocidad y posición Y
+            // Cuanto más rápido scrolleas, más se dobla la tarjeta
+            float curveStrength = uVelocity * 0.002;
+            
+            // Deformación parabólica
+            pos.z += sin(pos.y * 0.05 + uTime) * 0.0; // Ondulación base (opcional)
+            
+            // Bending effect (doblar bordes al mover)
+            float distFromCenter = uv.y - 0.5;
+            pos.z -= pow(distFromCenter, 2.0) * uVelocity * 1.5; 
+
+            vElevation = pos.z;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        uniform sampler2D uTexture;
+        uniform float uOpacity;
+        uniform float uShadowStrength; // Sombra por stacking
+        varying vec2 vUv;
+        varying float vElevation;
+
+        void main() {
+            vec4 textureColor = texture2D(uTexture, vUv);
+            
+            // Aplicamos sombra basada en uniform (controlado por JS según posición)
+            vec3 finalColor = mix(textureColor.rgb, vec3(0.0), uShadowStrength);
+            
+            gl_FragColor = vec4(finalColor, uOpacity);
+        }
+    </script>
 
     <script>
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4R12u0TEqvWMUK5-Z4n9tWw6gg1Abuyt6hgSB630nZA0UoPv6MGFDPg3sSdw5cOgxa_R3jofB3ECi/pub?output=csv';
-        const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3C/svg%3E";
-        let galleryItems = [];
-        const gridContainer = document.getElementById('gallery-grid');
-        const filterBtns = document.querySelectorAll('.filter-btn');
+        const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop"; 
 
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu) mobileMenu.classList.toggle('hidden');
+        // --- SISTEMA WEBGL ---
+        class WebGLApp {
+            constructor() {
+                this.canvas = document.querySelector('#webgl-canvas');
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                this.scroll = 0;
+                this.scrollVelocity = 0;
+                this.meshes = [];
+                
+                this.initThree();
+                this.initLenis();
+                this.addEvents();
+            }
+
+            initThree() {
+                this.scene = new THREE.Scene();
+                
+                // Cámara ortográfica para mapear 1:1 con píxeles CSS
+                // Esto es vital para mezclar HTML y WebGL
+                this.camera = new THREE.OrthographicCamera(
+                    this.width / -2, this.width / 2, 
+                    this.height / 2, this.height / -2, 
+                    1, 1000
+                );
+                this.camera.position.z = 10;
+
+                this.renderer = new THREE.WebGLRenderer({ 
+                    canvas: this.canvas, 
+                    alpha: true, // Fondo transparente
+                    antialias: true 
+                });
+                this.renderer.setSize(this.width, this.height);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance
+            }
+
+            initLenis() {
+                this.lenis = new Lenis({ lerp: 0.1, smooth: true });
+                
+                this.lenis.on('scroll', ({ scroll, velocity }) => {
+                    this.scroll = scroll;
+                    this.scrollVelocity = velocity;
+                    this.syncScroll();
+                });
+            }
+
+            // CREAR MALLAS 3D BASADAS EN EL DOM
+            createMeshItem(element, imgUrl) {
+                const rect = element.getBoundingClientRect();
+                
+                // Geometría con segmentos para permitir curvatura
+                const geometry = new THREE.PlaneGeometry(1, 1, 32, 32); 
+                
+                // Carga de textura
+                const textureLoader = new THREE.TextureLoader();
+                textureLoader.crossOrigin = "Anonymous"; // Intento de saltar CORS
+                
+                const texture = textureLoader.load(imgUrl);
+                
+                // Material Shader Personalizado
+                const material = new THREE.ShaderMaterial({
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                    uniforms: {
+                        uTexture: { value: texture },
+                        uVelocity: { value: 0 },
+                        uOpacity: { value: 1 },
+                        uShadowStrength: { value: 0 }, // 0 = luz, 1 = negro
+                        uTime: { value: 0 }
+                    },
+                    transparent: true
+                });
+
+                const mesh = new THREE.Mesh(geometry, material);
+                this.scene.add(mesh);
+
+                return { mesh, element, rect };
+            }
+
+            syncScroll() {
+                // En el loop de renderizado actualizamos las posiciones
+            }
+
+            updateMeshes() {
+                this.meshes.forEach((item, index) => {
+                    // Obtenemos la posición actual del elemento DOM "fantasma"
+                    // Como el DOM usa position: sticky, el getBoundingClientRect refleja eso.
+                    const rect = item.element.getBoundingClientRect();
+                    
+                    // Actualizamos tamaño (por si cambia)
+                    const width = rect.width;
+                    const height = rect.height;
+
+                    // Escala de la malla 3D para coincidir con el DOM
+                    item.mesh.scale.set(width, height, 1);
+
+                    // Posición WebGL (Sistema de coordenadas: Centro 0,0)
+                    // Convertimos coordenadas de pantalla (Top Left 0,0) a WebGL
+                    item.mesh.position.x = rect.left - this.width / 2 + width / 2;
+                    item.mesh.position.y = -rect.top + this.height / 2 - height / 2;
+
+                    // --- LÓGICA RESN (SHADOW STACKING) ---
+                    // Si el elemento está en top: 0 (sticky), calculamos cuánto se ha solapado
+                    // para oscurecerlo.
+                    
+                    let shadow = 0;
+                    
+                    // Si no es el último elemento
+                    if (index < this.meshes.length - 1) {
+                        const nextRect = this.meshes[index + 1].element.getBoundingClientRect();
+                        
+                        // Si el siguiente elemento está subiendo y solapando a este
+                        if (nextRect.top < window.innerHeight) {
+                            // Calculamos porcentaje de solapamiento
+                            const overlap = 1.0 - (nextRect.top / window.innerHeight);
+                            // Aplicamos sombra progresiva
+                            shadow = Math.max(0, overlap * 0.8); 
+                        }
+                    }
+
+                    // Pasar valores al Shader
+                    item.mesh.material.uniforms.uShadowStrength.value = shadow;
+                    item.mesh.material.uniforms.uVelocity.value = this.scrollVelocity * 0.5; // Curvatura
+                });
+            }
+
+            render() {
+                this.lenis.raf(performance.now());
+                this.updateMeshes();
+                this.renderer.render(this.scene, this.camera);
+                requestAnimationFrame(this.render.bind(this));
+            }
+
+            resize() {
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                this.camera.left = this.width / -2;
+                this.camera.right = this.width / 2;
+                this.camera.top = this.height / 2;
+                this.camera.bottom = this.height / -2;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(this.width, this.height);
+            }
+
+            addEvents() {
+                window.addEventListener('resize', this.resize.bind(this));
+            }
         }
 
-        // --- LENIS SOLO EN PC ---
-        if (window.innerWidth >= 1024) {
-            const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true, mouseMultiplier: 0.8 });
-            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-            requestAnimationFrame(raf);
-        }
-        
-        gsap.registerPlugin(ScrollTrigger);
-
+        // --- LÓGICA DE DATOS Y DOM ---
         function fixLink(url) {
             if (!url) return PLACEHOLDER_IMG;
             let cleanUrl = url.replace(/\\/g, '/').trim();
-            if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
+            // Truco para Google Drive en WebGL: Usar proxy o thumbnail directo grande
+            if (cleanUrl.includes('drive.google.com')) {
                 const idMatch = cleanUrl.match(/[-\w]{25,}/); 
-                if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
+                if (idMatch) return `https://lh3.googleusercontent.com/d/${idMatch[0]}=s1000?authuser=0`; // Enlace directo a imagen
             }
             return cleanUrl;
         }
@@ -299,132 +334,52 @@
             } return result;
         }
 
-        function renderGallery(filter = 'all') {
-            ScrollTrigger.getAll().forEach(t => t.kill());
-            gridContainer.innerHTML = '';
-            if(galleryItems.length === 0) { gridContainer.innerHTML = '<div class="w-full text-center py-20 text-gray-400">Cargando...</div>'; return; }
-
-            const itemsToShow = filter === 'all' ? galleryItems : galleryItems.filter(item => item.category && item.category.toLowerCase() === filter.toLowerCase());
-
-            itemsToShow.forEach((item, index) => {
-                const imageUrl = fixLink(item.img || item.imagen);
-                const titulo = item.title || "Proyecto";
-                const categoria = item.category || "General";
-                
-                const positionClass = `pos-${index % 5}`;
-
-                const el = document.createElement('div');
-                el.className = `masonry-item group cursor-pointer ${positionClass}`;
-                el.onclick = () => openLightbox({...item, img: imageUrl, title: titulo, category: categoria});
-
-                el.innerHTML = `
-                    <div class="img-wrapper">
-                        <img src="${imageUrl}" alt="${titulo}" class="parallax-img" referrerpolicy="no-referrer" onerror="this.src='${PLACEHOLDER_IMG}'">
-                        <div class="item-overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                            <span class="text-rp-mint text-[10px] font-bold uppercase tracking-wider mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">${categoria}</span>
-                            <h3 class="text-white font-heading text-2xl lg:text-3xl translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75 leading-none">${titulo}</h3>
-                        </div>
-                    </div>
-                `;
-                gridContainer.appendChild(el);
-
-                // --- ANIMACIONES ---
-                if (window.innerWidth >= 1024) {
-                    // PC: Parallax suave
-                    gsap.fromTo(el, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%" } });
-                    const img = el.querySelector('.parallax-img');
-                    gsap.fromTo(img, { yPercent: -15 }, { yPercent: 15, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
-                } else {
-                    // MÓVIL: EFECTO RESN "GOING BACK"
-                    // Cuando el elemento sube (llega a top), se achica y se oscurece
-                    gsap.to(el, {
-                        scale: 0.85, // Se va hacia atrás
-                        filter: "brightness(0.5)", // Se oscurece
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: el,
-                            start: "top top", // Cuando la parte superior toca el techo
-                            end: "bottom top", // Hasta que termina de salir
-                            scrub: true // Vinculado al dedo
-                        }
-                    });
-                    
-                    // Parallax interno suave para dar profundidad extra
-                    const img = el.querySelector('.parallax-img');
-                    gsap.to(img, {
-                        y: "15%",
-                        ease: "none",
-                        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true }
-                    });
-                }
-            });
-            ScrollTrigger.refresh();
-        }
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => { b.classList.remove('bg-text-dark', 'text-white'); b.classList.add('bg-white', 'text-gray-500', 'border', 'border-gray-200'); });
-                btn.classList.remove('bg-white', 'text-gray-500', 'border', 'border-gray-200'); btn.classList.add('bg-text-dark', 'text-white');
-                renderGallery(btn.dataset.filter);
-            });
-        });
-        const lightbox = document.getElementById('lightbox'); const lbContent = document.getElementById('lightbox-content');
-        function openLightbox(item) {
-            document.getElementById('lb-img').src = item.img; document.getElementById('lb-category').innerText = item.category;
-            document.getElementById('lb-title').innerText = item.title; document.getElementById('lb-desc').innerText = item.desc || '';
-            lightbox.classList.remove('hidden');
-            gsap.to(lightbox, { opacity: 1, duration: 0.4 });
-            gsap.fromTo(lbContent, { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
-        }
-        function closeLightbox() {
-            gsap.to(lbContent, { scale: 0.9, opacity: 0, y: 20, duration: 0.3 });
-            gsap.to(lightbox, { opacity: 0, duration: 0.3, onComplete: () => lightbox.classList.add('hidden') });
-        }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
-
-        async function initGallerySystem() {
+        async function initApp() {
             try {
-                if (window.innerWidth >= 1024) {
-                    const tl = gsap.timeline(); tl.to("#gallery-subtitle", { opacity: 1, y: 0, duration: 0.8 }).to("#gallery-title", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6").to("#gallery-desc", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6").to("#gallery-filters", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
-                } else {
-                    document.getElementById('gallery-subtitle').style.opacity = 1;
-                    document.getElementById('gallery-title').style.opacity = 1;
-                    document.getElementById('gallery-desc').style.opacity = 1;
-                    document.getElementById('gallery-filters').style.opacity = 1;
-                }
                 const response = await fetch(SHEET_URL + '&t=' + Date.now());
                 const data = await response.text();
-                galleryItems = csvToJSON(data);
-                renderGallery('all'); 
-                const container = document.getElementById('background-canvas');
-                if(container) { for (let i = 0; i < 15; i++) { const div = document.createElement('div'); div.classList.add('plastic-particle'); const size = gsap.utils.random(30, 100); gsap.set(div, { width: size, height: size, backgroundColor: ['#79C7C7', '#A3E6BA', '#e2e8f0'][Math.floor(Math.random()*3)], opacity: gsap.utils.random(0.05, 0.15), left: gsap.utils.random(0, 100) + '%', top: gsap.utils.random(0, 100) + '%' }); container.appendChild(div); gsap.to(div, { y: gsap.utils.random(-100, 100), rotation: gsap.utils.random(0, 360), duration: gsap.utils.random(25, 45), repeat: -1, yoyo: true, ease: "sine.inOut" }); } }
-            } catch (error) { console.error(error); }
+                const items = csvToJSON(data);
+                const grid = document.getElementById('gallery-grid');
+                
+                // Instanciamos WebGL
+                const app = new WebGLApp();
+
+                items.forEach((item, index) => {
+                    if(!item.img && !item.imagen) return;
+                    
+                    const imgUrl = fixLink(item.img || item.imagen);
+                    
+                    // CREAMOS DOM GHOST
+                    const el = document.createElement('div');
+                    el.className = `masonry-item pos-${index % 5}`;
+                    // En HTML ponemos el texto (SEO friendly)
+                    el.innerHTML = `
+                        <div class="text-overlay">
+                            <p class="text-rp-mint text-[10px] font-bold uppercase mb-2">${item.category || 'General'}</p>
+                            <h3 class="text-white font-heading text-4xl shadow-black drop-shadow-lg">${item.title || 'Proyecto'}</h3>
+                        </div>
+                    `;
+                    grid.appendChild(el);
+
+                    // AÑADIMOS AL MUNDO 3D
+                    // Esperamos un tick para que el DOM tenga dimensiones
+                    setTimeout(() => {
+                        const meshData = app.createMeshItem(el, imgUrl);
+                        app.meshes.push(meshData);
+                    }, 100);
+                });
+
+                // Iniciamos loop
+                app.render();
+                
+                // Ocultar loader
+                setTimeout(() => { document.getElementById('loader-overlay').style.opacity = 0; }, 1000);
+                setTimeout(() => { document.getElementById('loader-overlay').style.display = 'none'; }, 1500);
+
+            } catch (e) { console.error("Error crítico:", e); }
         }
-        function toggleChat() { document.getElementById('whatsapp-chat-box').classList.toggle('hidden'); }
-        function enviarWhatsApp() { const i = document.getElementById('mensaje-usuario'); if(i && i.value.trim()) window.open(`https://wa.me/59899395724?text=${encodeURIComponent(i.value)}`, '_blank'); }
-        window.addEventListener('load', initGallerySystem);
-    /* ============================================================ */
-    /* === GSAP SPATIAL SCROLL LAYERS (SUTIL) === */
-    /* ============================================================ */
 
-    if (window.innerWidth >= 1024) {
-        document.querySelectorAll('.masonry-item').forEach(item => {
-            const img = item.querySelector('.parallax-img');
-
-            gsap.to(img, {
-                rotationY: gsap.utils.random(-6, 6),
-                rotationX: gsap.utils.random(-3, 3),
-                transformOrigin: "center",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true
-                }
-            });
-        });
-    }
+        window.addEventListener('load', initApp);
 
     </script>
 </body>
