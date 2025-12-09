@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    @media (prefers-color-scheme: dark) {
+      .c-letter { fill: #FFFFFF; }
+    }
+    @media (prefers-color-scheme: light) {
+      .c-letter { fill: #333333; }
+    }
+  </style>
+  <path class="c-letter" d="M 70 20 A 30 30 0 1 0 70 80 L 70 65 A 15 15 0 1 1 70 35 Z"/>
+</svg>
