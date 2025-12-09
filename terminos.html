@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - Circula</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rp-teal': '#79C7C7',
+                        'rp-light': '#FDFBF7',
+                        'rp-mint': '#A6E3E3',
+                        'text-dark': '#2D3748',
+                        'mp-blue': '#009EE3',
+                    },
+                    fontFamily: {
+                        'brand': ['Montserrat', 'sans-serif'],
+                        'heading': ['Patua One', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-rp-light font-brand text-text-dark">
+
+    <header class="fixed top-0 z-50 w-full py-4 transition-all duration-300 bg-black/90">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
+                    <img src="images/logo.png" alt="Logo Circula"
+                        class="h-8 sm:h-10 lg:h-11 object-contain brightness-0 invert">
+                </a>
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html#home"
+                        class="text-white hover:text-rp-teal transition uppercase tracking-widest text-sm">Inicio</a>
+                    <a href="index.html#contacto"
+                        class="text-white hover:text-rp-teal transition uppercase tracking-widest text-sm">Contacto</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-32 max-w-4xl">
+        <h1 class="font-heading text-4xl md:text-5xl mb-8 text-center text-rp-teal uppercase">Términos y Condiciones
+        </h1>
+
+        <div class="space-y-6 text-lg text-gray-700 leading-relaxed bg-white p-8 md:p-12 rounded-2xl shadow-sm">
+            <p><strong>Bienvenido a Circula.</strong> Al acceder y utilizar nuestro sitio web, aceptas cumplir con los
+                presentes Términos y Condiciones, los cuales se rigen por la normativa vigente en la <strong>República
+                    Oriental del Uruguay</strong>, en particular la Ley N° 17.250 (Defensa del Consumidor).</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">1. Uso del Sitio</h2>
+            <p>El usuario se compromete a utilizar el sitio web con fines lícitos y a no realizar actividades que puedan
+                dañar, inutilizar o sobrecargar la plataforma, ni impedir su normal utilización por parte de otros
+                usuarios.</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">2. Propiedad Intelectual</h2>
+            <p>Todo el contenido de este sitio (imágenes, textos, logotipos, diseños) es propiedad exclusiva de
+                <strong>Circula</strong> o de terceros que han autorizado su uso. Queda prohibida su reproducción,
+                distribución o modificación sin autorización expresa.</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">3. Compras y Precios</h2>
+            <p>Los precios publicados incluyen IVA y están expresados en pesos uruguayos, salvo que se indique lo
+                contrario. <strong>Circula</strong> se reserva el derecho de modificar los precios en cualquier momento,
+                respetando siempre las compras ya confirmadas.</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">4. Envíos y Entregas</h2>
+            <p>Realizamos envíos a todo el país. Los plazos de entrega son estimativos y pueden variar por razones
+                logísticas. No nos responsabilizamos por demoras imputables a la empresa de transporte, aunque
+                gestionaremos cualquier reclamo en nombre del cliente.</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">5. Cambios y Devoluciones</h2>
+            <p>Conforme a la Ley N° 17.250:</p>
+            <ul class="list-disc pl-6 space-y-2">
+                <li>El cliente tiene derecho a rescindir o cancelar la compra dentro de los <strong>5 días
+                        hábiles</strong> siguientes a la recepción del producto, siempre que este se encuentre en el
+                    mismo estado en que fue entregado.</li>
+                <li>Los costos de envío por devolución por arrepentimiento corren por cuenta del cliente, salvo en casos
+                    de defectos de fabricación.</li>
+                <li>Para gestionar un cambio, contactarse a <a href="mailto:contacto@circula.uy"
+                        class="text-rp-teal font-bold hover:underline">contacto@circula.uy</a>.</li>
+            </ul>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">6. Limitación de Responsabilidad</h2>
+            <p><strong>Circula</strong> no será responsable por daños indirectos que puedan derivarse del uso del sitio
+                web o de la imposibilidad de acceder al mismo.</p>
+
+            <h2 class="font-heading text-2xl text-text-dark mt-8 mb-4">7. Legislación y Jurisdicción</h2>
+            <p>Cualquier controversia que surja en relación con estos términos será resuelta por los tribunales
+                competentes de la ciudad de <strong>Montevideo, Uruguay</strong>.</p>
+
+            <p class="text-sm text-gray-500 mt-8 pt-4 border-t">Última actualización: Diciembre 2025</p>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4 text-gray-400">&copy; <span id="year"></span> Circula. Todos los derechos reservados.</p>
+            <div class="flex justify-center space-x-6 text-sm mb-4">
+                <a href="index.html" class="text-rp-teal hover:underline">Volver al Inicio</a>
+                <span class="text-gray-600">|</span>
+                <a href="privacidad.html" class="text-gray-400 hover:text-white transition">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

@@ -18,6 +18,12 @@
         })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: {
@@ -32,8 +38,9 @@
                         'mp-blue': '#009EE3',
                     },
                     fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                        'brand': ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
                     },
                 },
             },
@@ -97,7 +104,7 @@
             font-size: clamp(1.5rem, 5vw, 3rem);
             font-weight: 800;
             margin-bottom: 0.5rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
             transition: opacity 0.3s ease;
             text-align: left;
         }
@@ -105,14 +112,12 @@
         .info-subtitle {
             color: #79C7C7;
             font-size: clamp(0.9rem, 3vw, 1.2rem);
-            font-weight: 400;
+            font-weight: 600;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
             transition: opacity 0.3s ease;
         }
-
-        /* --- CORRECCIÓN: Se cerró la llave que faltaba arriba --- */
 
         .modal {
             display: none;
@@ -132,63 +137,9 @@
             opacity: 1;
         }
 
-        .modal-content {
-            background: white;
-            border-radius: 1rem;
-            max-width: 1200px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem;
-            position: relative;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                grid-template-columns: 1fr;
-                padding: 1.5rem;
-            }
-        }
-
-        .modal-image-col img {
-            width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: #f3f4f6;
-            border: none;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .modal-close:hover {
-            background: #e5e7eb;
-        }
-
-        .modal-title-text {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .modal-desc-text {
-            color: #6b7280;
-            line-height: 1.6;
+        /* Hide cursor hint when modal is open */
+        body.modal-open .cursor-hint {
+            display: none;
         }
 
         .cursor-hint {
@@ -196,178 +147,290 @@
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 20;
+            z-index: 40;
             pointer-events: none;
-            color: white;
-            font-size: 0.8rem;
-            opacity: 0.7;
-            animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: transform 0.2s, background-color 0.2s;
+            color: #333;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+            background-color: #f3f4f6;
+        }
+
+        /* Nav Link Animation */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            /* rp-teal */
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 900px;
+            width: 90%;
+            min-height: 500px;
+            /* Changed from fixed height */
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            /* More space for image */
+            gap: 0;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 85vh;
+            overflow: hidden;
+            /* Hide overflow here for rounded corners image */
+        }
+
+        .modal-image-col {
+            height: 100%;
+            width: 100%;
+            background-color: #f3f4f6;
+            /* Placeholder color before load */
+        }
+
+        .modal-image-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .modal-text-col {
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            /* Align top for consistency */
+            padding-top: 4rem;
+            /* Fixed top offset */
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                display: flex;
+                flex-direction: column;
+                height: 70vh;
+                /* Reduced from 85vh to be less "big" */
+                max-height: 70vh;
+                overflow: hidden;
+            }
+
+            .modal-image-col {
+                height: 45%;
+                /* Increased image prominence */
+                flex-shrink: 0;
+            }
+
+            .modal-text-col {
+                height: 55%;
+                /* Reduced text area to minimize whitespace */
+                padding: 1.5rem;
+                overflow-y: auto;
+                padding-top: 1.5rem !important;
+                justify-content: flex-start;
+            }
+        }
+
+        @keyframes scrollDown {
             0% {
-                opacity: 0.4;
+                opacity: 0;
+                transform: translateY(-5px);
             }
 
             50% {
                 opacity: 1;
+                transform: translateY(0);
             }
 
             100% {
-                opacity: 0.4;
+                opacity: 0;
+                transform: translateY(5px);
             }
+        }
+
+        .scroll-arrow {
+            animation: scrollDown 2s infinite ease-in-out;
+        }
+
+        .scroll-arrow:nth-child(2) {
+            animation-delay: 0.3s;
         }
     </style>
 </head>
 
-<body class="font-sans bg-bg-light text-text-dark">
+<body>
+    <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="preloader"
         class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-700">
         <img src="images/logo.png" alt="Circula" class="max-w-[120px] mb-8 opacity-40">
         <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
     </div>
-
-    <header class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 w-full py-4">
+    <header
+        class="fixed top-0 z-50 w-full py-6 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                <a href="index.html" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
-                    <img src="images/logo.png" alt="Logo Circula" class="h-8 sm:h-10 lg:h-11 object-contain">
-                </a>
-
-                <nav class="hidden md:flex space-x-8 items-center">
-                    <a href="index.html#home"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Inicio</a>
-                    <a href="index.html#talleres"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Talleres</a>
-                    <a href="index.html#nosotros"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Nosotros</a>
-                    <a href="galeria2.html"
-                        class="font-brand font-normal text-sm text-rp-teal hover:text-rp-teal transition duration-200 uppercase tracking-widest border-b border-rp-teal">Galería</a>
-                    <a href="index.html#tienda"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Tienda</a>
-                    <a href="index.html#contacto"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Contacto</a>
+            <div class="flex justify-between items-center"><a href="index.html"
+                    class="flex items-center gap-2 group hover:opacity-80 transition duration-200"><img
+                        src="images/logo.png" alt="Logo Circula"
+                        class="h-8 sm:h-10 lg:h-11 object-contain brightness-0 invert"></a>
+                <nav class="hidden md:flex space-x-8 items-center"><a href="index.html#home"
+                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Inicio</a><a
+                        href="index.html#talleres"
+                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Talleres</a><a
+                        href="index.html#nosotros"
+                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Nosotros</a><a
+                        href="galeria2.html"
+                        class="font-brand font-bold text-sm text-rp-teal transition duration-200 uppercase tracking-widest border-b-2 border-rp-teal px-1">Galería</a><a
+                        href="index.html#tienda"
+                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Tienda</a><a
+                        href="index.html#contacto"
+                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Contacto</a>
                 </nav>
-
-                <div class="flex items-center space-x-4">
-                    <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer"
-                        class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                        <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
+                <div class="flex items-center space-x-4"><a href="https://www.instagram.com/circula.uy/" target="_blank"
+                        rel="noopener noreferrer"
+                        class="max-md:hidden text-white/90 hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-white/10"><svg
+                            fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
                             <path
                                 d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
                             <path
                                 d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
                             <path
                                 d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
-                        </svg>
-                    </a>
-
-                    <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer"
-                        class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                        <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
+                        </svg></a><a href="https://www.linkedin.com/company/circulauy" target="_blank"
+                        rel="noopener noreferrer"
+                        class="max-md:hidden text-white/90 hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-white/10"><svg
+                            fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
                             <path
                                 d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z" />
-                        </svg>
-                    </a>
-
+                        </svg></a>
                     <div id="cart-dropdown-container" class="relative group">
-                        <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200"
-                            onclick="window.location.href='index.html#carrito'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
+                        <div class="relative cursor-pointer p-2 rounded-full hover:bg-white/10 transition duration-200"
+                            onclick="window.location.href='index.html#carrito'"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="w-6 h-6 text-rp-teal">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
-                            </svg>
-                            <span id="cart-count"
+                            </svg><span id="cart-count"
                                 class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
                         </div>
-
                         <div id="cart-dropdown"
-                            class="absolute right-0 mt-3 w-72 origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
-                            <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen</h4>
+                            class="absolute right-0 mt-3 w-80 max-w-[90vw] origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-2xl z-[100] p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible">
+                            <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen </h4>
                             <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
                                 <p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>
                             </div>
                             <div id="dropdown-summary" class="border-t pt-2">
-                                <div class="flex justify-between font-bold text-lg mb-3">
-                                    <span>Total:</span>
-                                    <span id="dropdown-total" class="text-mp-blue">$0.00</span>
-                                </div>
-                                <button onclick="window.location.href='index.html#carrito'"
-                                    class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">
-                                    Ver Carrito
-                                </button>
+                                <div class="flex justify-between font-bold text-lg mb-3"><span>Total:</span><span
+                                        id="dropdown-total" class="text-mp-blue">$0.00</span></div><button
+                                    onclick="window.location.href='index.html#carrito'"
+                                    class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">Ver
+                                    Carrito </button>
                             </div>
                         </div>
-                    </div>
-
-                    <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none"
-                        onclick="toggleMobileMenu()">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
+                    </div><button id="mobile-menu-button" class="md:hidden p-2 text-white focus:outline-none"
+                        onclick="toggleMobileMenu()"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <nav id="mobile-menu"
-            class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
-            <a href="index.html#home"
-                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Inicio</a>
-            <a href="index.html#talleres"
-                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Talleres</a>
-            <a href="#"
-                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
-            <a href="index.html#tienda"
-                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Tienda</a>
-            <a href="index.html#contacto"
-                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light">Contacto</a>
-        </nav>
+                        </svg></button>
+                    <nav id="mobile-menu"
+                        class="hidden md:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-md border-t border-white/10 shadow-lg">
+                        <a href="index.html#home" onclick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Inicio</a>
+                        <a href="index.html#talleres" onclick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Talleres</a>
+                        <a href="index.html#nosotros" onclick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Nosotros</a>
+                        <a href="galeria2.html" onClick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal border-b border-white/10">Galería</a>
+                        <a href="index.html#tienda" onclick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Tienda</a>
+                        <a href="index.html#contacto" onclick="toggleMobileMenu()"
+                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal"
+                            onclick="toggleMobileMenu()">Contacto</a>
+                    </nav>
     </header>
-
     <div class="info-container" id="info">
         <div class="info-title" id="ui-title">...</div>
         <div class="info-subtitle" id="ui-subtitle">...</div>
     </div>
-
-    <div class="cursor-hint" id="hint">
-        <span class="bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">Deslizá para ver
-            más</span>
+    <div class="cursor-hint flex flex-col items-center gap-[-0.5rem]" id="hint">
+        <svg class="scroll-arrow w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+        <svg class="scroll-arrow w-6 h-6 text-white/50 -mt-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
     </div>
-
     <div class="modal" id="modal">
         <div class="modal-content">
-            <div class="modal-image-col">
-                <img id="modal-img" src="" alt="">
-            </div>
-            <div class="modal-text-col">
-                <button class="modal-close" id="modal-close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <h2 class="modal-title-text" id="modal-title">Title</h2>
+            <button class="modal-close" id="modal-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-image-col"><img id="modal-img" src="" alt=""></div>
+            <div class="modal-text-col h-full border-l border-gray-100">
+                <p class="modal-subtitle-text font-brand text-rp-teal font-bold uppercase tracking-widest text-xs lg:text-sm mb-3"
+                    id="modal-subtitle">CATEGORY</p>
+                <div class="min-h-[5rem] flex flex-col justify-end mb-4">
+                    <h2 class="modal-title-text font-heading text-2xl lg:text-3xl font-bold text-text-dark uppercase leading-tight"
+                        id="modal-title">Title</h2>
+                </div>
                 <div class="w-16 h-1 bg-rp-teal mb-6"></div>
-                <p class="modal-desc-text" id="modal-desc">Description</p>
+                <p class="modal-desc-text font-brand text-gray-600 text-base lg:text-lg leading-relaxed"
+                    id="modal-desc">Description</p>
             </div>
         </div>
     </div>
+    <script type="importmap"> {
+                    "imports": {
+                        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+                    }
+                }
 
-    <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
-    </script>
-
-    <script type="module">
-        import * as THREE from 'three';
+                </script>
+    <script type="module">import * as THREE from 'three';
 
         // --- DATA ---
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4R12u0TEqvWMUK5-Z4n9tWw6gg1Abuyt6hgSB630nZA0UoPv6MGFDPg3sSdw5cOgxa_R3jofB3ECi/pub?output=csv';
@@ -375,15 +438,18 @@
 
         // --- STATE ---
         let slides = [];
+
         const state = {
-            isMobile: false,
+            isMobile: window.innerWidth < 768,
             currentSlide: 0,
             targetScroll: 0,
             currentScroll: 0,
-            scrollMax: 0, // CORREGIDO: Typos arreglados
+            scrollMax: 0,
             isAnimating: false,
             inModal: false
-        };
+        }
+
+            ;
 
         //--- SETUP ---
         const scene = new THREE.Scene();
@@ -393,7 +459,12 @@
         camera.position.z = 50;
         camera.rotation.set(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // Disable antialias on mobile for performance
+        const renderer = new THREE.WebGLRenderer({
+            antialias: !state.isMobile,
+            alpha: true,
+            powerPreference: "high-performance"
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -408,10 +479,12 @@
         function fixLink(url) {
             if (!url) return PLACEHOLDER_IMG;
             let cleanUrl = url.replace(/\\/g, '/').trim();
+
             if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
                 const idMatch = cleanUrl.match(/[-\w]{25,}/);
                 if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
             }
+
             return cleanUrl;
         }
 
@@ -437,24 +510,35 @@
                         if (insideQuotes && nextChar === '"') {
                             currentVal += '"';
                             j++;
-                        } else {
+                        }
+
+                        else {
                             insideQuotes = !insideQuotes;
                         }
-                    } else if (char === ',' && !insideQuotes) {
+                    }
+
+                    else if (char === ',' && !insideQuotes) {
                         values.push(currentVal);
                         currentVal = '';
-                    } else {
+                    }
+
+                    else {
                         currentVal += char;
                     }
                 }
+
                 values.push(currentVal);
 
-                const obj = {};
+                const obj = {}
+
+                    ;
+
                 headers.forEach((h, index) => {
                     obj[h] = values[index] ? values[index].trim() : '';
                 });
                 result.push(obj);
             }
+
             return result;
         }
 
@@ -465,6 +549,7 @@
 
                 // GA4 Event: View Gallery
                 window.dataLayer = window.dataLayer || [];
+
                 window.dataLayer.push({
                     event: 'view_gallery',
                     page_title: 'Galería 3D - Circula',
@@ -494,20 +579,30 @@
                 setTimeout(() => {
                     const preloader = document.getElementById('preloader');
                     const loadingProgress = document.getElementById('loading-progress');
+
                     if (loadingProgress) {
                         loadingProgress.textContent = '100%';
                     }
+
                     if (preloader) {
                         preloader.style.opacity = '0';
+
                         setTimeout(() => {
                             preloader.style.display = 'none';
-                        }, 700);
-                    }
-                }, 300);
+                        }
 
-            } catch (error) {
+                            , 700);
+                    }
+                }
+
+                    , 300);
+
+            }
+
+            catch (error) {
                 console.error("Error loading sheet:", error);
                 const preloader = document.getElementById('preloader');
+
                 if (preloader) {
                     preloader.style.opacity = '0';
                     setTimeout(() => preloader.style.display = 'none', 700);
@@ -521,6 +616,7 @@
 
             slides.forEach((slide, i) => {
                 let finalUrl = slide.url;
+
                 if (state.isMobile && slide.urlMobile && slide.urlMobile !== PLACEHOLDER_IMG) {
                     finalUrl = slide.urlMobile;
                 }
@@ -546,13 +642,16 @@
                 });
 
                 const mesh = new THREE.Mesh(baseGeom.clone(), matImage);
+
                 mesh.userData = {
                     id: i,
                     imgWidth: 0,
                     imgHeight: 0,
                     align: slide.align,
                     alignMobile: slide.alignMobile
-                };
+                }
+
+                    ;
                 scene.add(mesh);
                 meshes.push(mesh);
             });
@@ -570,6 +669,7 @@
             const texture = mesh.material.map;
 
             let rawAlign = mesh.userData.align;
+
             if (state.isMobile && mesh.userData.alignMobile) {
                 rawAlign = mesh.userData.alignMobile;
             }
@@ -581,16 +681,20 @@
                 const align = rawAlign.toLowerCase().trim();
 
                 if (align.includes('%')) {
-                    const parts = align.split(/[ ,]+/);
+                    const parts = align.split(/[, ]+/);
+
                     if (parts.length > 0) {
                         const val = parseFloat(parts[0]);
                         if (!isNaN(val)) alignX = val / 100;
                     }
+
                     if (parts.length > 1) {
                         const val = parseFloat(parts[1]);
                         if (!isNaN(val)) alignY = 1.0 - (val / 100);
                     }
-                } else {
+                }
+
+                else {
                     if (align.includes('left')) alignX = 0.0;
                     if (align.includes('right')) alignX = 1.0;
                     if (align.includes('top')) alignY = 1.0;
@@ -605,7 +709,9 @@
                 texture.repeat.set(1, repeatY);
                 texture.offset.y = (1 - repeatY) * alignY;
                 texture.offset.x = 0;
-            } else {
+            }
+
+            else {
                 const repeatX = planeAspect / imgAspect;
                 texture.repeat.set(repeatX, 1);
                 texture.offset.x = (1 - repeatX) * alignX;
@@ -628,6 +734,7 @@
             // Si las mallas ya existen, las actualizamos
             if (meshes.length > 0) {
                 const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
+
                 meshes.forEach((mesh) => {
                     mesh.geometry.dispose();
                     mesh.geometry = newGeom.clone();
@@ -647,6 +754,7 @@
             if (index < slides.length) {
                 updateUI(index);
             }
+
             if (immediate) state.currentScroll = state.targetScroll;
         }
 
@@ -656,12 +764,15 @@
             const sub = document.getElementById('ui-subtitle');
             title.style.opacity = 0;
             sub.style.opacity = 0;
+
             setTimeout(() => {
                 title.innerText = slides[index].title;
                 sub.innerText = slides[index].subtitle;
                 title.style.opacity = 1;
                 sub.style.opacity = 1;
-            }, 300);
+            }
+
+                , 300);
         }
 
         // --- INPUTS ---
@@ -677,6 +788,7 @@
         });
 
         let touchStart = 0;
+
         window.addEventListener('touchstart', (e) => {
             touchStart = state.isMobile ? e.touches[0].clientY : e.touches[0].clientX;
         });
@@ -687,6 +799,7 @@
             lastInputTime = Date.now();
             const touchEnd = state.isMobile ? e.changedTouches[0].clientY : e.changedTouches[0].clientX;
             const diff = touchStart - touchEnd;
+
             if (Math.abs(diff) > 50) {
                 if (diff > 0) goToSlide(state.currentSlide + 1);
                 else goToSlide(state.currentSlide - 1);
@@ -696,9 +809,11 @@
         window.addEventListener('keydown', (e) => {
             if (state.inModal) return;
             if (Date.now() - lastInputTime < 1200) return;
+
             if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
                 lastInputTime = Date.now(); goToSlide(state.currentSlide + 1);
             }
+
             if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
                 lastInputTime = Date.now(); goToSlide(state.currentSlide - 1);
             }
@@ -713,6 +828,7 @@
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+
         window.addEventListener('click', (e) => {
             if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
 
@@ -723,6 +839,7 @@
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(meshes);
+
             if (intersects.length > 0) {
                 // Solo abrir si estamos cerca del slide actual
                 if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
@@ -734,15 +851,22 @@
         });
 
         const modal = document.getElementById('modal');
+
         function openModal(id) {
             if (!slides[id]) return;
             state.inModal = true;
+            document.body.classList.add('modal-open'); // Hide hint
             document.getElementById('modal-img').src = slides[id].url;
             document.getElementById('modal-title').innerText = slides[id].title;
+            // Add subtitle (Category)
+            const subElem = document.getElementById('modal-subtitle');
+            if (subElem) subElem.innerText = slides[id].subtitle;
+
             document.getElementById('modal-desc').innerText = slides[id].desc;
 
             // GA4 Event: Gallery item view
             window.dataLayer = window.dataLayer || [];
+
             window.dataLayer.push({
                 event: 'gallery_item_view',
                 item_name: slides[id].title,
@@ -753,8 +877,10 @@
 
             modal.classList.add('active');
         }
+
         document.getElementById('modal-close').addEventListener('click', () => {
             state.inModal = false;
+            document.body.classList.remove('modal-open');
             modal.classList.remove('active');
         });
 
@@ -767,20 +893,30 @@
             if (slides.length > 0) {
                 const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
 
-                if (state.currentScroll > maxSlideIndex) {
-                    const footerProgress = state.currentScroll - maxSlideIndex;
-                    const y = Math.max(0, (1 - footerProgress) * 100);
+                if (state.currentScroll > maxSlideIndex + 0.1) {
+                    const footer = document.getElementById('gallery-footer');
+                    // Calculate progress from 0 to 1 as we move *beyond* the last slide
+                    const footerTrig = Math.max(0, state.currentScroll - (maxSlideIndex + 0.1));
+                    const y = Math.max(0, 100 - (footerTrig * 120));
+
                     if (footer) footer.style.transform = `translateY(${y}%)`;
 
                     const info = document.getElementById('info');
-                    if (info) info.style.opacity = Math.max(0, 1 - footerProgress * 2);
-                } else {
+                    const hint = document.getElementById('hint');
+                    // Hide UI info as footer appears
+                    const opacity = Math.max(0, 1 - footerTrig * 3);
+                    if (info) info.style.opacity = opacity;
+                    if (hint) hint.style.opacity = opacity;
+                }
+
+                else {
                     if (footer) footer.style.transform = `translateY(100%)`;
                     const info = document.getElementById('info');
                     if (info) info.style.opacity = 1;
                 }
 
                 const RADIUS = 80;
+
                 meshes.forEach((mesh, i) => {
                     const separation = (geomHeight * 1.02) / RADIUS;
                     const angle = (scrollForMeshes - i) * separation;
@@ -811,15 +947,19 @@
         // Preloader percentage animation
         let loadProgress = 0;
         const loadingProgressEl = document.getElementById('loading-progress');
+
         const preloaderInterval = setInterval(() => {
             if (loadProgress < 90) {
                 loadProgress += Math.random() * 30;
                 if (loadProgress > 90) loadProgress = 90;
+
                 if (loadingProgressEl) {
                     loadingProgressEl.textContent = Math.floor(loadProgress) + '%';
                 }
             }
-        }, 200);
+        }
+
+            , 200);
 
         // Inicializar la escena
         init();
@@ -846,6 +986,7 @@
 
         function updateCartDisplay() {
             const totalItems = getCartTotalItems();
+
             if (cartCountDisplay) {
                 cartCountDisplay.textContent = totalItems;
             }
@@ -855,34 +996,35 @@
             if (!dropdownTotalDisplay || !dropdownItemsList) return;
 
             const total = calculateCartTotal();
+
             dropdownTotalDisplay.textContent = `$${total.toFixed(2)}`;
             dropdownItemsList.innerHTML = '';
 
             if (cartItems.length === 0) {
                 dropdownItemsList.innerHTML = `<p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>`;
-            } else {
+            }
+
+            else {
                 const itemsToShow = cartItems.slice(0, 3);
 
                 itemsToShow.forEach(item => {
                     const itemTotal = (item.price * item.quantity).toFixed(2);
 
                     const itemHtml = `
-                        <div class="flex justify-between items-center text-text-dark space-x-2">
-                            <div class="flex items-center space-x-2 overflow-hidden">
-                                <img src="${item.imageUrl || 'images/placeholder.jpg'}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
-                                <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
-                            </div>
-                            <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
+                    <div class="flex justify-between items-center text-text-dark space-x-2">
+                        <div class="flex items-center space-x-2 overflow-hidden">
+                            <img src="${item.imageUrl || 'images/placeholder.jpg'}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
+                            <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
                         </div>
-                    `;
+                        <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
+                    </div>`;
                     dropdownItemsList.insertAdjacentHTML('beforeend', itemHtml);
                 });
 
                 if (cartItems.length > 3) {
                     const remaining = cartItems.length - 3;
                     dropdownItemsList.insertAdjacentHTML('beforeend',
-                        `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`
-                    );
+                        `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`);
                 }
             }
         }
@@ -895,24 +1037,25 @@
             const m = document.getElementById('mobile-menu');
             m.classList.toggle('hidden');
         }
-    </script>
 
+    </script>
     <footer id="gallery-footer"
-        class="fixed bottom-0 w-full bg-text-dark text-white py-8 z-40 transition-transform duration-700 ease-out transform translate-y-full">
+        class="fixed bottom-0 w-full bg-text-dark text-white py-12 border-t border-gray-800 z-40 transition-transform duration-700 ease-out transform translate-y-full">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="mb-4">
-                <p class="text-xl font-bold text-rp-teal title-style">Circula</p>
+            <div class="mb-6">
+                <p class="text-2xl font-bold text-rp-teal title-style">Circula</p>
             </div>
-            <div class="flex justify-center space-x-6 text-gray-400 mb-4 text-sm">
-                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200">PRIVACIDAD</a>
-                <a href="#" class="hover:text-rp-mint transition duration-200">TÉRMINOS</a>
+            <div class="flex justify-center space-x-8 text-gray-400 mb-6 text-sm font-brand tracking-widest">
+                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200 uppercase">Privacidad</a>
+                <a href="terminos.html" class="hover:text-rp-mint transition duration-200 uppercase">Términos</a>
+                <a href="index.html#contacto" class="hover:text-rp-mint transition duration-200 uppercase">Contacto</a>
             </div>
-            <p class="text-sm text-gray-500">&copy; <span id="current-year">2024</span> Circula. Economía Circular.</p>
+            <p class="text-sm text-gray-600 font-brand">
+                &copy; <span id="current-year">2024</span> Circula. Economía Circular.
+            </p>
         </div>
     </footer>
-
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
+    <script>document.getElementById('current-year').textContent = new Date().getFullYear();
     </script>
 </body>
 

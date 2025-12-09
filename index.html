@@ -111,6 +111,29 @@
         }
 
         /* ========================================================= */
+        /* == NAVIGATION STYLES == */
+        /* ========================================================= */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            /* rp-teal */
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* ========================================================= */
         /* == CSS CORREGIDO PARA EL CARRITO (MÓVIL Y DESKTOP) == */
         /* ========================================================= */
 
@@ -496,15 +519,9 @@
     </style>
 </head>
 
-<!-- Minimalist Nordic Preloader -->
-<div id="preloader" class="fixed inset-0 z-[99999] bg-white 
-                            flex flex-col items-center justify-center 
-                            transition-opacity duration-700 ease-out">
-
-    <!-- Logo with subtle fade -->
-    <img src="images/Logo C.png" alt="Circula" class="max-w-[120px] opacity-40 mb-12">
-
-    <!-- Percentage counter -->
+<div id="preloader"
+    class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-700">
+    <img src="images/logo.png" alt="Circula" class="max-w-[120px] mb-8 opacity-40">
     <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
 </div>
 
@@ -534,7 +551,7 @@
                     class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Nosotros</a>
 
                 <a href="galeria2.html"
-                    class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Galería</a>
+                    class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Galería</a>
 
                 <a href="#tienda" onclick="route('tienda')" data-route="tienda"
                     class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Tienda</a>
@@ -2081,19 +2098,26 @@
         </section>
 
     </main>
-
-    <footer class="bg-text-dark text-white py-8">
+    <footer class="bg-text-dark text-white py-12 border-t border-gray-800">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="mb-4">
-                <p class="text-xl font-bold text-rp-teal title-style">Circula</p>
+            <div class="mb-6">
+                <p class="text-2xl font-bold text-rp-teal title-style">Circula</p>
             </div>
-            <div class="flex justify-center space-x-6 text-gray-400 mb-4 text-sm">
-                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200">PRIVACIDAD</a>
-                <a href="#" class="hover:text-rp-mint transition duration-200">TÉRMINOS</a>
+            <div class="flex justify-center space-x-8 text-gray-400 mb-6 text-sm font-brand tracking-widest">
+                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200 uppercase">Privacidad</a>
+                <a href="terminos.html" class="hover:text-rp-mint transition duration-200 uppercase">Términos</a>
+                <a href="#contacto" class="hover:text-rp-mint transition duration-200 uppercase"
+                    onclick="route()">Contacto</a>
             </div>
-            <p class="text-sm text-gray-500">&copy; <span id="current-year"></span> Circula. Economía Circular.</p>
+            <p class="text-sm text-gray-600 font-brand">
+                &copy; <span id="current-year">2024</span> Circula. Economía Circular.
+            </p>
         </div>
     </footer>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
 
     <script>
         // --- JavaScript para Contadores, Routing y Funcionalidad ---
@@ -2511,10 +2535,29 @@
 
             ScrollTrigger.refresh();
         }
+
+        // Preloader percentage animation (Same as galeria2.html)
+        let loadProgress = 0;
+        const loadingProgressEl = document.getElementById('loading-progress');
+        const preloaderInterval = setInterval(() => {
+            if (loadProgress < 90) {
+                loadProgress += Math.random() * 30;
+                if (loadProgress > 90) loadProgress = 90;
+                if (loadingProgressEl) {
+                    loadingProgressEl.textContent = Math.floor(loadProgress) + '%';
+                }
+            }
+        }, 200);
+
         // --- 4. El "Controlador" (Gatekeeper) ---
         function checkAndLaunch() {
             if (isWindowLoaded && isVideoReady) {
                 console.log("GSAP: ¡Todo listo! Lanzando sitio.");
+
+                // Clear preloader interval and set to 100%
+                if (typeof preloaderInterval !== 'undefined') clearInterval(preloaderInterval);
+                const loadingProgressEl = document.getElementById('loading-progress');
+                if (loadingProgressEl) loadingProgressEl.textContent = '100%';
 
                 route();
                 updateCartDisplay();
@@ -3131,40 +3174,7 @@
         }
 
         // 🚨 Inicialización: Llama a route y updateCartDisplay al cargar
-        // Preloader percentage animation
-        let loadProgress = 0;
-        const loadingProgressEl = document.getElementById('loading-progress');
-        const preloaderInterval = setInterval(() => {
-            if (loadProgress < 90) {
-                loadProgress += Math.random() * 30;
-                if (loadProgress > 90) loadProgress = 90;
-                if (loadingProgressEl) {
-                    loadingProgressEl.textContent = Math.floor(loadProgress) + '%';
-                }
-            }
-        }, 200);
-
-        window.addEventListener('load', () => {
-            // Complete the loading to 100%
-            clearInterval(preloaderInterval);
-            if (loadingProgressEl) {
-                loadingProgressEl.textContent = '100%';
-            }
-
-            // Hide preloader with smooth fade
-            setTimeout(() => {
-                const preloader = document.getElementById('preloader');
-                if (preloader) {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 700);
-                }
-            }, 300);
-
-            route();
-            updateCartDisplay();
-        });
+        // (Redundant declarations removed)
         /**
          * Rellena el resumen lateral en la página de DATOS (Paso 2)
          */
