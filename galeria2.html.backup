@@ -4,319 +4,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galería 3D de Circula - Explora nuestras obras de economía circular">
-    <title>Galería 3D - Circula</title>
-    <link rel="icon" type="image/png" href="images/logo.png">
+    <title>Circula - Galería 3D</title>
 
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <!-- TAILWIND & FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'rp-teal': '#79C7C7',
-                        'rp-mint': '#D4F1E8',
-                        'rp-blue-light': '#EEF7FA',
+                        'bg-light': '#fafafa',
                         'text-dark': '#333333',
-                        'bg-light': '#FAFAFA',
-                        'rp-gray-soft': '#E0E0E0',
-                        'mp-blue': '#009EE3',
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA',
+                        'rp-blue-light': '#e0f7f7',
+                        'rp-gray-soft': '#dddddd',
+                        'rp-border-default': '#b5b5b5',
+                        'mp-blue': '#009ee3',
                     },
                     fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                        'brand': ['Inter', 'sans-serif'],
-                    },
-                },
-            },
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
         }
     </script>
 
     <style>
-        .title-style {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.05em;
-        }
-
-        /* Hide scrollbar */
-        html {
-            scrollbar-width: none;
-        }
-
-        html::-webkit-scrollbar {
-            display: none;
-        }
-
+        html,
         body {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
             margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            overflow-y: hidden;
-            /* Cambiado a hidden para que controle ThreeJS el scroll */
-            background: #050505;
+            background-color: #050505;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            overscroll-behavior: none;
         }
 
-        body::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Gallery 3D Styles */
         canvas {
+            display: block;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100vh;
-            display: block;
-            z-index: -1;
+            z-index: 1;
             outline: none;
         }
 
+        /* UI Overlays */
         .info-container {
             position: fixed;
-            bottom: 4rem;
-            left: 2rem;
-            text-align: left;
+            bottom: 80px;
+            left: 50px;
             z-index: 10;
+            color: #fff;
             pointer-events: none;
-            max-width: 90%;
+            transition: opacity 0.5s ease-out;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
         .info-title {
-            color: white;
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            font-weight: 800;
+            font-family: 'Patua One', cursive;
+            font-size: 3.5rem;
+            line-height: 1;
             margin-bottom: 0.5rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s ease;
-            text-align: left;
         }
 
         .info-subtitle {
-            color: #79C7C7;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            font-weight: 400;
-            letter-spacing: 0.2em;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
             text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s ease;
-        }
-
-        /* --- CORRECCIÓN: Se cerró la llave que faltaba arriba --- */
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 1rem;
-            max-width: 1200px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem;
-            position: relative;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                grid-template-columns: 1fr;
-                padding: 1.5rem;
-            }
-        }
-
-        .modal-image-col img {
-            width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: #f3f4f6;
-            border: none;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .modal-close:hover {
-            background: #e5e7eb;
-        }
-
-        .modal-title-text {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .modal-desc-text {
-            color: #6b7280;
-            line-height: 1.6;
+            letter-spacing: 3px;
+            opacity: 0.9;
         }
 
         .cursor-hint {
             position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
+            bottom: 30px;
+            right: 30px;
+            color: #fff;
+            opacity: 0.6;
+            z-index: 10;
             pointer-events: none;
-            color: white;
+            font-family: 'Montserrat', sans-serif;
             font-size: 0.8rem;
-            opacity: 0.7;
-            animation: pulse 2s infinite;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        @keyframes pulse {
-            0% {
-                opacity: 0.4;
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            background: #fafafa;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-image-col {
+            flex: 1.5;
+            background: #000;
+            position: relative;
+        }
+
+        .modal-image-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-text-col {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #333;
+            position: relative;
+            /* For Close Button */
+        }
+
+        .modal-title-text {
+            font-family: 'Patua One', cursive;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .modal-desc-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: #666;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #79C7C7;
+            /* rp-teal */
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 50;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .modal-close:hover {
+            background: #5dade2;
+            /* darker teal/blue hover */
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                flex-direction: column;
             }
 
-            50% {
-                opacity: 1;
+            .modal-image-col {
+                flex: 1;
             }
 
-            100% {
-                opacity: 0.4;
+            .modal-text-col {
+                flex: 1;
+                padding: 2rem;
             }
+
+            .modal-title-text {
+                font-size: 2rem;
+            }
+
+            .info-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* ========================================================= */
+        /* == HIDE SCROLLBAR (mantiene funcionalidad de scroll) == */
+        /* ========================================================= */
+
+        /* Firefox */
+        html {
+            scrollbar-width: none;
+        }
+
+        /* Chrome, Safari, Edge */
+        html::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
 
-<body class="font-sans bg-bg-light text-text-dark">
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <div id="preloader"
-        class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-700">
-        <img src="images/logo.png" alt="Circula" class="max-w-[120px] mb-8 opacity-40">
-        <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
-    </div>
+<!-- Minimalist Nordic Preloader -->
+<div id="preloader" class="fixed inset-0 z-[99999] bg-white 
+                            flex flex-col items-center justify-center 
+                            transition-opacity duration-700 ease-out">
 
-    <header class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 w-full py-4">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                <a href="index.html" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
-                    <img src="images/logo.png" alt="Logo Circula" class="h-8 sm:h-10 lg:h-11 object-contain">
+    <!-- Logo with subtle fade -->
+    <img src="images/Logo C.png" alt="Circula" class="max-w-[120px] opacity-40 mb-12">
+
+    <!-- Percentage counter -->
+    <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
+</div>
+
+<body>
+
+    <!-- --- HEADER --- -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300">
+        <!-- Transparent BG -->
+        <div class="absolute inset-0 bg-transparent"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center relative z-10">
+
+            <a href="index.html#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
+                <!-- White Logo via filter -->
+                <img src="images/logo.png" alt="Logo Circula"
+                    class="h-8 sm:h-10 lg:h-11 object-contain brightness-0 invert">
+            </a>
+
+            <!-- Navigation: White text, Uppercase, Tracking -->
+            <nav class="flex max-md:hidden space-x-8 items-center">
+                <a href="index.html#home"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Inicio</a>
+                <a href="index.html#talleres"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Talleres</a>
+                <a href="index.html#nosotros"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Nosotros</a>
+                <a href="#"
+                    class="font-brand font-bold text-sm text-rp-teal transition duration-200 uppercase tracking-widest border-b border-rp-teal">Galería</a>
+                <a href="index.html#tienda"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Tienda</a>
+                <a href="index.html#contacto"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Contacto</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <!-- IG -->
+                <a href="https://www.instagram.com/circula.uy/" target="_blank"
+                    class="max-md:hidden text-white hover:text-rp-teal transition duration-200 drop-shadow-md">
+                    <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
+                        <path
+                            d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
+                        <path
+                            d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
+                        <path
+                            d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
+                    </svg>
                 </a>
 
-                <nav class="hidden md:flex space-x-8 items-center">
-                    <a href="index.html#home"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Inicio</a>
-                    <a href="index.html#talleres"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Talleres</a>
-                    <a href="index.html#nosotros"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Nosotros</a>
-                    <a href="galeria2.html"
-                        class="font-brand font-normal text-sm text-rp-teal hover:text-rp-teal transition duration-200 uppercase tracking-widest border-b border-rp-teal">Galería</a>
-                    <a href="index.html#tienda"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Tienda</a>
-                    <a href="index.html#contacto"
-                        class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200 uppercase tracking-widest">Contacto</a>
-                </nav>
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/company/circulauy" target="_blank"
+                    class="max-md:hidden text-white hover:text-rp-teal transition duration-200 drop-shadow-md">
+                    <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
+                        <path
+                            d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z" />
+                    </svg>
+                </a>
 
-                <div class="flex items-center space-x-4">
-                    <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer"
-                        class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                        <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
-                            <path
-                                d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
-                            <path
-                                d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
-                            <path
-                                d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
+                <!-- Cart -->
+                <div id="cart-dropdown-container" class="relative group">
+                    <div class="relative cursor-pointer p-2 rounded-full hover:bg-white/10 transition duration-200"
+                        onclick="window.location.href='index.html#carrito'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="w-6 h-6 text-white">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
                         </svg>
-                    </a>
-
-                    <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer"
-                        class="max-md:hidden text-text-dark hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-rp-blue-light">
-                        <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
-                            <path
-                                d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z" />
-                        </svg>
-                    </a>
-
-                    <div id="cart-dropdown-container" class="relative group">
-                        <div class="relative cursor-pointer p-2 rounded-full hover:bg-rp-blue-light transition duration-200"
-                            onclick="window.location.href='index.html#carrito'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="w-6 h-6 text-rp-teal">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
-                            </svg>
-                            <span id="cart-count"
-                                class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
-                        </div>
-
-                        <div id="cart-dropdown"
-                            class="absolute right-0 mt-3 w-72 origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
-                            <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen</h4>
-                            <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
-                                <p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>
-                            </div>
-                            <div id="dropdown-summary" class="border-t pt-2">
-                                <div class="flex justify-between font-bold text-lg mb-3">
-                                    <span>Total:</span>
-                                    <span id="dropdown-total" class="text-mp-blue">$0.00</span>
-                                </div>
-                                <button onclick="window.location.href='index.html#carrito'"
-                                    class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">
-                                    Ver Carrito
-                                </button>
-                            </div>
-                        </div>
+                        <span id="cart-count"
+                            class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
                     </div>
 
-                    <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark focus:outline-none"
-                        onclick="toggleMobileMenu()">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
+                    <div id="cart-dropdown"
+                        class="absolute right-0 mt-3 w-72 origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
+                        <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen</h4>
+                        <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
+                            <p class="text-gray-500 text-center">Tu carrito está vacío.</p>
+                        </div>
+                        <div id="dropdown-summary" class="border-t pt-2">
+                            <div class="flex justify-between font-bold text-lg mb-3">
+                                <span>Total:</span>
+                                <span id="dropdown-total" class="text-mp-blue">$0.00</span>
+                            </div>
+                            <button onclick="window.location.href='index.html#carrito'"
+                                class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">
+                                Ver Carrito
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                <button id="mobile-menu-button" class="md:hidden p-2 text-white focus:outline-none"
+                    onclick="toggleMobileMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </div>
+        </div>
 
+        <!-- Mobile Menu -->
         <nav id="mobile-menu"
             class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
             <a href="index.html#home"
@@ -332,16 +368,18 @@
         </nav>
     </header>
 
+    <!-- --- OVERLAY UI --- -->
     <div class="info-container" id="info">
         <div class="info-title" id="ui-title">...</div>
         <div class="info-subtitle" id="ui-subtitle">...</div>
     </div>
 
     <div class="cursor-hint" id="hint">
-        <span class="bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">Deslizá para ver
+        <span class="bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">Desliza para ver
             más</span>
     </div>
 
+    <!-- --- MODAL --- -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <div class="modal-image-col">
@@ -362,6 +400,7 @@
         </div>
     </div>
 
+    <!-- --- THREE.JS --- -->
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
     </script>
@@ -380,12 +419,12 @@
             currentSlide: 0,
             targetScroll: 0,
             currentScroll: 0,
-            scrollMax: 0, // CORREGIDO: Typos arreglados
+            scrollMax: 0,
             isAnimating: false,
             inModal: false
         };
 
-        //--- SETUP ---
+        // --- SETUP ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x050505);
 
@@ -396,6 +435,7 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // ORIGINAL COLORS: SRGB
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         document.body.appendChild(renderer.domElement);
 
@@ -429,26 +469,31 @@
                 let currentVal = '';
                 let insideQuotes = false;
 
+                // Robust Character-by-Character Parser
                 for (let j = 0; j < row.length; j++) {
                     const char = row[j];
                     const nextChar = row[j + 1];
 
                     if (char === '"') {
                         if (insideQuotes && nextChar === '"') {
+                            // Escaped quote "" -> "
                             currentVal += '"';
                             j++;
                         } else {
+                            // Toggle quote state
                             insideQuotes = !insideQuotes;
                         }
                     } else if (char === ',' && !insideQuotes) {
+                        // End of cell
                         values.push(currentVal);
                         currentVal = '';
                     } else {
                         currentVal += char;
                     }
                 }
-                values.push(currentVal);
+                values.push(currentVal); // Push last value
 
+                // Map to headers
                 const obj = {};
                 headers.forEach((h, index) => {
                     obj[h] = values[index] ? values[index].trim() : '';
@@ -456,75 +501,47 @@
                 result.push(obj);
             }
             return result;
-        }
 
-        // --- CORE FUNCTIONS ---
-        async function init() {
-            try {
-                state.isMobile = window.innerWidth < 768;
+            // Map CSV format to Slide format with ALIGNMENT & MOBILE ALIGNMENT
+            slides = rawItems.map(item => ({
+                url: fixLink(item.img || item.imagen),
+                urlMobile: fixLink(item.img_mobile || item.mobile_img || ""), // Optional mobile image
+                title: item.title || "Sin Título",
+                subtitle: item.category || "General",
+                desc: item.desc || "...",
+                align: item.align || "center", // Default center
+                alignMobile: item.align_mobile || item.align_m || "" // Optional mobile override
+            }));
 
-                // GA4 Event: View Gallery
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({
-                    event: 'view_gallery',
-                    page_title: 'Galería 3D - Circula',
-                    interaction_type: 'gallery_load'
-                });
+            createMeshes();
+            updateLayout();
+            raf();
 
-                const response = await fetch(SHEET_URL + '&t=' + Date.now());
-                const data = await response.text();
-                const rawItems = csvToJSON(data);
-
-                slides = rawItems.map(item => ({
-                    url: fixLink(item.img || item.imagen),
-                    urlMobile: fixLink(item.img_mobile || item.mobile_img || ""),
-                    title: item.title || "Sin Título",
-                    subtitle: item.category || "General",
-                    desc: item.desc || "...",
-                    align: item.align || "center",
-                    alignMobile: item.align_mobile || item.align_m || ""
-                }));
-
-                // CORREGIDO: Actualizar layout ANTES de crear mallas para tamaños correctos
-                updateLayout();
-                createMeshes();
-                raf();
-
-                // Hide preloader
-                setTimeout(() => {
-                    const preloader = document.getElementById('preloader');
-                    const loadingProgress = document.getElementById('loading-progress');
-                    if (loadingProgress) {
-                        loadingProgress.textContent = '100%';
-                    }
-                    if (preloader) {
-                        preloader.style.opacity = '0';
-                        setTimeout(() => {
-                            preloader.style.display = 'none';
-                        }, 700);
-                    }
-                }, 300);
-
-            } catch (error) {
-                console.error("Error loading sheet:", error);
+            // Hide preloader with smooth fade after content loads
+            setTimeout(() => {
                 const preloader = document.getElementById('preloader');
+                const loadingProgress = document.getElementById('loading-progress');
+                if (loadingProgress) {
+                    loadingProgress.textContent = '100%';
+                }
                 if (preloader) {
                     preloader.style.opacity = '0';
-                    setTimeout(() => preloader.style.display = 'none', 700);
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 700);
                 }
-            }
-        }
+            }, 300);
 
-        function createMeshes() {
-            // Usamos la geometría calculada en updateLayout en lugar de 1,1
-            const baseGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
-
+        } catch (error) {
+            console.error("Error loading sheet:", error);
             slides.forEach((slide, i) => {
+                // ART DIRECTION: Choose image based on device
                 let finalUrl = slide.url;
                 if (state.isMobile && slide.urlMobile && slide.urlMobile !== PLACEHOLDER_IMG) {
                     finalUrl = slide.urlMobile;
                 }
 
+                // Load texture - Three.js will cache and create instances automatically
                 const texture = textureLoader.load(finalUrl, (tex) => {
                     if (meshes[i]) {
                         meshes[i].userData.imgWidth = tex.image.width;
@@ -533,6 +550,7 @@
                     }
                 });
 
+                // Configure texture properties
                 texture.colorSpace = THREE.SRGBColorSpace;
                 texture.wrapS = THREE.ClampToEdgeWrapping;
                 texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -546,6 +564,7 @@
                 });
 
                 const mesh = new THREE.Mesh(baseGeom.clone(), matImage);
+                // Store alignment in userData
                 mesh.userData = {
                     id: i,
                     imgWidth: 0,
@@ -557,7 +576,6 @@
                 meshes.push(mesh);
             });
 
-            // CORREGIDO: Typo corregido (scrollMa -> scrollMax)
             state.scrollMax = slides.length;
             updateUI(0);
         }
@@ -569,28 +587,35 @@
             const imgAspect = mesh.userData.imgWidth / mesh.userData.imgHeight;
             const texture = mesh.material.map;
 
+            // FOCAL POINT MAPPING
+            // Select Alignment based on Device
             let rawAlign = mesh.userData.align;
             if (state.isMobile && mesh.userData.alignMobile) {
                 rawAlign = mesh.userData.alignMobile;
             }
 
+            // Default: Center/Center
             let alignX = 0.5;
             let alignY = 0.5;
 
             if (rawAlign) {
                 const align = rawAlign.toLowerCase().trim();
 
+                // Detect Percentage Pattern (e.g., "50% 20%")
                 if (align.includes('%')) {
                     const parts = align.split(/[ ,]+/);
+
+                    // IF only 1 value is provided (e.g. "15%"), standard CSS says this is X, and Y is 50%.
                     if (parts.length > 0) {
                         const val = parseFloat(parts[0]);
                         if (!isNaN(val)) alignX = val / 100;
                     }
                     if (parts.length > 1) {
                         const val = parseFloat(parts[1]);
-                        if (!isNaN(val)) alignY = 1.0 - (val / 100);
+                        if (!isNaN(val)) alignY = 1.0 - (val / 100); // Invert Y for UV
                     }
                 } else {
+                    // Keywords
                     if (align.includes('left')) alignX = 0.0;
                     if (align.includes('right')) alignX = 1.0;
                     if (align.includes('top')) alignY = 1.0;
@@ -598,24 +623,44 @@
                 }
             }
 
+            // IMPORTANT: Do NOT set texture.center to 0.5,0.5 as it conflicts with manual offset math.
             texture.center.set(0, 0);
 
             if (planeAspect > imgAspect) {
+                // Plane is WIDER. We fit Width. We crop vertical.
+                // Repeat: X=1, Y = img/plane < 1 (Zooming)
+                // Actually repeat logic:
+                // To COVER:
+                // If planeAspect > imgAspect (2 > 1):
+                // We show 100% of Width.
+                // We show (imgAspect / planeAspect) of Height (e.g. 0.5).
+                // So repeat.set(1, 0.5).
+
                 const repeatY = imgAspect / planeAspect;
                 texture.repeat.set(1, repeatY);
+
+                // OFFSET Y based on Alignment
+                // range of visible texture is repeatY [0..1]
+                // gap is 1 - repeatY.
+                // If alignY = 0.5 (center), offset = (1 - repeatY) / 2
+                // If alignY = 1.0 (top), offset = (1 - repeatY)
+                // If alignY = 0.0 (bottom), offset = 0
+
                 texture.offset.y = (1 - repeatY) * alignY;
                 texture.offset.x = 0;
             } else {
+                // Plane is TALLER. We fit Height. We crop horizontal.
                 const repeatX = planeAspect / imgAspect;
                 texture.repeat.set(repeatX, 1);
+
+                // OFFSET X based on Alignment
                 texture.offset.x = (1 - repeatX) * alignX;
                 texture.offset.y = 0;
             }
         }
 
         function updateLayout() {
-            // Check para evitar divisiones si no hay slides, aunque raro
-            // if (slides.length === 0) return; 
+            if (slides.length === 0) return;
 
             state.isMobile = window.innerWidth < 768;
             const vFov = (camera.fov * Math.PI) / 180;
@@ -625,21 +670,20 @@
             geomWidth = viewWidth;
             geomHeight = viewHeight;
 
-            // Si las mallas ya existen, las actualizamos
-            if (meshes.length > 0) {
-                const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
-                meshes.forEach((mesh) => {
-                    mesh.geometry.dispose();
-                    mesh.geometry = newGeom.clone();
-                    mesh.position.set(0, 0, 0);
-                    mesh.rotation.set(0, 0, 0);
-                    resizeTexture(mesh);
-                });
-            }
+            const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
+
+            meshes.forEach((mesh) => {
+                mesh.geometry.dispose();
+                mesh.geometry = newGeom.clone();
+                mesh.position.set(0, 0, 0);
+                mesh.rotation.set(0, 0, 0);
+                resizeTexture(mesh);
+            });
+
+            state.scrollMax = slides.length;
         }
 
         function goToSlide(index, immediate = false) {
-            // Limitar index
             index = Math.max(0, Math.min(index, slides.length));
             state.currentSlide = index;
             state.targetScroll = index;
@@ -716,7 +760,6 @@
         window.addEventListener('click', (e) => {
             if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
 
-            // Prevenir clic si ya estamos en el footer (scroll final)
             if (state.currentScroll > slides.length - 0.9) return;
 
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -724,9 +767,7 @@
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(meshes);
             if (intersects.length > 0) {
-                // Solo abrir si estamos cerca del slide actual
-                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
-
+                if (Math.abs(state.targetScroll - state.currentScroll) > 0.1) return;
                 const id = intersects[0].object.userData.id;
                 if (id === state.currentSlide) openModal(id);
                 else goToSlide(id);
@@ -740,18 +781,16 @@
             document.getElementById('modal-img').src = slides[id].url;
             document.getElementById('modal-title').innerText = slides[id].title;
             document.getElementById('modal-desc').innerText = slides[id].desc;
+            modal.classList.add('active');
 
             // GA4 Event: Gallery item view
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: 'gallery_item_view',
                 item_name: slides[id].title,
-                item_category: slides[id].subtitle,
                 item_index: id,
                 interaction_type: 'modal_open'
             });
-
-            modal.classList.add('active');
         }
         document.getElementById('modal-close').addEventListener('click', () => {
             state.inModal = false;
@@ -759,11 +798,14 @@
         });
 
         function raf() {
-            state.currentScroll += (state.targetScroll - state.currentScroll) * 0.05; // Un poco más rápido (0.05)
+            // SLOWER ANIMATION: Lerp 0.025
+            state.currentScroll += (state.targetScroll - state.currentScroll) * 0.025;
 
+            // Footer Logic
             const footer = document.getElementById('gallery-footer');
             const maxSlideIndex = slides.length - 1;
 
+            // Only run physics if we have slides
             if (slides.length > 0) {
                 const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
 
@@ -789,6 +831,7 @@
                     mesh.position.z = -RADIUS + (Math.cos(angle) * RADIUS);
                     mesh.rotation.x = -angle;
 
+                    // TWIST / SKEW
                     mesh.rotation.z = (angle * 0.05) + (mesh.position.y * 0.002);
                     mesh.rotation.y = angle * 0.05;
 
@@ -844,6 +887,9 @@
             return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
         }
 
+        /**
+         * Updates the cart count badge in the header
+         */
         function updateCartDisplay() {
             const totalItems = getCartTotalItems();
             if (cartCountDisplay) {
@@ -851,6 +897,9 @@
             }
         }
 
+        /**
+         * Updates the dropdown hover preview
+         */
         function updateCartDropdown() {
             if (!dropdownTotalDisplay || !dropdownItemsList) return;
 
@@ -896,7 +945,7 @@
             m.classList.toggle('hidden');
         }
     </script>
-
+    <!-- --- FOOTER (Initially Hidden/Below Viewport) --- -->
     <footer id="gallery-footer"
         class="fixed bottom-0 w-full bg-text-dark text-white py-8 z-40 transition-transform duration-700 ease-out transform translate-y-full">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -910,10 +959,6 @@
             <p class="text-sm text-gray-500">&copy; <span id="current-year">2024</span> Circula. Economía Circular.</p>
         </div>
     </footer>
-
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
 </body>
 
 </html>

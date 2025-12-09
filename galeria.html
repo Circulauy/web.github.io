@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" class="lenis lenis-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula - Proyectos</title>
+    <meta name="robots" content="noindex, nofollow">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -12,7 +14,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patua+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patua+One&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -35,51 +38,95 @@
     <style>
         /* --- LENIS SCROLL (Solo PC) --- */
         @media (min-width: 1024px) {
-            html.lenis, html.lenis body { height: auto; }
-            .lenis.lenis-smooth { scroll-behavior: auto !important; }
-            .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-            .lenis.lenis-stopped { overflow: hidden; }
+
+            html.lenis,
+            html.lenis body {
+                height: auto;
+            }
+
+            .lenis.lenis-smooth {
+                scroll-behavior: auto !important;
+            }
+
+            .lenis.lenis-smooth [data-lenis-prevent] {
+                overscroll-behavior: contain;
+            }
+
+            .lenis.lenis-stopped {
+                overflow: hidden;
+            }
         }
-        
-        body { 
-            background-color: #050505; /* Fondo oscuro fundamental para evitar flashes blancos */
-            margin: 0; 
-            padding: 0; 
-            perspective: 2000px; 
+
+        body {
+            background-color: #050505;
+            /* Fondo oscuro fundamental para evitar flashes blancos */
+            margin: 0;
+            padding: 0;
+            perspective: 2000px;
             overflow-x: hidden;
         }
 
         /* En PC el fondo es claro */
-        @media (min-width: 1024px) { body { background-color: #f8fafc; } }
+        @media (min-width: 1024px) {
+            body {
+                background-color: #f8fafc;
+            }
+        }
 
-        .title-style { font-family: 'Patua One', cursive; letter-spacing: -0.02em; }
-        #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at top left, #ffffff, #f1f5f9); pointer-events: none;}
-        .plastic-particle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1)); backdrop-filter: blur(1px); }
+        .title-style {
+            font-family: 'Patua One', cursive;
+            letter-spacing: -0.02em;
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at top left, #ffffff, #f1f5f9);
+            pointer-events: none;
+        }
+
+        .plastic-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1));
+            backdrop-filter: blur(1px);
+        }
 
         /* ============================================================ */
         /* === VISTA MÓVIL: SISTEMA "RESN STACK" REFORZADO === */
         /* ============================================================ */
         @media (max-width: 1023px) {
-            html, body { height: auto; overflow-x: hidden; }
-            
+
+            html,
+            body {
+                height: auto;
+                overflow-x: hidden;
+            }
+
             #gallery-grid {
                 display: block;
                 padding: 0;
                 /* El contenedor padre NO debe tener overflow hidden para que sticky funcione */
-                overflow: visible; 
+                overflow: visible;
             }
 
             /* LA TARJETA (Sticky Container) */
             .masonry-item {
                 position: sticky;
-                position: -webkit-sticky; 
+                position: -webkit-sticky;
                 top: 0;
-                height: 100vh; /* Altura completa estricta */
+                height: 100vh;
+                /* Altura completa estricta */
                 width: 100%;
-                margin: 0; padding: 0;
-                
+                margin: 0;
+                padding: 0;
+
                 /* Truco: forzar aceleración de hardware aquí */
-                transform: translate3d(0,0,0);
+                transform: translate3d(0, 0, 0);
                 will-change: transform;
             }
 
@@ -87,68 +134,175 @@
             .anim-wrapper {
                 width: 100%;
                 height: 100%;
-                background-color: #000; 
+                background-color: #000;
                 overflow: hidden;
-                
+
                 /* Sombra PROYECTADA hacia arriba (simula que la siguiente carta tapa a esta) */
-                box-shadow: 0 -20px 50px rgba(0,0,0,0.8); 
-                
-                transform-origin: center bottom; /* Pivote abajo para evitar que se levante al rotar */
+                box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.8);
+
+                transform-origin: center bottom;
+                /* Pivote abajo para evitar que se levante al rotar */
                 will-change: transform, filter;
             }
 
-            .img-wrapper { 
-                height: 100% !important; width: 100% !important; 
-                position: relative; overflow: hidden;
+            .img-wrapper {
+                height: 100% !important;
+                width: 100% !important;
+                position: relative;
+                overflow: hidden;
             }
-            
+
             .parallax-img {
-                height: 120% !important; width: 100%; object-fit: cover;
-                position: absolute; top: 0; left: 0;
+                height: 120% !important;
+                width: 100%;
+                object-fit: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
                 will-change: transform;
             }
 
             /* Capa de sombra real (Overlay) */
             .shadow-overlay {
-                position: absolute; inset: 0; background: #000;
-                opacity: 0; pointer-events: none; z-index: 10;
-                transition: opacity 0.1s linear; /* Suavizado extra */
+                position: absolute;
+                inset: 0;
+                background: #000;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 10;
+                transition: opacity 0.1s linear;
+                /* Suavizado extra */
             }
 
             .item-overlay {
-                background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 60%) !important;
-                padding: 2rem !important; padding-bottom: 6rem !important;
-                pointer-events: none; z-index: 20;
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, transparent 60%) !important;
+                padding: 2rem !important;
+                padding-bottom: 6rem !important;
+                pointer-events: none;
+                z-index: 20;
             }
         }
 
         /* --- VISTA ESCRITORIO --- */
         @media (min-width: 1024px) {
             #gallery-grid {
-                display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(100px, auto); gap: 1.5rem; padding-bottom: 5rem;
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                grid-auto-rows: minmax(100px, auto);
+                gap: 1.5rem;
+                padding-bottom: 5rem;
             }
-            .masonry-item { position: relative; height: auto; margin-bottom: 0; top: auto; width: auto; background: transparent; box-shadow: none; z-index: 1; overflow: visible;}
-            .anim-wrapper { width: 100%; height: 100%; border-radius: 1.5rem; overflow: hidden; position: relative; background-color: #e2e8f0; box-shadow: none; }
-            .img-wrapper { position: relative; overflow: hidden; width: 100%; height: 100%; }
-            .parallax-img { height: 140%; width: 100%; object-fit: cover; position: absolute; top: -20%; left: 0; }
-            .item-overlay { background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0,0,0,0) 70%); border-radius: 1.5rem; }
-            .shadow-overlay { display: none; }
-            
-            .pos-0 { grid-column: 1 / span 5; grid-row: span 4; }
-            .pos-1 { grid-column: 4 / span 4; grid-row: span 3; margin-top: 3rem !important; }
-            .pos-2 { grid-column: 9 / span 4; grid-row: span 5; margin-top: -4rem !important; }
-            .pos-3 { grid-column: 2 / span 6; grid-row: span 3; margin-top: -2rem !important; margin-left: 2rem; }
-            .pos-4 { grid-column: 10 / span 3; grid-row: span 3; }
+
+            .masonry-item {
+                position: relative;
+                height: auto;
+                margin-bottom: 0;
+                top: auto;
+                width: auto;
+                background: transparent;
+                box-shadow: none;
+                z-index: 1;
+                overflow: visible;
+            }
+
+            .anim-wrapper {
+                width: 100%;
+                height: 100%;
+                border-radius: 1.5rem;
+                overflow: hidden;
+                position: relative;
+                background-color: #e2e8f0;
+                box-shadow: none;
+            }
+
+            .img-wrapper {
+                position: relative;
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+            }
+
+            .parallax-img {
+                height: 140%;
+                width: 100%;
+                object-fit: cover;
+                position: absolute;
+                top: -20%;
+                left: 0;
+            }
+
+            .item-overlay {
+                background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0, 0, 0, 0) 70%);
+                border-radius: 1.5rem;
+            }
+
+            .shadow-overlay {
+                display: none;
+            }
+
+            .pos-0 {
+                grid-column: 1 / span 5;
+                grid-row: span 4;
+            }
+
+            .pos-1 {
+                grid-column: 4 / span 4;
+                grid-row: span 3;
+                margin-top: 3rem !important;
+            }
+
+            .pos-2 {
+                grid-column: 9 / span 4;
+                grid-row: span 5;
+                margin-top: -4rem !important;
+            }
+
+            .pos-3 {
+                grid-column: 2 / span 6;
+                grid-row: span 3;
+                margin-top: -2rem !important;
+                margin-left: 2rem;
+            }
+
+            .pos-4 {
+                grid-column: 10 / span 3;
+                grid-row: span 3;
+            }
         }
 
-        #whatsapp-widget { position: fixed; bottom: 20px; right: 20px; z-index: 99999; }
-        #whatsapp-icon { width: 60px; height: 60px; font-size: 30px; z-index: 10001; }
-        #whatsapp-chat-box.hidden { display: none !important; }
-        
+        #whatsapp-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+        }
+
+        #whatsapp-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            z-index: 10001;
+        }
+
+        #whatsapp-chat-box.hidden {
+            display: none !important;
+        }
+
         /* Loader de carga */
-        #loader-overlay { position: fixed; inset: 0; bg: white; z-index: 99999; display: flex; align-items: center; justify-content: center; background: #fff; transition: opacity 0.5s ease; }
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            bg: white;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            transition: opacity 0.5s ease;
+        }
     </style>
 </head>
+
 <body class="font-sans text-text-dark antialiased">
 
     <div id="loader-overlay">
@@ -160,50 +314,76 @@
 
     <div id="background-canvas"></div>
 
-    <header class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 w-full">
+    <header
+        class="fixed top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 w-full">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <a href="index.html#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
                 <img src="images/logo.png" alt="Logo Circula" class="h-8 sm:h-10 lg:h-11 object-contain">
             </a>
             <nav class="flex max-md:hidden space-x-8 items-center">
-                <a href="index.html#home" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Inicio</a>
-                <a href="index.html#talleres" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Talleres</a>
+                <a href="index.html#home"
+                    class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Inicio</a>
+                <a href="index.html#talleres"
+                    class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Talleres</a>
                 <a href="#" class="font-brand font-bold text-sm text-rp-teal transition duration-200">Galería</a>
-                <a href="index.html#tienda" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Tienda</a>
-                <a href="index.html#contacto" class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Contacto</a>
+                <a href="index.html#tienda"
+                    class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Tienda</a>
+                <a href="index.html#contacto"
+                    class="font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition duration-200">Contacto</a>
             </nav>
             <button id="mobile-menu-button" class="md:hidden p-2 text-text-dark" onclick="toggleMobileMenu()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
             </button>
         </div>
-        <nav id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
-            <a href="index.html#home" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Inicio</a>
-            <a href="index.html#talleres" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Talleres</a>
-            <a href="#" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
-            <a href="index.html#tienda" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Tienda</a>
-            <a href="index.html#contacto" class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light">Contacto</a>
+        <nav id="mobile-menu"
+            class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
+            <a href="index.html#home"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Inicio</a>
+            <a href="index.html#talleres"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Talleres</a>
+            <a href="#"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
+            <a href="index.html#tienda"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Tienda</a>
+            <a href="index.html#contacto"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light">Contacto</a>
         </nav>
     </header>
 
     <main>
-        <section id="hero-mobile-slide" class="px-4 text-center relative z-10 bg-white md:bg-transparent md:h-auto md:pt-32 md:pb-12">
-            <span class="text-rp-teal font-extrabold tracking-[0.4em] uppercase mb-4 block text-xs" id="gallery-subtitle">Galería</span>
+        <section id="hero-mobile-slide"
+            class="px-4 text-center relative z-10 bg-white md:bg-transparent md:h-auto md:pt-32 md:pb-12">
+            <span class="text-rp-teal font-extrabold tracking-[0.4em] uppercase mb-4 block text-xs"
+                id="gallery-subtitle">Galería</span>
             <h1 class="text-5xl md:text-8xl font-bold title-style text-text-dark mb-6 leading-none" id="gallery-title">
-                IMPACTO <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-rp-teal to-rp-dark-blue">VISUAL</span>
+                IMPACTO <br><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-rp-teal to-rp-dark-blue">VISUAL</span>
             </h1>
-            <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10 font-light" id="gallery-desc">Desliza para ver la transformación.</p>
+            <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10 font-light" id="gallery-desc">Desliza para ver la
+                transformación.</p>
             <div class="flex flex-wrap justify-center gap-2" id="gallery-filters">
-                <button class="filter-btn active px-6 py-2 rounded-full bg-text-dark text-white font-bold text-xs tracking-wide" data-filter="all">TODO</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="talleres">TALLERES</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="productos">PRODUCTOS</button>
-                <button class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide" data-filter="impacto">IMPACTO</button>
+                <button
+                    class="filter-btn active px-6 py-2 rounded-full bg-text-dark text-white font-bold text-xs tracking-wide"
+                    data-filter="all">TODO</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="talleres">TALLERES</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="productos">PRODUCTOS</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="impacto">IMPACTO</button>
             </div>
         </section>
 
         <section class="container mx-auto px-0 md:px-6 lg:px-16 relative z-20">
             <div id="gallery-grid"></div>
         </section>
-        
+
         <footer class="bg-text-dark text-white py-12 border-t border-gray-800 relative z-30 md:block hidden">
             <div class="container mx-auto px-4 text-center">
                 <p class="text-2xl font-bold text-rp-teal title-style mb-4">Circula</p>
@@ -215,25 +395,38 @@
     <div id="lightbox" class="fixed inset-0 z-[100] hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-rp-dark-blue/95 backdrop-blur-xl" onclick="closeLightbox()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <div class="relative bg-white rounded-[1.5rem] overflow-hidden shadow-2xl w-full max-w-5xl max-h-[80vh] flex flex-col md:flex-row pointer-events-auto transform scale-95" id="lightbox-content">
+            <div class="relative bg-white rounded-[1.5rem] overflow-hidden shadow-2xl w-full max-w-5xl max-h-[80vh] flex flex-col md:flex-row pointer-events-auto transform scale-95"
+                id="lightbox-content">
                 <div class="w-full md:w-3/5 h-[40vh] md:h-auto bg-gray-100 relative overflow-hidden">
                     <img id="lb-img" src="" alt="" class="w-full h-full object-cover">
                 </div>
                 <div class="w-full md:w-2/5 p-8 flex flex-col justify-center bg-white relative">
-                    <button onclick="closeLightbox()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-text-dark"><i class="fas fa-times"></i></button>
-                    <span id="lb-category" class="text-rp-teal font-extrabold uppercase tracking-widest text-xs mb-2 block">Categoría</span>
-                    <h3 id="lb-title" class="text-2xl md:text-3xl font-heading text-text-dark mb-4 leading-none">Título</h3>
+                    <button onclick="closeLightbox()"
+                        class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-text-dark"><i
+                            class="fas fa-times"></i></button>
+                    <span id="lb-category"
+                        class="text-rp-teal font-extrabold uppercase tracking-widest text-xs mb-2 block">Categoría</span>
+                    <h3 id="lb-title" class="text-2xl md:text-3xl font-heading text-text-dark mb-4 leading-none">Título
+                    </h3>
                     <p id="lb-desc" class="text-gray-500 text-sm mb-6 leading-relaxed font-light">Descripción...</p>
                 </div>
             </div>
         </div>
     </div>
     <div id="whatsapp-widget">
-        <button id="whatsapp-icon" onclick="toggleChat()" class="bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i class="fab fa-whatsapp"></i></button>
-        <div id="whatsapp-chat-box" class="hidden w-[300px] h-[400px] bg-white rounded-[20px] absolute bottom-[75px] right-0 flex flex-col overflow-hidden z-[10000] shadow-2xl">
+        <button id="whatsapp-icon" onclick="toggleChat()"
+            class="bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i
+                class="fab fa-whatsapp"></i></button>
+        <div id="whatsapp-chat-box"
+            class="hidden w-[300px] h-[400px] bg-white rounded-[20px] absolute bottom-[75px] right-0 flex flex-col overflow-hidden z-[10000] shadow-2xl">
             <div class="bg-[#075E54] text-white p-4 flex items-center"><span class="font-bold">Circula</span></div>
-            <div class="bg-[#ECE5DD] flex-grow p-4 overflow-y-auto"><div class="bg-white p-3 rounded-lg shadow-sm text-sm inline-block">¡Hola! 👋 Escríbenos.</div></div>
-            <div class="p-3 bg-[#f0f0f0] flex items-center"><input type="text" id="mensaje-usuario" placeholder="Mensaje..." class="flex-grow p-2 rounded-full border-none outline-none text-sm mr-2"><button onclick="enviarWhatsApp()" class="text-[#075E54]"><i class="fas fa-paper-plane"></i></button></div>
+            <div class="bg-[#ECE5DD] flex-grow p-4 overflow-y-auto">
+                <div class="bg-white p-3 rounded-lg shadow-sm text-sm inline-block">¡Hola! 👋 Escríbenos.</div>
+            </div>
+            <div class="p-3 bg-[#f0f0f0] flex items-center"><input type="text" id="mensaje-usuario"
+                    placeholder="Mensaje..."
+                    class="flex-grow p-2 rounded-full border-none outline-none text-sm mr-2"><button
+                    onclick="enviarWhatsApp()" class="text-[#075E54]"><i class="fas fa-paper-plane"></i></button></div>
         </div>
     </div>
 
@@ -261,13 +454,13 @@
             // 1. Limpieza inicial
             ScrollTrigger.getAll().forEach(t => t.kill());
             gridContainer.innerHTML = '';
-            
+
             // Forzamos altura en body para scroll
-            if(window.innerWidth < 1024) document.body.style.minHeight = "200vh";
+            if (window.innerWidth < 1024) document.body.style.minHeight = "200vh";
 
             const itemsToShow = filter === 'all' ? galleryItems : galleryItems.filter(item => item.category && item.category.toLowerCase() === filter.toLowerCase());
-            
-            if(itemsToShow.length === 0) return;
+
+            if (itemsToShow.length === 0) return;
 
             // 2. PRE-CARGA DE IMÁGENES (CRÍTICO PARA EVITAR SALTOS)
             // No creamos el DOM hasta tener las imagenes listas en memoria del navegador
@@ -279,14 +472,14 @@
                 const imageUrl = fixLink(item.img || item.imagen);
                 const titulo = item.title || "Proyecto";
                 const categoria = item.category || "General";
-                
+
                 // Z-INDEX ESCALONADO: 1, 2, 3... asegura que la nueva tape a la vieja
-                const zIndex = index + 1; 
+                const zIndex = index + 1;
 
                 const el = document.createElement('div');
                 el.className = `masonry-item pos-${index % 5}`;
-                el.style.zIndex = zIndex; 
-                
+                el.style.zIndex = zIndex;
+
                 el.innerHTML = `
                     <div class="anim-wrapper group cursor-pointer" onclick="openLightboxWrapper(this)">
                         <div class="img-wrapper">
@@ -297,7 +490,7 @@
                                 <h3 class="text-white font-heading text-4xl leading-none shadow-black drop-shadow-lg">${titulo}</h3>
                             </div>
                         </div>
-                        <div class="hidden data-store" data-img="${imageUrl}" data-title="${titulo}" data-cat="${categoria}" data-desc="${item.desc||''}"></div>
+                        <div class="hidden data-store" data-img="${imageUrl}" data-title="${titulo}" data-cat="${categoria}" data-desc="${item.desc || ''}"></div>
                     </div>
                 `;
                 gridContainer.appendChild(el);
@@ -323,7 +516,7 @@
                         opacity: 0.7, // Oscurecemos vía overlay
                         ease: "none",
                         scrollTrigger: {
-                            trigger: el,            
+                            trigger: el,
                             start: "top top",       // Cuando se pega arriba
                             end: "bottom top",      // Hasta que se va
                             scrub: true
@@ -331,11 +524,11 @@
                     });
 
                     // PARALLAX SUTIL
-                    gsap.fromTo(img, 
-                        { yPercent: 0, scale: 1.05 }, 
-                        { 
-                            yPercent: 10, scale: 1.05, 
-                            ease: "none", 
+                    gsap.fromTo(img,
+                        { yPercent: 0, scale: 1.05 },
+                        {
+                            yPercent: 10, scale: 1.05,
+                            ease: "none",
                             scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true }
                         }
                     );
@@ -344,7 +537,7 @@
 
             // 5. REFRESCAR CÁLCULOS
             ScrollTrigger.refresh();
-            
+
             // 6. OCULTAR LOADER
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 500);
@@ -356,7 +549,7 @@
             if (!url) return PLACEHOLDER_IMG;
             let cleanUrl = url.replace(/\\/g, '/').trim();
             if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
-                const idMatch = cleanUrl.match(/[-\w]{25,}/); 
+                const idMatch = cleanUrl.match(/[-\w]{25,}/);
                 if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
             }
             return cleanUrl;
@@ -369,12 +562,12 @@
                 if (!lines[i]) continue;
                 const obj = {};
                 const currentline = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-                if(currentline) { headers.forEach((header, j) => { obj[header] = currentline[j] ? currentline[j].replace(/^"|"$/g, '').trim() : ''; }); result.push(obj); }
+                if (currentline) { headers.forEach((header, j) => { obj[header] = currentline[j] ? currentline[j].replace(/^"|"$/g, '').trim() : ''; }); result.push(obj); }
             } return result;
         }
         function openLightboxWrapper(element) {
             const data = element.querySelector('.data-store');
-            if(data) openLightbox({ img: data.dataset.img, title: data.dataset.title, category: data.dataset.cat, desc: data.dataset.desc });
+            if (data) openLightbox({ img: data.dataset.img, title: data.dataset.title, category: data.dataset.cat, desc: data.dataset.desc });
         }
         function openLightbox(item) {
             document.getElementById('lb-img').src = item.img; document.getElementById('lb-category').innerText = item.category;
@@ -388,7 +581,7 @@
             gsap.to('#lightbox', { opacity: 0, duration: 0.3, onComplete: () => document.getElementById('lightbox').classList.add('hidden') });
         }
         function toggleChat() { document.getElementById('whatsapp-chat-box').classList.toggle('hidden'); }
-        function enviarWhatsApp() { const i = document.getElementById('mensaje-usuario'); if(i && i.value.trim()) window.open(`https://wa.me/59899395724?text=${encodeURIComponent(i.value)}`, '_blank'); }
+        function enviarWhatsApp() { const i = document.getElementById('mensaje-usuario'); if (i && i.value.trim()) window.open(`https://wa.me/59899395724?text=${encodeURIComponent(i.value)}`, '_blank'); }
 
         // Inicialización
         (async function init() {
@@ -397,13 +590,13 @@
                 const response = await fetch(SHEET_URL + '&t=' + Date.now());
                 const data = await response.text();
                 galleryItems = csvToJSON(data);
-                
+
                 // Filtros
                 filterBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
                         filterBtns.forEach(b => { b.classList.remove('bg-text-dark', 'text-white'); b.classList.add('bg-white', 'text-gray-500', 'border', 'border-gray-200'); });
                         btn.classList.remove('bg-white', 'text-gray-500', 'border', 'border-gray-200'); btn.classList.add('bg-text-dark', 'text-white');
-                        
+
                         // Mostramos loader brevemente al filtrar
                         loader.style.display = 'flex';
                         loader.style.opacity = '1';
@@ -412,14 +605,15 @@
                 });
 
                 // Render inicial
-                await renderGallery('all'); 
-                
+                await renderGallery('all');
+
                 // Fondo
                 const container = document.getElementById('background-canvas');
-                if(container) { for (let i = 0; i < 15; i++) { const div = document.createElement('div'); div.classList.add('plastic-particle'); const size = gsap.utils.random(30, 100); gsap.set(div, { width: size, height: size, backgroundColor: ['#79C7C7', '#A3E6BA', '#e2e8f0'][Math.floor(Math.random()*3)], opacity: gsap.utils.random(0.05, 0.15), left: gsap.utils.random(0, 100) + '%', top: gsap.utils.random(0, 100) + '%' }); container.appendChild(div); gsap.to(div, { y: gsap.utils.random(-100, 100), rotation: gsap.utils.random(0, 360), duration: gsap.utils.random(25, 45), repeat: -1, yoyo: true, ease: "sine.inOut" }); } }
+                if (container) { for (let i = 0; i < 15; i++) { const div = document.createElement('div'); div.classList.add('plastic-particle'); const size = gsap.utils.random(30, 100); gsap.set(div, { width: size, height: size, backgroundColor: ['#79C7C7', '#A3E6BA', '#e2e8f0'][Math.floor(Math.random() * 3)], opacity: gsap.utils.random(0.05, 0.15), left: gsap.utils.random(0, 100) + '%', top: gsap.utils.random(0, 100) + '%' }); container.appendChild(div); gsap.to(div, { y: gsap.utils.random(-100, 100), rotation: gsap.utils.random(0, 360), duration: gsap.utils.random(25, 45), repeat: -1, yoyo: true, ease: "sine.inOut" }); } }
 
             } catch (error) { console.error(error); }
         })();
     </script>
 </body>
+
 </html>
