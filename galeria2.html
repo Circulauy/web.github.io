@@ -850,6 +850,29 @@
             }
         });
 
+        // Touch event for mobile devices
+        window.addEventListener('touchend', (e) => {
+            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
+
+            // Prevenir clic si ya estamos en el footer (scroll final)
+            if (state.currentScroll > slides.length - 0.9) return;
+
+            const touch = e.changedTouches[0];
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if (intersects.length > 0) {
+                // Solo abrir si estamos cerca del slide actual
+                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
+
+                const id = intersects[0].object.userData.id;
+                if (id === state.currentSlide) openModal(id);
+                else goToSlide(id);
+            }
+        });
+
         const modal = document.getElementById('modal');
 
         function openModal(id) {
