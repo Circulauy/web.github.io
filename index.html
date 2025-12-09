@@ -639,7 +639,7 @@
                 onclick="toggleMobileMenu(); route()">Talleres</a>
             <a href="#nosotros"
                 class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50"
-                onclick="toggleMobileMenu(); route()">Sobre Nosotros</a>
+                onclick="toggleMobileMenu(); route()"> Nosotros</a>
             <a href="galeria2.html"
                 class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
             <a href="#tienda"
@@ -2233,11 +2233,28 @@
                 window.location.hash = `#${currentRoute}`;
             }
 
+            // Mapa de títulos amigables
+            const pageTitles = {
+                'home': 'Circula - Economía Circular',
+                'talleres': 'Circula - Talleres',
+                'tienda': 'Circula - Tienda',
+                'contacto': 'Circula - Contacto',
+                'nosotros': 'Circula - Nosotros',
+                'detalle': currentProductData ? `Circula - ${currentProductData.name}` : 'Circula - Detalle de Producto',
+                'carrito': 'Circula - Carrito',
+                'datos': 'Circula - Finalizar Compra'
+            };
+
+            const pageTitle = pageTitles[currentRoute] || `Circula - ${currentRoute.charAt(0).toUpperCase() + currentRoute.slice(1)}`;
+
+            // Actualizar título de la pestaña del navegador
+            document.title = pageTitle;
+
             // Send enhanced page_view for GA4 tracking with metadata
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: 'page_view',
-                page_title: `Circula - ${currentRoute.charAt(0).toUpperCase() + currentRoute.slice(1)}`,
+                page_title: pageTitle,
                 page_location: window.location.href,
                 page_path: `/${currentRoute}`,
                 content_group: currentRoute === '#home' ? 'home' :
