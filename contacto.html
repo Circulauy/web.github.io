@@ -70,6 +70,7 @@
                         <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
                         <input type="hidden" name="_captcha" value="false"> 
                         <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_autoresponse" value="¡Hola! Gracias por contactar a Circula. Hemos recibido tu consulta y nuestro equipo te responderá a la brevedad. Saludos, El equipo de Circula.">
                         
                         <input type="hidden" name="_next" id="redirect-url" value="">
 
@@ -87,7 +88,7 @@
 
                         <div>
                             <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés Principal *</label>
-                            <select id="interest" name="interest" required
+                            <select id="interest" name="interest" required onchange="checkVacancy(this)"
                                 class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none"
                                 style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right .75rem center">
                                 <option value="" disabled selected>Selecciona una opción</option>
@@ -95,10 +96,24 @@
                                 <option value="Taller para empresas">Taller para empresas</option>
                                 <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
                                 <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje</option>
-                                <option value="Solicitud de Trabajo">Solicitud de Trabajo</option>
-                                <option value="Proyectos a medida">Proyectos a medida</option>
+                                <option value="Solicitud de trabajo">Solicitud de trabajo</option>
+                                <option value="Proyecto personalizado">Proyecto personalizado</option>
                                 <option value="Otros">Otros</option>
                             </select>
+
+                            <div id="vacancy-alert" class="hidden mt-3 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg transition-all duration-300">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-info-circle text-yellow-500 mt-0.5"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-bold text-yellow-800">Aviso sobre vacantes</h3>
+                                        <div class="mt-1 text-sm text-yellow-700">
+                                            <p>Actualmente <strong>no contamos con vacantes disponibles</strong> en el equipo. De todas formas, puedes enviarnos tu CV y lo guardaremos en nuestra base de datos para futuras oportunidades.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
@@ -121,7 +136,7 @@
                         <div>
                             <label for="message" class="block text-sm font-medium text-text-dark mb-2">Mensaje *</label>
                             <textarea name="message" id="message" rows="5" required
-                                placeholder="Escribe aquí tu mensaje detallando tu consulta..."
+                                placeholder="Escribe aquí tu mensaje..."
                                 class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition resize-y"></textarea>
                         </div>
 
@@ -149,17 +164,24 @@
         window.dataLayer = window.dataLayer || []; 
         window.dataLayer.push({ event: 'page_view', page_title: 'Contacto - Circula', page_location: window.location.href });
 
+        // --- FUNCIÓN NUEVA: DETECTAR OPCIÓN DE VACANTE ---
+        function checkVacancy(selectElement) {
+            const alertBox = document.getElementById('vacancy-alert');
+            if (selectElement.value === 'Solicitud de trabajo') {
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // 1. Configurar URL de redirección
             const redirectInput = document.getElementById('redirect-url');
             if(redirectInput) {
                 const currentUrl = window.location.href.split('?')[0];
                 redirectInput.value = currentUrl + '?status=success';
             }
 
-            // 2. Detectar Éxito y mostrar Toast
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('status') === 'success') {
                 mostrarExito();
@@ -168,7 +190,7 @@
             }
         });
 
-        // --- UI & UX FUNCIONES ---
+        // --- FUNCIONES UI ---
         function mostrarExito() {
             const toast = document.getElementById('success-toast');
             if(toast) {
@@ -186,19 +208,14 @@
             }
         }
 
-        // --- LÓGICA DE ENVÍO DINÁMICO (ASUNTO + CARGA) ---
         function activarCarga() {
-            // 1. ASUNTO DINÁMICO DEL EMAIL
             const name = document.getElementById('name').value;
             const interest = document.getElementById('interest').value;
             const subjectField = document.getElementById('email-subject');
-            
             if (subjectField && interest && name) {
-                // Formato: "Consulta Web: Taller para escuelas (Juan Perez)"
                 subjectField.value = `Consulta Web: ${interest} (${name})`;
             }
 
-            // 2. ESTADO VISUAL DE CARGA
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
