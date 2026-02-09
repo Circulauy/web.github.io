@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Circula</title>
+    <meta name="description"
+        content="Contacta con Circula para consultas sobre talleres, productos o servicios de reciclaje.">
+    <link rel="canonical" href="https://www.circula.uy/contacto.html">
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+    <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd', 'rp-border-default': '#b5b5b5' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] } } } }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none
+        }
+
+        html::-webkit-scrollbar {
+            display: none
+        }
+
+        .section-padding {
+            padding-top: 6rem;
+            padding-bottom: 6rem
+        }
+
+        .title-style {
+            font-family: 'Patua One', cursive;
+            font-weight: 700;
+            letter-spacing: -0.01em
+        }
+
+        .nav-link {
+            position: relative
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            transition: width .3s ease
+        }
+
+        .nav-link:hover::after {
+            width: 100%
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-bg-light text-text-dark">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
+        <!-- Header content loaded via js/load-components.js -->
+    </header>
+
+    <main>
+        <section class="bg-rp-teal section-padding pt-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border-t-4 border-rp-mint">
+                    <div class="text-center mb-10">
+                        <h1 class="text-4xl font-bold text-text-dark mb-3 title-style">
+                            CONTACTA CON <span class="text-rp-teal">CIRCULA</span>
+                        </h1>
+                        <p class="text-lg text-text-dark/80">
+                            Déjanos tu consulta y te responderemos a la brevedad.
+                        </p>
+                    </div>
+
+                    <form action="https://formspree.io/f/xnngwbyw" method="POST" class="space-y-6"
+                        onsubmit="trackContactForm()">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-text-dark mb-2">Correo Electrónico
+                                *</label>
+                            <input type="email" name="email" id="email" required placeholder="tu.correo@ejemplo.com"
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                        </div>
+
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-text-dark mb-2">Nombre Completo
+                                *</label>
+                            <input type="text" name="name" id="name" required placeholder="Tu Nombre"
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                        </div>
+
+                        <div>
+                            <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés
+                                Principal *</label>
+                            <select id="interest" name="interest" required
+                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none"
+                                style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right .75rem center">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="Taller para escuelas">Taller para escuelas</option>
+                                <option value="Taller para empresas">Taller para empresas</option>
+                                <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
+                                <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje
+                                </option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-text-dark mb-2">Mensaje *</label>
+                            <textarea name="message" id="message" rows="5" required
+                                placeholder="Escribe aquí tu mensaje detallando tu consulta..."
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition resize-y"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style text-lg">
+                            ENVIAR CONSULTA
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-text-dark text-white py-12 border-t border-gray-800">
+        <!-- Footer content loaded via js/load-components.js -->
+    </footer>
+
+    <script src="js/load-components.js"></script>
+    <script>
+        // Removed redundant updateCartCount and Year logic as they are now in load-components.js
+        function trackContactForm() { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'contact_form_submit', form_type: 'contact', interest: document.getElementById('interest').value }) }
+        window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'page_view', page_title: 'Contacto - Circula', page_location: window.location.href });
+    </script>
+</body>
+
+</html>

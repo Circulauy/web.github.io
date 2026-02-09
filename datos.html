@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Circula</title>
+    <meta name="description" content="Finaliza tu compra de productos reciclados de Circula.">
+    <link rel="canonical" href="https://www.circula.uy/datos.html">
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+    <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd', 'rp-border-default': '#b5b5b5', 'mp-blue': '#009ee3' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] } } } }</script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none
+        }
+
+        html::-webkit-scrollbar {
+            display: none
+        }
+
+        .section-padding {
+            padding-top: 6rem;
+            padding-bottom: 6rem
+        }
+
+        .title-style {
+            font-family: 'Patua One', cursive;
+            font-weight: 700;
+            letter-spacing: -0.01em
+        }
+
+        .nav-link {
+            position: relative
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            transition: width .3s ease
+        }
+
+        .nav-link:hover::after {
+            width: 100%
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-bg-light text-text-dark">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="bg-bg-light section-padding pt-32 pb-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div
+                    class="flex justify-between items-center text-center mb-10 border-b border-rp-gray-soft pb-6 overflow-x-auto">
+                    <div class="flex flex-col items-center min-w-[80px] opacity-60">
+                        <span
+                            class="w-10 h-10 rounded-full bg-rp-teal/50 text-white flex items-center justify-center font-bold text-lg shadow-md mb-2">✓</span>
+                        <span class="font-bold text-gray-500 text-xs md:text-sm">CARRITO</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-rp-teal mx-2 rounded"></div>
+                    <div class="flex flex-col items-center min-w-[80px]">
+                        <span
+                            class="w-10 h-10 rounded-full bg-rp-teal text-white flex items-center justify-center font-bold text-lg shadow-md mb-2">2</span>
+                        <span class="font-bold text-text-dark text-xs md:text-sm">DATOS</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2 rounded"></div>
+                    <div class="flex flex-col items-center min-w-[80px] opacity-60">
+                        <span
+                            class="w-10 h-10 rounded-full border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-lg mb-2">3</span>
+                        <span class="font-bold text-gray-500 text-xs md:text-sm">ESTADO</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div class="w-full lg:w-3/5">
+                        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-rp-gray-soft">
+                            <h2 class="text-2xl font-bold mb-6 text-text-dark title-style border-b pb-4">Información de
+                                Envío</h2>
+                            <form id="checkout-form" class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label for="buyer-name"
+                                            class="block text-sm font-medium text-text-dark mb-1">Nombre Completo
+                                            *</label>
+                                        <input type="text" id="buyer-name" required
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
+                                            placeholder="Tu Nombre">
+                                    </div>
+                                    <div>
+                                        <label for="buyer-email"
+                                            class="block text-sm font-medium text-text-dark mb-1">Correo Electrónico
+                                            *</label>
+                                        <input type="email" id="buyer-email" required
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
+                                            placeholder="tu@email.com">
+                                    </div>
+                                </div>
+
+                                <div class="pt-4 border-t border-rp-gray-soft/50">
+                                    <label for="delivery-option"
+                                        class="block text-sm font-bold text-text-dark mb-2">Método de Entrega *</label>
+                                    <div class="relative">
+                                        <select id="delivery-option" required
+                                            class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none cursor-pointer"
+                                            onchange="toggleDeliveryFields()">
+                                            <option value="" disabled selected>Selecciona una opción...</option>
+                                            <option value="pickup">Pick Up (Retiro en Local Pocitos - Gratis)</option>
+                                            <option value="montevideo">Envío dentro de Montevideo (+$270)</option>
+                                            <option value="interior">Envío al Interior (+$300)</option>
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="delivery-details-container"
+                                    class="hidden space-y-5 bg-rp-blue-light/30 p-5 rounded-lg border border-rp-teal/20 animate-fade-in">
+
+                                    <div id="location-picker-container">
+                                        <label id="location-label"
+                                            class="block text-sm font-medium text-text-dark mb-1">Ubicación *</label>
+
+                                        <div id="montevideo-select-wrapper" class="hidden">
+                                            <select id="buyer-district-select"
+                                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                                                <option value="" disabled selected>-- Selecciona un Barrio --</option>
+                                                <option value="Aguada">Aguada</option>
+                                                <option value="Aires Puros">Aires Puros</option>
+                                                <option value="Arroyo Seco">Arroyo Seco</option>
+                                                <option value="Atahualpa">Atahualpa</option>
+                                                <option value="Bañados de Carrasco">Bañados de Carrasco</option>
+                                                <option value="Barra de Carrasco">Barra de Carrasco</option>
+                                                <option value="Barrio Jardín">Barrio Jardín</option>
+                                                <option value="Barrio Sur">Barrio Sur</option>
+                                                <option value="Belvedere">Belvedere</option>
+                                                <option value="Buceo">Buceo</option>
+                                                <option value="Brazo Oriental">Brazo Oriental</option>
+                                                <option value="Carrasco">Carrasco</option>
+                                                <option value="Carrasco Norte">Carrasco Norte</option>
+                                                <option value="Casabó">Casabó</option>
+                                                <option value="Casavalle">Casavalle</option>
+                                                <option value="Cerrito de la Victoria">Cerrito de la Victoria</option>
+                                                <option value="Cerro">Cerro</option>
+                                                <option value="Ciudad Vieja">Ciudad Vieja</option>
+                                                <option value="Colón">Colón</option>
+                                                <option value="Conciliación">Conciliación</option>
+                                                <option value="Curva de Maroñas">Curva de Maroñas</option>
+                                                <option value="Flor de Maroñas">Flor de Maroñas</option>
+                                                <option value="Ituzaingó">Ituzaingó</option>
+                                                <option value="Jacinto Vera">Jacinto Vera</option>
+                                                <option value="Jardines del Hipódromo">Jardines del Hipódromo</option>
+                                                <option value="La Blanqueada">La Blanqueada</option>
+                                                <option value="La Comercial">La Comercial</option>
+                                                <option value="La Figurita">La Figurita</option>
+                                                <option value="La Paloma">La Paloma</option>
+                                                <option value="La Teja">La Teja</option>
+                                                <option value="Larrañaga">Larrañaga</option>
+                                                <option value="Las Acacias">Las Acacias</option>
+                                                <option value="Las Canteras">Las Canteras</option>
+                                                <option value="Lezica">Lezica</option>
+                                                <option value="Malvín">Malvín</option>
+                                                <option value="Malvín Norte">Malvín Norte</option>
+                                                <option value="Manga">Manga</option>
+                                                <option value="Maroñas">Maroñas</option>
+                                                <option value="Melilla">Melilla</option>
+                                                <option value="Mercado Modelo">Mercado Modelo</option>
+                                                <option value="Nuevo París">Nuevo París</option>
+                                                <option value="Palermo">Palermo</option>
+                                                <option value="Paso de la Arena">Paso de la Arena</option>
+                                                <option value="Paso de las Duranas">Paso de las Duranas</option>
+                                                <option value="Peñarol">Peñarol</option>
+                                                <option value="Piedras Blancas">Piedras Blancas</option>
+                                                <option value="Pocitos">Pocitos</option>
+                                                <option value="Punta Carretas">Punta Carretas</option>
+                                                <option value="Punta de Rieles">Punta de Rieles</option>
+                                                <option value="Punta Gorda">Punta Gorda</option>
+                                                <option value="Prado">Prado</option>
+                                                <option value="Reducto">Reducto</option>
+                                                <option value="Sayago">Sayago</option>
+                                                <option value="Unión">Unión</option>
+                                                <option value="Villa Española">Villa Española</option>
+                                                <option value="Villa García">Villa García</option>
+                                                <option value="Flor de Maroñas">Flor de Maroñas</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="interior-select-wrapper" class="hidden space-y-3">
+                                            <select id="buyer-department-select"
+                                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                                                <option value="" disabled selected>-- Selecciona un Departamento --
+                                                </option>
+                                                <option value="Artigas">Artigas</option>
+                                                <option value="Canelones">Canelones</option>
+                                                <option value="Cerro Largo">Cerro Largo</option>
+                                                <option value="Colonia">Colonia</option>
+                                                <option value="Durazno">Durazno</option>
+                                                <option value="Flores">Flores</option>
+                                                <option value="Florida">Florida</option>
+                                                <option value="Lavalleja">Lavalleja</option>
+                                                <option value="Maldonado">Maldonado</option>
+                                                <option value="Paysandú">Paysandú</option>
+                                                <option value="Río Negro">Río Negro</option>
+                                                <option value="Rivera">Rivera</option>
+                                                <option value="Rocha">Rocha</option>
+                                                <option value="Salto">Salto</option>
+                                                <option value="San José">San José</option>
+                                                <option value="Soriano">Soriano</option>
+                                                <option value="Tacuarembó">Tacuarembó</option>
+                                                <option value="Treinta y Tres">Treinta y Tres</option>
+                                            </select>
+
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-dark mb-1">Ciudad /
+                                                    Localidad *</label>
+                                                <input type="text" id="buyer-localidad-text"
+                                                    class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition"
+                                                    placeholder="Ej: Ciudad de la Costa, Piriápolis...">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="buyer-address-text"
+                                            class="block text-sm font-medium text-text-dark mb-1">Dirección Completa
+                                            (Calle y Número) *</label>
+                                        <input type="text" id="buyer-address-text"
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition"
+                                            placeholder="Ej: Av. 18 de Julio 1234, Apto 101">
+                                    </div>
+
+                                    <div>
+                                        <label for="buyer-notes"
+                                            class="block text-sm font-medium text-text-dark mb-1">Notas para el envío
+                                            (Opcional)</label>
+                                        <textarea id="buyer-notes" rows="2"
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition"
+                                            placeholder="Ej: Tocar timbre gris, dejar en portería..."></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-2/5 sticky top-24">
+                        <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl border-t-4 border-rp-teal">
+                            <h2 class="text-2xl font-bold mb-6 text-text-dark title-style border-b pb-4">RESUMEN DEL
+                                PEDIDO</h2>
+
+                            <div id="checkout-items-summary"
+                                class="space-y-3 mb-6 max-h-48 overflow-y-auto text-sm pr-2">
+                            </div>
+
+                            <div class="space-y-3 mb-6 text-text-dark/80 border-t border-rp-gray-soft pt-4">
+                                <div class="flex justify-between items-center">
+                                    <span>Subtotal</span>
+                                    <span id="checkout-subtotal" class="font-bold">$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Envío</span>
+                                    <span id="checkout-shipping" class="text-rp-teal text-sm font-semibold">A
+                                        calcular</span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
+                                <span class="text-text-dark">TOTAL</span>
+                                <span id="checkout-total" class="text-mp-blue">$0.00</span>
+                            </div>
+
+                            <button onclick="submitCheckoutForm()"
+                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2 mb-4">
+                                FINALIZAR COMPRA
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </button>
+
+                            <button onclick="window.location.href='carrito.html'"
+                                class="w-full text-center text-sm text-gray-500 hover:text-rp-teal transition">
+                                Editar Carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/load-components.js"></script>
+    <script>
+        // document.getElementById('current-year').textContent = new Date().getFullYear(); // Eliminado: se maneja en load-components.js
+        // function toggleMobileMenu() ... // Eliminado: se maneja en load-components.js
+
+        // --- CONSTANTS ---
+        const NETLIFY_FUNCTION_ENDPOINT = '/.netlify/functions/create-preference';
+        const SHIPPING_RATES = {
+            'montevideo': 270,
+            'interior': 300,
+            'pickup': 0
+        };
+
+        // --- HELPERS ---
+        function getCheckoutCart() {
+            // Simplificado para igualar exactamente a carrito.html
+            const raw = localStorage.getItem('cartItems');
+            return raw ? JSON.parse(raw) : [];
+        }
+
+
+
+        // --- CORE LOGIC ---
+
+        /**
+         * Muestra/Oculta campos de dirección Y actualiza precios
+         */
+        function toggleDeliveryFields() {
+            const deliverySelect = document.getElementById('delivery-option');
+            const selectedOption = deliverySelect.value;
+            const deliveryDetailsContainer = document.getElementById('delivery-details-container');
+            const buyerAddressText = document.getElementById('buyer-address-text');
+            const buyerDepartmentSelect = document.getElementById('buyer-department-select');
+            const buyerDistrictSelect = document.getElementById('buyer-district-select');
+            const buyerLocalidadText = document.getElementById('buyer-localidad-text');
+            const locationLabel = document.getElementById('location-label');
+
+            const montevideoWrapper = document.getElementById('montevideo-select-wrapper');
+            const interiorWrapper = document.getElementById('interior-select-wrapper');
+
+            // Reset básico: Limpiar visibilidad Y atributos required de TODOS los campos condicionales
+            deliveryDetailsContainer.classList.add('hidden');
+            if (montevideoWrapper) montevideoWrapper.classList.add('hidden');
+            if (interiorWrapper) interiorWrapper.classList.add('hidden');
+
+            buyerAddressText.removeAttribute('required');
+            if (buyerDistrictSelect) buyerDistrictSelect.removeAttribute('required');
+            if (buyerDepartmentSelect) buyerDepartmentSelect.removeAttribute('required');
+            if (buyerLocalidadText) buyerLocalidadText.removeAttribute('required');
+
+            if (selectedOption === 'montevideo' || selectedOption === 'interior') {
+                deliveryDetailsContainer.classList.remove('hidden');
+                buyerAddressText.setAttribute('required', 'required');
+
+                if (selectedOption === 'montevideo') {
+                    locationLabel.textContent = 'Barrio de Montevideo *';
+                    if (montevideoWrapper) montevideoWrapper.classList.remove('hidden');
+                    // Solo activamos lo necesario
+                    if (buyerDistrictSelect) buyerDistrictSelect.setAttribute('required', 'required');
+
+                } else if (selectedOption === 'interior') {
+                    locationLabel.textContent = 'Departamento y Localidad *';
+                    if (interiorWrapper) interiorWrapper.classList.remove('hidden');
+                    // Solo activamos lo necesario
+                    if (buyerDepartmentSelect) buyerDepartmentSelect.setAttribute('required', 'required');
+                    if (buyerLocalidadText) buyerLocalidadText.setAttribute('required', 'required');
+                }
+            }
+            updateCheckoutDisplay();
+        }
+
+        /**
+         * Rellena el resumen lateral
+         */
+        function updateCheckoutDisplay() {
+            const summaryContainer = document.getElementById('checkout-items-summary');
+            const subtotalEl = document.getElementById('checkout-subtotal');
+            const shippingEl = document.getElementById('checkout-shipping');
+            const totalEl = document.getElementById('checkout-total');
+            const deliverySelect = document.getElementById('delivery-option');
+
+            if (!summaryContainer) {
+                console.error("DEBUG: Contenedor no encontrado");
+                return;
+            }
+
+            const cartItems = getCheckoutCart();
+            let subtotal = 0; // Inicializamos subtotal
+
+            // 1. Renderizar Items y Calcular Suma al vuelo
+            summaryContainer.innerHTML = '';
+
+            cartItems.forEach(item => {
+                // Forzar conversión numérica para asegurar matemáticas correctas
+                const price = parseFloat(item.price) || 0;
+                const quantity = parseInt(item.quantity) || 0;
+
+                const itemTotal = price * quantity;
+                subtotal += itemTotal; // Sumamos al acumulador
+
+                const itemHTML = `
+            <div class="flex justify-between items-center text-xs text-text-dark">
+                <div class="flex items-center gap-2">
+                    <div class="bg-gray-100 p-1 rounded border border-gray-200">
+                        <img src="${item.imageUrl}" class="w-8 h-8 object-cover" alt="img" onerror="this.src='images/logo.png'">
+                    </div>
+                    <span>${quantity} x ${item.name}</span>
+                </div>
+                <span class="font-semibold">$${itemTotal.toFixed(2)}</span>
+            </div>`;
+                summaryContainer.insertAdjacentHTML('beforeend', itemHTML);
+            });
+
+            // 2. Calcular Envío
+            let shippingCost = 0;
+            let shippingText = 'A calcular';
+            const selectedOption = deliverySelect ? deliverySelect.value : '';
+
+            if (selectedOption && SHIPPING_RATES[selectedOption] !== undefined) {
+                shippingCost = SHIPPING_RATES[selectedOption];
+                shippingText = shippingCost === 0 ? 'Gratis' : `$${shippingCost.toFixed(2)}`;
+                shippingEl.classList.remove('text-rp-teal', 'text-sm');
+                shippingEl.classList.add('font-bold');
+            } else {
+                shippingEl.classList.add('text-rp-teal', 'text-sm');
+                shippingEl.classList.remove('font-bold');
+            }
+
+            // 3. Calcular Total
+            const total = subtotal + shippingCost;
+
+            // 4. Actualizar DOM
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            shippingEl.textContent = shippingText;
+            if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+        }
+
+        /**
+         * Wrapper para enviar el formulario con feedback visual
+         */
+        function submitCheckoutForm() {
+            const form = document.getElementById('checkout-form');
+            if (form.checkValidity()) {
+                processCheckoutPage();
+            } else {
+                // Forzar muestreo de errores nativos
+                form.reportValidity();
+                // Alerta explicita por si el usuario no ve el bubble
+                alert("Por favor, completa todos los campos obligatorios antes de continuar.");
+            }
+        }
+
+        /**
+         * Procesa datos y llama a backend
+         */
+        function processCheckoutPage() {
+            // Recopilación de datos
+            const nameEl = document.getElementById('buyer-name');
+            const emailEl = document.getElementById('buyer-email');
+            const deliverySelect = document.getElementById('delivery-option');
+            const addressEl = document.getElementById('buyer-address-text');
+
+            if (!nameEl || !emailEl || !deliverySelect) {
+                alert("Error interno: Faltan campos del formulario.");
+                return;
+            }
+
+            const name = nameEl.value;
+            const email = emailEl.value;
+            const deliveryOption = deliverySelect.value;
+            const address = addressEl ? addressEl.value : 'Retiro en local';
+
+            let district = '';
+            try {
+                if (deliveryOption === 'montevideo') {
+                    const distSelect = document.getElementById('buyer-district-select');
+                    district = `Montevideo - ${distSelect.value}`;
+                } else if (deliveryOption === 'interior') {
+                    const deptSelect = document.getElementById('buyer-department-select');
+                    const locText = document.getElementById('buyer-localidad-text');
+                    district = `${deptSelect.value} - ${locText.value}`;
+                } else {
+                    district = 'Pick Up / Retiro en Tienda';
+                }
+            } catch (e) {
+                console.error("Error al obtener ubicación:", e);
+                // Fallback para evitar bloqueo
+                district = "Ubicación no especificada";
+            }
+
+            const cartItems = getCheckoutCart();
+            if (cartItems.length === 0) {
+                alert("Tu carrito está vacío. Agrega productos antes de finalizar la compra.");
+                window.location.href = 'carrito.html';
+                return;
+            }
+
+            checkoutCartMP(name, email, deliveryOption, district, address, cartItems);
+        }
+
+        /**
+         * Backend Call
+         */
+        async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, address, cartItems) {
+            const btn = document.querySelector('button[onclick*="submitCheckoutForm"]');
+            const originalText = btn ? btn.innerHTML : "FINALIZAR COMPRA";
+
+            // Detectar entorno local
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Procesando...`;
+                }
+
+                const itemsForMP = cartItems.map(item => ({
+                    title: item.name,
+                    unit_price: parseFloat(item.price),
+                    quantity: parseInt(item.quantity)
+                }));
+
+                // GA4 Event
+                const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+                if (window.dataLayer) {
+                    window.dataLayer.push({
+                        event: 'begin_checkout',
+                        ecommerce: {
+                            currency: 'UYU',
+                            value: cartTotal,
+                            items: cartItems.map(item => ({
+                                item_name: item.name,
+                                item_id: item.name.toLowerCase().replace(/\s+/g, '_'),
+                                price: item.price,
+                                quantity: item.quantity
+                            }))
+                        }
+                    });
+                }
+
+                let data;
+                if (isLocal) {
+                    // MOCK RESPONSE FOR LOCAL TESTING
+                    console.warn("Modo Local Detectado: Simulando llamada al backend...");
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Fake delay
+                    data = { preferenceId: "MOCK_PREFERENCE_ID_FOR_TESTING" };
+                    alert("¡Estás en entorno local!\n\nEl sistema ha simulado una respuesta exitosa del servidor.\nEn producción, esto te redirigiría a Mercado Pago.");
+                } else {
+                    // REAL BACKEND CALL
+                    const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            items: itemsForMP,
+                            buyerName: buyerName,
+                            buyerEmail: buyerEmail,
+                            deliveryOption: deliveryOption,
+                            district: district,
+                            address: address
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `Error servidor: ${response.status}`);
+                    }
+                    data = await response.json();
+                }
+
+                if (data.preferenceId) {
+                    if (isLocal) {
+                        // En local no redirigimos a MP real para no romper la url
+                        console.log("Mock Redirect to: ", `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${data.preferenceId}`);
+                        // Restauramos botón
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = "FINALIZAR COMPRA (Simulación Exitosa)";
+                        }
+                    } else {
+                        const redirectUrl = `https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=${data.preferenceId}`;
+                        window.location.href = redirectUrl;
+                    }
+                } else {
+                    throw new Error("Respuesta inválida del servidor (Falta Preference ID)");
+                }
+
+            } catch (error) {
+                console.error("Fallo al obtener Preferencia de MP:", error);
+
+                let msg = `No se pudo iniciar el pago. \nDetalle: ${error.message}`;
+                if (error.message.includes("Failed to fetch")) {
+                    msg += "\n\nNOTA: Si estás probando localmente, esto es normal porque la función de backend no es accesible sin conexión a internet o servidor de desarrollo activo.";
+                }
+                alert(msg);
+
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
+        // Initialize
+        updateCartCount();
+        updateCheckoutDisplay(); // Fill summary on load
+
+        // Initial GA4 page_view
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'page_view', page_title: 'Checkout - Circula', page_location: window.location.href });
+    </script>
+</body>
+
+</html>

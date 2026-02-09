@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="lenis lenis-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galería Circula - Explora nuestros proyectos">
-    <title>Galería - Circula</title>
-    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+    <title>Circula - Proyectos</title>
+    <meta name="robots" content="noindex, nofollow">
 
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -17,1068 +16,610 @@
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patua+One&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'rp-teal': '#79C7C7',
-                        'rp-mint': '#D4F1E8',
-                        'rp-blue-light': '#EEF7FA',
-                        'text-dark': '#333333',
-                        'bg-light': '#FAFAFA',
-                        'rp-gray-soft': '#E0E0E0',
-                        'mp-blue': '#009EE3',
+                        'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-dark-blue': '#2c5e5e',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Patua One', 'cursive'],
-                        brand: ['Montserrat', 'sans-serif'],
-                    },
-                },
-            },
+                        sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
         }
     </script>
 
     <style>
-        .title-style {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.05em;
-        }
+        /* --- LENIS SCROLL (Solo PC) --- */
+        @media (min-width: 1024px) {
 
-        /* Hide scrollbar */
-        html {
-            scrollbar-width: none;
-        }
+            html.lenis,
+            html.lenis body {
+                height: auto;
+            }
 
-        html::-webkit-scrollbar {
-            display: none;
+            .lenis.lenis-smooth {
+                scroll-behavior: auto !important;
+            }
+
+            .lenis.lenis-smooth [data-lenis-prevent] {
+                overscroll-behavior: contain;
+            }
+
+            .lenis.lenis-stopped {
+                overflow: hidden;
+            }
         }
 
         body {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            background-color: #050505;
+            /* Fondo oscuro fundamental para evitar flashes blancos */
             margin: 0;
             padding: 0;
+            perspective: 2000px;
             overflow-x: hidden;
-            overflow-y: hidden;
-            /* Cambiado a hidden para que controle ThreeJS el scroll */
-            background: #050505;
         }
 
-        body::-webkit-scrollbar {
-            display: none;
+        /* En PC el fondo es claro */
+        @media (min-width: 1024px) {
+            body {
+                background-color: #f8fafc;
+            }
         }
 
-        /* Gallery 3D Styles */
-        canvas {
+        .title-style {
+            font-family: 'Patua One', cursive;
+            letter-spacing: -0.02em;
+        }
+
+        #background-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            display: block;
+            height: 100%;
             z-index: -1;
-            outline: none;
-        }
-
-        .info-container {
-            position: fixed;
-            bottom: 4rem;
-            left: 2rem;
-            text-align: left;
-            z-index: 10;
-            pointer-events: none;
-            max-width: 90%;
-        }
-
-        .info-title {
-            color: white;
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-            transition: opacity 0.3s ease;
-            text-align: left;
-        }
-
-        .info-subtitle {
-            color: #79C7C7;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-            transition: opacity 0.3s ease;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* Hide cursor hint when modal is open */
-        body.modal-open .cursor-hint {
-            display: none;
-        }
-
-        .cursor-hint {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
+            background: radial-gradient(circle at top left, #ffffff, #f1f5f9);
             pointer-events: none;
         }
 
-        .modal-close {
+        .plastic-particle {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: white;
-            border: none;
             border-radius: 50%;
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            transition: transform 0.2s, background-color 0.2s;
-            color: #333;
+            background: linear-gradient(135deg, rgba(121, 199, 199, 0.3), rgba(163, 230, 186, 0.1));
+            backdrop-filter: blur(1px);
         }
 
-        .modal-close:hover {
-            transform: scale(1.1);
-            background-color: #f3f4f6;
-        }
+        /* ============================================================ */
+        /* === VISTA MÓVIL: SISTEMA "RESN STACK" REFORZADO === */
+        /* ============================================================ */
+        @media (max-width: 1023px) {
 
-        /* Nav Link Animation */
-        .nav-link {
-            position: relative;
-        }
+            html,
+            body {
+                height: auto;
+                overflow-x: hidden;
+            }
 
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: #79C7C7;
-            /* rp-teal */
-            transition: width 0.3s ease;
-        }
+            #gallery-grid {
+                display: block;
+                padding: 0;
+                /* El contenedor padre NO debe tener overflow hidden para que sticky funcione */
+                overflow: visible;
+            }
 
-        .nav-link:hover::after {
-            width: 100%;
-        }
+            /* LA TARJETA (Sticky Container) */
+            .masonry-item {
+                position: sticky;
+                position: -webkit-sticky;
+                top: 0;
+                height: 100vh;
+                /* Altura completa estricta */
+                width: 100%;
+                margin: 0;
+                padding: 0;
 
-        .modal-content {
-            background: white;
-            border-radius: 1rem;
-            max-width: 900px;
-            width: 90%;
-            min-height: 500px;
-            /* Changed from fixed height */
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            /* More space for image */
-            gap: 0;
-            padding: 0;
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            max-height: 85vh;
-            overflow: hidden;
-            /* Hide overflow here for rounded corners image */
-        }
+                /* Truco: forzar aceleración de hardware aquí */
+                transform: translate3d(0, 0, 0);
+                will-change: transform;
+            }
 
-        .modal-image-col {
-            height: 100%;
-            width: 100%;
-            background-color: #f3f4f6;
-            /* Placeholder color before load */
-        }
+            /* EL VISUAL (Lo que vemos) */
+            .anim-wrapper {
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                overflow: hidden;
 
-        .modal-image-col img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+                /* Sombra PROYECTADA hacia arriba (simula que la siguiente carta tapa a esta) */
+                box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.8);
 
-        .modal-text-col {
-            padding: 3rem 2.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            /* Align top for consistency */
-            padding-top: 4rem;
-            /* Fixed top offset */
-        }
+                transform-origin: center bottom;
+                /* Pivote abajo para evitar que se levante al rotar */
+                will-change: transform, filter;
+            }
 
-        @media (max-width: 768px) {
-            .modal-content {
-                display: flex;
-                flex-direction: column;
-                height: 70vh;
-                /* Reduced from 85vh to be less "big" */
-                max-height: 70vh;
+            .img-wrapper {
+                height: 100% !important;
+                width: 100% !important;
+                position: relative;
                 overflow: hidden;
             }
 
-            .modal-image-col {
-                height: 45%;
-                /* Increased image prominence */
-                flex-shrink: 0;
+            .parallax-img {
+                height: 120% !important;
+                width: 100%;
+                object-fit: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
+                will-change: transform;
             }
 
-            .modal-text-col {
-                height: 55%;
-                /* Reduced text area to minimize whitespace */
-                padding: 1.5rem;
-                overflow-y: auto;
-                padding-top: 1.5rem !important;
-                justify-content: flex-start;
-            }
-        }
-
-        @keyframes scrollDown {
-            0% {
+            /* Capa de sombra real (Overlay) */
+            .shadow-overlay {
+                position: absolute;
+                inset: 0;
+                background: #000;
                 opacity: 0;
-                transform: translateY(-5px);
+                pointer-events: none;
+                z-index: 10;
+                transition: opacity 0.1s linear;
+                /* Suavizado extra */
             }
 
-            50% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateY(5px);
+            .item-overlay {
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, transparent 60%) !important;
+                padding: 2rem !important;
+                padding-bottom: 6rem !important;
+                pointer-events: none;
+                z-index: 20;
             }
         }
 
-        .scroll-arrow {
-            animation: scrollDown 2s infinite ease-in-out;
+        /* --- VISTA ESCRITORIO --- */
+        @media (min-width: 1024px) {
+            #gallery-grid {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                grid-auto-rows: minmax(100px, auto);
+                gap: 1.5rem;
+                padding-bottom: 5rem;
+            }
+
+            .masonry-item {
+                position: relative;
+                height: auto;
+                margin-bottom: 0;
+                top: auto;
+                width: auto;
+                background: transparent;
+                box-shadow: none;
+                z-index: 1;
+                overflow: visible;
+            }
+
+            .anim-wrapper {
+                width: 100%;
+                height: 100%;
+                border-radius: 1.5rem;
+                overflow: hidden;
+                position: relative;
+                background-color: #e2e8f0;
+                box-shadow: none;
+            }
+
+            .img-wrapper {
+                position: relative;
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+            }
+
+            .parallax-img {
+                height: 140%;
+                width: 100%;
+                object-fit: cover;
+                position: absolute;
+                top: -20%;
+                left: 0;
+            }
+
+            .item-overlay {
+                background: linear-gradient(to top, rgba(30, 60, 60, 0.9) 0%, rgba(0, 0, 0, 0) 70%);
+                border-radius: 1.5rem;
+            }
+
+            .shadow-overlay {
+                display: none;
+            }
+
+            .pos-0 {
+                grid-column: 1 / span 5;
+                grid-row: span 4;
+            }
+
+            .pos-1 {
+                grid-column: 4 / span 4;
+                grid-row: span 3;
+                margin-top: 3rem !important;
+            }
+
+            .pos-2 {
+                grid-column: 9 / span 4;
+                grid-row: span 5;
+                margin-top: -4rem !important;
+            }
+
+            .pos-3 {
+                grid-column: 2 / span 6;
+                grid-row: span 3;
+                margin-top: -2rem !important;
+                margin-left: 2rem;
+            }
+
+            .pos-4 {
+                grid-column: 10 / span 3;
+                grid-row: span 3;
+            }
         }
 
-        .scroll-arrow:nth-child(2) {
-            animation-delay: 0.3s;
+        #whatsapp-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+        }
+
+        #whatsapp-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            z-index: 10001;
+        }
+
+        #whatsapp-chat-box.hidden {
+            display: none !important;
+        }
+
+        /* Loader de carga */
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- CORRECCIÓN DE COLOR PARA ICONOS DEL HEADER --- */
+        /* Forzamos que los iconos de redes sociales dentro del header sean blancos */
+        header a[href*="instagram"],
+        header a[href*="linkedin"] {
+            color: #ffffff !important;
+        }
+
+        /* Aseguramos que tanto si es <i> o <svg> tomen el color blanco */
+        header a[href*="instagram"] i,
+        header a[href*="linkedin"] i,
+        header a[href*="instagram"] svg,
+        header a[href*="linkedin"] svg {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        /* Mantenemos el efecto hover en color teal */
+        header a[href*="instagram"]:hover,
+        header a[href*="linkedin"]:hover {
+            color: #79C7C7 !important;
+        }
+
+        header a[href*="instagram"]:hover i,
+        header a[href*="linkedin"]:hover i,
+        header a[href*="instagram"]:hover svg,
+        header a[href*="linkedin"]:hover svg {
+            color: #79C7C7 !important;
+            fill: #79C7C7 !important;
         }
     </style>
 </head>
 
-<body>
-    <!-- Google Tag Manager (noscript) -->
+<body class="font-sans text-text-dark antialiased">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <div id="preloader"
-        class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-700">
-        <img src="images/logo.png" alt="Circula" class="max-w-[120px] mb-8 opacity-40">
-        <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
+    <div id="loader-overlay">
+        <div class="text-center">
+            <i class="fas fa-circle-notch fa-spin text-4xl text-rp-teal mb-4"></i>
+            <p class="text-gray-500 font-brand tracking-widest text-xs uppercase">Cargando Experiencia...</p>
+        </div>
     </div>
+
+    <div id="background-canvas"></div>
+
     <header
-        class="fixed top-0 z-50 w-full py-6 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center"><a href="index.html"
-                    class="flex items-center gap-2 group hover:opacity-80 transition duration-200"><img
-                        src="images/logo.png" alt="Logo Circula"
-                        class="h-8 sm:h-10 lg:h-11 object-contain brightness-0 invert"></a>
-                <nav class="hidden md:flex space-x-8 items-center"><a href="index.html#home"
-                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Inicio</a><a
-                        href="index.html#talleres"
-                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Talleres</a><a
-                        href="index.html#nosotros"
-                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Sobre
-                        Nosotros</a><a href="galeria2.html"
-                        class="font-brand font-bold text-sm text-rp-teal transition duration-200 uppercase tracking-widest border-b-2 border-rp-teal px-1">Galería</a><a
-                        href="index.html#tienda"
-                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Tienda</a><a
-                        href="index.html#contacto"
-                        class="nav-link font-brand font-normal text-sm text-white/90 hover:text-white transition duration-200 uppercase tracking-widest px-1">Contacto</a>
-                </nav>
-                <div class="flex items-center space-x-4"><a href="https://www.instagram.com/circula.uy/" target="_blank"
-                        rel="noopener noreferrer"
-                        class="max-md:hidden text-white/90 hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-white/10"><svg
-                            fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
-                            <path
-                                d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
-                            <path
-                                d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
-                            <path
-                                d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
-                        </svg></a><a href="https://www.linkedin.com/company/circulauy" target="_blank"
-                        rel="noopener noreferrer"
-                        class="max-md:hidden text-white/90 hover:text-rp-teal transition duration-200 p-2 rounded-full hover:bg-white/10"><svg
-                            fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
-                            <path
-                                d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z" />
-                        </svg></a>
-                    <div id="cart-dropdown-container" class="relative group">
-                        <div class="relative cursor-pointer p-2 rounded-full hover:bg-white/10 transition duration-200"
-                            onclick="window.location.href='index.html#carrito'"><svg xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="w-6 h-6 text-rp-teal">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
-                            </svg><span id="cart-count"
-                                class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
-                        </div>
-                        <div id="cart-dropdown"
-                            class="absolute right-0 mt-3 w-80 max-w-[90vw] origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-2xl z-[100] p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible">
-                            <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen </h4>
-                            <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
-                                <p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>
-                            </div>
-                            <div id="dropdown-summary" class="border-t pt-2">
-                                <div class="flex justify-between font-bold text-lg mb-3"><span>Total:</span><span
-                                        id="dropdown-total" class="text-mp-blue">$0.00</span></div><button
-                                    onclick="window.location.href='index.html#carrito'"
-                                    class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">Ver
-                                    Carrito </button>
-                            </div>
-                        </div>
-                    </div><button id="mobile-menu-button" class="md:hidden p-2 text-white focus:outline-none"
-                        onclick="toggleMobileMenu()"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg></button>
-                    <nav id="mobile-menu"
-                        class="hidden md:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-md border-t border-white/10 shadow-lg">
-                        <a href="index.html#home" onclick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Inicio</a>
-                        <a href="index.html#talleres" onclick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Talleres</a>
-                        <a href="index.html#nosotros" onclick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Nosotros</a>
-                        <a href="galeria2.html" onClick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal border-b border-white/10">Galería</a>
-                        <a href="index.html#tienda" onclick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal border-b border-white/10">Tienda</a>
-                        <a href="index.html#contacto" onclick="toggleMobileMenu()"
-                            class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-white hover:text-rp-teal"
-                            onclick="toggleMobileMenu()">Contacto</a>
-                    </nav>
-    </header>
-    <div class="info-container" id="info">
-        <div class="info-title" id="ui-title">...</div>
-        <div class="info-subtitle" id="ui-subtitle">...</div>
-    </div>
-    <div class="cursor-hint flex flex-col items-center gap-[-0.5rem]" id="hint">
-        <svg class="scroll-arrow w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-        <svg class="scroll-arrow w-6 h-6 text-white/50 -mt-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-    </div>
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <button class="modal-close" id="modal-close">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <div class="modal-image-col"><img id="modal-img" src="" alt=""></div>
-            <div class="modal-text-col h-full border-l border-gray-100">
-                <p class="modal-subtitle-text font-brand text-rp-teal font-bold uppercase tracking-widest text-xs lg:text-sm mb-3"
-                    id="modal-subtitle">CATEGORY</p>
-                <div class="min-h-[5rem] flex flex-col justify-end mb-4">
-                    <h2 class="modal-title-text font-heading text-2xl lg:text-3xl font-bold text-text-dark uppercase leading-tight"
-                        id="modal-title">Title</h2>
+        class="fixed top-0 z-[1000] bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 w-full">
+        </header>
+
+    <main>
+        <section id="hero-mobile-slide"
+            class="px-4 text-center relative z-10 bg-white md:bg-transparent md:h-auto md:pt-32 md:pb-12">
+            <span class="text-rp-teal font-extrabold tracking-[0.4em] uppercase mb-4 block text-xs"
+                id="gallery-subtitle">Galería</span>
+            <h1 class="text-5xl md:text-8xl font-bold title-style text-text-dark mb-6 leading-none" id="gallery-title">
+                IMPACTO <br><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-rp-teal to-rp-dark-blue">VISUAL</span>
+            </h1>
+            <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10 font-light" id="gallery-desc">Desliza para ver la
+                transformación.</p>
+            <div class="flex flex-wrap justify-center gap-2" id="gallery-filters">
+                <button
+                    class="filter-btn active px-6 py-2 rounded-full bg-text-dark text-white font-bold text-xs tracking-wide"
+                    data-filter="all">TODO</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="talleres">TALLERES</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="productos">PRODUCTOS</button>
+                <button
+                    class="filter-btn px-6 py-2 rounded-full bg-white border border-gray-200 text-gray-500 font-bold text-xs tracking-wide"
+                    data-filter="impacto">IMPACTO</button>
+            </div>
+        </section>
+
+        <section class="container mx-auto px-0 md:px-6 lg:px-16 relative z-20">
+            <div id="gallery-grid"></div>
+        </section>
+
+        <footer class="bg-text-dark text-white py-12 border-t border-gray-800 relative z-30 md:block hidden">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-2xl font-bold text-rp-teal title-style mb-4">Circula</p>
+                <p class="text-sm text-gray-500 font-light">&copy; 2025 Circula.</p>
+            </div>
+        </footer>
+    </main>
+
+    <div id="lightbox" class="fixed inset-0 z-[100] hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-rp-dark-blue/95 backdrop-blur-xl" onclick="closeLightbox()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+            <div class="relative bg-white rounded-[1.5rem] overflow-hidden shadow-2xl w-full max-w-5xl max-h-[80vh] flex flex-col md:flex-row pointer-events-auto transform scale-95"
+                id="lightbox-content">
+                <div class="w-full md:w-3/5 h-[40vh] md:h-auto bg-gray-100 relative overflow-hidden">
+                    <img id="lb-img" src="" alt="" class="w-full h-full object-cover">
                 </div>
-                <div class="w-16 h-1 bg-rp-teal mb-6"></div>
-                <p class="modal-desc-text font-brand text-gray-600 text-base lg:text-lg leading-relaxed"
-                    id="modal-desc">Description</p>
+                <div class="w-full md:w-2/5 p-8 flex flex-col justify-center bg-white relative">
+                    <button onclick="closeLightbox()"
+                        class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-text-dark"><i
+                            class="fas fa-times"></i></button>
+                    <span id="lb-category"
+                        class="text-rp-teal font-extrabold uppercase tracking-widest text-xs mb-2 block">Categoría</span>
+                    <h3 id="lb-title" class="text-2xl md:text-3xl font-heading text-text-dark mb-4 leading-none">Título
+                    </h3>
+                    <p id="lb-desc" class="text-gray-500 text-sm mb-6 leading-relaxed font-light">Descripción...</p>
+                </div>
             </div>
         </div>
     </div>
-    <script type="importmap"> {
-                    "imports": {
-                        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-                    }
-                }
+    <div id="whatsapp-widget">
+        <button id="whatsapp-icon" onclick="toggleChat()"
+            class="bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"><i
+                class="fab fa-whatsapp"></i></button>
+        <div id="whatsapp-chat-box"
+            class="hidden w-[300px] h-[400px] bg-white rounded-[20px] absolute bottom-[75px] right-0 flex flex-col overflow-hidden z-[10000] shadow-2xl">
+            <div class="bg-[#075E54] text-white p-4 flex items-center"><span class="font-bold">Circula</span></div>
+            <div class="bg-[#ECE5DD] flex-grow p-4 overflow-y-auto">
+                <div class="bg-white p-3 rounded-lg shadow-sm text-sm inline-block">¡Hola! 👋 Escríbenos.</div>
+            </div>
+            <div class="p-3 bg-[#f0f0f0] flex items-center"><input type="text" id="mensaje-usuario"
+                    placeholder="Mensaje..."
+                    class="flex-grow p-2 rounded-full border-none outline-none text-sm mr-2"><button
+                    onclick="enviarWhatsApp()" class="text-[#075E54]"><i class="fas fa-paper-plane"></i></button></div>
+        </div>
+    </div>
 
-                </script>
-    <script type="module">import * as THREE from 'three';
+    <script src="js/load-components.js"></script>
 
-        // --- DATA ---
+    <script>
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4R12u0TEqvWMUK5-Z4n9tWw6gg1Abuyt6hgSB630nZA0UoPv6MGFDPg3sSdw5cOgxa_R3jofB3ECi/pub?output=csv';
         const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3C/svg%3E";
+        let galleryItems = [];
+        const gridContainer = document.getElementById('gallery-grid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const loader = document.getElementById('loader-overlay');
 
-        // --- STATE ---
-        let slides = [];
+        gsap.registerPlugin(ScrollTrigger);
 
-        const state = {
-            isMobile: window.innerWidth < 768,
-            currentSlide: 0,
-            targetScroll: 0,
-            currentScroll: 0,
-            scrollMax: 0,
-            isAnimating: false,
-            inModal: false
+        // Función para esperar a que una imagen cargue
+        function preloadImage(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(url);
+                img.onerror = () => resolve(PLACEHOLDER_IMG);
+                img.src = url;
+            });
         }
 
-            ;
+        async function renderGallery(filter = 'all') {
+            // 1. Limpieza inicial
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            gridContainer.innerHTML = '';
 
-        //--- SETUP ---
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050505);
+            // Forzamos altura en body para scroll
+            if (window.innerWidth < 1024) document.body.style.minHeight = "200vh";
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 50;
-        camera.rotation.set(0, 0, 0);
+            const itemsToShow = filter === 'all' ? galleryItems : galleryItems.filter(item => item.category && item.category.toLowerCase() === filter.toLowerCase());
 
-        // Disable antialias on mobile for performance
-        const renderer = new THREE.WebGLRenderer({
-            antialias: !state.isMobile,
-            alpha: true,
-            powerPreference: "high-performance"
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
-        document.body.appendChild(renderer.domElement);
+            if (itemsToShow.length === 0) return;
 
-        const meshes = [];
-        const textureLoader = new THREE.TextureLoader();
-        let geomWidth = 1;
-        let geomHeight = 1;
+            // 2. PRE-CARGA DE IMÁGENES (CRÍTICO PARA EVITAR SALTOS)
+            // No creamos el DOM hasta tener las imagenes listas en memoria del navegador
+            const imagesToLoad = itemsToShow.map(item => fixLink(item.img || item.imagen));
+            await Promise.all(imagesToLoad.map(url => preloadImage(url)));
 
-        // --- HELPERS ---
+            // 3. GENERACIÓN DOM
+            itemsToShow.forEach((item, index) => {
+                const imageUrl = fixLink(item.img || item.imagen);
+                const titulo = item.title || "Proyecto";
+                const categoria = item.category || "General";
+
+                // Z-INDEX ESCALONADO: 1, 2, 3... asegura que la nueva tape a la vieja
+                const zIndex = index + 1;
+
+                const el = document.createElement('div');
+                el.className = `masonry-item pos-${index % 5}`;
+                el.style.zIndex = zIndex;
+
+                el.innerHTML = `
+                    <div class="anim-wrapper group cursor-pointer" onclick="openLightboxWrapper(this)">
+                        <div class="img-wrapper">
+                            <img src="${imageUrl}" alt="${titulo}" class="parallax-img" referrerpolicy="no-referrer">
+                            <div class="shadow-overlay"></div>
+                            <div class="item-overlay absolute inset-0 flex flex-col justify-end p-6">
+                                <span class="text-rp-mint text-[10px] font-bold uppercase tracking-wider mb-2">${categoria}</span>
+                                <h3 class="text-white font-heading text-4xl leading-none shadow-black drop-shadow-lg">${titulo}</h3>
+                            </div>
+                        </div>
+                        <div class="hidden data-store" data-img="${imageUrl}" data-title="${titulo}" data-cat="${categoria}" data-desc="${item.desc || ''}"></div>
+                    </div>
+                `;
+                gridContainer.appendChild(el);
+
+                // 4. ANIMACIONES (CONFIGURADAS DESPUÉS DEL DOM)
+                if (window.innerWidth >= 1024) {
+                    // PC
+                    gsap.fromTo(el, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%" } });
+                    const img = el.querySelector('.parallax-img');
+                    gsap.fromTo(img, { yPercent: -15 }, { yPercent: 15, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+                } else {
+                    // --- MÓVIL: EFECTO RESN SIN HUECOS ---
+                    const wrapper = el.querySelector('.anim-wrapper');
+                    const img = el.querySelector('.parallax-img');
+                    const shadow = el.querySelector('.shadow-overlay');
+
+                    // Set inicial
+                    gsap.set(wrapper, { force3D: true });
+
+                    // ANIMACIÓN PRINCIPAL (LA CARTA VIEJA SE QUEDA QUIETA Y SE OSCURECE)
+                    // No usamos scale ni y negativo para no crear huecos.
+                    gsap.to(shadow, {
+                        opacity: 0.7, // Oscurecemos vía overlay
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top top",       // Cuando se pega arriba
+                            end: "bottom top",      // Hasta que se va
+                            scrub: true
+                        }
+                    });
+
+                    // PARALLAX SUTIL
+                    gsap.fromTo(img,
+                        { yPercent: 0, scale: 1.05 },
+                        {
+                            yPercent: 10, scale: 1.05,
+                            ease: "none",
+                            scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true }
+                        }
+                    );
+                }
+            });
+
+            // 5. REFRESCAR CÁLCULOS
+            ScrollTrigger.refresh();
+
+            // 6. OCULTAR LOADER
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }
+
+        // Helpers
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
         function fixLink(url) {
             if (!url) return PLACEHOLDER_IMG;
             let cleanUrl = url.replace(/\\/g, '/').trim();
-
             if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
                 const idMatch = cleanUrl.match(/[-\w]{25,}/);
                 if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
             }
-
             return cleanUrl;
         }
-
         function csvToJSON(csvText) {
-            const lines = csvText.trim().split(/\r\n|\n/);
-            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
-
+            const lines = csvText.split("\n");
+            const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
             const result = [];
-
             for (let i = 1; i < lines.length; i++) {
-                const row = lines[i];
-                if (!row) continue;
-
-                const values = [];
-                let currentVal = '';
-                let insideQuotes = false;
-
-                for (let j = 0; j < row.length; j++) {
-                    const char = row[j];
-                    const nextChar = row[j + 1];
-
-                    if (char === '"') {
-                        if (insideQuotes && nextChar === '"') {
-                            currentVal += '"';
-                            j++;
-                        }
-
-                        else {
-                            insideQuotes = !insideQuotes;
-                        }
-                    }
-
-                    else if (char === ',' && !insideQuotes) {
-                        values.push(currentVal);
-                        currentVal = '';
-                    }
-
-                    else {
-                        currentVal += char;
-                    }
-                }
-
-                values.push(currentVal);
-
-                const obj = {}
-
-                    ;
-
-                headers.forEach((h, index) => {
-                    obj[h] = values[index] ? values[index].trim() : '';
-                });
-                result.push(obj);
-            }
-
-            return result;
+                if (!lines[i]) continue;
+                const obj = {};
+                const currentline = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+                if (currentline) { headers.forEach((header, j) => { obj[header] = currentline[j] ? currentline[j].replace(/^"|"$/g, '').trim() : ''; }); result.push(obj); }
+            } return result;
         }
+        function openLightboxWrapper(element) {
+            const data = element.querySelector('.data-store');
+            if (data) openLightbox({ img: data.dataset.img, title: data.dataset.title, category: data.dataset.cat, desc: data.dataset.desc });
+        }
+        function openLightbox(item) {
+            document.getElementById('lb-img').src = item.img; document.getElementById('lb-category').innerText = item.category;
+            document.getElementById('lb-title').innerText = item.title; document.getElementById('lb-desc').innerText = item.desc || '';
+            document.getElementById('lightbox').classList.remove('hidden');
+            gsap.to('#lightbox', { opacity: 1, duration: 0.4 });
+            gsap.fromTo('#lightbox-content', { scale: 0.9, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
+        }
+        function closeLightbox() {
+            gsap.to('#lightbox-content', { scale: 0.9, opacity: 0, y: 20, duration: 0.3 });
+            gsap.to('#lightbox', { opacity: 0, duration: 0.3, onComplete: () => document.getElementById('lightbox').classList.add('hidden') });
+        }
+        function toggleChat() { document.getElementById('whatsapp-chat-box').classList.toggle('hidden'); }
+        function enviarWhatsApp() { const i = document.getElementById('mensaje-usuario'); if (i && i.value.trim()) window.open(`https://wa.me/59899395724?text=${encodeURIComponent(i.value)}`, '_blank'); }
 
-        // --- CORE FUNCTIONS ---
-        async function init() {
+        // Inicialización
+        (async function init() {
             try {
-                state.isMobile = window.innerWidth < 768;
-
-                // GA4 Event: View Gallery
-                window.dataLayer = window.dataLayer || [];
-
-                window.dataLayer.push({
-                    event: 'view_gallery',
-                    page_title: 'Galería 3D - Circula',
-                    interaction_type: 'gallery_load'
-                });
-
+                // Fetch datos
                 const response = await fetch(SHEET_URL + '&t=' + Date.now());
                 const data = await response.text();
-                const rawItems = csvToJSON(data);
+                galleryItems = csvToJSON(data);
 
-                slides = rawItems.map(item => ({
-                    url: fixLink(item.img || item.imagen),
-                    urlMobile: fixLink(item.img_mobile || item.mobile_img || ""),
-                    title: item.title || "Sin Título",
-                    subtitle: item.category || "General",
-                    desc: item.desc || "...",
-                    align: item.align || "center",
-                    alignMobile: item.align_mobile || item.align_m || ""
-                }));
+                // Filtros
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        filterBtns.forEach(b => { b.classList.remove('bg-text-dark', 'text-white'); b.classList.add('bg-white', 'text-gray-500', 'border', 'border-gray-200'); });
+                        btn.classList.remove('bg-white', 'text-gray-500', 'border', 'border-gray-200'); btn.classList.add('bg-text-dark', 'text-white');
 
-                // CORREGIDO: Actualizar layout ANTES de crear mallas para tamaños correctos
-                updateLayout();
-                createMeshes();
-                raf();
-
-                // Hide preloader
-                setTimeout(() => {
-                    const preloader = document.getElementById('preloader');
-                    const loadingProgress = document.getElementById('loading-progress');
-
-                    if (loadingProgress) {
-                        loadingProgress.textContent = '100%';
-                    }
-
-                    if (preloader) {
-                        preloader.style.opacity = '0';
-
-                        setTimeout(() => {
-                            preloader.style.display = 'none';
-                        }
-
-                            , 700);
-                    }
-                }
-
-                    , 300);
-
-            }
-
-            catch (error) {
-                console.error("Error loading sheet:", error);
-                const preloader = document.getElementById('preloader');
-
-                if (preloader) {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => preloader.style.display = 'none', 700);
-                }
-            }
-        }
-
-        function createMeshes() {
-            // Usamos la geometría calculada en updateLayout en lugar de 1,1
-            const baseGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
-
-            slides.forEach((slide, i) => {
-                let finalUrl = slide.url;
-
-                if (state.isMobile && slide.urlMobile && slide.urlMobile !== PLACEHOLDER_IMG) {
-                    finalUrl = slide.urlMobile;
-                }
-
-                const texture = textureLoader.load(finalUrl, (tex) => {
-                    if (meshes[i]) {
-                        meshes[i].userData.imgWidth = tex.image.width;
-                        meshes[i].userData.imgHeight = tex.image.height;
-                        resizeTexture(meshes[i]);
-                    }
+                        // Mostramos loader brevemente al filtrar
+                        loader.style.display = 'flex';
+                        loader.style.opacity = '1';
+                        renderGallery(btn.dataset.filter);
+                    });
                 });
 
-                texture.colorSpace = THREE.SRGBColorSpace;
-                texture.wrapS = THREE.ClampToEdgeWrapping;
-                texture.wrapT = THREE.ClampToEdgeWrapping;
-                texture.minFilter = THREE.LinearFilter;
-
-                const matImage = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    transparent: true,
-                    opacity: 1.0,
-                    side: THREE.DoubleSide
-                });
-
-                const mesh = new THREE.Mesh(baseGeom.clone(), matImage);
-
-                mesh.userData = {
-                    id: i,
-                    imgWidth: 0,
-                    imgHeight: 0,
-                    align: slide.align,
-                    alignMobile: slide.alignMobile
-                }
-
-                    ;
-                scene.add(mesh);
-                meshes.push(mesh);
-            });
-
-            // CORREGIDO: Typo corregido (scrollMa -> scrollMax)
-            state.scrollMax = slides.length;
-            updateUI(0);
-        }
-
-        function resizeTexture(mesh) {
-            if (!mesh.material.map || !mesh.userData.imgWidth) return;
-
-            const planeAspect = geomWidth / geomHeight;
-            const imgAspect = mesh.userData.imgWidth / mesh.userData.imgHeight;
-            const texture = mesh.material.map;
-
-            let rawAlign = mesh.userData.align;
-
-            if (state.isMobile && mesh.userData.alignMobile) {
-                rawAlign = mesh.userData.alignMobile;
-            }
-
-            let alignX = 0.5;
-            let alignY = 0.5;
-
-            if (rawAlign) {
-                const align = rawAlign.toLowerCase().trim();
-
-                if (align.includes('%')) {
-                    const parts = align.split(/[, ]+/);
-
-                    if (parts.length > 0) {
-                        const val = parseFloat(parts[0]);
-                        if (!isNaN(val)) alignX = val / 100;
-                    }
-
-                    if (parts.length > 1) {
-                        const val = parseFloat(parts[1]);
-                        if (!isNaN(val)) alignY = 1.0 - (val / 100);
-                    }
-                }
-
-                else {
-                    if (align.includes('left')) alignX = 0.0;
-                    if (align.includes('right')) alignX = 1.0;
-                    if (align.includes('top')) alignY = 1.0;
-                    if (align.includes('bottom')) alignY = 0.0;
-                }
-            }
-
-            texture.center.set(0, 0);
-
-            if (planeAspect > imgAspect) {
-                const repeatY = imgAspect / planeAspect;
-                texture.repeat.set(1, repeatY);
-                texture.offset.y = (1 - repeatY) * alignY;
-                texture.offset.x = 0;
-            }
-
-            else {
-                const repeatX = planeAspect / imgAspect;
-                texture.repeat.set(repeatX, 1);
-                texture.offset.x = (1 - repeatX) * alignX;
-                texture.offset.y = 0;
-            }
-        }
-
-        function updateLayout() {
-            // Check para evitar divisiones si no hay slides, aunque raro
-            // if (slides.length === 0) return; 
-
-            state.isMobile = window.innerWidth < 768;
-            const vFov = (camera.fov * Math.PI) / 180;
-            const viewHeight = 2 * Math.tan(vFov / 2) * camera.position.z;
-            const viewWidth = viewHeight * camera.aspect;
-
-            geomWidth = viewWidth;
-            geomHeight = viewHeight;
-
-            // Si las mallas ya existen, las actualizamos
-            if (meshes.length > 0) {
-                const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
-
-                meshes.forEach((mesh) => {
-                    mesh.geometry.dispose();
-                    mesh.geometry = newGeom.clone();
-                    mesh.position.set(0, 0, 0);
-                    mesh.rotation.set(0, 0, 0);
-                    resizeTexture(mesh);
-                });
-            }
-        }
-
-        function goToSlide(index, immediate = false) {
-            // Limitar index
-            index = Math.max(0, Math.min(index, slides.length));
-            state.currentSlide = index;
-            state.targetScroll = index;
-
-            if (index < slides.length) {
-                updateUI(index);
-            }
-
-            if (immediate) state.currentScroll = state.targetScroll;
-        }
-
-        function updateUI(index) {
-            if (!slides[index]) return;
-            const title = document.getElementById('ui-title');
-            const sub = document.getElementById('ui-subtitle');
-            title.style.opacity = 0;
-            sub.style.opacity = 0;
-
-            setTimeout(() => {
-                title.innerText = slides[index].title;
-                sub.innerText = slides[index].subtitle;
-                title.style.opacity = 1;
-                sub.style.opacity = 1;
-            }
-
-                , 300);
-        }
-
-        // --- INPUTS ---
-        let lastInputTime = 0;
-
-        window.addEventListener('wheel', (e) => {
-            if (state.inModal) return;
-            if (Math.abs(e.deltaY) < 10) return;
-            if (Date.now() - lastInputTime < 1200) return;
-            lastInputTime = Date.now();
-            if (e.deltaY > 0) goToSlide(state.currentSlide + 1);
-            else goToSlide(state.currentSlide - 1);
-        });
-
-        let touchStart = 0;
-
-        window.addEventListener('touchstart', (e) => {
-            touchStart = state.isMobile ? e.touches[0].clientY : e.touches[0].clientX;
-        });
-
-        window.addEventListener('touchend', (e) => {
-            if (state.inModal) return;
-            if (Date.now() - lastInputTime < 1200) return;
-            lastInputTime = Date.now();
-            const touchEnd = state.isMobile ? e.changedTouches[0].clientY : e.changedTouches[0].clientX;
-            const diff = touchStart - touchEnd;
-
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) goToSlide(state.currentSlide + 1);
-                else goToSlide(state.currentSlide - 1);
-            }
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (state.inModal) return;
-            if (Date.now() - lastInputTime < 1200) return;
-
-            if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
-                lastInputTime = Date.now(); goToSlide(state.currentSlide + 1);
-            }
-
-            if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
-                lastInputTime = Date.now(); goToSlide(state.currentSlide - 1);
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            updateLayout();
-        });
-
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        window.addEventListener('click', (e) => {
-            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
-
-            // Prevenir clic si ya estamos en el footer (scroll final)
-            if (state.currentScroll > slides.length - 0.9) return;
-
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-
-            if (intersects.length > 0) {
-                // Solo abrir si estamos cerca del slide actual
-                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
-
-                const id = intersects[0].object.userData.id;
-                if (id === state.currentSlide) openModal(id);
-                else goToSlide(id);
-            }
-        });
-
-        // Touch event for mobile devices
-        window.addEventListener('touchend', (e) => {
-            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
-
-            // Prevenir clic si ya estamos en el footer (scroll final)
-            if (state.currentScroll > slides.length - 0.9) return;
-
-            const touch = e.changedTouches[0];
-            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-
-            if (intersects.length > 0) {
-                // Solo abrir si estamos cerca del slide actual
-                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
-
-                const id = intersects[0].object.userData.id;
-                if (id === state.currentSlide) openModal(id);
-                else goToSlide(id);
-            }
-        });
-
-        const modal = document.getElementById('modal');
-
-        function openModal(id) {
-            if (!slides[id]) return;
-            state.inModal = true;
-            document.body.classList.add('modal-open'); // Hide hint
-            document.getElementById('modal-img').src = slides[id].url;
-            document.getElementById('modal-title').innerText = slides[id].title;
-            // Add subtitle (Category)
-            const subElem = document.getElementById('modal-subtitle');
-            if (subElem) subElem.innerText = slides[id].subtitle;
-
-            document.getElementById('modal-desc').innerText = slides[id].desc;
-
-            // GA4 Event: Gallery item view
-            window.dataLayer = window.dataLayer || [];
-
-            window.dataLayer.push({
-                event: 'gallery_item_view',
-                item_name: slides[id].title,
-                item_category: slides[id].subtitle,
-                item_index: id,
-                interaction_type: 'modal_open'
-            });
-
-            modal.classList.add('active');
-        }
-
-        document.getElementById('modal-close').addEventListener('click', () => {
-            state.inModal = false;
-            document.body.classList.remove('modal-open');
-            modal.classList.remove('active');
-        });
-
-        function raf() {
-            state.currentScroll += (state.targetScroll - state.currentScroll) * 0.05; // Un poco más rápido (0.05)
-
-            const footer = document.getElementById('gallery-footer');
-            const maxSlideIndex = slides.length - 1;
-
-            if (slides.length > 0) {
-                const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
-
-                if (state.currentScroll > maxSlideIndex + 0.1) {
-                    const footer = document.getElementById('gallery-footer');
-                    // Calculate progress from 0 to 1 as we move *beyond* the last slide
-                    const footerTrig = Math.max(0, state.currentScroll - (maxSlideIndex + 0.1));
-                    const y = Math.max(0, 100 - (footerTrig * 120));
-
-                    if (footer) footer.style.transform = `translateY(${y}%)`;
-
-                    const info = document.getElementById('info');
-                    const hint = document.getElementById('hint');
-                    // Hide UI info as footer appears
-                    const opacity = Math.max(0, 1 - footerTrig * 3);
-                    if (info) info.style.opacity = opacity;
-                    if (hint) hint.style.opacity = opacity;
-                }
-
-                else {
-                    if (footer) footer.style.transform = `translateY(100%)`;
-                    const info = document.getElementById('info');
-                    if (info) info.style.opacity = 1;
-                }
-
-                const RADIUS = 80;
-
-                meshes.forEach((mesh, i) => {
-                    const separation = (geomHeight * 1.02) / RADIUS;
-                    const angle = (scrollForMeshes - i) * separation;
-
-                    mesh.position.y = Math.sin(angle) * RADIUS;
-                    mesh.position.z = -RADIUS + (Math.cos(angle) * RADIUS);
-                    mesh.rotation.x = -angle;
-
-                    mesh.rotation.z = (angle * 0.05) + (mesh.position.y * 0.002);
-                    mesh.rotation.y = angle * 0.05;
-
-                    const dist = Math.abs(scrollForMeshes - i);
-                    const scale = Math.max(0, 1 - (dist * 0.08));
-                    mesh.scale.set(scale, scale, scale);
-
-                    if (mesh.material) mesh.material.opacity = 1.0;
-
-                    if (Math.abs(angle) > Math.PI) {
-                        if (mesh.material) mesh.material.opacity = 0;
-                    }
-                });
-            }
-
-            renderer.render(scene, camera);
-            requestAnimationFrame(raf);
-        }
-
-        // Preloader percentage animation
-        let loadProgress = 0;
-        const loadingProgressEl = document.getElementById('loading-progress');
-
-        const preloaderInterval = setInterval(() => {
-            if (loadProgress < 90) {
-                loadProgress += Math.random() * 30;
-                if (loadProgress > 90) loadProgress = 90;
-
-                if (loadingProgressEl) {
-                    loadingProgressEl.textContent = Math.floor(loadProgress) + '%';
-                }
-            }
-        }
-
-            , 200);
-
-        // Inicializar la escena
-        init();
-
-        // ===================================
-        // === CART LOGIC (SHARED WITH INDEX) ===
-        // ===================================
-
-        // Initialize cart from localStorage
-        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-
-        // DOM Elements
-        const cartCountDisplay = document.getElementById('cart-count');
-        const dropdownItemsList = document.getElementById('dropdown-items-list');
-        const dropdownTotalDisplay = document.getElementById('dropdown-total');
-
-        function getCartTotalItems() {
-            return cartItems.reduce((total, item) => total + item.quantity, 0);
-        }
-
-        function calculateCartTotal() {
-            return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-        }
-
-        function updateCartDisplay() {
-            const totalItems = getCartTotalItems();
-
-            if (cartCountDisplay) {
-                cartCountDisplay.textContent = totalItems;
-            }
-        }
-
-        function updateCartDropdown() {
-            if (!dropdownTotalDisplay || !dropdownItemsList) return;
-
-            const total = calculateCartTotal();
-
-            dropdownTotalDisplay.textContent = `$${total.toFixed(2)}`;
-            dropdownItemsList.innerHTML = '';
-
-            if (cartItems.length === 0) {
-                dropdownItemsList.innerHTML = `<p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>`;
-            }
-
-            else {
-                const itemsToShow = cartItems.slice(0, 3);
-
-                itemsToShow.forEach(item => {
-                    const itemTotal = (item.price * item.quantity).toFixed(2);
-
-                    const itemHtml = `
-                    <div class="flex justify-between items-center text-text-dark space-x-2">
-                        <div class="flex items-center space-x-2 overflow-hidden">
-                            <img src="${item.imageUrl || 'images/placeholder.jpg'}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
-                            <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
-                        </div>
-                        <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
-                    </div>`;
-                    dropdownItemsList.insertAdjacentHTML('beforeend', itemHtml);
-                });
-
-                if (cartItems.length > 3) {
-                    const remaining = cartItems.length - 3;
-                    dropdownItemsList.insertAdjacentHTML('beforeend',
-                        `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`);
-                }
-            }
-        }
-
-        // Initialize cart display on page load
-        updateCartDisplay();
-        updateCartDropdown();
-
-        window.toggleMobileMenu = function () {
-            const m = document.getElementById('mobile-menu');
-            m.classList.toggle('hidden');
-        }
-
-    </script>
-    <footer id="gallery-footer"
-        class="fixed bottom-0 w-full bg-text-dark text-white py-12 border-t border-gray-800 z-40 transition-transform duration-700 ease-out transform translate-y-full">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="mb-6">
-                <p class="text-2xl font-bold text-rp-teal title-style">Circula</p>
-            </div>
-            <div class="flex justify-center space-x-8 text-gray-400 mb-6 text-sm font-brand tracking-widest">
-                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200 uppercase">Privacidad</a>
-                <a href="terminos.html" class="hover:text-rp-mint transition duration-200 uppercase">Términos</a>
-                <a href="index.html#contacto" class="hover:text-rp-mint transition duration-200 uppercase">Contacto</a>
-            </div>
-            <p class="text-sm text-gray-600 font-brand">
-                &copy; <span id="current-year">2024</span> Circula. Economía Circular.
-            </p>
-        </div>
-    </footer>
-    <script>document.getElementById('current-year').textContent = new Date().getFullYear();
+                // Render inicial
+                await renderGallery('all');
+
+                // Fondo
+                const container = document.getElementById('background-canvas');
+                if (container) { for (let i = 0; i < 15; i++) { const div = document.createElement('div'); div.classList.add('plastic-particle'); const size = gsap.utils.random(30, 100); gsap.set(div, { width: size, height: size, backgroundColor: ['#79C7C7', '#A3E6BA', '#e2e8f0'][Math.floor(Math.random() * 3)], opacity: gsap.utils.random(0.05, 0.15), left: gsap.utils.random(0, 100) + '%', top: gsap.utils.random(0, 100) + '%' }); container.appendChild(div); gsap.to(div, { y: gsap.utils.random(-100, 100), rotation: gsap.utils.random(0, 360), duration: gsap.utils.random(25, 45), repeat: -1, yoyo: true, ease: "sine.inOut" }); } }
+
+            } catch (error) { console.error(error); }
+        })();
     </script>
 </body>
 

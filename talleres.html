@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talleres - Circula</title>
+    <meta name="description"
+        content="Talleres de economía circular para escuelas, universidades y empresas. Proyectos educativos y capacitación en sostenibilidad.">
+    <meta name="keywords"
+        content="talleres sustentables, educación ambiental, capacitación empresarial, economía circular">
+    <link rel="canonical" href="https://www.circula.uy/talleres.html">
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <!-- End Google Tag Manager -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa',
+                        'text-dark': '#333333',
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA',
+                        'rp-blue-light': '#e0f7f7',
+                        'rp-gray-soft': '#dddddd',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section-padding {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+        }
+
+        .title-style {
+            font-family: 'Patua One', cursive;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(121, 199, 199, 0.3), 0 4px 6px -2px rgba(121, 199, 199, 0.05);
+            transform: translateY(-4px);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-bg-light text-text-dark">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
+        <!-- Header content loaded via js/load-components.js -->
+    </header>
+
+    <main>
+        <section class="bg-rp-blue-light section-padding pt-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-5xl font-bold text-text-dark mb-3 title-style">NUESTROS <span
+                            class="text-rp-teal">TALLERES</span></h1>
+                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                        Proyectos a medida para impulsar el cambio real y sostenible en cualquier entorno educativo o
+                        corporativo.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                        <h2 class="text-3xl font-bold text-rp-teal mb-4 title-style">Escuelas y Universidades</h2>
+                        <p class="mb-4 text-text-dark/90">
+                            Actividades interactivas y proyectos interdisciplinarios para integrar la sostenibilidad en
+                            la cotideanidad.
+                        </p>
+                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                            <li>Proyectos de recuperación de plástico local.</li>
+                            <li>Modelado de flujos de residuos sólidos.</li>
+                        </ul>
+                        <a href="contacto.html"
+                            class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition">
+                            SOLICITAR INFO
+                        </a>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30">
+                        <h2 class="text-3xl font-bold text-rp-teal mb-4 title-style">Empresas e instituciones</h2>
+                        <p class="mb-4 text-text-dark/90">
+                            Capacitación especializada para equipos que implementen estrategias de Zero Waste y cumplan
+                            metas de sostenibilidad.
+                        </p>
+                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
+                            <li>Auditoría de Residuos.</li>
+                            <li>Talleres interactivos para transformar los hábitos de los colaboradores.</li>
+                        </ul>
+                        <a href="contacto.html"
+                            class="inline-block w-full py-3 bg-rp-mint text-text-dark font-bold rounded-lg text-center hover:bg-rp-mint/90 transition">
+                            SOLICITAR INFO
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-text-dark text-white py-12 border-t border-gray-800">
+        <!-- Footer content loaded via js/load-components.js -->
+    </footer>
+
+    <script src="js/load-components.js"></script>
+    <script>
+        // Removed redundant updateCartCount and Year logic as they are now in load-components.js
+
+
+        // GA4 Event
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'page_view',
+            page_title: 'Talleres - Circula',
+            page_location: window.location.href
+        });
+    </script>
+</body>
+
+</html>
