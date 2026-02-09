@@ -99,10 +99,54 @@
         .animate-infinite-scroll {
             animation: infinite-scroll 25s linear infinite
         }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s ease;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #preloader img {
+            max-width: 120px;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        #loading-text {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            margin-top: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.6; transform: scale(0.95); }
+        }
     </style>
 </head>
 
 <body class="font-sans bg-bg-light text-text-dark">
+    <div id="preloader">
+        <img src="images/logo.png" alt="Circula">
+        <p id="loading-text">CARGANDO EXPERIENCIA...</p>
+    </div>
+
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
 
@@ -129,7 +173,6 @@
             </nav>
 
             <div class="flex items-center space-x-4">
-                
                 <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer"
                     class="max-md:hidden text-text-dark hover:text-rp-teal transition p-2 rounded-full hover:bg-rp-blue-light text-xl flex items-center justify-center w-10 h-10">
                     <i class="fab fa-instagram"></i>
@@ -246,16 +289,21 @@
             </div>
         </section>
 
-        <section id="featured-project-video" class="relative h-[300vh] lg:h-[600vh] bg-rp-blue-light">
+        <section id="featured-project-video" class="relative h-[150vh] lg:h-[300vh] bg-rp-blue-light">
             <div id="video-pin-container" class="h-screen w-full flex items-center justify-center overflow-hidden">
                 <div id="video-grow-container"
                     class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light">
-                    <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover" preload="auto"
-                        muted playsinline webkit-playsinline>
+                    
+                    <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light" 
+                        preload="auto"
+                        muted 
+                        playsinline 
+                        webkit-playsinline>
                         <source
                             src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4"
                             type="video/mp4">
                     </video>
+                    
                     <div id="video-text-overlay"
                         class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
                         <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">ASÍ SE VE TU PROYECTO CON
@@ -464,10 +512,41 @@
     <script>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: 'page_view', page_title: 'Circula - Economía Circular', page_location: window.location.href });
+        
+        // --- PRELOADER INTELIGENTE ---
+        // Espera a que el video esté listo antes de quitar el preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            const video = document.getElementById('scroll-video');
+            
+            function hidePreloader() {
+                if(preloader && !preloader.classList.contains('hidden')) {
+                    preloader.classList.add('hidden');
+                }
+            }
+
+            if (video) {
+                // Forzar carga
+                video.load();
+
+                // Si ya tiene datos (readyState >= 3: HAVE_FUTURE_DATA), ocultar
+                if (video.readyState >= 3) {
+                    setTimeout(hidePreloader, 500);
+                } else {
+                    // Esperar a 'canplaythrough' o 'loadeddata'
+                    video.addEventListener('canplaythrough', hidePreloader, { once: true });
+                    
+                    // Fallback de seguridad: 8 seg maximo
+                    setTimeout(hidePreloader, 8000);
+                }
+            } else {
+                setTimeout(hidePreloader, 500);
+            }
+        });
     </script>
 
     <script>
-        // GSAP ScrollTrigger for video
+        // GSAP ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
         const video = document.getElementById('scroll-video');
         const videoSection = document.getElementById('featured-project-video');
@@ -483,13 +562,11 @@
                 pinSpacing: false,
                 onUpdate: (self) => {
                     const progress = self.progress;
-                    if (video.duration) {
+                    if (isFinite(video.duration)) {
                         video.currentTime = video.duration * progress;
                     }
-                    // Grow effect
                     const scale = 1 + (progress * 0.2);
                     videoContainer.style.transform = `scale(${scale})`;
-                    // Fade in overlay at the end
                     if (progress > 0.6) {
                         const overlayOpacity = (progress - 0.6) / 0.4;
                         videoOverlay.style.opacity = overlayOpacity;
@@ -499,7 +576,6 @@
                 }
             });
 
-            // Refresh when header is loaded to ensure correct positioning
             window.addEventListener('headerLoaded', () => {
                 ScrollTrigger.refresh();
             });
@@ -520,7 +596,6 @@
             }, 20);
         }
 
-        // Trigger counter animations on scroll
         const counterPlastic = document.getElementById('counter-plastic');
         const counterSpace = document.getElementById('counter-space');
 
