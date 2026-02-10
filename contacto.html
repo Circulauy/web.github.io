@@ -42,7 +42,7 @@
             </div>
             <div>
                 <h4 class="font-bold text-gray-800 text-lg">¡Consulta Enviada!</h4>
-                <p class="text-sm text-gray-600">Hemos recibido tu mensaje y archivo correctamente.</p>
+                <p class="text-sm text-gray-600">Hemos recibido tu mensaje correctamente.</p>
             </div>
             <button onclick="cerrarToast()" class="ml-auto text-gray-400 hover:text-gray-600 p-2">
                 <i class="fas fa-times text-lg"></i>
@@ -70,7 +70,6 @@
                         <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
                         <input type="hidden" name="_captcha" value="false"> 
                         <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_autoresponse" value="¡Hola! Gracias por contactar a Circula. Hemos recibido tu consulta y nuestro equipo te responderá a la brevedad. Saludos, El equipo de Circula.">
                         
                         <input type="hidden" name="_next" id="redirect-url" value="">
 
@@ -88,12 +87,12 @@
 
                         <div>
                             <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés Principal *</label>
-                            <select id="interest" name="interest" required onchange="checkVacancy(this)"
+                            <select id="interest" name="interest" required onchange="handleInterestChange(this)"
                                 class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none"
                                 style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right .75rem center">
                                 <option value="" disabled selected>Selecciona una opción</option>
-                                <option value="Taller para colegios">Taller para colegios</option>
-                                <option value="Taller para empresas">Taller para empresas</option>
+                                <option value="Talleres para colegios">Talleres para colegios</option>
+                                <option value="Talleres para empresas">Talleres para empresas</option>
                                 <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
                                 <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje</option>
                                 <option value="Solicitud de trabajo">Solicitud de trabajo</option>
@@ -164,10 +163,13 @@
         window.dataLayer = window.dataLayer || []; 
         window.dataLayer.push({ event: 'page_view', page_title: 'Contacto - Circula', page_location: window.location.href });
 
-        // --- FUNCIÓN NUEVA: DETECTAR OPCIÓN DE VACANTE ---
-        function checkVacancy(selectElement) {
+        // --- LÓGICA VISUAL: CAMBIO DE INTERÉS (CARTEL) ---
+        function handleInterestChange(selectElement) {
+            const val = selectElement.value;
             const alertBox = document.getElementById('vacancy-alert');
-            if (selectElement.value === 'Solicitud de trabajo') {
+            
+            // Solo manejo visual aquí
+            if (val === 'Solicitud de trabajo') {
                 alertBox.classList.remove('hidden');
             } else {
                 alertBox.classList.add('hidden');
@@ -208,14 +210,32 @@
             }
         }
 
+        // --- LÓGICA DE ENVÍO Y PREPARACIÓN DE EMAIL ---
         function activarCarga() {
+            // 1. OBTENER VALORES
             const name = document.getElementById('name').value;
             const interest = document.getElementById('interest').value;
             const subjectField = document.getElementById('email-subject');
+            const autoResponseInput = document.getElementById('auto-response-input');
+
+            // 2. CONFIGURAR ASUNTO (PARA TI)
             if (subjectField && interest && name) {
                 subjectField.value = `Consulta Web: ${interest} (${name})`;
             }
 
+            // 3. CONFIGURAR AUTO-RESPUESTA (PARA EL CLIENTE)
+            // Lógica forzada al momento de enviar para evitar errores
+            if (interest === 'Solicitud de trabajo') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en sumarte al equipo de Circula.\n\nConfirmamos que hemos recibido tu solicitud y CV. Actualmente no contamos con vacantes activas, pero guardaremos tu información en nuestra base de datos para futuras búsquedas.\n\n¡Saludos!\nEl equipo de Circula.";
+            } else if (interest === 'Talleres para colegios') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres para instituciones.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1WlnLk0vGFIfdLAwAnGF3cuNgsgAjwndZ/view?usp=drive_link\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
+            } else if (interest === 'Talleres para empresas') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres corporativos.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1y10XoMchiLkRlUdyiXqByPUAAUqsPj4-/view?usp=sharing\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
+            } else {
+                autoResponseInput.value = "¡Hola! Gracias por contactar a Circula.\n\nHemos recibido tu consulta correctamente y nuestro equipo te responderá a la brevedad con la información solicitada.\n\n¡Saludos!\nEl equipo de Circula.";
+            }
+
+            // 4. ANIMACIÓN DE CARGA
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
