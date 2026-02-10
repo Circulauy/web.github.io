@@ -191,12 +191,12 @@ function initializeHeader() {
                 class="fixed inset-0 w-screen h-[100dvh] z-[9999] bg-white flex flex-col items-center justify-center space-y-6 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] opacity-0 invisible translate-y-4 md:hidden overflow-hidden">
                 
                 <div class="flex flex-col items-center space-y-5 text-center w-full px-4">
-                    <a href="index.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Inicio</a>
-                    <a href="talleres.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Talleres</a>
-                    <a href="nosotros.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Nosotros</a>
-                    <a href="galeria.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Galería</a>
-                    <a href="tienda.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Tienda</a>
-                    <a href="contacto.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Contacto</a>
+                    <a href="index" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Inicio</a>
+                    <a href="talleres" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Talleres</a>
+                    <a href="nosotros" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Nosotros</a>
+                    <a href="galeria" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Galería</a>
+                    <a href="tienda" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Tienda</a>
+                    <a href="contacto" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Contacto</a>
                 </div>
 
                 <div class="mt-10 flex gap-8 opacity-70">
@@ -286,16 +286,28 @@ window.enviarWhatsApp = function () {
 // 4. UTILIDADES
 // ==========================================
 function setActiveLink() {
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    // Obtener el path actual y limpiar extensiones (.html)
+    let currentPath = window.location.pathname.split('/').pop();
+    currentPath = currentPath.replace('.html', '') || 'index';
+
+    // Normalizar index
+    if (currentPath === '') currentPath = 'index';
     
     document.querySelectorAll('#desktop-nav a').forEach(link => {
-        const href = link.getAttribute('href');
+        let href = link.getAttribute('href');
+        if (href) href = href.replace('.html', ''); // Limpiar extension del href tambien
+
         link.className = 'nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest';
-        if (href === currentPath) link.className = 'font-brand font-bold text-sm text-rp-teal transition uppercase tracking-widest border-b-2 border-rp-teal';
+        
+        if (href === currentPath) {
+            link.className = 'font-brand font-bold text-sm text-rp-teal transition uppercase tracking-widest border-b-2 border-rp-teal';
+        }
     });
 
     document.querySelectorAll('#mobile-menu a').forEach(link => {
-        const href = link.getAttribute('href');
+        let href = link.getAttribute('href');
+        if (href) href = href.replace('.html', '');
+
         if (href === currentPath) {
             link.classList.add('text-rp-teal', 'border-rp-teal');
             link.classList.remove('text-text-dark', 'border-gray-300');
@@ -418,7 +430,7 @@ function loadProductDetails() {
         }
     } else {
         document.getElementById('detail-container').innerHTML = 
-            '<div class="col-span-2 text-center py-20"><h2 class="text-2xl font-bold text-gray-400">Producto no encontrado.</h2><a href="tienda.html" class="text-rp-teal mt-4 block hover:underline">Volver a la tienda</a></div>';
+            '<div class="col-span-2 text-center py-20"><h2 class="text-2xl font-bold text-gray-400">Producto no encontrado.</h2><a href="tienda" class="text-rp-teal mt-4 block hover:underline">Volver a la tienda</a></div>';
     }
 }
 
@@ -629,10 +641,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWhatsApp();
     
     // Detectar si estamos en páginas específicas
-    if (window.location.pathname.includes('detalle.html')) {
+    if (window.location.pathname.includes('detalle')) {
         loadProductDetails();
     }
-    if (window.location.pathname.includes('carrito.html') || window.location.pathname.includes('datos.html')) {
+    if (window.location.pathname.includes('carrito') || window.location.pathname.includes('datos')) {
         renderCheckoutPage();
     }
 
