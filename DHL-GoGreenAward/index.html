@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximamente | DHL GoGreen Award</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd',
+                        'rp-border-default': '#b5b5b5', 'mp-blue': '#009ee3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .title-style {
+            font-family: 'Patua One', cursive;
+            font-weight: 700;
+        }
+    </style>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+                w[l] = w[l] || []; w[l].push({
+                    'gtm.start':
+                        new Date().getTime(), event: 'gtm.js'
+                }); var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                        'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body class="font-sans bg-bg-light text-text-dark min-h-screen flex flex-col">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="shadow-sm bg-white">
+        <div class="container mx-auto px-4 py-4 flex justify-center sm:justify-start">
+            <a href="../" class="flex items-center text-text-dark transition-opacity hover:opacity-80">
+                <img src="../images/logo.png" alt="Logo Circula" class="h-10 object-contain">
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-6">
+        <div class="bg-white p-10 sm:p-14 rounded-2xl shadow-xl max-w-2xl w-full text-center border-t-4 border-rp-teal">
+            <div class="flex justify-center items-center gap-6 sm:gap-8 mb-8">
+                <img src="../images/logo.png" alt="Logo Circula" class="h-10 sm:h-12 object-contain">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <img src="../images/dhl-logo.svg" alt="Logo DHL" class="h-6 sm:h-8 object-contain">
+            </div>
+            
+            <h1 class="text-xs tracking-[0.2em] text-gray-500 uppercase font-semibold mb-3">Próximamente</h1>
+            <h2 class="text-3xl sm:text-4xl font-bold text-text-dark mb-4 title-style">DHL GoGreen Award</h2>
+            
+            <p class="text-lg text-gray-600 mb-8 max-w-lg mx-auto leading-relaxed">
+                Estamos preparando un espacio muy especial para compartir todos los detalles sobre nuestra participación y el impacto de esta iniciativa.
+                <br><br>
+                <span class="font-semibold text-text-dark">¡Vuelve pronto para descubrir más!</span>
+            </p>
+            
+            <a href="../"
+                class="inline-block py-3 px-8 bg-rp-teal text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 transform">
+                Volver al Inicio
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-text-dark text-white py-6 text-center">
+        <div class="container mx-auto px-4">
+            <p class="text-sm text-gray-400">&copy; Circula. Economía Circular.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
