@@ -253,8 +253,8 @@
             
             const webUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=https://youtu.be/uj3D1bzUDv8';
             const appUrl = 'linkedin://shareArticle?mini=true&url=https://youtu.be/uj3D1bzUDv8';
-            // Formato nativo avanzado de Chrome Android (maneja App y Fallback impecablemente sin JS extra)
-            const androidIntent = `intent://shareArticle?mini=true&url=https://youtu.be/uj3D1bzUDv8#Intent;package=com.linkedin.android;scheme=linkedin;S.browser_fallback_url=${encodeURIComponent(webUrl)};end;`;
+            // Formato 'ACTION_SEND' nativo de Android. Elmina el error apuntando a 'com.linkedin.android' directamente.
+            const androidIntent = `intent:#Intent;action=android.intent.action.SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent('https://youtu.be/uj3D1bzUDv8')};package=com.linkedin.android;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
             
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isAndroid = /Android/i.test(navigator.userAgent);
