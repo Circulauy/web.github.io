@@ -247,47 +247,28 @@
             });
         });
 
-        // Funcionalidad Deep Link para compartir en la App nativa de LinkedIn o fallback web
+        // Funcionalidad Nativa para compartir
         window.shareLinkedIn = function(event) {
             event.preventDefault();
             
-            const webUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=https://youtu.be/uj3D1bzUDv8';
-            const appUrl = 'linkedin://shareArticle?mini=true&url=https://youtu.be/uj3D1bzUDv8';
-            // Formato 'ACTION_SEND' nativo de Android. Elmina el error apuntando a 'com.linkedin.android' directamente.
-            const androidIntent = `intent:#Intent;action=android.intent.action.SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent('https://youtu.be/uj3D1bzUDv8')};package=com.linkedin.android;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
+            const videoUrl = 'https://youtu.be/uj3D1bzUDv8';
+            const webUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(videoUrl);
             
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            if (isAndroid) {
-                // Android bloquea los iframes ocultos para abrir apps por seguridad. 
-                // Usamos su API oficial 'intent://'
-                window.location.href = androidIntent;
-                return;
-            }
-
-            if (isIOS) {
-                // Safari iOS: Plan de Rescate con retardo
-                const fallback = setTimeout(function() {
-                    if (document.visibilityState !== 'hidden') {
-                        window.location.href = webUrl;
-                    }
-                }, 2500);
-
-                document.addEventListener("visibilitychange", function onVis() {
-                    if (document.visibilityState === 'hidden') {
-                        clearTimeout(fallback);
-                        document.removeEventListener("visibilitychange", onVis);
-                    }
+            // Si el dispositivo es móvil y soporta la API nativa de "Compartir" de Android/iOS
+            if (isMobile && navigator.share) {
+                navigator.share({
+                    title: 'DHL GoGreen Award | Circula',
+                    url: videoUrl
+                }).catch(function(error) {
+                    // Si falla silenciosamente por permisos (no de cancelación), abrimos web
+                    if(error.name !== 'AbortError') { window.open(webUrl, '_blank'); }
                 });
-
-                // Disparamos Prompt del sistema
-                window.location.href = appUrl;
-                return;
+            } else {
+                // Desktop PC o navegadores viejos: Abre la pantalla web oficial de post en pestaña limpia
+                window.open(webUrl, '_blank');
             }
-            
-            // Para Desktop, sencillamente a web
-            window.open(webUrl, '_blank');
         };
     </script>
 
