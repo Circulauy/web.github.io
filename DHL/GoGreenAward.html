@@ -253,45 +253,41 @@
             
             const webUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=https://youtu.be/uj3D1bzUDv8';
             const appUrl = 'linkedin://shareArticle?mini=true&url=https://youtu.be/uj3D1bzUDv8';
+            // Formato nativo avanzado de Chrome Android (maneja App y Fallback impecablemente sin JS extra)
+            const androidIntent = `intent://shareArticle?mini=true&url=https://youtu.be/uj3D1bzUDv8#Intent;package=com.linkedin.android;scheme=linkedin;S.browser_fallback_url=${encodeURIComponent(webUrl)};end;`;
             
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isAndroid = /Android/i.test(navigator.userAgent);
             
-            if (!isMobile) {
-                // En Desktop vamos a la versión web directamente (sin esquemas erróneos)
-                window.open(webUrl, '_blank');
+            if (isAndroid) {
+                // Android bloquea los iframes ocultos para abrir apps por seguridad. 
+                // Usamos su API oficial 'intent://'
+                window.location.href = androidIntent;
                 return;
             }
 
-            // Plan de Rescate (Fallback) para Móviles
-            const fallback = setTimeout(function() {
-                // Solo si el usuario se quedó en la pestaña frontal después de 2.5s (la app falló o no dio click)
-                if (document.visibilityState !== 'hidden') {
-                    // Abrimos en la misma pestaña para no gatillar bloqueadores de pop-ups 
-                    window.location.href = webUrl;
-                }
-            }, 2500);
-
-            // Si el celular bloquea o salta a la App correctamente, cancelamos el Plan de Rescate
-            document.addEventListener("visibilitychange", function onVis() {
-                if (document.visibilityState === 'hidden') {
-                    clearTimeout(fallback);
-                    document.removeEventListener("visibilitychange", onVis);
-                }
-            });
-
-            // Comportamientos Nativos por Sistema
             if (isIOS) {
-                // Safari iOS obliga a despacharlo en el Root para que salga el Alert de "Abrir App"
+                // Safari iOS: Plan de Rescate con retardo
+                const fallback = setTimeout(function() {
+                    if (document.visibilityState !== 'hidden') {
+                        window.location.href = webUrl;
+                    }
+                }, 2500);
+
+                document.addEventListener("visibilitychange", function onVis() {
+                    if (document.visibilityState === 'hidden') {
+                        clearTimeout(fallback);
+                        document.removeEventListener("visibilitychange", onVis);
+                    }
+                });
+
+                // Disparamos Prompt del sistema
                 window.location.href = appUrl;
-            } else {
-                // Android usa iFrame fantasma para no matar la pestaña con un error "ERR_UNKNOWN_URL_SCHEME"
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = appUrl;
-                document.body.appendChild(iframe);
-                setTimeout(() => document.body.removeChild(iframe), 3000);
+                return;
             }
+            
+            // Para Desktop, sencillamente a web
+            window.open(webUrl, '_blank');
         };
     </script>
 
