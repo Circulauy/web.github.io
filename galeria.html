@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es" class="lenis lenis-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Galería Circula - Explora nuestros proyectos">
+    <title>Circula | Galería</title>
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#D4F1E8',
+                        'rp-blue-light': '#EEF7FA',
+                        'text-dark': '#333333',
+                        'bg-light': '#FAFAFA',
+                        'rp-gray-soft': '#E0E0E0',
+                        'mp-blue': '#009EE3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .title-style {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        /* Hide scrollbar */
+        html {
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            /* Cambiado a hidden para que controle ThreeJS el scroll */
+            background: #050505;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Gallery 3D Styles */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: block;
+            z-index: -1;
+            outline: none;
+        }
+
+        .info-container {
+            position: fixed;
+            bottom: 4rem;
+            left: 2rem;
+            text-align: left;
+            z-index: 10;
+            pointer-events: none;
+            max-width: 90%;
+            will-change: opacity;
+        }
+
+        .info-title {
+            color: white;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: opacity 0.3s ease;
+            text-align: left;
+            transform: translateZ(0);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .info-subtitle {
+            color: #79C7C7;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            transition: opacity 0.3s ease;
+            transform: translateZ(0);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Hide cursor hint when modal is open */
+        body.modal-open .cursor-hint {
+            display: none;
+        }
+
+        .cursor-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+            pointer-events: none;
+            will-change: opacity;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: transform 0.2s, background-color 0.2s;
+            color: #333;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+            background-color: #f3f4f6;
+        }
+
+        /* Nav Link Animation */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #79C7C7;
+            /* rp-teal */
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 900px;
+            width: 90%;
+            min-height: 500px;
+            /* Changed from fixed height */
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            /* More space for image */
+            gap: 0;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 85vh;
+            overflow: hidden;
+            /* Hide overflow here for rounded corners image */
+        }
+
+        .modal-image-col {
+            height: 100%;
+            width: 100%;
+            background-color: #f3f4f6;
+            /* Placeholder color before load */
+        }
+
+        .modal-image-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .modal-text-col {
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            /* Align top for consistency */
+            padding-top: 4rem;
+            /* Fixed top offset */
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                display: flex;
+                flex-direction: column;
+                height: 70vh;
+                /* Reduced from 85vh to be less "big" */
+                max-height: 70vh;
+                overflow: hidden;
+            }
+
+            .modal-image-col {
+                height: 45%;
+                /* Increased image prominence */
+                flex-shrink: 0;
+            }
+
+            .modal-text-col {
+                height: 55%;
+                /* Reduced text area to minimize whitespace */
+                padding: 1.5rem;
+                overflow-y: auto;
+                padding-top: 1.5rem !important;
+                justify-content: flex-start;
+            }
+        }
+
+        @keyframes scrollDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+        }
+
+        .scroll-arrow {
+            animation: scrollDown 2s infinite ease-in-out;
+        }
+
+        .scroll-arrow:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        /* iOS smooth scrolling */
+        body {
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
+
+        /* Texture loading placeholder */
+        .texture-loading {
+            filter: blur(20px);
+            transform: scale(1.1);
+        }
+
+        /* Preloader - Nordic Style */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s ease;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #preloader img {
+            max-width: 120px;
+            margin-bottom: 2rem;
+            opacity: 0.4;
+        }
+
+        #loading-progress {
+            color: #9ca3af;
+            font-weight: 300;
+            font-size: 0.875rem;
+            letter-spacing: 0.3em;
+        }
+
+        /* Header Overrides for Galeria - FORCED WHITE ICONS */
+        header #desktop-nav a {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        header #desktop-nav a:hover {
+            color: #79C7C7 !important;
+        }
+
+        /* Fuerza bruta para iconos de redes sociales */
+        header a[href*="instagram"], 
+        header a[href*="linkedin"] {
+            color: #ffffff !important;
+        }
+        
+        header a[href*="instagram"] i, 
+        header a[href*="linkedin"] i,
+        header a[href*="instagram"] svg, 
+        header a[href*="linkedin"] svg {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        /* Hover state para redes sociales */
+        header a[href*="instagram"]:hover, 
+        header a[href*="linkedin"]:hover {
+            color: #79C7C7 !important;
+        }
+        
+        header a[href*="instagram"]:hover i, 
+        header a[href*="linkedin"]:hover i,
+        header a[href*="instagram"]:hover svg, 
+        header a[href*="linkedin"]:hover svg {
+            color: #79C7C7 !important;
+            fill: #79C7C7 !important;
+        }
+
+        /* Icono del carrito también blanco */
+        header #cart-dropdown-container svg {
+            color: #ffffff !important;
+        }
+        
+        header #cart-dropdown-container:hover svg {
+            color: #79C7C7 !important;
+        }
+
+        header img[alt="Logo Circula"] {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Mobile menu overrides */
+        #mobile-menu {
+            background-color: rgba(5, 5, 5, 0.95) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        #mobile-menu a {
+            color: white !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        #mobile-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preloader">
+        <img src="images/logo.png" alt="Circula">
+        <p id="loading-progress">0%</p>
+    </div>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <header id="main-header"
+        class="fixed top-0 z-50 w-full py-6 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
+        </header>
+    
+    <div class="info-container" id="info">
+        <div class="info-title" id="ui-title">...</div>
+        <div class="info-subtitle" id="ui-subtitle">...</div>
+    </div>
+    <div class="cursor-hint flex flex-col items-center gap-[-0.5rem]" id="hint">
+        <svg class="scroll-arrow w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+        <svg class="scroll-arrow w-6 h-6 text-white/50 -mt-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-image-col"><img id="modal-img" src="" alt=""></div>
+            <div class="modal-text-col h-full border-l border-gray-100">
+                <p class="modal-subtitle-text font-brand text-rp-teal font-bold uppercase tracking-widest text-xs lg:text-sm mb-3"
+                    id="modal-subtitle">CATEGORY</p>
+                <div class="min-h-[5rem] flex flex-col justify-end mb-4">
+                    <h2 class="modal-title-text font-heading text-2xl lg:text-3xl font-bold text-text-dark uppercase leading-tight"
+                        id="modal-title">Title</h2>
+                </div>
+                <div class="w-16 h-1 bg-rp-teal mb-6"></div>
+                <p class="modal-desc-text font-brand text-gray-600 text-base lg:text-lg leading-relaxed"
+                    id="modal-desc">Description</p>
+            </div>
+        </div>
+    </div>
+    <script type="importmap"> {
+                    "imports": {
+                        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+                    }
+                }
+
+                </script>
+    <script type="module">import * as THREE from 'three';
+
+        // --- DATA ---
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4R12u0TEqvWMUK5-Z4n9tWw6gg1Abuyt6hgSB630nZA0UoPv6MGFDPg3sSdw5cOgxa_R3jofB3ECi/pub?output=csv';
+        const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3C/svg%3E";
+
+        // Low quality placeholder for progressive loading
+        const LOW_QUALITY_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23333'/%3E%3Cstop offset='100%25' stop-color='%23111'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3C/svg%3E";
+
+        // --- STATE ---
+        let slides = [];
+
+        const state = {
+            isMobile: window.innerWidth < 768,
+            currentSlide: 0,
+            targetScroll: 0,
+            currentScroll: 0,
+            scrollMax: 0,
+            isAnimating: false,
+            inModal: false
+        }
+
+            ;
+
+        //--- SETUP ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50;
+        camera.rotation.set(0, 0, 0);
+
+        // Optimize renderer for performance
+        const renderer = new THREE.WebGLRenderer({
+            antialias: !state.isMobile,
+            alpha: true,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: false
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Cap pixel ratio: 1.5 on mobile, 2 on desktop for better performance
+        const pixelRatio = state.isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2);
+        renderer.setPixelRatio(pixelRatio);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        document.body.appendChild(renderer.domElement);
+
+        const meshes = [];
+        const textureLoader = new THREE.TextureLoader();
+        let geomWidth = 1;
+        let geomHeight = 1;
+
+        // --- HELPERS ---
+        function fixLink(url) {
+            if (!url) return PLACEHOLDER_IMG;
+            let cleanUrl = url.replace(/\\/g, '/').trim();
+
+            if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
+                const idMatch = cleanUrl.match(/[-\w]{25,}/);
+                if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
+            }
+
+            return cleanUrl;
+        }
+
+        function csvToJSON(csvText) {
+            const lines = csvText.trim().split(/\r\n|\n/);
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i];
+                if (!row) continue;
+
+                const values = [];
+                let currentVal = '';
+                let insideQuotes = false;
+
+                for (let j = 0; j < row.length; j++) {
+                    const char = row[j];
+                    const nextChar = row[j + 1];
+
+                    if (char === '"') {
+                        if (insideQuotes && nextChar === '"') {
+                            currentVal += '"';
+                            j++;
+                        }
+
+                        else {
+                            insideQuotes = !insideQuotes;
+                        }
+                    }
+
+                    else if (char === ',' && !insideQuotes) {
+                        values.push(currentVal);
+                        currentVal = '';
+                    }
+
+                    else {
+                        currentVal += char;
+                    }
+                }
+
+                values.push(currentVal);
+
+                const obj = {}
+
+                    ;
+
+                headers.forEach((h, index) => {
+                    obj[h] = values[index] ? values[index].trim() : '';
+                });
+                result.push(obj);
+            }
+
+            return result;
+        }
+
+        // --- CORE FUNCTIONS ---
+        async function init() {
+            try {
+                state.isMobile = window.innerWidth < 768;
+
+                // GA4 Event: View Gallery
+                window.dataLayer = window.dataLayer || [];
+
+                window.dataLayer.push({
+                    event: 'view_gallery',
+                    page_title: 'Galería 3D - Circula',
+                    interaction_type: 'gallery_load'
+                });
+
+                const response = await fetch(SHEET_URL + '&t=' + Date.now());
+                const data = await response.text();
+                const rawItems = csvToJSON(data);
+
+                slides = rawItems.map(item => ({
+                    url: fixLink(item.img || item.imagen),
+                    urlMobile: fixLink(item.img_mobile || item.mobile_img || ""),
+                    title: item.title || "Sin Título",
+                    subtitle: item.category || "General",
+                    desc: item.desc || "...",
+                    align: item.align || "center",
+                    alignMobile: item.align_mobile || item.align_m || ""
+                }));
+
+                // Update layout and create meshes
+                updateLayout();
+                createMeshes();
+                raf();
+
+                // Animate preloader progress
+                let progress = 0;
+                const progressEl = document.getElementById('loading-progress');
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progressEl) {
+                        progressEl.textContent = `${progress}%`;
+                    }
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        // Hide preloader after reaching 100%
+                        setTimeout(() => {
+                            const preloader = document.getElementById('preloader');
+                            if (preloader) {
+                                preloader.classList.add('hidden');
+                            }
+                        }, 300);
+                    }
+                }, 30);
+
+            }
+
+            catch (error) {
+                console.error("Error loading sheet:", error);
+                // Hide preloader even on error
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('hidden');
+                }
+            }
+        }
+
+        function createMeshes() {
+            // Usamos la geometría calculada en updateLayout en lugar de 1,1
+            const baseGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
+
+            slides.forEach((slide, i) => {
+                let finalUrl = slide.url;
+
+                if (state.isMobile && slide.urlMobile && slide.urlMobile !== PLACEHOLDER_IMG) {
+                    finalUrl = slide.urlMobile;
+                }
+
+                // Progressive loading: start with low quality, upgrade to high quality
+                const texture = textureLoader.load(LOW_QUALITY_PLACEHOLDER);
+
+                // Load actual image progressively
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    if (meshes[i]) {
+                        meshes[i].userData.imgWidth = img.width;
+                        meshes[i].userData.imgHeight = img.height;
+
+                        // Create texture from loaded image
+                        const highQualityTexture = new THREE.Texture(img);
+                        highQualityTexture.colorSpace = THREE.SRGBColorSpace;
+                        highQualityTexture.wrapS = THREE.ClampToEdgeWrapping;
+                        highQualityTexture.wrapT = THREE.ClampToEdgeWrapping;
+                        highQualityTexture.minFilter = THREE.LinearFilter;
+                        highQualityTexture.magFilter = THREE.LinearFilter;
+                        highQualityTexture.needsUpdate = true;
+
+                        // Dispose old texture to free memory
+                        if (meshes[i].material.map) {
+                            meshes[i].material.map.dispose();
+                        }
+
+                        // Update material with high quality texture
+                        meshes[i].material.map = highQualityTexture;
+                        meshes[i].material.needsUpdate = true;
+                        resizeTexture(meshes[i]);
+                    }
+                };
+                img.src = finalUrl;
+
+                // Initial placeholder texture settings
+                texture.colorSpace = THREE.SRGBColorSpace;
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                texture.generateMipmaps = false; // Disable mipmaps for better performance
+
+                const matImage = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 1.0,
+                    side: THREE.DoubleSide
+                });
+
+                const mesh = new THREE.Mesh(baseGeom.clone(), matImage);
+
+                mesh.userData = {
+                    id: i,
+                    imgWidth: 0,
+                    imgHeight: 0,
+                    align: slide.align,
+                    alignMobile: slide.alignMobile
+                }
+
+                    ;
+                scene.add(mesh);
+                meshes.push(mesh);
+            });
+
+            // CORREGIDO: Typo corregido (scrollMa -> scrollMax)
+            state.scrollMax = slides.length;
+            updateUI(0);
+        }
+
+        function resizeTexture(mesh) {
+            if (!mesh.material.map || !mesh.userData.imgWidth) return;
+
+            const planeAspect = geomWidth / geomHeight;
+            const imgAspect = mesh.userData.imgWidth / mesh.userData.imgHeight;
+            const texture = mesh.material.map;
+
+            let rawAlign = mesh.userData.align;
+
+            if (state.isMobile && mesh.userData.alignMobile) {
+                rawAlign = mesh.userData.alignMobile;
+            }
+
+            let alignX = 0.5;
+            let alignY = 0.5;
+
+            if (rawAlign) {
+                const align = rawAlign.toLowerCase().trim();
+
+                if (align.includes('%')) {
+                    const parts = align.split(/[, ]+/);
+
+                    if (parts.length > 0) {
+                        const val = parseFloat(parts[0]);
+                        if (!isNaN(val)) alignX = val / 100;
+                    }
+
+                    if (parts.length > 1) {
+                        const val = parseFloat(parts[1]);
+                        if (!isNaN(val)) alignY = 1.0 - (val / 100);
+                    }
+                }
+
+                else {
+                    if (align.includes('left')) alignX = 0.0;
+                    if (align.includes('right')) alignX = 1.0;
+                    if (align.includes('top')) alignY = 1.0;
+                    if (align.includes('bottom')) alignY = 0.0;
+                }
+            }
+
+            texture.center.set(0, 0);
+
+            if (planeAspect > imgAspect) {
+                const repeatY = imgAspect / planeAspect;
+                texture.repeat.set(1, repeatY);
+                texture.offset.y = (1 - repeatY) * alignY;
+                texture.offset.x = 0;
+            }
+
+            else {
+                const repeatX = planeAspect / imgAspect;
+                texture.repeat.set(repeatX, 1);
+                texture.offset.x = (1 - repeatX) * alignX;
+                texture.offset.y = 0;
+            }
+        }
+
+        function updateLayout() {
+            // Check para evitar divisiones si no hay slides, aunque raro
+            // if (slides.length === 0) return; 
+
+            state.isMobile = window.innerWidth < 768;
+            const vFov = (camera.fov * Math.PI) / 180;
+            const viewHeight = 2 * Math.tan(vFov / 2) * camera.position.z;
+            const viewWidth = viewHeight * camera.aspect;
+
+            geomWidth = viewWidth;
+            geomHeight = viewHeight;
+
+            // Si las mallas ya existen, las actualizamos
+            if (meshes.length > 0) {
+                const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
+
+                meshes.forEach((mesh) => {
+                    mesh.geometry.dispose();
+                    mesh.geometry = newGeom.clone();
+                    mesh.position.set(0, 0, 0);
+                    mesh.rotation.set(0, 0, 0);
+                    resizeTexture(mesh);
+                });
+            }
+        }
+
+        function goToSlide(index, immediate = false) {
+            // Limitar index
+            index = Math.max(0, Math.min(index, slides.length));
+            state.currentSlide = index;
+            state.targetScroll = index;
+
+            if (index < slides.length) {
+                updateUI(index);
+            }
+
+            if (immediate) state.currentScroll = state.targetScroll;
+        }
+
+        function updateUI(index) {
+            if (!slides[index]) return;
+            const title = document.getElementById('ui-title');
+            const sub = document.getElementById('ui-subtitle');
+            title.style.opacity = 0;
+            sub.style.opacity = 0;
+
+            setTimeout(() => {
+                title.innerText = slides[index].title;
+                sub.innerText = slides[index].subtitle;
+                title.style.opacity = 1;
+                sub.style.opacity = 1;
+            }
+
+                , 300);
+        }
+
+        // --- INPUTS ---
+        let lastInputTime = 0;
+
+        window.addEventListener('wheel', (e) => {
+            if (state.inModal) return;
+            if (Math.abs(e.deltaY) < 10) return;
+            // Reduced debounce for more responsive feel (800ms instead of 1200ms)
+            if (Date.now() - lastInputTime < 800) return;
+            lastInputTime = Date.now();
+            if (e.deltaY > 0) goToSlide(state.currentSlide + 1);
+            else goToSlide(state.currentSlide - 1);
+        }, { passive: true });
+
+        let touchStart = 0;
+
+        window.addEventListener('touchstart', (e) => {
+            touchStart = state.isMobile ? e.touches[0].clientY : e.touches[0].clientX;
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (state.inModal) return;
+            // Reduced debounce for more responsive feel
+            if (Date.now() - lastInputTime < 800) return;
+            lastInputTime = Date.now();
+            const touchEnd = state.isMobile ? e.changedTouches[0].clientY : e.changedTouches[0].clientX;
+            const diff = touchStart - touchEnd;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) goToSlide(state.currentSlide + 1);
+                else goToSlide(state.currentSlide - 1);
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (state.inModal) return;
+            // Reduced debounce for more responsive feel
+            if (Date.now() - lastInputTime < 800) return;
+
+            if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
+                lastInputTime = Date.now(); goToSlide(state.currentSlide + 1);
+            }
+
+            if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+                lastInputTime = Date.now(); goToSlide(state.currentSlide - 1);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            updateLayout();
+        });
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
+
+            // Prevenir clic si ya estamos en el footer (scroll final)
+            if (state.currentScroll > slides.length - 0.9) return;
+
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if (intersects.length > 0) {
+                // Solo abrir si estamos cerca del slide actual
+                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
+
+                const id = intersects[0].object.userData.id;
+                if (id === state.currentSlide) openModal(id);
+                else goToSlide(id);
+            }
+        });
+
+        // Touch event for mobile devices
+        window.addEventListener('touchend', (e) => {
+            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
+
+            // Prevenir clic si ya estamos en el footer (scroll final)
+            if (state.currentScroll > slides.length - 0.9) return;
+
+            const touch = e.changedTouches[0];
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if (intersects.length > 0) {
+                // Solo abrir si estamos cerca del slide actual
+                if (Math.abs(state.targetScroll - state.currentScroll) > 0.5) return;
+
+                const id = intersects[0].object.userData.id;
+                if (id === state.currentSlide) openModal(id);
+                else goToSlide(id);
+            }
+        });
+
+        const modal = document.getElementById('modal');
+
+        function openModal(id) {
+            if (!slides[id]) return;
+            state.inModal = true;
+            document.body.classList.add('modal-open'); // Hide hint
+            document.getElementById('modal-img').src = slides[id].url;
+            document.getElementById('modal-title').innerText = slides[id].title;
+            // Add subtitle (Category)
+            const subElem = document.getElementById('modal-subtitle');
+            if (subElem) subElem.innerText = slides[id].subtitle;
+
+            document.getElementById('modal-desc').innerText = slides[id].desc;
+
+            // GA4 Event: Gallery item view
+            window.dataLayer = window.dataLayer || [];
+
+            window.dataLayer.push({
+                event: 'gallery_item_view',
+                item_name: slides[id].title,
+                item_category: slides[id].subtitle,
+                item_index: id,
+                interaction_type: 'modal_open'
+            });
+
+            modal.classList.add('active');
+        }
+
+        document.getElementById('modal-close').addEventListener('click', () => {
+            state.inModal = false;
+            document.body.classList.remove('modal-open');
+            modal.classList.remove('active');
+        });
+
+        function raf() {
+            // Adaptive easing: faster on mobile for snappier feel
+            const easingFactor = state.isMobile ? 0.08 : 0.06;
+            state.currentScroll += (state.targetScroll - state.currentScroll) * easingFactor;
+
+            const footer = document.getElementById('gallery-footer');
+            const maxSlideIndex = slides.length - 1;
+
+            if (slides.length > 0) {
+                const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
+
+                if (state.currentScroll > maxSlideIndex + 0.1) {
+                    const footer = document.getElementById('gallery-footer');
+                    // Calculate progress from 0 to 1 as we move *beyond* the last slide
+                    const footerTrig = Math.max(0, state.currentScroll - (maxSlideIndex + 0.1));
+                    const y = Math.max(0, 100 - (footerTrig * 120));
+
+                    if (footer) footer.style.transform = `translateY(${y}%)`;
+
+                    const info = document.getElementById('info');
+                    const hint = document.getElementById('hint');
+                    // Hide UI info as footer appears
+                    const opacity = Math.max(0, 1 - footerTrig * 3);
+                    if (info) info.style.opacity = opacity;
+                    if (hint) hint.style.opacity = opacity;
+                }
+
+                else {
+                    if (footer) footer.style.transform = `translateY(100%)`;
+                    const info = document.getElementById('info');
+                    if (info) info.style.opacity = 1;
+                }
+
+                const RADIUS = 80;
+
+                meshes.forEach((mesh, i) => {
+                    const separation = (geomHeight * 1.02) / RADIUS;
+                    const angle = (scrollForMeshes - i) * separation;
+
+                    mesh.position.y = Math.sin(angle) * RADIUS;
+                    mesh.position.z = -RADIUS + (Math.cos(angle) * RADIUS);
+                    mesh.rotation.x = -angle;
+
+                    mesh.rotation.z = (angle * 0.05) + (mesh.position.y * 0.002);
+                    mesh.rotation.y = angle * 0.05;
+
+                    const dist = Math.abs(scrollForMeshes - i);
+                    const scale = Math.max(0, 1 - (dist * 0.08));
+                    mesh.scale.set(scale, scale, scale);
+
+                    if (mesh.material) mesh.material.opacity = 1.0;
+
+                    if (Math.abs(angle) > Math.PI) {
+                        if (mesh.material) mesh.material.opacity = 0;
+                    }
+                });
+            }
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(raf);
+        }
+
+        // Inicializar la escena
+        init();
+
+        // ===================================
+        // === CART LOGIC (SHARED WITH INDEX) ===
+        // ===================================
+
+        // Initialize cart from localStorage
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        // DOM Elements
+        const cartCountDisplay = document.getElementById('cart-count');
+        const dropdownItemsList = document.getElementById('dropdown-items-list');
+        const dropdownTotalDisplay = document.getElementById('dropdown-total');
+
+        function getCartTotalItems() {
+            return cartItems.reduce((total, item) => total + item.quantity, 0);
+        }
+
+        function calculateCartTotal() {
+            return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function updateCartDisplay() {
+            const totalItems = getCartTotalItems();
+
+            if (cartCountDisplay) {
+                cartCountDisplay.textContent = totalItems;
+            }
+        }
+
+        function updateCartDropdown() {
+            if (!dropdownTotalDisplay || !dropdownItemsList) return;
+
+            const total = calculateCartTotal();
+
+            dropdownTotalDisplay.textContent = `$${total.toFixed(2)}`;
+            dropdownItemsList.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                dropdownItemsList.innerHTML = `<p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>`;
+            }
+
+            else {
+                const itemsToShow = cartItems.slice(0, 3);
+
+                itemsToShow.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+
+                    const itemHtml = `
+                    <div class="flex justify-between items-center text-text-dark space-x-2">
+                        <div class="flex items-center space-x-2 overflow-hidden">
+                            <img src="${item.imageUrl || 'images/placeholder.jpg'}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
+                            <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
+                        </div>
+                        <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
+                    </div>`;
+                    dropdownItemsList.insertAdjacentHTML('beforeend', itemHtml);
+                });
+
+                if (cartItems.length > 3) {
+                    const remaining = cartItems.length - 3;
+                    dropdownItemsList.insertAdjacentHTML('beforeend',
+                        `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`);
+                }
+            }
+        }
+
+        // Initialize cart display on page load
+        updateCartDisplay();
+        updateCartDropdown();
+
+    </script>
+    <script src="js/load-components.js"></script>
+    
+    <script>
+        // --- SCRIPT DE CORRECCIÓN DE COLOR PARA ICONOS ---
+        // Este script vigila el header y apenas se cargan los iconos, fuerza el color blanco.
+        const headerObserver = new MutationObserver((mutations) => {
+            // Buscamos cualquier enlace que apunte a instagram o linkedin
+            const socialLinks = document.querySelectorAll('header a[href*="instagram"], header a[href*="linkedin"]');
+            
+            if (socialLinks.length > 0) {
+                socialLinks.forEach(link => {
+                    // Quitamos clase oscura de Tailwind si existe
+                    link.classList.remove('text-text-dark');
+                    // Agregamos clase blanca
+                    link.classList.add('text-white');
+                    // Forzamos estilo en línea por si acaso
+                    link.style.color = '#ffffff';
+                    
+                    // Aseguramos que los iconos hijos también sean blancos
+                    const icon = link.querySelector('i, svg');
+                    if(icon) {
+                        icon.style.color = '#ffffff';
+                        icon.style.fill = '#ffffff';
+                    }
+                });
+                
+                // También blanqueamos el carrito
+                const cartContainer = document.getElementById('cart-dropdown-container');
+                if(cartContainer) {
+                    const cartIcon = cartContainer.querySelector('svg');
+                    if(cartIcon) {
+                        cartIcon.classList.remove('text-text-dark', 'text-rp-teal');
+                        cartIcon.classList.add('text-white');
+                        cartIcon.style.color = '#ffffff';
+                    }
+                }
+            }
+        });
+        
+        // Empezar a observar el header
+        const headerEl = document.getElementById('main-header');
+        if(headerEl) {
+            headerObserver.observe(headerEl, { childList: true, subtree: true });
+        }
+    </script>
+    
+    <footer id="gallery-footer"
+        class="fixed bottom-0 w-full bg-text-dark text-white py-12 border-t border-gray-800 z-40 transition-transform duration-700 ease-out transform translate-y-full">
+        </footer>
+</body>
+
+</html>

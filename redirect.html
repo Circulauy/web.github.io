@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirigiendo... - Circula</title>
+    <script>
+        // Redirect handler for backward compatibility with old hash-based URLs
+        (function () {
+            const hash = window.location.hash.substring(1); // Remove #
+            const redirectMap = {
+                'home': 'index.html',
+                'talleres': 'talleres.html',
+                'nosotros': 'nosotros.html',
+                'tienda': 'tienda.html',
+                'carrito': 'carrito.html',
+                'contacto': 'contacto.html',
+                'detalle': 'detalle.html',
+                'datos': 'datos.html'
+            };
+
+            if (hash && redirectMap[hash]) {
+                window.location.replace(redirectMap[hash]);
+            } else if (!hash) {
+                // No hash, stay on index
+            } else {
+                // Unknown hash, go to home
+                window.location.replace('index.html');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <p>Redirigiendo...</p>
+</body>
+
+</html>

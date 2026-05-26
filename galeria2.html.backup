@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circula - Galería 3D</title>
+
+    <!-- TAILWIND & FONTS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#fafafa',
+                        'text-dark': '#333333',
+                        'rp-teal': '#79C7C7',
+                        'rp-mint': '#A3E6BA',
+                        'rp-blue-light': '#e0f7f7',
+                        'rp-gray-soft': '#dddddd',
+                        'rp-border-default': '#b5b5b5',
+                        'mp-blue': '#009ee3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Patua One', 'cursive'],
+                        brand: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            background-color: #050505;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            overscroll-behavior: none;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            outline: none;
+        }
+
+        /* UI Overlays */
+        .info-container {
+            position: fixed;
+            bottom: 80px;
+            left: 50px;
+            z-index: 10;
+            color: #fff;
+            pointer-events: none;
+            transition: opacity 0.5s ease-out;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .info-title {
+            font-family: 'Patua One', cursive;
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.9;
+        }
+
+        .cursor-hint {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: #fff;
+            opacity: 0.6;
+            z-index: 10;
+            pointer-events: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            background: #fafafa;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-image-col {
+            flex: 1.5;
+            background: #000;
+            position: relative;
+        }
+
+        .modal-image-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-text-col {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #333;
+            position: relative;
+            /* For Close Button */
+        }
+
+        .modal-title-text {
+            font-family: 'Patua One', cursive;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .modal-desc-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: #666;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #79C7C7;
+            /* rp-teal */
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 50;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .modal-close:hover {
+            background: #5dade2;
+            /* darker teal/blue hover */
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                flex-direction: column;
+            }
+
+            .modal-image-col {
+                flex: 1;
+            }
+
+            .modal-text-col {
+                flex: 1;
+                padding: 2rem;
+            }
+
+            .modal-title-text {
+                font-size: 2rem;
+            }
+
+            .info-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* ========================================================= */
+        /* == HIDE SCROLLBAR (mantiene funcionalidad de scroll) == */
+        /* ========================================================= */
+
+        /* Firefox */
+        html {
+            scrollbar-width: none;
+        }
+
+        /* Chrome, Safari, Edge */
+        html::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<!-- Minimalist Nordic Preloader -->
+<div id="preloader" class="fixed inset-0 z-[99999] bg-white 
+                            flex flex-col items-center justify-center 
+                            transition-opacity duration-700 ease-out">
+
+    <!-- Logo with subtle fade -->
+    <img src="images/Logo C.png" alt="Circula" class="max-w-[120px] opacity-40 mb-12">
+
+    <!-- Percentage counter -->
+    <p id="loading-progress" class="text-gray-400 font-light text-sm tracking-[0.3em]">0%</p>
+</div>
+
+<body>
+
+    <!-- --- HEADER --- -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300">
+        <!-- Transparent BG -->
+        <div class="absolute inset-0 bg-transparent"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center relative z-10">
+
+            <a href="index.html#home" class="flex items-center gap-2 group hover:opacity-80 transition duration-200">
+                <!-- White Logo via filter -->
+                <img src="images/logo.png" alt="Logo Circula"
+                    class="h-8 sm:h-10 lg:h-11 object-contain brightness-0 invert">
+            </a>
+
+            <!-- Navigation: White text, Uppercase, Tracking -->
+            <nav class="flex max-md:hidden space-x-8 items-center">
+                <a href="index.html#home"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Inicio</a>
+                <a href="index.html#talleres"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Talleres</a>
+                <a href="index.html#nosotros"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Nosotros</a>
+                <a href="#"
+                    class="font-brand font-bold text-sm text-rp-teal transition duration-200 uppercase tracking-widest border-b border-rp-teal">Galería</a>
+                <a href="index.html#tienda"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Tienda</a>
+                <a href="index.html#contacto"
+                    class="font-brand font-normal text-sm text-white hover:text-rp-teal transition duration-200 uppercase tracking-widest drop-shadow-md">Contacto</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <!-- IG -->
+                <a href="https://www.instagram.com/circula.uy/" target="_blank"
+                    class="max-md:hidden text-white hover:text-rp-teal transition duration-200 drop-shadow-md">
+                    <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
+                        <path
+                            d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
+                        <path
+                            d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8 c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
+                        <path
+                            d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8 c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
+                    </svg>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/company/circulauy" target="_blank"
+                    class="max-md:hidden text-white hover:text-rp-teal transition duration-200 drop-shadow-md">
+                    <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 256 256">
+                        <path
+                            d="M96,120.001v56a12,12,0,1,1-24,0v-56a12,12,0,0,1,24,0Zm28,68a12,12,0,0,0,12-12v-28a16,16,0,0,1,32,0v28a12,12,0,1,0,24,0v-28a39.9747,39.9747,0,0,0-58.57324-35.40992A11.99182,11.99182,0,0,0,112,120.001v56A12,12,0,0,0,124,188.001ZM232,44V212a20.0226,20.0226,0,0,1-20,20H44a20.0226,20.0226,0,0,1-20-20V44A20.02244,20.02244,0,0,1,44,24H212A20.02244,20.02244,0,0,1,232,44Zm-24,4H48V208H208ZM84,96A16,16,0,1,0,68,80,16.00016,16.00016,0,0,0,84,96Z" />
+                    </svg>
+                </a>
+
+                <!-- Cart -->
+                <div id="cart-dropdown-container" class="relative group">
+                    <div class="relative cursor-pointer p-2 rounded-full hover:bg-white/10 transition duration-200"
+                        onclick="window.location.href='index.html#carrito'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="w-6 h-6 text-white">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
+                        </svg>
+                        <span id="cart-count"
+                            class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+                    </div>
+
+                    <div id="cart-dropdown"
+                        class="absolute right-0 mt-3 w-72 origin-top-right bg-white/95 backdrop-blur border border-rp-teal/30 rounded-xl shadow-xl z-50 p-4 transition duration-300 transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible max-md:hidden">
+                        <h4 class="text-lg font-bold text-text-dark mb-3 border-b pb-2 font-heading">Resumen</h4>
+                        <div id="dropdown-items-list" class="max-h-32 overflow-y-auto space-y-2 text-sm mb-3">
+                            <p class="text-gray-500 text-center">Tu carrito está vacío.</p>
+                        </div>
+                        <div id="dropdown-summary" class="border-t pt-2">
+                            <div class="flex justify-between font-bold text-lg mb-3">
+                                <span>Total:</span>
+                                <span id="dropdown-total" class="text-mp-blue">$0.00</span>
+                            </div>
+                            <button onclick="window.location.href='index.html#carrito'"
+                                class="w-full py-2 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md font-heading text-sm">
+                                Ver Carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="mobile-menu-button" class="md:hidden p-2 text-white focus:outline-none"
+                    onclick="toggleMobileMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <nav id="mobile-menu"
+            class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg absolute w-full left-0">
+            <a href="index.html#home"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Inicio</a>
+            <a href="index.html#talleres"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Talleres</a>
+            <a href="#"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-rp-teal hover:bg-rp-blue-light border-b border-gray-50">Galería</a>
+            <a href="index.html#tienda"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light border-b border-gray-50">Tienda</a>
+            <a href="index.html#contacto"
+                class="block px-6 py-3 text-sm font-bold uppercase tracking-widest text-text-dark hover:bg-rp-blue-light">Contacto</a>
+        </nav>
+    </header>
+
+    <!-- --- OVERLAY UI --- -->
+    <div class="info-container" id="info">
+        <div class="info-title" id="ui-title">...</div>
+        <div class="info-subtitle" id="ui-subtitle">...</div>
+    </div>
+
+    <div class="cursor-hint" id="hint">
+        <span class="bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">Desliza para ver
+            más</span>
+    </div>
+
+    <!-- --- MODAL --- -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-image-col">
+                <img id="modal-img" src="" alt="">
+            </div>
+            <div class="modal-text-col">
+                <button class="modal-close" id="modal-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <h2 class="modal-title-text" id="modal-title">Title</h2>
+                <div class="w-16 h-1 bg-rp-teal mb-6"></div>
+                <p class="modal-desc-text" id="modal-desc">Description</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- THREE.JS --- -->
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- DATA ---
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4R12u0TEqvWMUK5-Z4n9tWw6gg1Abuyt6hgSB630nZA0UoPv6MGFDPg3sSdw5cOgxa_R3jofB3ECi/pub?output=csv';
+        const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f1f5f9' width='400' height='300'/%3E%3C/svg%3E";
+
+        // --- STATE ---
+        let slides = [];
+        const state = {
+            isMobile: false,
+            currentSlide: 0,
+            targetScroll: 0,
+            currentScroll: 0,
+            scrollMax: 0,
+            isAnimating: false,
+            inModal: false
+        };
+
+        // --- SETUP ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50;
+        camera.rotation.set(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // ORIGINAL COLORS: SRGB
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        document.body.appendChild(renderer.domElement);
+
+        const meshes = [];
+        const textureLoader = new THREE.TextureLoader();
+        let geomWidth = 1;
+        let geomHeight = 1;
+
+        // --- HELPERS ---
+        function fixLink(url) {
+            if (!url) return PLACEHOLDER_IMG;
+            let cleanUrl = url.replace(/\\/g, '/').trim();
+            if (cleanUrl.includes('drive.google.com') && (cleanUrl.includes('view') || cleanUrl.includes('open'))) {
+                const idMatch = cleanUrl.match(/[-\w]{25,}/);
+                if (idMatch) return `https://drive.google.com/thumbnail?id=${idMatch[0]}&sz=w1000`;
+            }
+            return cleanUrl;
+        }
+
+        function csvToJSON(csvText) {
+            const lines = csvText.trim().split(/\r\n|\n/);
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i];
+                if (!row) continue;
+
+                const values = [];
+                let currentVal = '';
+                let insideQuotes = false;
+
+                // Robust Character-by-Character Parser
+                for (let j = 0; j < row.length; j++) {
+                    const char = row[j];
+                    const nextChar = row[j + 1];
+
+                    if (char === '"') {
+                        if (insideQuotes && nextChar === '"') {
+                            // Escaped quote "" -> "
+                            currentVal += '"';
+                            j++;
+                        } else {
+                            // Toggle quote state
+                            insideQuotes = !insideQuotes;
+                        }
+                    } else if (char === ',' && !insideQuotes) {
+                        // End of cell
+                        values.push(currentVal);
+                        currentVal = '';
+                    } else {
+                        currentVal += char;
+                    }
+                }
+                values.push(currentVal); // Push last value
+
+                // Map to headers
+                const obj = {};
+                headers.forEach((h, index) => {
+                    obj[h] = values[index] ? values[index].trim() : '';
+                });
+                result.push(obj);
+            }
+            return result;
+
+            // Map CSV format to Slide format with ALIGNMENT & MOBILE ALIGNMENT
+            slides = rawItems.map(item => ({
+                url: fixLink(item.img || item.imagen),
+                urlMobile: fixLink(item.img_mobile || item.mobile_img || ""), // Optional mobile image
+                title: item.title || "Sin Título",
+                subtitle: item.category || "General",
+                desc: item.desc || "...",
+                align: item.align || "center", // Default center
+                alignMobile: item.align_mobile || item.align_m || "" // Optional mobile override
+            }));
+
+            createMeshes();
+            updateLayout();
+            raf();
+
+            // Hide preloader with smooth fade after content loads
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                const loadingProgress = document.getElementById('loading-progress');
+                if (loadingProgress) {
+                    loadingProgress.textContent = '100%';
+                }
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 700);
+                }
+            }, 300);
+
+        } catch (error) {
+            console.error("Error loading sheet:", error);
+            slides.forEach((slide, i) => {
+                // ART DIRECTION: Choose image based on device
+                let finalUrl = slide.url;
+                if (state.isMobile && slide.urlMobile && slide.urlMobile !== PLACEHOLDER_IMG) {
+                    finalUrl = slide.urlMobile;
+                }
+
+                // Load texture - Three.js will cache and create instances automatically
+                const texture = textureLoader.load(finalUrl, (tex) => {
+                    if (meshes[i]) {
+                        meshes[i].userData.imgWidth = tex.image.width;
+                        meshes[i].userData.imgHeight = tex.image.height;
+                        resizeTexture(meshes[i]);
+                    }
+                });
+
+                // Configure texture properties
+                texture.colorSpace = THREE.SRGBColorSpace;
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
+                texture.minFilter = THREE.LinearFilter;
+
+                const matImage = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 1.0,
+                    side: THREE.DoubleSide
+                });
+
+                const mesh = new THREE.Mesh(baseGeom.clone(), matImage);
+                // Store alignment in userData
+                mesh.userData = {
+                    id: i,
+                    imgWidth: 0,
+                    imgHeight: 0,
+                    align: slide.align,
+                    alignMobile: slide.alignMobile
+                };
+                scene.add(mesh);
+                meshes.push(mesh);
+            });
+
+            state.scrollMax = slides.length;
+            updateUI(0);
+        }
+
+        function resizeTexture(mesh) {
+            if (!mesh.material.map || !mesh.userData.imgWidth) return;
+
+            const planeAspect = geomWidth / geomHeight;
+            const imgAspect = mesh.userData.imgWidth / mesh.userData.imgHeight;
+            const texture = mesh.material.map;
+
+            // FOCAL POINT MAPPING
+            // Select Alignment based on Device
+            let rawAlign = mesh.userData.align;
+            if (state.isMobile && mesh.userData.alignMobile) {
+                rawAlign = mesh.userData.alignMobile;
+            }
+
+            // Default: Center/Center
+            let alignX = 0.5;
+            let alignY = 0.5;
+
+            if (rawAlign) {
+                const align = rawAlign.toLowerCase().trim();
+
+                // Detect Percentage Pattern (e.g., "50% 20%")
+                if (align.includes('%')) {
+                    const parts = align.split(/[ ,]+/);
+
+                    // IF only 1 value is provided (e.g. "15%"), standard CSS says this is X, and Y is 50%.
+                    if (parts.length > 0) {
+                        const val = parseFloat(parts[0]);
+                        if (!isNaN(val)) alignX = val / 100;
+                    }
+                    if (parts.length > 1) {
+                        const val = parseFloat(parts[1]);
+                        if (!isNaN(val)) alignY = 1.0 - (val / 100); // Invert Y for UV
+                    }
+                } else {
+                    // Keywords
+                    if (align.includes('left')) alignX = 0.0;
+                    if (align.includes('right')) alignX = 1.0;
+                    if (align.includes('top')) alignY = 1.0;
+                    if (align.includes('bottom')) alignY = 0.0;
+                }
+            }
+
+            // IMPORTANT: Do NOT set texture.center to 0.5,0.5 as it conflicts with manual offset math.
+            texture.center.set(0, 0);
+
+            if (planeAspect > imgAspect) {
+                // Plane is WIDER. We fit Width. We crop vertical.
+                // Repeat: X=1, Y = img/plane < 1 (Zooming)
+                // Actually repeat logic:
+                // To COVER:
+                // If planeAspect > imgAspect (2 > 1):
+                // We show 100% of Width.
+                // We show (imgAspect / planeAspect) of Height (e.g. 0.5).
+                // So repeat.set(1, 0.5).
+
+                const repeatY = imgAspect / planeAspect;
+                texture.repeat.set(1, repeatY);
+
+                // OFFSET Y based on Alignment
+                // range of visible texture is repeatY [0..1]
+                // gap is 1 - repeatY.
+                // If alignY = 0.5 (center), offset = (1 - repeatY) / 2
+                // If alignY = 1.0 (top), offset = (1 - repeatY)
+                // If alignY = 0.0 (bottom), offset = 0
+
+                texture.offset.y = (1 - repeatY) * alignY;
+                texture.offset.x = 0;
+            } else {
+                // Plane is TALLER. We fit Height. We crop horizontal.
+                const repeatX = planeAspect / imgAspect;
+                texture.repeat.set(repeatX, 1);
+
+                // OFFSET X based on Alignment
+                texture.offset.x = (1 - repeatX) * alignX;
+                texture.offset.y = 0;
+            }
+        }
+
+        function updateLayout() {
+            if (slides.length === 0) return;
+
+            state.isMobile = window.innerWidth < 768;
+            const vFov = (camera.fov * Math.PI) / 180;
+            const viewHeight = 2 * Math.tan(vFov / 2) * camera.position.z;
+            const viewWidth = viewHeight * camera.aspect;
+
+            geomWidth = viewWidth;
+            geomHeight = viewHeight;
+
+            const newGeom = new THREE.PlaneGeometry(geomWidth, geomHeight);
+
+            meshes.forEach((mesh) => {
+                mesh.geometry.dispose();
+                mesh.geometry = newGeom.clone();
+                mesh.position.set(0, 0, 0);
+                mesh.rotation.set(0, 0, 0);
+                resizeTexture(mesh);
+            });
+
+            state.scrollMax = slides.length;
+        }
+
+        function goToSlide(index, immediate = false) {
+            index = Math.max(0, Math.min(index, slides.length));
+            state.currentSlide = index;
+            state.targetScroll = index;
+
+            if (index < slides.length) {
+                updateUI(index);
+            }
+            if (immediate) state.currentScroll = state.targetScroll;
+        }
+
+        function updateUI(index) {
+            if (!slides[index]) return;
+            const title = document.getElementById('ui-title');
+            const sub = document.getElementById('ui-subtitle');
+            title.style.opacity = 0;
+            sub.style.opacity = 0;
+            setTimeout(() => {
+                title.innerText = slides[index].title;
+                sub.innerText = slides[index].subtitle;
+                title.style.opacity = 1;
+                sub.style.opacity = 1;
+            }, 300);
+        }
+
+        // --- INPUTS ---
+        let lastInputTime = 0;
+
+        window.addEventListener('wheel', (e) => {
+            if (state.inModal) return;
+            if (Math.abs(e.deltaY) < 10) return;
+            if (Date.now() - lastInputTime < 1200) return;
+            lastInputTime = Date.now();
+            if (e.deltaY > 0) goToSlide(state.currentSlide + 1);
+            else goToSlide(state.currentSlide - 1);
+        });
+
+        let touchStart = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStart = state.isMobile ? e.touches[0].clientY : e.touches[0].clientX;
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (state.inModal) return;
+            if (Date.now() - lastInputTime < 1200) return;
+            lastInputTime = Date.now();
+            const touchEnd = state.isMobile ? e.changedTouches[0].clientY : e.changedTouches[0].clientX;
+            const diff = touchStart - touchEnd;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) goToSlide(state.currentSlide + 1);
+                else goToSlide(state.currentSlide - 1);
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (state.inModal) return;
+            if (Date.now() - lastInputTime < 1200) return;
+            if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
+                lastInputTime = Date.now(); goToSlide(state.currentSlide + 1);
+            }
+            if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+                lastInputTime = Date.now(); goToSlide(state.currentSlide - 1);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            updateLayout();
+        });
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('header') || e.target.closest('#modal') || state.inModal) return;
+
+            if (state.currentScroll > slides.length - 0.9) return;
+
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshes);
+            if (intersects.length > 0) {
+                if (Math.abs(state.targetScroll - state.currentScroll) > 0.1) return;
+                const id = intersects[0].object.userData.id;
+                if (id === state.currentSlide) openModal(id);
+                else goToSlide(id);
+            }
+        });
+
+        const modal = document.getElementById('modal');
+        function openModal(id) {
+            if (!slides[id]) return;
+            state.inModal = true;
+            document.getElementById('modal-img').src = slides[id].url;
+            document.getElementById('modal-title').innerText = slides[id].title;
+            document.getElementById('modal-desc').innerText = slides[id].desc;
+            modal.classList.add('active');
+
+            // GA4 Event: Gallery item view
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'gallery_item_view',
+                item_name: slides[id].title,
+                item_index: id,
+                interaction_type: 'modal_open'
+            });
+        }
+        document.getElementById('modal-close').addEventListener('click', () => {
+            state.inModal = false;
+            modal.classList.remove('active');
+        });
+
+        function raf() {
+            // SLOWER ANIMATION: Lerp 0.025
+            state.currentScroll += (state.targetScroll - state.currentScroll) * 0.025;
+
+            // Footer Logic
+            const footer = document.getElementById('gallery-footer');
+            const maxSlideIndex = slides.length - 1;
+
+            // Only run physics if we have slides
+            if (slides.length > 0) {
+                const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
+
+                if (state.currentScroll > maxSlideIndex) {
+                    const footerProgress = state.currentScroll - maxSlideIndex;
+                    const y = Math.max(0, (1 - footerProgress) * 100);
+                    if (footer) footer.style.transform = `translateY(${y}%)`;
+
+                    const info = document.getElementById('info');
+                    if (info) info.style.opacity = Math.max(0, 1 - footerProgress * 2);
+                } else {
+                    if (footer) footer.style.transform = `translateY(100%)`;
+                    const info = document.getElementById('info');
+                    if (info) info.style.opacity = 1;
+                }
+
+                const RADIUS = 80;
+                meshes.forEach((mesh, i) => {
+                    const separation = (geomHeight * 1.02) / RADIUS;
+                    const angle = (scrollForMeshes - i) * separation;
+
+                    mesh.position.y = Math.sin(angle) * RADIUS;
+                    mesh.position.z = -RADIUS + (Math.cos(angle) * RADIUS);
+                    mesh.rotation.x = -angle;
+
+                    // TWIST / SKEW
+                    mesh.rotation.z = (angle * 0.05) + (mesh.position.y * 0.002);
+                    mesh.rotation.y = angle * 0.05;
+
+                    const dist = Math.abs(scrollForMeshes - i);
+                    const scale = Math.max(0, 1 - (dist * 0.08));
+                    mesh.scale.set(scale, scale, scale);
+
+                    if (mesh.material) mesh.material.opacity = 1.0;
+
+                    if (Math.abs(angle) > Math.PI) {
+                        if (mesh.material) mesh.material.opacity = 0;
+                    }
+                });
+            }
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(raf);
+        }
+
+        // Preloader percentage animation
+        let loadProgress = 0;
+        const loadingProgressEl = document.getElementById('loading-progress');
+        const preloaderInterval = setInterval(() => {
+            if (loadProgress < 90) {
+                loadProgress += Math.random() * 30;
+                if (loadProgress > 90) loadProgress = 90;
+                if (loadingProgressEl) {
+                    loadingProgressEl.textContent = Math.floor(loadProgress) + '%';
+                }
+            }
+        }, 200);
+
+        // Inicializar la escena
+        init();
+
+        // ===================================
+        // === CART LOGIC (SHARED WITH INDEX) ===
+        // ===================================
+
+        // Initialize cart from localStorage
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        // DOM Elements
+        const cartCountDisplay = document.getElementById('cart-count');
+        const dropdownItemsList = document.getElementById('dropdown-items-list');
+        const dropdownTotalDisplay = document.getElementById('dropdown-total');
+
+        function getCartTotalItems() {
+            return cartItems.reduce((total, item) => total + item.quantity, 0);
+        }
+
+        function calculateCartTotal() {
+            return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        /**
+         * Updates the cart count badge in the header
+         */
+        function updateCartDisplay() {
+            const totalItems = getCartTotalItems();
+            if (cartCountDisplay) {
+                cartCountDisplay.textContent = totalItems;
+            }
+        }
+
+        /**
+         * Updates the dropdown hover preview
+         */
+        function updateCartDropdown() {
+            if (!dropdownTotalDisplay || !dropdownItemsList) return;
+
+            const total = calculateCartTotal();
+            dropdownTotalDisplay.textContent = `$${total.toFixed(2)}`;
+            dropdownItemsList.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                dropdownItemsList.innerHTML = `<p class="text-center text-gray-500 py-2">Tu carrito está vacío.</p>`;
+            } else {
+                const itemsToShow = cartItems.slice(0, 3);
+
+                itemsToShow.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+
+                    const itemHtml = `
+                        <div class="flex justify-between items-center text-text-dark space-x-2">
+                            <div class="flex items-center space-x-2 overflow-hidden">
+                                <img src="${item.imageUrl || 'images/placeholder.jpg'}" alt="${item.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0">
+                                <span class="text-sm truncate">${item.quantity} x ${item.name}</span>
+                            </div>
+                            <span class="font-semibold text-sm flex-shrink-0">$${itemTotal}</span>
+                        </div>
+                    `;
+                    dropdownItemsList.insertAdjacentHTML('beforeend', itemHtml);
+                });
+
+                if (cartItems.length > 3) {
+                    const remaining = cartItems.length - 3;
+                    dropdownItemsList.insertAdjacentHTML('beforeend',
+                        `<p class="text-center text-sm text-rp-teal mt-2">+ ${remaining} ítem(s) más</p>`
+                    );
+                }
+            }
+        }
+
+        // Initialize cart display on page load
+        updateCartDisplay();
+        updateCartDropdown();
+
+        window.toggleMobileMenu = function () {
+            const m = document.getElementById('mobile-menu');
+            m.classList.toggle('hidden');
+        }
+    </script>
+    <!-- --- FOOTER (Initially Hidden/Below Viewport) --- -->
+    <footer id="gallery-footer"
+        class="fixed bottom-0 w-full bg-text-dark text-white py-8 z-40 transition-transform duration-700 ease-out transform translate-y-full">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-4">
+                <p class="text-xl font-bold text-rp-teal title-style">Circula</p>
+            </div>
+            <div class="flex justify-center space-x-6 text-gray-400 mb-4 text-sm">
+                <a href="privacidad.html" class="hover:text-rp-mint transition duration-200">PRIVACIDAD</a>
+                <a href="#" class="hover:text-rp-mint transition duration-200">TÉRMINOS</a>
+            </div>
+            <p class="text-sm text-gray-500">&copy; <span id="current-year">2024</span> Circula. Economía Circular.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

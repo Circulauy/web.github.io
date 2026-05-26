@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container mx-auto px-6 sm:px-12 lg:px-24 py-4 flex justify-between items-center relative">
+    
+    <a href="index" class="flex items-center gap-2 hover:opacity-80 transition relative z-[100]">
+        <img src="images/logo.png" alt="Logo Circula" id="header-logo-img" class="h-8 sm:h-10 lg:h-11 object-contain">
+    </a>
+
+    <nav class="flex max-md:hidden space-x-8 items-center" id="desktop-nav">
+        <a href="index" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Inicio</a>
+        <a href="talleres" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Talleres</a>
+        <a href="nosotros" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Nosotros</a>
+        <a href="galeria" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Galería</a>
+        <a href="tienda" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Tienda</a>
+        <a href="contacto" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Contacto</a>
+    </nav>
+
+    <div class="flex items-center space-x-4 relative z-[100]">
+        
+        <a href="https://www.instagram.com/circula.uy/" target="_blank" 
+           class="max-md:hidden text-text-dark hover:text-rp-teal transition text-xl">
+            <i class="fab fa-instagram"></i>
+        </a>
+
+        <a href="https://www.linkedin.com/company/circulauy" target="_blank" 
+           class="max-md:hidden text-text-dark hover:text-rp-teal transition text-xl">
+            <i class="fab fa-linkedin"></i>
+        </a>
+
+        <div id="cart-dropdown-container" class="relative group">
+            <a href="carrito" class="relative p-2 rounded-full hover:bg-rp-blue-light transition block">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" class="w-6 h-6 text-rp-teal">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
+                </svg>
+                <span id="cart-count"
+                    class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
+            </a>
+            <div id="cart-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 10px; width: 320px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); z-index: 2147483647; padding: 20px; color: #1f2937;">
+                <h4 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2">Resumen del Carrito</h4>
+                <div id="dropdown-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;"><p style="text-align: center; color: #6b7280;">Cargando...</p></div>
+                <div id="dropdown-summary" style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: auto;">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.25rem; margin-bottom: 1rem;">
+                        <span>Total:</span><span id="dropdown-total" style="color: #009ee3;">$0.00</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button onclick="window.location.href='datos'" style="width: 100%; padding: 0.75rem; background-color: #4da3d4; color: white; border-radius: 0.5rem;">Finalizar Compra</button>
+                        <a href="carrito" onclick="route('carrito')" style="width: 100%; padding: 0.75rem; background-color: #92c9c9; color: white; text-align: center; border-radius: 0.5rem;">Ver Carrito</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="mobile-menu-button" 
+            class="md:hidden relative z-[100] p-2 text-text-dark focus:outline-none group"
+            onclick="toggleMobileMenu()">
+            <div class="w-6 h-5 flex flex-col justify-between items-center overflow-hidden">
+                <span id="line-top" class="w-full h-[2px] bg-current transform transition-all duration-300 origin-center rounded-full"></span>
+                <span id="line-bottom" class="w-full h-[2px] bg-current transform transition-all duration-300 origin-center rounded-full"></span>
+            </div>
+        </button>
+    </div>
+</div>
+
+<div id="mobile-menu-overlay" class="fixed inset-0 bg-white/95 backdrop-blur-xl z-[90] transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center opacity-0 md:hidden">
+    <nav class="flex flex-col space-y-8 text-center text-2xl font-bold font-heading text-text-dark">
+        <a href="index" class="hover:text-rp-teal transition">Inicio</a>
+        <a href="talleres" class="hover:text-rp-teal transition">Talleres</a>
+        <a href="nosotros" class="hover:text-rp-teal transition">Nosotros</a>
+        <a href="galeria" class="hover:text-rp-teal transition">Galería</a>
+        <a href="tienda" class="hover:text-rp-teal transition">Tienda</a>
+        <a href="contacto" class="hover:text-rp-teal transition">Contacto</a>
+    </nav>
+    <div class="mt-12 flex space-x-8 text-3xl text-rp-teal">
+        <a href="https://www.instagram.com/circula.uy/" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/circulauy" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
+</div>

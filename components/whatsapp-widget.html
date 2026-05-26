@@ -1,0 +1,203 @@
+<!-- Estilos del Widget de WhatsApp -->
+<style>
+    /* --- Posicionamiento del Widget --- */
+    #whatsapp-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99999;
+    }
+
+    /* --- Estilo del Ícono de WhatsApp (Burbuja siempre visible) --- */
+    #whatsapp-icon {
+        background-color: #25D366;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #whatsapp-icon:hover {
+        transform: scale(1.05);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* --- Estilo de la Ventana del Chat (Simulación de Móvil) --- */
+    #whatsapp-chat-box {
+        width: 320px;
+        height: 450px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+        position: absolute;
+        bottom: 75px;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- 1. Encabezado del Chat (Barra Superior de WhatsApp) --- */
+    #chat-header {
+        background-color: #075E54;
+        color: white;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    #company-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid white;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-name {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .status {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    /* --- 2. Área de Mensajes (Fondo de WhatsApp) --- */
+    #message-area {
+        background-image: url('images/whastappweb.jpg');
+        background-repeat: repeat;
+        background-size: contain;
+        background-color: #ECE5DD;
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    .initial-message {
+        background-color: #DCF8C6;
+        padding: 8px 12px;
+        border-radius: 10px 10px 10px 0;
+        max-width: 80%;
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.3;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    /* --- 3. Área de Entrada (Abajo) --- */
+    #input-container {
+        padding: 8px 15px;
+        background-color: #f0f0f0;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    #mensaje-usuario {
+        flex-grow: 1;
+        background-color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 12px;
+        margin-right: 8px;
+        box-sizing: border-box;
+        resize: none;
+        font-family: inherit;
+        line-height: 1.2;
+        max-height: 50px;
+        font-size: 15px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    #mensaje-usuario:focus {
+        outline: none;
+    }
+
+    /* Estilo del botón de Enviar (circular) */
+    #whatsapp-chat-box button {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        padding: 0;
+        background-color: #075E54;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s;
+    }
+
+    #whatsapp-chat-box button:hover {
+        background-color: #128C7E;
+    }
+</style>
+
+<!-- FontAwesome para íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div id="whatsapp-widget">
+    <button id="whatsapp-icon" onclick="toggleChat()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+
+    <div id="whatsapp-chat-box" class="hidden">
+        <div id="chat-header">
+            <img id="company-avatar" src="images/logo whatsapp circula.jpg" alt="Foto de la Empresa">
+
+            <div class="contact-info">
+                <span class="contact-name">Circula</span>
+                <span class="status">En línea</span>
+            </div>
+        </div>
+
+        <div id="message-area">
+            <div class="initial-message">¡Hola! ¿En qué podemos ayudarte hoy? Escribe tu mensaje abajo.</div>
+        </div>
+
+        <div id="input-container">
+            <textarea id="mensaje-usuario" placeholder="Escribe un mensaje..." rows="1"></textarea>
+            <button onclick="enviarWhatsApp()" title="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circula | Contacto</title>
+    <meta name="description"
+        content="Contacta con Circula para consultas sobre talleres, productos o servicios de reciclaje.">
+    <link rel="canonical" href="https://www.circula.uy/contacto">
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
+    
+    <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd', 'rp-border-default': '#b5b5b5' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] } } } }
+    </script>
+    
+    <style>
+        html { scroll-behavior: smooth; scrollbar-width: none; }
+        html::-webkit-scrollbar { display: none; }
+        .section-padding { padding-top: 6rem; padding-bottom: 6rem; }
+        .title-style { font-family: 'Patua One', cursive; font-weight: 700; letter-spacing: -0.01em; }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #79C7C7; transition: width .3s ease; }
+        .nav-link:hover::after { width: 100%; }
+    </style>
+</head>
+
+<body class="font-sans bg-bg-light text-text-dark">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="success-toast" class="fixed top-24 right-5 z-[50000] hidden transform transition-all duration-700 ease-out translate-x-full opacity-0">
+        <div class="bg-white border-l-8 border-green-500 rounded-lg shadow-2xl p-6 flex items-center gap-4 max-w-md border border-gray-100">
+            <div class="bg-green-100 rounded-full p-3 text-green-600 flex-shrink-0">
+                <i class="fas fa-check text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 text-lg">¡Consulta Enviada!</h4>
+                <p class="text-sm text-gray-600">Hemos recibido tu mensaje correctamente.</p>
+            </div>
+            <button onclick="cerrarToast()" class="ml-auto text-gray-400 hover:text-gray-600 p-2">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="bg-rp-teal section-padding pt-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border-t-4 border-rp-mint">
+                    <div class="text-center mb-10">
+                        <h1 class="text-4xl font-bold text-text-dark mb-3 title-style">
+                            CONTACTA CON <span class="text-rp-teal">CIRCULA</span>
+                        </h1>
+                        <p class="text-lg text-text-dark/80">
+                            Déjanos tu consulta y te responderemos por correo electrónico.
+                        </p>
+                    </div>
+
+                    <form action="https://formsubmit.co/contacto@circula.uy" method="POST" enctype="multipart/form-data" class="space-y-6" onsubmit="activarCarga()">
+                        
+                        <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
+                        <input type="hidden" name="_captcha" value="false"> 
+                        <input type="hidden" name="_template" value="table">
+                        
+                        <input type="hidden" name="_next" id="redirect-url" value="">
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-text-dark mb-2">Correo Electrónico *</label>
+                            <input type="email" name="email" id="email" required placeholder="tu.correo@ejemplo.com"
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                        </div>
+
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-text-dark mb-2">Nombre Completo *</label>
+                            <input type="text" name="name" id="name" required placeholder="Tu Nombre"
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
+                        </div>
+
+                        <div>
+                            <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés Principal *</label>
+                            <select id="interest" name="interest" required onchange="handleInterestChange(this)"
+                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none"
+                                style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right .75rem center">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="Talleres para colegios">Talleres para colegios</option>
+                                <option value="Talleres para empresas">Talleres para empresas</option>
+                                <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
+                                <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje</option>
+                                <option value="Solicitud de trabajo">Solicitud de trabajo</option>
+                                <option value="Proyecto personalizado">Proyecto personalizado</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+
+                            <div id="vacancy-alert" class="hidden mt-3 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg transition-all duration-300">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-info-circle text-yellow-500 mt-0.5"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-bold text-yellow-800">Aviso sobre vacantes</h3>
+                                        <div class="mt-1 text-sm text-yellow-700">
+                                            <p>Actualmente <strong>no contamos con vacantes disponibles</strong> en el equipo. De todas formas, puedes enviarnos tu CV y lo guardaremos en nuestra base de datos para futuras oportunidades.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="attachment" class="block text-sm font-medium text-text-dark mb-2">Adjuntar Archivo (Opcional)</label>
+                            <input type="file" name="attachment" id="attachment" accept="image/png, image/jpeg, application/pdf"
+                                onchange="handleFileSelect(event)"
+                                class="block w-full text-sm text-gray-500
+                                    file:mr-4 file:py-2.5 file:px-4
+                                    file:rounded-lg file:border-0
+                                    file:text-sm file:font-bold
+                                    file:bg-rp-teal file:text-white
+                                    hover:file:bg-rp-teal/90
+                                    cursor-pointer border border-rp-border-default rounded-lg bg-white transition
+                                ">
+                            <p class="mt-1 text-xs text-gray-500 transition-colors duration-300" id="file-info">
+                                <i class="fas fa-info-circle mr-1"></i> Imágenes se comprimirán automáticamente. PDFs máx 10MB.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-text-dark mb-2">Mensaje *</label>
+                            <textarea name="message" id="message" rows="5" required
+                                placeholder="Escribe aquí tu mensaje..."
+                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition resize-y"></textarea>
+                        </div>
+
+                        <button type="submit" id="submitBtn"
+                            class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style text-lg flex justify-center items-center gap-2">
+                            <span id="btnText"><i class="fas fa-paper-plane mr-2"></i> ENVIAR CONSULTA</span>
+                            <span id="btnLoader" class="hidden flex items-center">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                ENVIANDO...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/load-components.js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || []; 
+        window.dataLayer.push({ event: 'page_view', page_title: 'Contacto - Circula', page_location: window.location.href });
+
+        // --- LÓGICA VISUAL: CAMBIO DE INTERÉS (CARTEL) ---
+        function handleInterestChange(selectElement) {
+            const val = selectElement.value;
+            const alertBox = document.getElementById('vacancy-alert');
+            
+            // Solo manejo visual aquí
+            if (val === 'Solicitud de trabajo') {
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+        
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const redirectInput = document.getElementById('redirect-url');
+            if(redirectInput) {
+                const currentUrl = window.location.href.split('?')[0];
+                redirectInput.value = currentUrl + '?status=success';
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                mostrarExito();
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({path: newUrl}, '', newUrl);
+            }
+        });
+
+        // --- FUNCIONES UI ---
+        function mostrarExito() {
+            const toast = document.getElementById('success-toast');
+            if(toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 100);
+                setTimeout(() => { cerrarToast(); }, 6000);
+            }
+        }
+
+        function cerrarToast() {
+            const toast = document.getElementById('success-toast');
+            if(toast) {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => { toast.classList.add('hidden'); }, 700);
+            }
+        }
+
+        // --- LÓGICA DE ENVÍO Y PREPARACIÓN DE EMAIL ---
+        function activarCarga() {
+            // 1. OBTENER VALORES
+            const name = document.getElementById('name').value;
+            const interest = document.getElementById('interest').value;
+            const subjectField = document.getElementById('email-subject');
+            const autoResponseInput = document.getElementById('auto-response-input');
+
+            // 2. CONFIGURAR ASUNTO (PARA TI)
+            if (subjectField && interest && name) {
+                subjectField.value = `Consulta Web: ${interest} (${name})`;
+            }
+
+            // 3. CONFIGURAR AUTO-RESPUESTA (PARA EL CLIENTE)
+            // Lógica forzada al momento de enviar para evitar errores
+            if (interest === 'Solicitud de trabajo') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en sumarte al equipo de Circula.\n\nConfirmamos que hemos recibido tu solicitud y CV. Actualmente no contamos con vacantes activas, pero guardaremos tu información en nuestra base de datos para futuras búsquedas.\n\n¡Saludos!\nEl equipo de Circula.";
+            } else if (interest === 'Talleres para colegios') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres para instituciones.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1WlnLk0vGFIfdLAwAnGF3cuNgsgAjwndZ/view?usp=drive_link\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
+            } else if (interest === 'Talleres para empresas') {
+                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres corporativos.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1y10XoMchiLkRlUdyiXqByPUAAUqsPj4-/view?usp=sharing\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
+            } else {
+                autoResponseInput.value = "¡Hola! Gracias por contactar a Circula.\n\nHemos recibido tu consulta correctamente y nuestro equipo te responderá a la brevedad con la información solicitada.\n\n¡Saludos!\nEl equipo de Circula.";
+            }
+
+            // 4. ANIMACIÓN DE CARGA
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+        }
+
+        // --- COMPRESIÓN DE IMÁGENES ---
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const infoText = document.getElementById('file-info');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!file) {
+                infoText.textContent = "Imágenes se comprimirán automáticamente. PDFs máx 10MB.";
+                infoText.className = "mt-1 text-xs text-gray-500";
+                return;
+            }
+
+            if (file.type === 'application/pdf') {
+                const sizeMB = file.size / 1024 / 1024;
+                if (sizeMB > 10) { 
+                    alert(`El archivo PDF pesa ${sizeMB.toFixed(2)}MB. El límite es 10MB.`);
+                    event.target.value = ""; 
+                    infoText.textContent = "Archivo demasiado grande (>10MB).";
+                    infoText.className = "mt-1 text-xs text-red-500 font-bold";
+                } else {
+                    infoText.innerHTML = `<i class="fas fa-file-pdf mr-1"></i> PDF listo (${sizeMB.toFixed(2)} MB)`;
+                    infoText.className = "mt-1 text-xs text-gray-700 font-bold";
+                }
+                return;
+            }
+
+            if (file.type.startsWith('image/')) {
+                infoText.innerHTML = `<i class="fas fa-cog fa-spin mr-1"></i> Optimizando imagen...`;
+                infoText.className = "mt-1 text-xs text-orange-500 font-bold";
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50');
+
+                try {
+                    const compressedFile = await compressImage(file);
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(compressedFile);
+                    event.target.files = dataTransfer.files;
+
+                    const originalSize = (file.size / 1024 / 1024).toFixed(2);
+                    const newSize = (compressedFile.size / 1024 / 1024).toFixed(2);
+                    
+                    infoText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Imagen optimizada: ${originalSize}MB ➔ ${newSize}MB`;
+                    infoText.className = "mt-1 text-xs text-green-600 font-bold";
+                } catch (error) {
+                    console.error(error);
+                    infoText.textContent = "No se pudo optimizar, se enviará original.";
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50');
+                }
+            }
+        }
+
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const maxWidth = 1200; 
+                const quality = 0.6;   
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            if (!blob) return reject(new Error('Error de compresión'));
+                            const newFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now(),
+                            });
+                            resolve(newFile);
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = (err) => reject(err);
+                };
+                reader.onerror = (err) => reject(err);
+            });
+        }
+    </script>
+</body>
+
+</html>
