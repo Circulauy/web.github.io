@@ -596,7 +596,33 @@
                 // Fetch datos
                 const response = await fetch(SHEET_URL + '&t=' + Date.now());
                 const data = await response.text();
-                galleryItems = csvToJSON(data);
+                galleryItems = [
+                    {
+                        img: 'images/Logo Werfen Web.jpeg',
+                        title: 'Logo Werfen',
+                        category: 'Proyectos',
+                        desc: 'Diseño e identidad visual sostenible para el reconocimiento de la iniciativa Werfen.'
+                    },
+                    {
+                        img: 'images/Mesas ratonas Web.jpeg',
+                        title: 'Mesas ratonas',
+                        category: 'Productos',
+                        desc: 'Mesas ratonas de diseño contemporáneo fabricadas con placas de plástico 100% reciclado.'
+                    },
+                    {
+                        img: 'images/DHL Recon WEb.jpeg',
+                        title: 'Reconocimiento DHL',
+                        category: 'Proyectos',
+                        desc: 'Premios de reconocimiento GoGreen para DHL fabricados a partir de plástico circular recuperado.'
+                    },
+                    {
+                        img: 'images/Placards Tres Cruces Web.jpeg',
+                        title: 'Placards a medida',
+                        category: 'Proyectos',
+                        desc: 'Placards a medida de alta durabilidad y diseño funcional con una estructura optimizada para el almacenamiento.'
+                    },
+                    ...csvToJSON(data)
+                ];
 
                 // Filtros
                 filterBtns.forEach(btn => {

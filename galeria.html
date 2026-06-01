@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -352,28 +352,28 @@
         }
 
         /* Fuerza bruta para iconos de redes sociales */
-        header a[href*="instagram"], 
+        header a[href*="instagram"],
         header a[href*="linkedin"] {
             color: #ffffff !important;
         }
-        
-        header a[href*="instagram"] i, 
+
+        header a[href*="instagram"] i,
         header a[href*="linkedin"] i,
-        header a[href*="instagram"] svg, 
+        header a[href*="instagram"] svg,
         header a[href*="linkedin"] svg {
             color: #ffffff !important;
             fill: #ffffff !important;
         }
 
         /* Hover state para redes sociales */
-        header a[href*="instagram"]:hover, 
+        header a[href*="instagram"]:hover,
         header a[href*="linkedin"]:hover {
             color: #79C7C7 !important;
         }
-        
-        header a[href*="instagram"]:hover i, 
+
+        header a[href*="instagram"]:hover i,
         header a[href*="linkedin"]:hover i,
-        header a[href*="instagram"]:hover svg, 
+        header a[href*="instagram"]:hover svg,
         header a[href*="linkedin"]:hover svg {
             color: #79C7C7 !important;
             fill: #79C7C7 !important;
@@ -383,7 +383,7 @@
         header #cart-dropdown-container svg {
             color: #ffffff !important;
         }
-        
+
         header #cart-dropdown-container:hover svg {
             color: #79C7C7 !important;
         }
@@ -419,8 +419,8 @@
             style="display:none;visibility:hidden"></iframe></noscript>
     <header id="main-header"
         class="fixed top-0 z-50 w-full py-6 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
-        </header>
-    
+    </header>
+
     <div class="info-container" id="info">
         <div class="info-title" id="ui-title">...</div>
         <div class="info-subtitle" id="ui-subtitle">...</div>
@@ -598,7 +598,37 @@
 
                 const response = await fetch(SHEET_URL + '&t=' + Date.now());
                 const data = await response.text();
-                const rawItems = csvToJSON(data);
+                const rawItems = [
+                    {
+                        img: 'images/Logo Werfen Web.jpeg',
+                        title: 'Logo Werfen',
+                        category: 'Proyectos',
+                        desc: 'Diseño e identidad visual sostenible para el reconocimiento de la iniciativa Werfen.',
+                        align: 'center'
+                    },
+                    {
+                        img: 'images/Mesas ratonas Web.jpeg',
+                        title: 'Mesas ratonas',
+                        category: 'Productos',
+                        desc: 'Mesas ratonas de diseño contemporáneo fabricadas con placas de plástico 100% reciclado.',
+                        align: 'center'
+                    },
+                    {
+                        img: 'images/DHL Recon WEb.jpeg',
+                        title: 'Reconocimiento DHL',
+                        category: 'Proyectos',
+                        desc: 'Premios de reconocimiento GoGreen para DHL fabricados a partir de plástico circular recuperado.',
+                        align: '50% 80%'
+                    },
+                    {
+                        img: 'images/Placards Tres Cruces Web.jpeg',
+                        title: 'Placards a medida',
+                        category: 'Proyectos',
+                        desc: 'Placards a medida de alta durabilidad y diseño funcional con una estructura optimizada para el almacenamiento.',
+                        align: 'center'
+                    },
+                    ...csvToJSON(data)
+                ];
 
                 slides = rawItems.map(item => ({
                     url: fixLink(item.img || item.imagen),
@@ -663,14 +693,17 @@
 
                 // Load actual image progressively
                 const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => {
+                if (finalUrl.startsWith('http://') || finalUrl.startsWith('https://')) {
+                    img.crossOrigin = 'anonymous';
+                }
+                
+                const updateMeshTexture = (loadedImg) => {
                     if (meshes[i]) {
-                        meshes[i].userData.imgWidth = img.width;
-                        meshes[i].userData.imgHeight = img.height;
+                        meshes[i].userData.imgWidth = loadedImg.width;
+                        meshes[i].userData.imgHeight = loadedImg.height;
 
                         // Create texture from loaded image
-                        const highQualityTexture = new THREE.Texture(img);
+                        const highQualityTexture = new THREE.Texture(loadedImg);
                         highQualityTexture.colorSpace = THREE.SRGBColorSpace;
                         highQualityTexture.wrapS = THREE.ClampToEdgeWrapping;
                         highQualityTexture.wrapT = THREE.ClampToEdgeWrapping;
@@ -688,6 +721,22 @@
                         meshes[i].material.needsUpdate = true;
                         resizeTexture(meshes[i]);
                     }
+                };
+
+                img.onerror = (err) => {
+                    console.warn("Error loading high-res texture with crossOrigin, retrying without it:", finalUrl, err);
+                    const retryImg = new Image();
+                    retryImg.onload = () => {
+                        updateMeshTexture(retryImg);
+                    };
+                    retryImg.onerror = (retryErr) => {
+                        console.error("Failed to load image on retry:", finalUrl, retryErr);
+                    };
+                    retryImg.src = finalUrl;
+                };
+
+                img.onload = () => {
+                    updateMeshTexture(img);
                 };
                 img.src = finalUrl;
 
@@ -1111,14 +1160,14 @@
 
     </script>
     <script src="js/load-components.js"></script>
-    
+
     <script>
         // --- SCRIPT DE CORRECCIÓN DE COLOR PARA ICONOS ---
         // Este script vigila el header y apenas se cargan los iconos, fuerza el color blanco.
         const headerObserver = new MutationObserver((mutations) => {
             // Buscamos cualquier enlace que apunte a instagram o linkedin
             const socialLinks = document.querySelectorAll('header a[href*="instagram"], header a[href*="linkedin"]');
-            
+
             if (socialLinks.length > 0) {
                 socialLinks.forEach(link => {
                     // Quitamos clase oscura de Tailwind si existe
@@ -1127,20 +1176,20 @@
                     link.classList.add('text-white');
                     // Forzamos estilo en línea por si acaso
                     link.style.color = '#ffffff';
-                    
+
                     // Aseguramos que los iconos hijos también sean blancos
                     const icon = link.querySelector('i, svg');
-                    if(icon) {
+                    if (icon) {
                         icon.style.color = '#ffffff';
                         icon.style.fill = '#ffffff';
                     }
                 });
-                
+
                 // También blanqueamos el carrito
                 const cartContainer = document.getElementById('cart-dropdown-container');
-                if(cartContainer) {
+                if (cartContainer) {
                     const cartIcon = cartContainer.querySelector('svg');
-                    if(cartIcon) {
+                    if (cartIcon) {
                         cartIcon.classList.remove('text-text-dark', 'text-rp-teal');
                         cartIcon.classList.add('text-white');
                         cartIcon.style.color = '#ffffff';
@@ -1148,17 +1197,17 @@
                 }
             }
         });
-        
+
         // Empezar a observar el header
         const headerEl = document.getElementById('main-header');
-        if(headerEl) {
+        if (headerEl) {
             headerObserver.observe(headerEl, { childList: true, subtree: true });
         }
     </script>
-    
+
     <footer id="gallery-footer"
         class="fixed bottom-0 w-full bg-text-dark text-white py-12 border-t border-gray-800 z-40 transition-transform duration-700 ease-out transform translate-y-full">
-        </footer>
+    </footer>
 </body>
 
 </html>
