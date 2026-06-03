@@ -341,6 +341,69 @@ async function getStats() {
     };
 }
 
+async function deleteSale(id) {
+    if (isMockMode) {
+        const index = mockSales.findIndex(s => s.id === id);
+        if (index > -1) {
+            mockSales.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    await supabaseRequest(`sales?id=eq.${id}`, {
+        method: 'DELETE'
+    });
+    return true;
+}
+
+async function updateSale(id, saleData) {
+    if (isMockMode) {
+        const found = mockSales.find(s => s.id === id);
+        if (found) {
+            Object.assign(found, {
+                customer_name: saleData.customer_name || found.customer_name,
+                customer_email: saleData.customer_email || found.customer_email,
+                items: saleData.items || found.items,
+                delivery_option: saleData.delivery_option || found.delivery_option,
+                district: saleData.district !== undefined ? saleData.district : found.district,
+                address: saleData.address !== undefined ? saleData.address : found.address,
+                subtotal: saleData.subtotal !== undefined ? Number(saleData.subtotal) : found.subtotal,
+                shipping_cost: saleData.shipping_cost !== undefined ? Number(saleData.shipping_cost) : found.shipping_cost,
+                discount_applied: saleData.discount_applied !== undefined ? Number(saleData.discount_applied) : found.discount_applied,
+                total: saleData.total !== undefined ? Number(saleData.total) : found.total,
+                payment_method: saleData.payment_method || found.payment_method,
+                status: saleData.status || found.status
+            });
+            return found;
+        }
+        throw new Error("Venta no encontrada en modo simulado.");
+    }
+
+    const result = await supabaseRequest(`sales?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify(saleData)
+    });
+    return result ? result[0] : null;
+}
+
+async function deleteDiscountCode(id) {
+    if (isMockMode) {
+        const index = mockDiscountCodes.findIndex(d => String(d.id) === String(id));
+        if (index > -1) {
+            mockDiscountCodes.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    await supabaseRequest(`discount_codes?id=eq.${id}`, {
+        method: 'DELETE'
+    });
+    return true;
+}
+
 module.exports = {
     isMockMode,
     validateDiscountCode,
@@ -349,5 +412,8 @@ module.exports = {
     getDiscountCodes,
     saveSale,
     getSales,
-    getStats
+    getStats,
+    deleteSale,
+    updateSale,
+    deleteDiscountCode
 };

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula | Panel de Control</title>
+    <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -396,6 +397,29 @@
                     </div>
                 </div>
 
+                <!-- Filtros de fecha y Exportación -->
+                <div class="flex flex-wrap items-center gap-4 mb-6 bg-slate-900/40 p-4 rounded-xl border border-slate-800/80">
+                    <div class="flex items-center gap-2">
+                        <label for="filter-date-from" class="text-xs text-slate-400 font-semibold uppercase">Desde:</label>
+                        <input type="date" id="filter-date-from" onchange="filterSalesHistory()"
+                            class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="filter-date-to" class="text-xs text-slate-400 font-semibold uppercase">Hasta:</label>
+                        <input type="date" id="filter-date-to" onchange="filterSalesHistory()"
+                            class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                    </div>
+                    <button onclick="clearDateFilters()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i> Limpiar
+                    </button>
+                    
+                    <div class="flex-grow text-right">
+                        <button onclick="exportSalesToCSV()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-2 inline-flex">
+                            <i class="fa-solid fa-file-csv text-base"></i> Exportar CSV
+                        </button>
+                    </div>
+                </div>
+
                 <div class="overflow-x-auto -mx-6 sm:mx-0">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
@@ -406,7 +430,7 @@
                                 <th class="px-6 py-3">Envío</th>
                                 <th class="px-6 py-3 text-right">Monto</th>
                                 <th class="px-6 py-3">Pago</th>
-                                <th class="px-6 py-3 text-center">Acción</th>
+                                <th class="px-6 py-3 text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="sales-tbody" class="divide-y divide-slate-800 text-slate-300">
@@ -471,6 +495,137 @@
                     Entendido
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-red-500/20">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white font-brand" id="confirm-modal-title">¿Confirmar Acción?</h3>
+            </div>
+            <p id="confirm-modal-message" class="text-sm text-slate-300">¿Estás seguro de que deseas realizar esta acción? Esta operación no se puede deshacer.</p>
+            <div class="pt-3 border-t border-slate-800 flex justify-center gap-4">
+                <button onclick="closeConfirmModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded-lg transition text-xs">
+                    Cancelar
+                </button>
+                <button id="confirm-modal-ok-btn" class="bg-red-500 hover:bg-red-600 text-white font-extrabold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-red-500/10 text-xs">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT SALE MODAL -->
+    <div id="edit-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
+        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white font-brand flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen-to-square text-rp-teal"></i>Editar Venta
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-white transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="edit-sale-form" onsubmit="submitEditSale(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="edit-sale-id">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Nombre del Cliente *</label>
+                        <input type="text" id="edit-customer-name" required
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Email del Cliente</label>
+                        <input type="email" id="edit-customer-email"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Método de Entrega</label>
+                        <select id="edit-delivery-option"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                            <option value="pickup">Retiro en Local (Pick Up)</option>
+                            <option value="montevideo">Envío Montevideo</option>
+                            <option value="interior">Envío Interior</option>
+                            <option value="hand">Entrega en Mano</option>
+                            <option value="custom">Envío Personalizado / Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Zona / Barrio</label>
+                        <input type="text" id="edit-district"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 font-semibold mb-1 uppercase">Dirección / Notas</label>
+                    <input type="text" id="edit-address"
+                        class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Subtotal ($)</label>
+                        <input type="number" id="edit-subtotal" required min="0" onchange="recalcEditTotal()"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal text-center">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Costo Envío ($)</label>
+                        <input type="number" id="edit-shipping-cost" required min="0" onchange="recalcEditTotal()"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal text-center">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Descuento ($)</label>
+                        <input type="number" id="edit-discount-applied" required min="0" onchange="recalcEditTotal()"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal text-center">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Método de Pago</label>
+                        <select id="edit-payment-method"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="transferencia">Transferencia</option>
+                            <option value="mercadopago">Mercado Pago</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1 uppercase">Estado</label>
+                        <select id="edit-status"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                            <option value="approved">Aprobado</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="rejected">Rechazado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold uppercase mb-1">TOTAL ($)</label>
+                        <input type="number" id="edit-total" readonly
+                            class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-rp-teal font-bold focus:outline-none text-center font-mono">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 flex justify-end gap-3 text-xs">
+                    <button type="button" onclick="closeEditModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="submit-edit-btn" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2 px-6 rounded-lg transition shadow-lg shadow-rp-teal/10">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -695,6 +850,50 @@
                 localMockCoupons.push(newDiscount);
                 return { message: "Cupón generado con éxito (Simulado)", discount: newDiscount };
             }
+
+            if (action === 'delete_discount') {
+                const body = JSON.parse(options.body);
+                const index = localMockCoupons.findIndex(d => String(d.id) === String(body.id));
+                if (index > -1) {
+                    localMockCoupons.splice(index, 1);
+                    return { message: "Cupón eliminado con éxito (Simulado)" };
+                }
+                throw new Error("Cupón no encontrado en modo simulado.");
+            }
+
+            if (action === 'delete_sale') {
+                const body = JSON.parse(options.body);
+                const index = localMockSales.findIndex(s => String(s.id) === String(body.id));
+                if (index > -1) {
+                    localMockSales.splice(index, 1);
+                    return { message: "Venta eliminada con éxito (Simulado)" };
+                }
+                throw new Error("Venta no encontrada en modo simulado.");
+            }
+
+            if (action === 'update_sale') {
+                const body = JSON.parse(options.body);
+                const saleId = body.id;
+                const saleData = body.sale_data;
+                const found = localMockSales.find(s => String(s.id) === String(saleId));
+                if (found) {
+                    Object.assign(found, {
+                        customer_name: saleData.customer_name || found.customer_name,
+                        customer_email: saleData.customer_email || found.customer_email,
+                        delivery_option: saleData.delivery_option || found.delivery_option,
+                        district: saleData.district !== undefined ? saleData.district : found.district,
+                        address: saleData.address !== undefined ? saleData.address : found.address,
+                        subtotal: saleData.subtotal !== undefined ? Number(saleData.subtotal) : found.subtotal,
+                        shipping_cost: saleData.shipping_cost !== undefined ? Number(saleData.shipping_cost) : found.shipping_cost,
+                        discount_applied: saleData.discount_applied !== undefined ? Number(saleData.discount_applied) : found.discount_applied,
+                        total: saleData.total !== undefined ? Number(saleData.total) : found.total,
+                        payment_method: saleData.payment_method || found.payment_method,
+                        status: saleData.status || found.status
+                    });
+                    return { message: "Venta actualizada con éxito (Simulado)", sale: found };
+                }
+                throw new Error("Venta no encontrada en modo simulado.");
+            }
         }
 
         // Carga Inicial / Autenticación
@@ -810,7 +1009,8 @@
                 // 2. Cargar historial de ventas
                 const sales = await fetchAPI('get_sales', password);
                 globalSalesList = sales;
-                renderSalesHistory(sales);
+                filteredSalesList = sales;
+                filterSalesHistory(); // Aplica filtros y renderiza
 
                 // 3. Cargar Cupones
                 const discounts = await fetchAPI('get_discounts', password);
@@ -1195,7 +1395,12 @@
                             <span class="font-mono font-bold text-white tracking-wider">${c.code}</span>
                             <div class="text-[10px] text-slate-500">Expira: ${expiryFormatted}</div>
                         </div>
-                        <span class="px-2 py-0.5 rounded-full font-bold text-[9px] ${badgeClass}">${badgeText}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded-full font-bold text-[9px] ${badgeClass}">${badgeText}</span>
+                            <button onclick="confirmDeleteCoupon('${c.id}')" class="text-red-400 hover:text-red-300 transition p-1 text-sm" title="Eliminar Cupón">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -1244,29 +1449,73 @@
                         <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400"><i class="fa-solid fa-truck-ramp-box mr-1"></i>${delLabel}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-rp-teal">$${sale.total.toFixed(2)}</td>
                         <td class="px-6 py-4 whitespace-nowrap">${payBadge}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <button onclick="openDetailsModal(${index})" class="text-slate-400 hover:text-white transition p-1 text-sm" title="Ver Detalle">
-                                <i class="fa-solid fa-circle-info"></i>
-                            </button>
+                        <td class="px-6 py-4 whitespace-nowrap text-center font-sans">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="openDetailsModal('${sale.id}')" class="text-slate-400 hover:text-white transition p-1 text-sm" title="Ver Detalle">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </button>
+                                <button onclick="openEditModal('${sale.id}')" class="text-rp-teal hover:text-white transition p-1 text-sm" title="Editar Venta">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="confirmDeleteSale('${sale.id}')" class="text-red-400 hover:text-red-300 transition p-1 text-sm" title="Eliminar Venta">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // BUSQUEDA HISTORIAL
+        let filteredSalesList = [];
+
+        // BUSQUEDA Y FILTRADO HISTORIAL
         function filterSalesHistory() {
             const query = document.getElementById('sales-search').value.toLowerCase();
-            const filtered = globalSalesList.filter(sale => 
-                sale.customer_name.toLowerCase().includes(query) || 
-                (sale.customer_email && sale.customer_email.toLowerCase().includes(query))
-            );
-            renderSalesHistory(filtered);
+            const dateFromStr = document.getElementById('filter-date-from').value;
+            const dateToStr = document.getElementById('filter-date-to').value;
+
+            let dateFrom = dateFromStr ? new Date(dateFromStr) : null;
+            let dateTo = dateToStr ? new Date(dateToStr) : null;
+
+            if (dateFrom) {
+                dateFrom.setHours(0, 0, 0, 0);
+            }
+            if (dateTo) {
+                dateTo.setHours(23, 59, 59, 999);
+            }
+
+            filteredSalesList = globalSalesList.filter(sale => {
+                // Filtro por query
+                const matchesQuery = sale.customer_name.toLowerCase().includes(query) || 
+                                     (sale.customer_email && sale.customer_email.toLowerCase().includes(query));
+                if (!matchesQuery) return false;
+
+                // Filtro por rango de fecha
+                if (sale.created_at) {
+                    const saleDate = new Date(sale.created_at);
+                    if (dateFrom && saleDate < dateFrom) return false;
+                    if (dateTo && saleDate > dateTo) return false;
+                } else {
+                    if (dateFrom || dateTo) return false;
+                }
+
+                return true;
+            });
+
+            renderSalesHistory(filteredSalesList);
+        }
+
+        function clearDateFilters() {
+            document.getElementById('filter-date-from').value = '';
+            document.getElementById('filter-date-to').value = '';
+            filterSalesHistory();
         }
 
         // DETALLE MODAL WINDOW
-        function openDetailsModal(index) {
-            const sale = globalSalesList[index];
+        function openDetailsModal(id) {
+            const sale = globalSalesList.find(s => s.id === id);
+            if (!sale) return;
             const content = document.getElementById('modal-details-content');
             
             const itemList = sale.items.map(item => `
@@ -1401,6 +1650,212 @@
                     toast.remove();
                 }, 300);
             }, 3500);
+        }
+
+        // CONFIRM MODAL CONTROLLER
+        let confirmModalCallback = null;
+
+        function showConfirmModal(title, message, okCallback) {
+            document.getElementById('confirm-modal-title').textContent = title;
+            document.getElementById('confirm-modal-message').textContent = message;
+            confirmModalCallback = okCallback;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            confirmModalCallback = null;
+        }
+
+        // BIND CONFIRM MODAL BUTTON
+        document.addEventListener('DOMContentLoaded', () => {
+            const okBtn = document.getElementById('confirm-modal-ok-btn');
+            if (okBtn) {
+                okBtn.onclick = () => {
+                    if (confirmModalCallback) {
+                        confirmModalCallback();
+                    }
+                    closeConfirmModal();
+                };
+            }
+        });
+
+        // ACTIONS AND API INTERFACE
+        function confirmDeleteSale(id) {
+            showConfirmModal(
+                "¿Eliminar Venta?",
+                "¿Estás seguro de que deseas eliminar esta venta? Se actualizarán las métricas de ingresos del panel en tiempo real.",
+                async () => {
+                    const password = localStorage.getItem('circula_admin_pass');
+                    try {
+                        await fetchAPI('delete_sale', password, {
+                            method: 'POST',
+                            body: JSON.stringify({ id })
+                        });
+                        showToast("Venta eliminada con éxito.", "success");
+                        loadDashboardData();
+                    } catch (err) {
+                        console.error(err);
+                        showToast("Error al eliminar venta: " + err.message, "error");
+                    }
+                }
+            );
+        }
+
+        function confirmDeleteCoupon(id) {
+            showConfirmModal(
+                "¿Eliminar Cupón?",
+                "¿Estás seguro de que deseas eliminar este cupón de descuento? Dejará de ser válido inmediatamente.",
+                async () => {
+                    const password = localStorage.getItem('circula_admin_pass');
+                    try {
+                        await fetchAPI('delete_discount', password, {
+                            method: 'POST',
+                            body: JSON.stringify({ id })
+                        });
+                        showToast("Cupón eliminado con éxito.", "success");
+                        loadDashboardData();
+                    } catch (err) {
+                        console.error(err);
+                        showToast("Error al eliminar cupón: " + err.message, "error");
+                    }
+                }
+            );
+        }
+
+        // EDIT SALE MODAL CONTROLLER
+        function openEditModal(id) {
+            const sale = globalSalesList.find(s => s.id === id);
+            if (!sale) return;
+
+            document.getElementById('edit-sale-id').value = sale.id;
+            document.getElementById('edit-customer-name').value = sale.customer_name;
+            document.getElementById('edit-customer-email').value = sale.customer_email || '';
+            document.getElementById('edit-delivery-option').value = sale.delivery_option || 'pickup';
+            document.getElementById('edit-district').value = sale.district || '';
+            document.getElementById('edit-address').value = sale.address || '';
+            document.getElementById('edit-subtotal').value = sale.subtotal || 0;
+            document.getElementById('edit-shipping-cost').value = sale.shipping_cost || 0;
+            document.getElementById('edit-discount-applied').value = sale.discount_applied || 0;
+            document.getElementById('edit-payment-method').value = sale.payment_method || 'efectivo';
+            document.getElementById('edit-status').value = sale.status || 'approved';
+            
+            recalcEditTotal();
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function recalcEditTotal() {
+            const subtotal = parseFloat(document.getElementById('edit-subtotal').value) || 0;
+            const shipping = parseFloat(document.getElementById('edit-shipping-cost').value) || 0;
+            const discount = parseFloat(document.getElementById('edit-discount-applied').value) || 0;
+            const total = Math.max(0, subtotal + shipping - discount);
+            document.getElementById('edit-total').value = total.toFixed(2);
+        }
+
+        async function submitEditSale(e) {
+            e.preventDefault();
+            const password = localStorage.getItem('circula_admin_pass');
+            const id = document.getElementById('edit-sale-id').value;
+            
+            const btn = document.getElementById('submit-edit-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Guardando...`;
+
+            const saleData = {
+                customer_name: document.getElementById('edit-customer-name').value,
+                customer_email: document.getElementById('edit-customer-email').value,
+                delivery_option: document.getElementById('edit-delivery-option').value,
+                district: document.getElementById('edit-district').value,
+                address: document.getElementById('edit-address').value,
+                subtotal: parseFloat(document.getElementById('edit-subtotal').value) || 0,
+                shipping_cost: parseFloat(document.getElementById('edit-shipping-cost').value) || 0,
+                discount_applied: parseFloat(document.getElementById('edit-discount-applied').value) || 0,
+                total: parseFloat(document.getElementById('edit-total').value) || 0,
+                payment_method: document.getElementById('edit-payment-method').value,
+                status: document.getElementById('edit-status').value
+            };
+
+            try {
+                await fetchAPI('update_sale', password, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id,
+                        sale_data: saleData
+                    })
+                });
+                showToast("Venta actualizada con éxito.", "success");
+                closeEditModal();
+                loadDashboardData();
+            } catch (err) {
+                console.error(err);
+                showToast("Error al actualizar venta: " + err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `Guardar Cambios`;
+            }
+        }
+
+        // EXPORT SALES TO CSV
+        function exportSalesToCSV() {
+            if (filteredSalesList.length === 0) {
+                showToast("No hay datos para exportar.", "error");
+                return;
+            }
+
+            const headers = ["ID", "Fecha", "Canal", "Cliente Nombre", "Cliente Email", "Productos", "Metodo Entrega", "Direccion/Notas", "Subtotal", "Costo Envio", "Descuento Aplicado", "Codigo Descuento", "Total", "Metodo Pago", "Estado"];
+            
+            const rows = filteredSalesList.map(sale => {
+                const date = new Date(sale.created_at).toLocaleString('es-ES');
+                const source = sale.source === 'web' ? 'Web' : 'Presencial';
+                const itemsStr = sale.items.map(item => `${item.name} (x${item.quantity})`).join(' | ');
+                
+                return [
+                    sale.id,
+                    date,
+                    source,
+                    sale.customer_name,
+                    sale.customer_email || '',
+                    itemsStr,
+                    sale.delivery_option,
+                    sale.address || '',
+                    sale.subtotal,
+                    sale.shipping_cost,
+                    sale.discount_applied,
+                    sale.discount_code || '',
+                    sale.total,
+                    sale.payment_method,
+                    sale.status
+                ];
+            });
+
+            let csvContent = "\ufeff"; // BOM for UTF-8 Excel support
+            csvContent += [headers, ...rows]
+                .map(e => e.map(val => {
+                    const text = String(val === null || val === undefined ? '' : val);
+                    const escaped = text.replace(/"/g, '""');
+                    return `"${escaped}"`;
+                }).join(","))
+                .join("\n");
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            
+            const fromDate = document.getElementById('filter-date-from').value || 'inicio';
+            const toDate = document.getElementById('filter-date-to').value || 'fin';
+            link.setAttribute("download", `ventas_circula_${fromDate}_a_${toDate}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("CSV descargado con éxito.", "success");
         }
     </script>
 </body>

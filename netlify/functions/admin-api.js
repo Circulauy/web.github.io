@@ -388,6 +388,57 @@ exports.handler = async (event, context) => {
                 };
             }
 
+            if (action === 'delete_sale') {
+                const { id } = body;
+                if (!id) {
+                    return { 
+                        statusCode: 400, 
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "ID de venta es requerido." }) 
+                    };
+                }
+                await db.deleteSale(id);
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({ message: "Venta eliminada con éxito" })
+                };
+            }
+
+            if (action === 'update_sale') {
+                const { id, sale_data } = body;
+                if (!id || !sale_data) {
+                    return { 
+                        statusCode: 400, 
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "ID y datos de venta son requeridos." }) 
+                    };
+                }
+                const updated = await db.updateSale(id, sale_data);
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({ message: "Venta actualizada con éxito", sale: updated })
+                };
+            }
+
+            if (action === 'delete_discount') {
+                const { id } = body;
+                if (!id) {
+                    return { 
+                        statusCode: 400, 
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "ID de cupón es requerido." }) 
+                    };
+                }
+                await db.deleteDiscountCode(id);
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({ message: "Cupón eliminado con éxito" })
+                };
+            }
+
             return { statusCode: 400, body: JSON.stringify({ error: "Acción POST no soportada." }) };
         }
 
