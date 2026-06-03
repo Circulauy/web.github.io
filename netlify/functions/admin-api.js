@@ -7,12 +7,12 @@ const db = require('./utils/db');
 async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal, shippingCost, discountApplied, total, deliveryOption, district, address, couponCode) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("⚠️ EMAIL: No están configurados EMAIL_USER o EMAIL_PASS. Omitiendo correo.");
-        return null;
+        return false;
     }
 
     if (!buyerEmail || !buyerEmail.includes('@')) {
         console.log("Omitiendo correo: Email del comprador vacío o inválido.");
-        return null;
+        return false;
     }
 
     // Configuración de Email (Gmail) - Inicializado dinámicamente en cada invocación
@@ -189,7 +189,8 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
         `
     };
 
-    return transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
+    return true;
 }
 
 // Función auxiliar para generar códigos aleatorios únicos
@@ -336,7 +337,8 @@ exports.handler = async (event, context) => {
                 let emailSent = false;
                 if (customer_email && customer_email.trim() !== '' && customer_email.includes('@')) {
                     try {
-                        await sendManualSaleEmailToBuyer(
+                        console.log(`✉️ Intentando enviar correo manual a: ${customer_email}`);
+                        emailSent = await sendManualSaleEmailToBuyer(
                             customer_email,
                             customer_name,
                             items,
@@ -349,10 +351,14 @@ exports.handler = async (event, context) => {
                             address,
                             autoCoupon ? autoCoupon.code : null
                         );
-                        emailSent = true;
+                        if (emailSent) {
+                            console.log(`✅ Correo enviado con éxito a: ${customer_email}`);
+                        } else {
+                            console.log(`⚠️ El envío de correo fue omitido (falta configuración o email inválido).`);
+                        }
                     } catch (emailErr) {
                         console.error("❌ Error al enviar email para venta manual:", emailErr);
-                        // No fallamos la petición completa, solo logueamos el error de email
+                        emailSent = false;
                     }
                 }
 
