@@ -2,7 +2,7 @@
 
 const mercadopago = require('mercadopago');
 const nodemailer = require('nodemailer');
-const { saveSale, markDiscountCodeAsUsed } = require('./utils/db');
+const { saveSale, markDiscountCodeAsUsed, markAbandonedCartAsCompleted } = require('./utils/db');
 
 // ===========================================
 // CONFIGURACIÓN MP + EMAIL
@@ -212,6 +212,14 @@ exports.handler = async (event) => {
                 } catch (cupErr) {
                     console.error(`❌ Error al consumir el cupón '${discountCode}':`, cupErr);
                 }
+            }
+
+            // Marcar el carrito abandonado correspondiente como completado
+            try {
+                await markAbandonedCartAsCompleted(buyerEmail);
+                console.log(`✅ Carrito abandonado para ${buyerEmail} marcado como completado.`);
+            } catch (cartErr) {
+                console.error(`❌ Error al marcar carrito como completado para ${buyerEmail}:`, cartErr);
             }
 
             // Enviar correo al COMPRADOR (Resumen simple)

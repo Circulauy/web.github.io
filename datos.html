@@ -744,6 +744,100 @@
             }
         }
 
+        // --- ABANDONED CART TRACKING ---
+        async function trackAbandonedCart() {
+            const nameEl = document.getElementById('buyer-name');
+            const emailEl = document.getElementById('buyer-email');
+            if (!nameEl || !emailEl) return;
+
+            const customer_name = nameEl.value.trim();
+            const customer_email = emailEl.value.trim();
+
+            // Solo trackear si ambos campos tienen contenido y el email es mínimamente válido
+            if (!customer_name || !customer_email || !customer_email.includes('@')) return;
+
+            const cartItems = getCheckoutCart();
+            if (cartItems.length === 0) return;
+
+            const total = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.quantity)), 0);
+
+            // Formatear items para la DB
+            const items = cartItems.map(item => ({
+                id: item.name.toLowerCase().replace(/\s+/g, '-'),
+                name: item.name,
+                price: parseFloat(item.price),
+                quantity: parseInt(item.quantity)
+            }));
+
+            // Determinar entorno local para simulación
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+
+            try {
+                if (isLocal) {
+                    console.log("📝 [MOCK-TRACK-CART] Carrito abandonado trackeado (Simulado):", {
+                        customer_name,
+                        customer_email,
+                        items,
+                        total
+                    });
+                    
+                    // En local guardamos también en localStorage simulando la DB local
+                    let localMockCarts = [];
+                    try {
+                        const stored = localStorage.getItem('localMockCarts');
+                        if (stored) localMockCarts = JSON.parse(stored);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    
+                    // Upsert por email en estado pending
+                    const existingIdx = localMockCarts.findIndex(c => c.customer_email.toLowerCase() === customer_email.toLowerCase() && c.status === 'pending');
+                    if (existingIdx > -1) {
+                        localMockCarts[existingIdx].customer_name = customer_name;
+                        localMockCarts[existingIdx].items = items;
+                        localMockCarts[existingIdx].total = total;
+                        localMockCarts[existingIdx].created_at = new Date().toISOString();
+                    } else {
+                        localMockCarts.push({
+                            id: `MOCK-CART-${Date.now()}`,
+                            customer_name,
+                            customer_email,
+                            items,
+                            total,
+                            status: 'pending',
+                            created_at: new Date().toISOString()
+                        });
+                    }
+                    localStorage.setItem('localMockCarts', JSON.stringify(localMockCarts));
+                } else {
+                    const response = await fetch('/.netlify/functions/track-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            customer_name,
+                            customer_email,
+                            items,
+                            total
+                        })
+                    });
+                    const resData = await response.json();
+                    console.log("📝 [TRACK-CART] Respuesta del servidor:", resData);
+                }
+            } catch (err) {
+                console.error("Error al trackear carrito abandonado:", err);
+            }
+        }
+
+        // Agregar listeners de tracking
+        document.addEventListener('DOMContentLoaded', () => {
+            const nameEl = document.getElementById('buyer-name');
+            const emailEl = document.getElementById('buyer-email');
+            if (nameEl && emailEl) {
+                nameEl.addEventListener('blur', trackAbandonedCart);
+                emailEl.addEventListener('blur', trackAbandonedCart);
+            }
+        });
+
         // Initialize
         updateCartCount();
         updateCheckoutDisplay(); // Fill summary on load

@@ -101,6 +101,32 @@ let mockDiscountCodes = [
     }
 ];
 
+let mockAbandonedCarts = [
+    {
+        id: "MOCK-CART-1",
+        created_at: new Date(Date.now() - 2*60*60*1000).toISOString(), // hace 2 horas
+        customer_name: "Andrés Gómez",
+        customer_email: "andres@gmail.com",
+        items: [{ id: "bowl-negro", name: "Bowl Negro", price: 450, quantity: 1 }],
+        total: 450,
+        status: "pending"
+    },
+    {
+        id: "MOCK-CART-2",
+        created_at: new Date(Date.now() - 12*60*60*1000).toISOString(), // hace 12 horas
+        customer_name: "Camila Ortiz",
+        customer_email: "camila@hotmail.com",
+        items: [
+            { id: "posavasos-azul-blanco", name: "Posavasos Azul y Blanco", price: 400, quantity: 2 },
+            { id: "bowl-naranja", name: "Bowl Naranja", price: 450, quantity: 1 }
+        ],
+        total: 1250,
+        status: "emailed",
+        discount_code: "CIRCULA10-ABCD"
+    }
+];
+
+
 // Helper para hacer llamadas REST a Supabase
 async function supabaseRequest(path, options = {}) {
     const url = `${SUPABASE_URL}/rest/v1/${path}`;
@@ -404,6 +430,132 @@ async function deleteDiscountCode(id) {
     return true;
 }
 
+async function saveAbandonedCart(cartData) {
+    const cleanEmail = cartData.customer_email.trim().toLowerCase();
+    
+    if (isMockMode) {
+        const found = mockAbandonedCarts.find(c => c.customer_email.toLowerCase() === cleanEmail && c.status === 'pending');
+        if (found) {
+            Object.assign(found, {
+                customer_name: cartData.customer_name,
+                items: cartData.items,
+                total: Number(cartData.total),
+                created_at: new Date().toISOString()
+            });
+            return found;
+        } else {
+            const newCart = {
+                id: `MOCK-CART-${Date.now()}`,
+                ...cartData,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+            mockAbandonedCarts.push(newCart);
+            return newCart;
+        }
+    }
+    
+    // Check if there is an existing pending cart for this customer email
+    const existing = await supabaseRequest(`abandoned_carts?customer_email=eq.${cleanEmail}&status=eq.pending&select=*`);
+    if (existing && existing.length > 0) {
+        const cartId = existing[0].id;
+        const result = await supabaseRequest(`abandoned_carts?id=eq.${cartId}`, {
+            method: 'PATCH',
+            headers: { 'Prefer': 'return=representation' },
+            body: JSON.stringify({
+                customer_name: cartData.customer_name,
+                items: cartData.items,
+                total: Number(cartData.total),
+                created_at: new Date().toISOString()
+            })
+        });
+        return result ? result[0] : existing[0];
+    } else {
+        const result = await supabaseRequest('abandoned_carts', {
+            method: 'POST',
+            headers: { 'Prefer': 'return=representation' },
+            body: JSON.stringify(cartData)
+        });
+        return result ? result[0] : cartData;
+    }
+}
+
+async function getAbandonedCarts() {
+    if (isMockMode) {
+        return [...mockAbandonedCarts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    return supabaseRequest('abandoned_carts?select=*&order=created_at.desc');
+}
+
+async function getAbandonedCartById(id) {
+    if (isMockMode) {
+        return mockAbandonedCarts.find(c => String(c.id) === String(id));
+    }
+    const data = await supabaseRequest(`abandoned_carts?id=eq.${id}&select=*`);
+    return data && data.length > 0 ? data[0] : null;
+}
+
+async function updateAbandonedCartStatus(id, status, discountCode = null) {
+    if (isMockMode) {
+        const found = mockAbandonedCarts.find(c => String(c.id) === String(id));
+        if (found) {
+            found.status = status;
+            if (discountCode) found.discount_code = discountCode;
+            return found;
+        }
+        return null;
+    }
+
+    const payload = { status };
+    if (discountCode) payload.discount_code = discountCode;
+
+    const result = await supabaseRequest(`abandoned_carts?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify(payload)
+    });
+    return result ? result[0] : null;
+}
+
+async function markAbandonedCartAsCompleted(email) {
+    if (!email) return;
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (isMockMode) {
+        mockAbandonedCarts.forEach(c => {
+            if (c.customer_email.toLowerCase() === cleanEmail && c.status !== 'completed') {
+                c.status = 'completed';
+                c.recovered_at = new Date().toISOString();
+            }
+        });
+        return;
+    }
+
+    await supabaseRequest(`abandoned_carts?customer_email=eq.${cleanEmail}&status=neq.completed`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+            status: 'completed',
+            recovered_at: new Date().toISOString()
+        })
+    });
+}
+
+async function deleteAbandonedCart(id) {
+    if (isMockMode) {
+        const index = mockAbandonedCarts.findIndex(c => String(c.id) === String(id));
+        if (index > -1) {
+            mockAbandonedCarts.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    await supabaseRequest(`abandoned_carts?id=eq.${id}`, {
+        method: 'DELETE'
+    });
+    return true;
+}
+
 module.exports = {
     isMockMode,
     validateDiscountCode,
@@ -415,5 +567,12 @@ module.exports = {
     getStats,
     deleteSale,
     updateSale,
-    deleteDiscountCode
+    deleteDiscountCode,
+    saveAbandonedCart,
+    getAbandonedCarts,
+    getAbandonedCartById,
+    updateAbandonedCartStatus,
+    markAbandonedCartAsCompleted,
+    deleteAbandonedCart
 };
+
