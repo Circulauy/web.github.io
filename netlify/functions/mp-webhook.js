@@ -12,13 +12,16 @@ mercadopago.configure({
     access_token: process.env.MP_ACCESS_TOKEN
 });
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    }
-});
+// Helper para obtener el transportador de correo de forma dinámica en cada invocación
+function getTransporter() {
+    return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+}
 
 // ===========================================
 // FUNCIONES EMAIL
@@ -51,7 +54,7 @@ async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName,
         `
     };
 
-    return transporter.sendMail(mailOptions);
+    return getTransporter().sendMail(mailOptions);
 }
 
 // 2. Email vendedor (DETALLADO CON DATOS DE ENVÍO)
@@ -97,7 +100,7 @@ async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, ite
         `
     };
 
-    return transporter.sendMail(mailOptions);
+    return getTransporter().sendMail(mailOptions);
 }
 
 // ===========================================

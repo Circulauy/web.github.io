@@ -3,15 +3,6 @@
 const nodemailer = require('nodemailer');
 const db = require('./utils/db');
 
-// Configuración de Email (Gmail)
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    }
-});
-
 // Función para enviar email al comprador de venta manual
 async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal, shippingCost, discountApplied, total, deliveryOption, district, address, couponCode) {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -23,6 +14,15 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
         console.log("Omitiendo correo: Email del comprador vacío o inválido.");
         return null;
     }
+
+    // Configuración de Email (Gmail) - Inicializado dinámicamente en cada invocación
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
 
     // Formatear filas de la tabla de productos
     const itemsTableRows = items
