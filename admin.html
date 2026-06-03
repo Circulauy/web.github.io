@@ -119,6 +119,37 @@
 
         <!-- MAIN LAYOUT Grid -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8 animate-fade-in">
+
+            <!-- FILTRO DE FECHAS GLOBAL -->
+            <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800 flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label for="filter-date-from" class="text-xs text-slate-400 font-semibold uppercase">Desde:</label>
+                    <input type="date" id="filter-date-from" onchange="filterSalesHistory()"
+                        class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="filter-date-to" class="text-xs text-slate-400 font-semibold uppercase">Hasta:</label>
+                    <input type="date" id="filter-date-to" onchange="filterSalesHistory()"
+                        class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                </div>
+                
+                <!-- Atajos Rápidos -->
+                <div class="flex items-center gap-1.5 ml-2">
+                    <button onclick="setDatePreset('today')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Hoy</button>
+                    <button onclick="setDatePreset('7days')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Últimos 7d</button>
+                    <button onclick="setDatePreset('month')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Este Mes</button>
+                </div>
+
+                <button onclick="clearDateFilters()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i> Limpiar
+                </button>
+                
+                <div class="flex-grow text-right">
+                    <button onclick="exportSalesToCSV()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-2 inline-flex">
+                        <i class="fa-solid fa-file-csv text-base"></i> Exportar CSV de Ventas
+                    </button>
+                </div>
+            </div>
             
             <!-- KEY METRICS CARDS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -416,36 +447,7 @@
                     </div>
                 </div>
 
-                <!-- Filtros de fecha y Exportación -->
-                <div class="flex flex-wrap items-center gap-4 mb-6 bg-slate-900/40 p-4 rounded-xl border border-slate-800/80">
-                    <div class="flex items-center gap-2">
-                        <label for="filter-date-from" class="text-xs text-slate-400 font-semibold uppercase">Desde:</label>
-                        <input type="date" id="filter-date-from" onchange="filterSalesHistory()"
-                            class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label for="filter-date-to" class="text-xs text-slate-400 font-semibold uppercase">Hasta:</label>
-                        <input type="date" id="filter-date-to" onchange="filterSalesHistory()"
-                            class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
-                    </div>
-                    
-                    <!-- Atajos Rápidos -->
-                    <div class="flex items-center gap-1.5 ml-2">
-                        <button onclick="setDatePreset('today')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Hoy</button>
-                        <button onclick="setDatePreset('7days')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Últimos 7d</button>
-                        <button onclick="setDatePreset('month')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Este Mes</button>
-                    </div>
-
-                    <button onclick="clearDateFilters()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
-                        <i class="fa-solid fa-rotate-left"></i> Limpiar
-                    </button>
-                    
-                    <div class="flex-grow text-right">
-                        <button onclick="exportSalesToCSV()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-2 inline-flex">
-                            <i class="fa-solid fa-file-csv text-base"></i> Exportar CSV
-                        </button>
-                    </div>
-                </div>
+                <!-- Removido el filtro de fechas de aquí, ahora es global en la parte superior -->
 
                 <!-- Resumen de datos filtrados -->
                 <div id="sales-summary-bar" class="mb-6 px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-400 flex flex-wrap justify-between items-center gap-2 animate-fade-in">
