@@ -1,6 +1,7 @@
 // netlify/functions/create-preference.js
 
 const mercadopago = require('mercadopago');
+const { validateDiscountCode } = require('./utils/db');
 
 // 1. CONFIGURACIÓN DE MERCADO PAGO
 mercadopago.configure({
@@ -33,7 +34,7 @@ exports.handler = async (event, context) => {
     }
 
     // 1. EXTRAEMOS LOS NUEVOS DATOS DEL FRONTEND
-    const { items, buyerName, buyerEmail, deliveryOption, district, address } = data;
+    const { items, buyerName, buyerEmail, deliveryOption, district, address, discountCode } = data;
     
     // Validación básica
     if (!items || !Array.isArray(items) || items.length === 0 || !buyerName || !buyerEmail) {
@@ -42,6 +43,33 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ error: 'Faltan datos esenciales (items, nombre o email).' }) 
         };
     }
+
+    // 2. VALIDACIÓN DE CUPÓN DE DESCUENTO
+    let isValidDiscount = false;
+    let discountPercent = 0;
+    let originalSubtotal = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
+    let discountApplied = 0;
+
+    if (discountCode) {
+        try {
+            const validation = await validateDiscountCode(discountCode);
+            if (validation.valid) {
+                isValidDiscount = true;
+                discountPercent = Number(validation.discount_percent || 10);
+                
+                // Aplicar descuento del 10% a los precios de los productos
+                items.forEach(item => {
+                    item.unit_price = Number((item.unit_price * (1 - discountPercent / 100)).toFixed(2));
+                });
+
+                const discountedSubtotal = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
+                discountApplied = Number((originalSubtotal - discountedSubtotal).toFixed(2));
+            }
+        } catch (dbErr) {
+            console.error("Error al validar cupón en base de datos, procediendo sin descuento:", dbErr);
+        }
+    }
+
     const SHIPPING_COSTS = {
         'montevideo': 270,
         'interior': 300,
@@ -93,7 +121,7 @@ exports.handler = async (event, context) => {
             email: buyerEmail
         },
 
-        // 4. METADATA (AQUÍ GUARDAMOS LA DIRECCIÓN DE FORMA SEGURA)
+        // 4. METADATA (AQUÍ GUARDAMOS LA DIRECCIÓN Y DESCUENTOS DE FORMA SEGURA)
         // Mercado Pago guarda esto y te lo muestra en el detalle de la venta.
         metadata: {
             order_id: uniqueOrderId,
@@ -101,6 +129,9 @@ exports.handler = async (event, context) => {
             tipo_entrega: deliveryOption, // 'pickup', 'montevideo', 'interior'
             zona_barrio: district || 'No especificado',
             direccion_completa: address || 'No aplica (Pick Up)',
+            discount_code: isValidDiscount ? discountCode.trim().toUpperCase() : null,
+            discount_applied: discountApplied,
+            original_subtotal: originalSubtotal
         },
 
         // 5. EXTERNAL REFERENCE (Para conciliación interna)

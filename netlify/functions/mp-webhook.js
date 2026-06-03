@@ -2,6 +2,7 @@
 
 const mercadopago = require('mercadopago');
 const nodemailer = require('nodemailer');
+const { saveSale, markDiscountCodeAsUsed } = require('./utils/db');
 
 // ===========================================
 // CONFIGURACIÓN MP + EMAIL
@@ -80,7 +81,7 @@ async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, ite
                     <p style="margin: 5px 0;"><strong>Referencia Interna:</strong> ${orderRef}</p>
                     <p style="margin: 5px 0;"><strong>Total Cobrado:</strong> <span style="color: #009ee3; font-weight: bold; font-size: 16px;">$${total} UYU</span></p>
                 </div>
-
+ 
                 <h3 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">📦 Datos de Envío / Entrega</h3>
                 <ul style="list-style: none; padding: 0;">
                     <li style="margin-bottom: 8px;"><strong>Método:</strong> ${deliveryLabel}</li>
@@ -146,9 +147,69 @@ exports.handler = async (event) => {
         // 4. Recuperar items
         const items = payment.additional_info?.items || [];
 
-        // 5. Si el pago está APROBADO, enviamos los correos
+        // 5. Si el pago está APROBADO, guardamos en base de datos y enviamos los correos
         if (payment.status === "approved") {
-            console.log("✅ Pago aprobado. Iniciando envío de correos...");
+            console.log("✅ Pago aprobado. Guardando venta y enviando correos...");
+
+            // Separar el costo de envío de los items comprados
+            let shippingCost = 0;
+            const productItems = [];
+
+            items.forEach(item => {
+                const price = Number(item.unit_price || 0);
+                const quantity = Number(item.quantity || 1);
+                
+                if (item.title && item.title.startsWith("Costo de Envío")) {
+                    shippingCost = price;
+                } else {
+                    productItems.push({
+                        id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
+                        name: item.title,
+                        price: price,
+                        quantity: quantity
+                    });
+                }
+            });
+
+            // Extraer datos de descuentos
+            const discountCode = metadata.discount_code || null;
+            const discountApplied = Number(metadata.discount_applied || 0);
+            const total = Number(payment.transaction_amount || 0);
+            const subtotal = Number(metadata.original_subtotal || (total - shippingCost + discountApplied));
+
+            // Guardar la venta en la base de datos
+            try {
+                await saveSale({
+                    source: 'web',
+                    customer_name: buyerName,
+                    customer_email: buyerEmail,
+                    items: productItems,
+                    delivery_option: shippingInfo.type || 'pickup',
+                    district: shippingInfo.district || '',
+                    address: shippingInfo.address || '',
+                    subtotal: subtotal,
+                    shipping_cost: shippingCost,
+                    discount_applied: discountApplied,
+                    discount_code: discountCode,
+                    total: total,
+                    payment_method: 'mercadopago',
+                    status: 'approved',
+                    mp_payment_id: String(payment.id)
+                });
+                console.log("✅ Venta web guardada exitosamente en la base de datos.");
+            } catch (dbErr) {
+                console.error("❌ Error al guardar venta en base de datos:", dbErr);
+            }
+
+            // Consumir el cupón de descuento si se aplicó uno
+            if (discountCode) {
+                try {
+                    await markDiscountCodeAsUsed(discountCode);
+                    console.log(`✅ Cupón '${discountCode}' marcado como usado.`);
+                } catch (cupErr) {
+                    console.error(`❌ Error al consumir el cupón '${discountCode}':`, cupErr);
+                }
+            }
 
             // Enviar correo al COMPRADOR (Resumen simple)
             try {
@@ -167,7 +228,7 @@ exports.handler = async (event) => {
             }
 
         } else {
-            console.log(`Pago con estado '${payment.status}'. No se envían emails.`);
+            console.log(`Pago con estado '${payment.status}'. No se guardan datos ni envían emails.`);
         }
 
         return {
