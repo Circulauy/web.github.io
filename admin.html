@@ -172,9 +172,19 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- CHART 1: Sales trends -->
                 <div class="lg:col-span-2 p-6 rounded-2xl glass-panel shadow-lg">
-                    <h3 class="text-lg font-bold text-white font-brand mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line text-rp-teal"></i>Evolución de Ventas ($)
-                    </h3>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 class="text-lg font-bold text-white font-brand flex items-center gap-2 mb-0">
+                            <i class="fa-solid fa-chart-line text-rp-teal"></i>Evolución de Ventas ($)
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <button onclick="exportChartCSV()" class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-file-csv text-rp-mint"></i> Exportar CSV de Gráfico
+                            </button>
+                            <button onclick="downloadChartImage()" class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-image text-rp-teal"></i> Descargar Imagen
+                            </button>
+                        </div>
+                    </div>
                     <div class="h-64 flex items-center justify-center">
                         <canvas id="salesChart" class="w-full h-full"></canvas>
                     </div>
@@ -985,9 +995,6 @@
             if (!password) return;
 
             try {
-                // 1. Cargar Estadísticas (KPI + Gráfico)
-                const stats = cachedStats || await fetchAPI('get_stats', password);
-                
                 // Chequear modo simulado
                 const mockBadge = document.getElementById('mock-badge');
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
@@ -995,24 +1002,13 @@
                     if (mockBadge) mockBadge.classList.remove('hidden');
                 }
 
-                document.getElementById('stat-revenue').textContent = `$${stats.totalRevenue.toFixed(2)}`;
-                document.getElementById('stat-web-revenue').textContent = `$${stats.webRevenue.toFixed(2)}`;
-                document.getElementById('stat-manual-revenue').textContent = `$${stats.manualRevenue.toFixed(2)}`;
-                document.getElementById('stat-sales-count').textContent = stats.totalSalesCount;
-
-                // Renderizar gráfico
-                renderChart(stats.chartData);
-
-                // Renderizar top productos
-                renderTopProducts(stats.topProducts);
-
-                // 2. Cargar historial de ventas
+                // 1. Cargar historial de ventas
                 const sales = await fetchAPI('get_sales', password);
                 globalSalesList = sales;
                 filteredSalesList = sales;
-                filterSalesHistory(); // Aplica filtros y renderiza
+                filterSalesHistory(); // Aplica filtros y renderiza (calcula KPIs y gráfico dinámicamente)
 
-                // 3. Cargar Cupones
+                // 2. Cargar Cupones
                 const discounts = await fetchAPI('get_discounts', password);
                 renderCouponsList(discounts);
 
@@ -1504,6 +1500,7 @@
             });
 
             renderSalesHistory(filteredSalesList);
+            updateDashboardMetrics(filteredSalesList); // Actualiza los KPIs, Gráfico y Top Productos en tiempo real
         }
 
         function clearDateFilters() {
@@ -1856,6 +1853,126 @@
             document.body.removeChild(link);
             
             showToast("CSV descargado con éxito.", "success");
+        }
+
+        // METRICAS DINAMICAS Y TENDENCIAS EN TIEMPO REAL
+        let currentChartData = [];
+
+        function updateDashboardMetrics(sales) {
+            let totalRevenue = 0;
+            let webRevenue = 0;
+            let manualRevenue = 0;
+            let totalSalesCount = sales.length;
+            
+            const productQuantities = {};
+            const salesOverTime = {};
+
+            sales.forEach(sale => {
+                const amt = Number(sale.total) || 0;
+                totalRevenue += amt;
+                
+                if (sale.source === 'web') {
+                    webRevenue += amt;
+                } else {
+                    manualRevenue += amt;
+                }
+
+                // Ventas por producto
+                if (Array.isArray(sale.items)) {
+                    sale.items.forEach(item => {
+                        const qty = Number(item.quantity) || 0;
+                        const name = item.name || item.title || 'Desconocido';
+                        productQuantities[name] = (productQuantities[name] || 0) + qty;
+                    });
+                }
+
+                // Agrupar por fecha para gráfico
+                if (sale.created_at) {
+                    const dateStr = sale.created_at.split('T')[0];
+                    salesOverTime[dateStr] = (salesOverTime[dateStr] || 0) + amt;
+                }
+            });
+
+            // Actualizar KPIs en DOM
+            document.getElementById('stat-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('stat-web-revenue').textContent = `$${webRevenue.toFixed(2)}`;
+            document.getElementById('stat-manual-revenue').textContent = `$${manualRevenue.toFixed(2)}`;
+            document.getElementById('stat-sales-count').textContent = totalSalesCount;
+
+            // Formatear top productos
+            const topProducts = Object.entries(productQuantities)
+                .map(([name, quantity]) => ({ name, quantity }))
+                .sort((a, b) => b.quantity - a.quantity)
+                .slice(0, 5);
+            renderTopProducts(topProducts);
+
+            // Formatear ventas sobre el tiempo (gráfico)
+            const chartData = Object.entries(salesOverTime)
+                .map(([date, amount]) => ({ date, amount }))
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            currentChartData = chartData;
+            renderChart(chartData);
+        }
+
+        // EXPORTAR DATOS DEL GRAFICO A CSV
+        function exportChartCSV() {
+            if (currentChartData.length === 0) {
+                showToast("No hay datos en el gráfico para exportar.", "error");
+                return;
+            }
+
+            const headers = ["Fecha", "Ventas Totales ($ UYU)"];
+            const rows = currentChartData.map(d => [d.date, d.amount]);
+
+            let csvContent = "\ufeff"; // BOM for UTF-8 Excel support
+            csvContent += [headers, ...rows]
+                .map(e => e.map(val => {
+                    const text = String(val === null || val === undefined ? '' : val);
+                    const escaped = text.replace(/"/g, '""');
+                    return `"${escaped}"`;
+                }).join(","))
+                .join("\n");
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            
+            const fromDate = document.getElementById('filter-date-from').value || 'inicio';
+            const toDate = document.getElementById('filter-date-to').value || 'fin';
+            link.setAttribute("download", `datos_grafico_${fromDate}_a_${toDate}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("CSV de gráfico descargado.", "success");
+        }
+
+        // DESCARGAR IMAGEN DEL GRAFICO
+        function downloadChartImage() {
+            const canvas = document.getElementById('salesChart');
+            if (!canvas) return;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            tempCtx.fillStyle = '#0f172a'; // color brand-dark de fondo
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.drawImage(canvas, 0, 0);
+
+            const url = tempCanvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `evolucion_ventas_grafico.png`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("Imagen del gráfico descargada.", "success");
         }
     </script>
 </body>
