@@ -217,9 +217,21 @@ exports.handler = async (event, context) => {
     }
 
     // 1. AUTENTICACIÓN
+    const correctPassword = (process.env.ADMIN_PASSWORD || '').trim();
+    if (!correctPassword) {
+        console.error("❌ ADMIN_PASSWORD no está configurada en las variables de entorno de Netlify.");
+        return {
+            statusCode: 500,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({ error: "Configuración del servidor incompleta. ADMIN_PASSWORD no configurada." })
+        };
+    }
+
     const authHeader = event.headers.authorization || event.headers.Authorization;
     const password = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-    const correctPassword = (process.env.ADMIN_PASSWORD || 'circulaadmin123').trim();
 
     if (password !== correctPassword) {
         return {
