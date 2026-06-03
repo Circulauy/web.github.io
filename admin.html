@@ -447,6 +447,37 @@
     </div>
 
 
+    <!-- SALE SUCCESS MODAL -->
+    <div id="sale-success-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-emerald-500/20">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white font-brand" id="success-modal-title">¡Venta Registrada!</h3>
+            </div>
+
+            <div class="space-y-3 text-sm text-slate-300">
+                <p id="success-modal-msg-main" class="font-medium text-slate-200"></p>
+                <div id="success-modal-coupon-box" class="hidden p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 font-mono text-center">
+                    <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider mb-1">Cupón Generado</p>
+                    <span id="success-modal-coupon-code" class="text-lg font-extrabold tracking-widest bg-slate-900/50 px-3 py-1.5 rounded border border-emerald-500/10"></span>
+                </div>
+                <p id="success-modal-msg-email" class="text-xs text-slate-400 italic"></p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex justify-center">
+                <button onclick="closeSuccessModal()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2.5 px-8 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-rp-teal/10 text-xs">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+
     <!-- JAVASCRIPT SYSTEM CONTROLLER -->
     <script>
         // DB DE PRODUCTOS PARA AUTOCOMPLETADO
@@ -942,11 +973,11 @@
             const quantity = parseInt(qtyInput.value) || 0;
 
             if (!productId) {
-                alert("Por favor selecciona un producto.");
+                showToast("Por favor selecciona un producto.", "error");
                 return;
             }
             if (quantity <= 0) {
-                alert("La cantidad debe ser mayor a 0.");
+                showToast("La cantidad debe ser mayor a 0.", "error");
                 return;
             }
 
@@ -1032,7 +1063,7 @@
             const password = localStorage.getItem('circula_admin_pass');
             
             if (manualSaleItems.length === 0) {
-                alert("Debes agregar al menos un producto a la venta.");
+                showToast("Debes agregar al menos un producto a la venta.", "error");
                 return;
             }
 
@@ -1074,14 +1105,7 @@
                     })
                 });
 
-                let alertMsg = response.message;
-                if (response.email_sent) {
-                    alertMsg += "\n\n📧 Se ha enviado el correo electrónico de confirmación al cliente.";
-                }
-                if (response.coupon_code) {
-                    alertMsg += `\n🎁 Se ha generado el cupón para su próxima compra: ${response.coupon_code}`;
-                }
-                alert(alertMsg);
+                showSuccessModal(response.message, response.coupon_code, response.email_sent);
                 
                 // Resetear Formulario
                 document.getElementById('manual-sale-form').reset();
@@ -1096,7 +1120,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Error al registrar venta: " + err.message);
+                showToast("Error al registrar venta: " + err.message, "error");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-solid fa-square-check"></i> Registrar Venta Manual`;
@@ -1125,7 +1149,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Error al generar cupón: " + err.message);
+                showToast("Error al generar cupón: " + err.message, "error");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-rp-mint"></i> Generar Código de Descuento`;
@@ -1135,7 +1159,7 @@
         function copyGeneratedCoupon() {
             const code = document.getElementById('coupon-code-span').textContent;
             navigator.clipboard.writeText(code).then(() => {
-                alert("Código copiado al portapapeles: " + code);
+                showToast("¡Código copiado al portapapeles!", "success");
             });
         }
 
@@ -1314,6 +1338,69 @@
 
         function closeDetailsModal() {
             document.getElementById('details-modal').classList.add('hidden');
+        }
+
+        // CUSTOM MODALS & TOASTS LOGIC
+        function showSuccessModal(mainMessage, couponCode, emailSent) {
+            const modal = document.getElementById('sale-success-modal');
+            const msgMain = document.getElementById('success-modal-msg-main');
+            const couponBox = document.getElementById('success-modal-coupon-box');
+            const couponSpan = document.getElementById('success-modal-coupon-code');
+            const msgEmail = document.getElementById('success-modal-msg-email');
+
+            msgMain.textContent = mainMessage;
+
+            if (couponCode) {
+                couponSpan.textContent = couponCode;
+                couponBox.classList.remove('hidden');
+            } else {
+                couponBox.classList.add('hidden');
+            }
+
+            if (emailSent) {
+                msgEmail.innerHTML = `<i class="fa-solid fa-paper-plane mr-1 text-emerald-400"></i> Se ha enviado el correo electrónico de confirmación al cliente.`;
+            } else {
+                msgEmail.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1 text-amber-400"></i> No se envió correo (email vacío, modo local o configuración pendiente).`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('sale-success-modal').classList.add('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-xl glass-panel shadow-lg border border-slate-700/60 pointer-events-auto flex items-center gap-2 text-xs font-semibold text-white animate-fade-in transition-all duration-300 transform translate-x-12 opacity-0`;
+            
+            let icon = '<i class="fa-solid fa-circle-info text-rp-teal"></i>';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
+                toast.classList.add('border-red-500/20');
+            } else if (type === 'success') {
+                icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                toast.classList.add('border-emerald-500/20');
+            }
+
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+
+            // Animar entrada
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 10);
+
+            // Salida y destrucción
+            setTimeout(() => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3500);
         }
     </script>
 </body>
