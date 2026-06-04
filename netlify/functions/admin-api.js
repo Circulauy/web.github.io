@@ -541,11 +541,19 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'generate_discount') {
-                const code = generateRandomCode();
-                // Expiración en 30 días
-                const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                const { code: customCode, percent: customPercent, expires_days } = body || {};
                 
-                const newDiscount = await db.createDiscountCode(code, 10, expiresAt);
+                const percent = Number(customPercent) || 10;
+                const days = Number(expires_days) || 30;
+                
+                let code = customCode ? customCode.trim().toUpperCase() : '';
+                if (!code) {
+                    code = generateRandomCode(percent);
+                }
+                
+                const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+                
+                const newDiscount = await db.createDiscountCode(code, percent, expiresAt);
                 
                 return {
                     statusCode: 200,
