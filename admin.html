@@ -1009,7 +1009,12 @@
                         id: `MOCK-CODE-${Date.now()}`,
                         code: autoCouponCode,
                         discount_percent: percent,
-                        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        expires_at: (() => {
+                            const d = new Date();
+                            d.setDate(d.getDate() + 30 + 1);
+                            d.setUTCHours(2, 59, 59, 999);
+                            return d.toISOString();
+                        })(),
                         is_used: false,
                         created_at: new Date().toISOString()
                     });
@@ -1062,7 +1067,12 @@
                     id: `MOCK-CODE-${Date.now()}`,
                     code: code,
                     discount_percent: percent,
-                    expires_at: new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(),
+                    expires_at: (() => {
+                        const d = new Date();
+                        d.setDate(d.getDate() + days + 1);
+                        d.setUTCHours(2, 59, 59, 999);
+                        return d.toISOString();
+                    })(),
                     is_used: false,
                     created_at: new Date().toISOString()
                 };
@@ -1144,7 +1154,12 @@
                         id: `MOCK-CODE-${Date.now()}`,
                         code: generatedCode,
                         discount_percent: 10,
-                        expires_at: new Date(Date.now() + 7*24*60*60*1000).toISOString(),
+                        expires_at: (() => {
+                            const d = new Date();
+                            d.setDate(d.getDate() + 7 + 1);
+                            d.setUTCHours(2, 59, 59, 999);
+                            return d.toISOString();
+                        })(),
                         is_used: false,
                         created_at: new Date().toISOString()
                     });
@@ -1684,7 +1699,7 @@
                     badgeText = "Expirado";
                 }
 
-                const expiryFormatted = expiry.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const expiryFormatted = expiry.toLocaleDateString('es-UY', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'America/Montevideo' });
 
                 return `
                     <div class="flex items-center justify-between p-2.5 bg-slate-900/60 rounded-lg border border-slate-800">

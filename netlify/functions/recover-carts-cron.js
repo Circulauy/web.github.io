@@ -183,8 +183,10 @@ exports.handler = async (event, context) => {
 
             // Generar cupón de 10% de descuento válido por 7 días
             const couponCode = generateRandomCode(10);
-            const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-            const expiryDateStr = expiryDate.toLocaleDateString('es-UY');
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 7 + 1);
+            expiryDate.setUTCHours(2, 59, 59, 999);
+            const expiryDateStr = expiryDate.toLocaleDateString('es-UY', { timeZone: 'America/Montevideo' });
 
             try {
                 // Registrar el cupón en la DB

@@ -491,7 +491,10 @@ exports.handler = async (event, context) => {
                     try {
                         const percent = Number(coupon_discount_percent || 10);
                         const couponCode = generateRandomCode(percent);
-                        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                        const expiryDate = new Date();
+                        expiryDate.setDate(expiryDate.getDate() + 30 + 1);
+                        expiryDate.setUTCHours(2, 59, 59, 999);
+                        const expiresAt = expiryDate.toISOString();
                         autoCoupon = await db.createDiscountCode(couponCode, percent, expiresAt);
                         console.log(`🎁 Cupón de regalo '${couponCode}' (${percent}%) creado para venta manual de ${customer_name}`);
                     } catch (cupErr) {
@@ -551,7 +554,10 @@ exports.handler = async (event, context) => {
                     code = generateRandomCode(percent);
                 }
                 
-                const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + days + 1);
+                expiryDate.setUTCHours(2, 59, 59, 999);
+                const expiresAt = expiryDate.toISOString();
                 
                 const newDiscount = await db.createDiscountCode(code, percent, expiresAt);
                 
@@ -651,8 +657,10 @@ exports.handler = async (event, context) => {
 
                 // Generar un cupón único con vencimiento de 7 días
                 const couponCode = generateRandomCode(10);
-                const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-                const expiryDateStr = expiryDate.toLocaleDateString('es-UY');
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 7 + 1);
+                expiryDate.setUTCHours(2, 59, 59, 999);
+                const expiryDateStr = expiryDate.toLocaleDateString('es-UY', { timeZone: 'America/Montevideo' });
                 
                 const coupon = await db.createDiscountCode(couponCode, 10, expiryDate.toISOString());
                 
