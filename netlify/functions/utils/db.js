@@ -10,121 +10,31 @@ if (isMockMode) {
 }
 
 // ==========================================
-// MOCK DATA STORAGE (EN MEMORIA)
+// MOCK DATA STORAGE (PERSISTENTE EN JSON)
 // ==========================================
-// Nota: En producción serverless esto es efímero, pero es excelente para pruebas y desarrollo local.
-let mockSales = [
-    {
-        id: "MOCK-1",
-        created_at: new Date(Date.now() - 5*24*60*60*1000).toISOString(),
-        source: "web",
-        customer_name: "Juan Pérez",
-        customer_email: "juan@gmail.com",
-        items: [{ id: "bowl-azul", name: "Bowl Azul", price: 450, quantity: 2 }],
-        delivery_option: "montevideo",
-        district: "Montevideo - Pocitos",
-        address: "Av. Brasil 1234, Apto 502",
-        subtotal: 900,
-        shipping_cost: 270,
-        discount_applied: 0,
-        total: 1170,
-        payment_method: "mercadopago",
-        status: "approved",
-        mp_payment_id: "1234567890"
-    },
-    {
-        id: "MOCK-2",
-        created_at: new Date(Date.now() - 3*24*60*60*1000).toISOString(),
-        source: "manual",
-        customer_name: "María Rodríguez",
-        customer_email: "maria@yahoo.com",
-        items: [{ id: "posavasos-gris", name: "Posavasos Gris", price: 400, quantity: 1 }],
-        delivery_option: "pickup",
-        district: "Pick Up / Retiro en Tienda",
-        address: "Retiro en local",
-        subtotal: 400,
-        shipping_cost: 0,
-        discount_applied: 40,
-        discount_code: "MOCK10",
-        total: 360,
-        payment_method: "efectivo",
-        status: "approved"
-    },
-    {
-        id: "MOCK-3",
-        created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString(),
-        source: "web",
-        customer_name: "Lucas Silva",
-        customer_email: "lucas@gmail.com",
-        items: [
-            { id: "bowl-blanco", name: "Bowl Blanco", price: 450, quantity: 1 },
-            { id: "posavasos-rosado", name: "Posavasos Rosado", price: 400, quantity: 2 }
-        ],
-        delivery_option: "interior",
-        district: "Maldonado - Piriápolis",
-        address: "Ruta 37 Km 2",
-        subtotal: 1250,
-        shipping_cost: 300,
-        discount_applied: 0,
-        total: 1550,
-        payment_method: "mercadopago",
-        status: "approved",
-        mp_payment_id: "9876543210"
-    }
-];
+const fs = require('fs');
+const path = require('path');
+const mockDbFile = path.join(__dirname, 'mock_db.json');
 
-let mockDiscountCodes = [
-    {
-        id: "d1",
-        code: "MOCK10",
-        discount_percent: 10,
-        expires_at: new Date(Date.now() + 15*24*60*60*1000).toISOString(),
-        is_used: false,
-        created_at: new Date().toISOString()
-    },
-    {
-        id: "d2",
-        code: "EXPIRED10",
-        discount_percent: 10,
-        expires_at: new Date(Date.now() - 1*24*60*60*1000).toISOString(),
-        is_used: false,
-        created_at: new Date(Date.now() - 31*24*60*60*1000).toISOString()
-    },
-    {
-        id: "d3",
-        code: "USED10",
-        discount_percent: 10,
-        expires_at: new Date(Date.now() + 10*24*60*60*1000).toISOString(),
-        is_used: true,
-        used_at: new Date().toISOString(),
-        created_at: new Date().toISOString()
+function readMockDb() {
+    try {
+        if (fs.existsSync(mockDbFile)) {
+            const content = fs.readFileSync(mockDbFile, 'utf8');
+            return JSON.parse(content);
+        }
+    } catch (err) {
+        console.error("Error al leer la base de datos simulada:", err);
     }
-];
+    return { sales: [], discountCodes: [], abandonedCarts: [] };
+}
 
-let mockAbandonedCarts = [
-    {
-        id: "MOCK-CART-1",
-        created_at: new Date(Date.now() - 2*60*60*1000).toISOString(), // hace 2 horas
-        customer_name: "Andrés Gómez",
-        customer_email: "andres@gmail.com",
-        items: [{ id: "bowl-negro", name: "Bowl Negro", price: 450, quantity: 1 }],
-        total: 450,
-        status: "pending"
-    },
-    {
-        id: "MOCK-CART-2",
-        created_at: new Date(Date.now() - 12*60*60*1000).toISOString(), // hace 12 horas
-        customer_name: "Camila Ortiz",
-        customer_email: "camila@hotmail.com",
-        items: [
-            { id: "posavasos-azul-blanco", name: "Posavasos Azul y Blanco", price: 400, quantity: 2 },
-            { id: "bowl-naranja", name: "Bowl Naranja", price: 450, quantity: 1 }
-        ],
-        total: 1250,
-        status: "emailed",
-        discount_code: "CIRCULA10-ABCD"
+function writeMockDb(data) {
+    try {
+        fs.writeFileSync(mockDbFile, JSON.stringify(data, null, 2), 'utf8');
+    } catch (err) {
+        console.error("Error al escribir en la base de datos simulada:", err);
     }
-];
+}
 
 
 // Helper para hacer llamadas REST a Supabase
@@ -160,7 +70,8 @@ async function validateDiscountCode(code) {
     const cleanCode = code.trim().toUpperCase();
 
     if (isMockMode) {
-        const found = mockDiscountCodes.find(d => d.code.toUpperCase() === cleanCode);
+        const dbData = readMockDb();
+        const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (!found) return { valid: false, error: "El código de descuento no existe." };
         if (found.is_used) return { valid: false, error: "El código de descuento ya ha sido usado." };
         if (new Date(found.expires_at) < new Date()) return { valid: false, error: "El código de descuento ha expirado." };
@@ -192,10 +103,12 @@ async function markDiscountCodeAsUsed(code) {
     const cleanCode = code.trim().toUpperCase();
 
     if (isMockMode) {
-        const found = mockDiscountCodes.find(d => d.code.toUpperCase() === cleanCode);
+        const dbData = readMockDb();
+        const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (found) {
             found.is_used = true;
             found.used_at = new Date().toISOString();
+            writeMockDb(dbData);
         }
         return;
     }
@@ -217,6 +130,7 @@ async function createDiscountCode(code, percent = 10, expiresAt) {
     const expiry = expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 días
 
     if (isMockMode) {
+        const dbData = readMockDb();
         const newCode = {
             id: `MOCK-CODE-${Date.now()}`,
             code: cleanCode,
@@ -225,7 +139,8 @@ async function createDiscountCode(code, percent = 10, expiresAt) {
             is_used: false,
             created_at: new Date().toISOString()
         };
-        mockDiscountCodes.push(newCode);
+        dbData.discountCodes.push(newCode);
+        writeMockDb(dbData);
         return newCode;
     }
 
@@ -246,8 +161,8 @@ async function createDiscountCode(code, percent = 10, expiresAt) {
  */
 async function getDiscountCodes() {
     if (isMockMode) {
-        // Ordenar por fecha de creación desc
-        return [...mockDiscountCodes].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const dbData = readMockDb();
+        return [...dbData.discountCodes].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
     return supabaseRequest('discount_codes?select=*&order=created_at.desc');
 }
@@ -276,8 +191,10 @@ async function saveSale(saleData) {
     };
 
     if (isMockMode) {
+        const dbData = readMockDb();
         formattedSale.id = `MOCK-SALE-${Date.now()}`;
-        mockSales.push(formattedSale);
+        dbData.sales.push(formattedSale);
+        writeMockDb(dbData);
         return formattedSale;
     }
 
@@ -294,7 +211,8 @@ async function saveSale(saleData) {
  */
 async function getSales() {
     if (isMockMode) {
-        return [...mockSales].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const dbData = readMockDb();
+        return [...dbData.sales].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
     return supabaseRequest('sales?select=*&order=created_at.desc');
 }
@@ -369,9 +287,11 @@ async function getStats() {
 
 async function deleteSale(id) {
     if (isMockMode) {
-        const index = mockSales.findIndex(s => s.id === id);
+        const dbData = readMockDb();
+        const index = dbData.sales.findIndex(s => s.id === id);
         if (index > -1) {
-            mockSales.splice(index, 1);
+            dbData.sales.splice(index, 1);
+            writeMockDb(dbData);
             return true;
         }
         return false;
@@ -385,7 +305,8 @@ async function deleteSale(id) {
 
 async function updateSale(id, saleData) {
     if (isMockMode) {
-        const found = mockSales.find(s => s.id === id);
+        const dbData = readMockDb();
+        const found = dbData.sales.find(s => s.id === id);
         if (found) {
             Object.assign(found, {
                 customer_name: saleData.customer_name || found.customer_name,
@@ -401,6 +322,7 @@ async function updateSale(id, saleData) {
                 payment_method: saleData.payment_method || found.payment_method,
                 status: saleData.status || found.status
             });
+            writeMockDb(dbData);
             return found;
         }
         throw new Error("Venta no encontrada en modo simulado.");
@@ -416,9 +338,11 @@ async function updateSale(id, saleData) {
 
 async function deleteDiscountCode(id) {
     if (isMockMode) {
-        const index = mockDiscountCodes.findIndex(d => String(d.id) === String(id));
+        const dbData = readMockDb();
+        const index = dbData.discountCodes.findIndex(d => String(d.id) === String(id));
         if (index > -1) {
-            mockDiscountCodes.splice(index, 1);
+            dbData.discountCodes.splice(index, 1);
+            writeMockDb(dbData);
             return true;
         }
         return false;
@@ -434,7 +358,8 @@ async function saveAbandonedCart(cartData) {
     const cleanEmail = cartData.customer_email.trim().toLowerCase();
     
     if (isMockMode) {
-        const found = mockAbandonedCarts.find(c => c.customer_email.toLowerCase() === cleanEmail && c.status === 'pending');
+        const dbData = readMockDb();
+        const found = dbData.abandonedCarts.find(c => c.customer_email.toLowerCase() === cleanEmail && c.status === 'pending');
         if (found) {
             Object.assign(found, {
                 customer_name: cartData.customer_name,
@@ -442,6 +367,7 @@ async function saveAbandonedCart(cartData) {
                 total: Number(cartData.total),
                 created_at: new Date().toISOString()
             });
+            writeMockDb(dbData);
             return found;
         } else {
             const newCart = {
@@ -450,7 +376,8 @@ async function saveAbandonedCart(cartData) {
                 status: 'pending',
                 created_at: new Date().toISOString()
             };
-            mockAbandonedCarts.push(newCart);
+            dbData.abandonedCarts.push(newCart);
+            writeMockDb(dbData);
             return newCart;
         }
     }
@@ -482,14 +409,16 @@ async function saveAbandonedCart(cartData) {
 
 async function getAbandonedCarts() {
     if (isMockMode) {
-        return [...mockAbandonedCarts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const dbData = readMockDb();
+        return [...dbData.abandonedCarts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
     return supabaseRequest('abandoned_carts?select=*&order=created_at.desc');
 }
 
 async function getAbandonedCartById(id) {
     if (isMockMode) {
-        return mockAbandonedCarts.find(c => String(c.id) === String(id));
+        const dbData = readMockDb();
+        return dbData.abandonedCarts.find(c => String(c.id) === String(id));
     }
     const data = await supabaseRequest(`abandoned_carts?id=eq.${id}&select=*`);
     return data && data.length > 0 ? data[0] : null;
@@ -497,10 +426,12 @@ async function getAbandonedCartById(id) {
 
 async function updateAbandonedCartStatus(id, status, discountCode = null) {
     if (isMockMode) {
-        const found = mockAbandonedCarts.find(c => String(c.id) === String(id));
+        const dbData = readMockDb();
+        const found = dbData.abandonedCarts.find(c => String(c.id) === String(id));
         if (found) {
             found.status = status;
             if (discountCode) found.discount_code = discountCode;
+            writeMockDb(dbData);
             return found;
         }
         return null;
@@ -522,12 +453,14 @@ async function markAbandonedCartAsCompleted(email) {
     const cleanEmail = email.trim().toLowerCase();
 
     if (isMockMode) {
-        mockAbandonedCarts.forEach(c => {
+        const dbData = readMockDb();
+        dbData.abandonedCarts.forEach(c => {
             if (c.customer_email.toLowerCase() === cleanEmail && c.status !== 'completed') {
                 c.status = 'completed';
                 c.recovered_at = new Date().toISOString();
             }
         });
+        writeMockDb(dbData);
         return;
     }
 
@@ -542,9 +475,11 @@ async function markAbandonedCartAsCompleted(email) {
 
 async function deleteAbandonedCart(id) {
     if (isMockMode) {
-        const index = mockAbandonedCarts.findIndex(c => String(c.id) === String(id));
+        const dbData = readMockDb();
+        const index = dbData.abandonedCarts.findIndex(c => String(c.id) === String(id));
         if (index > -1) {
-            mockAbandonedCarts.splice(index, 1);
+            dbData.abandonedCarts.splice(index, 1);
+            writeMockDb(dbData);
             return true;
         }
         return false;

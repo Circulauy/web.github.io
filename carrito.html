@@ -290,11 +290,11 @@
                                 <span class="text-text-dark">TOTAL</span>
                                 <span id="cart-total-page" class="text-mp-blue">$0.00</span>
                             </div>
-                            <button onclick="window.location.href='datos'"
+                            <button onclick="window.location.href='datos.html'"
                                 class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1">
                                 FINALIZAR COMPRA
                             </button>
-                            <button onclick="window.location.href='tienda'"
+                            <button onclick="window.location.href='tienda.html'"
                                 class="w-full bg-transparent border-2 border-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg hover:border-rp-teal hover:text-rp-teal transition text-center">
                                 Seguir Comprando
                             </button>
@@ -327,7 +327,7 @@
             const container = document.getElementById('cart-items-list-page');
             
             if (cart.length === 0) {
-                container.innerHTML = '<div class="p-8 text-center text-gray-500"><p class="text-lg">Tu carrito está vacío</p><a href="tienda" class="inline-block mt-4 text-rp-teal hover:underline">Ir a la tienda</a></div>';
+                container.innerHTML = '<div class="p-8 text-center text-gray-500"><p class="text-lg">Tu carrito está vacío</p><a href="tienda.html" class="inline-block mt-4 text-rp-teal hover:underline">Ir a la tienda</a></div>';
                 updateTotals(0);
                 return;
             }
@@ -352,7 +352,7 @@
 
                 row.innerHTML = `
                     <div class="cart-item-product">
-                        <a href="detalle?product=${productId}" class="flex items-center gap-3 w-full hover:opacity-75 transition group">
+                        <a href="detalle.html?product=${productId}" class="flex items-center gap-3 w-full hover:opacity-75 transition group">
                             <img src="${item.imageUrl}" alt="${item.name}" class="w-14 h-14 object-cover rounded border border-rp-gray-soft group-hover:border-rp-teal transition">
                             <div>
                                 <h4 class="font-bold text-text-dark group-hover:text-rp-teal transition">${item.name}</h4>

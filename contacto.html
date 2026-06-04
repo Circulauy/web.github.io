@@ -185,6 +185,26 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
+            
+            // Pre-llenar campos desde URL
+            const interestParam = urlParams.get('interest');
+            const messageParam = urlParams.get('message');
+            if (interestParam) {
+                const interestSelect = document.getElementById('interest');
+                if (interestSelect) {
+                    interestSelect.value = interestParam;
+                    if (typeof handleInterestChange === 'function') {
+                        handleInterestChange(interestSelect);
+                    }
+                }
+            }
+            if (messageParam) {
+                const messageTextArea = document.getElementById('message');
+                if (messageTextArea) {
+                    messageTextArea.value = messageParam;
+                }
+            }
+
             if (urlParams.get('status') === 'success') {
                 mostrarExito();
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;

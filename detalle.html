@@ -54,7 +54,7 @@
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12 min-h-screen">
         <div class="mb-6">
-            <a href="tienda" class="inline-flex items-center text-rp-teal hover:text-rp-mint transition font-semibold text-sm">
+            <a href="tienda.html" class="inline-flex items-center text-rp-teal hover:text-rp-mint transition font-semibold text-sm">
                 <i class="fas fa-arrow-left mr-2"></i> Volver a la Tienda
             </a>
         </div>
@@ -84,7 +84,55 @@
                 <p id="detail-price" class="text-3xl text-rp-teal font-extrabold mb-6">...</p>
 
                 <h2 class="text-sm font-bold text-text-dark mb-2 uppercase tracking-wide">Descripción</h2>
-                <p id="detail-desc" class="text-gray-600 text-base mb-8 leading-relaxed">...</p>
+                <p id="detail-desc" class="text-gray-600 text-base mb-6 leading-relaxed">...</p>
+
+                <!-- Sección de Texturas Disponibles -->
+                <div id="texturas-disponibles" class="mb-6 border-t border-gray-100 pt-6">
+                    <h3 class="text-xs font-bold text-text-dark mb-3 uppercase tracking-wide">Nuestras Placas de Plástico Reciclado</h3>
+                    <p class="text-xs text-gray-500 mb-4">Fabricamos nuestros productos usando placas de plástico 100% reciclado local. Haz clic en las texturas para verlas en detalle:</p>
+                    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <!-- Noche de Rocha -->
+                        <div onclick="openTextureModal('images/NOCHE DE ROCHA_Col.jpg', 'Noche de Rocha')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/NOCHE DE ROCHA_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block">Noche de Rocha</span>
+                        </div>
+                        <!-- Piedras de Arequita -->
+                        <div onclick="openTextureModal('images/PIEDRA DEL AREQUITA_Col.jpg', 'Piedras de Arequita')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/PIEDRA DEL AREQUITA_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block">Piedras de Arequita</span>
+                        </div>
+                        <!-- Marea del Polonio -->
+                        <div onclick="openTextureModal('images/MAREA DEL POLONIO_Col.jpg', 'Marea del Polonio')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/MAREA DEL POLONIO_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block">Marea del Polonio</span>
+                        </div>
+                        <!-- Cuarzo de Artigas -->
+                        <div onclick="openTextureModal('images/CUARZO DE ARTIGAS_Col.jpg', 'Cuarzo de Artigas')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/CUARZO DE ARTIGAS_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block">Cuarzo de Artigas</span>
+                        </div>
+                        <!-- Atardecer en Casapueblo -->
+                        <div onclick="openTextureModal('images/ATARDECER EN CASAPUEBLO_Col.jpg', 'Atardecer en Casapueblo')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/ATARDECER EN CASAPUEBLO_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block font-brand">Atardecer Casapueblo</span>
+                        </div>
+                        <!-- Cuerda de Tambores -->
+                        <div onclick="openTextureModal('images/CUERDA DE TAMBORES_Col.jpg', 'Cuerda de Tambores')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/CUERDA DE TAMBORES_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block font-brand">Cuerda Tambores</span>
+                        </div>
+                        <!-- Espesura de la Quebrada -->
+                        <div onclick="openTextureModal('images/ESPESURA DE LA QUEBRADA_Col.jpg', 'Espesura de la Quebrada')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/ESPESURA DE LA QUEBRADA_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block font-brand">Espesura Quebrada</span>
+                        </div>
+                        <!-- Tierra de Rivera -->
+                        <div onclick="openTextureModal('images/TIERRA DE RIVERA_Col.jpg', 'Tierra de Rivera')" class="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal hover:bg-white transition duration-300 cursor-pointer text-center group">
+                            <span class="w-12 h-12 rounded-full border border-gray-300 shadow-sm flex-shrink-0 mb-1.5 group-hover:scale-105 transition duration-300" style="background-image: url('images/TIERRA DE RIVERA_Col.jpg'); background-size: cover; background-position: center;"></span>
+                            <span class="text-[10px] font-bold text-text-dark leading-tight block font-brand">Tierra de Rivera</span>
+                        </div>
+                    </div>
+                </div>
 
                 <button id="detail-add-btn" class="w-full py-4 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95">
                     <i class="fas fa-shopping-cart mr-2"></i> AGREGAR AL CARRITO
@@ -126,5 +174,45 @@
 
     <div id="footer-placeholder"></div>
     <script src="js/load-components.js"></script>
+
+    <!-- Modal Lightbox para Texturas -->
+    <div id="texture-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 hidden opacity-0 transition-opacity duration-300" onclick="closeTextureModal()">
+        <div class="relative max-w-xl w-full p-4 mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+            <button class="absolute top-4 right-4 text-text-dark hover:text-rp-teal transition p-2 bg-white/80 rounded-full shadow z-10" onclick="closeTextureModal()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <img id="modal-texture-img" src="" alt="Textura de placa reciclada" class="w-full h-[400px] object-cover rounded-xl shadow-inner">
+            <div class="p-5 text-center">
+                <h4 id="modal-texture-name" class="text-2xl font-bold text-text-dark title-style mb-1">Nombre de Textura</h4>
+                <p class="text-sm text-gray-500 font-brand">Placa de plástico 100% reciclado</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.openTextureModal = function(imgSrc, name) {
+            const modal = document.getElementById('texture-modal');
+            const modalImg = document.getElementById('modal-texture-img');
+            const modalName = document.getElementById('modal-texture-name');
+            if (modal && modalImg && modalName) {
+                modalImg.src = imgSrc;
+                modalName.textContent = name;
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                }, 10);
+            }
+        };
+
+        window.closeTextureModal = function() {
+            const modal = document.getElementById('texture-modal');
+            if (modal) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        };
+    </script>
 </body>
 </html>

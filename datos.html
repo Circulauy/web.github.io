@@ -317,7 +317,7 @@
                                 </svg>
                             </button>
 
-                            <button onclick="window.location.href='carrito'"
+                            <button onclick="window.location.href='carrito.html'"
                                 class="w-full text-center text-sm text-gray-500 hover:text-rp-teal transition">
                                 Editar Carrito
                             </button>
@@ -828,10 +828,32 @@
             }
         }
 
-        // Agregar listeners de tracking
+        // Agregar listeners de tracking y precargar/guardar datos de localStorage
         document.addEventListener('DOMContentLoaded', () => {
             const nameEl = document.getElementById('buyer-name');
             const emailEl = document.getElementById('buyer-email');
+            
+            // Precargar datos desde localStorage si existen
+            if (nameEl) {
+                const savedName = localStorage.getItem('customer_name');
+                if (savedName) nameEl.value = savedName;
+                
+                // Guardar en localStorage cuando se modifique el campo
+                nameEl.addEventListener('input', () => {
+                    localStorage.setItem('customer_name', nameEl.value.trim());
+                });
+            }
+            
+            if (emailEl) {
+                const savedEmail = localStorage.getItem('customer_email');
+                if (savedEmail) emailEl.value = savedEmail;
+                
+                // Guardar en localStorage cuando se modifique el campo
+                emailEl.addEventListener('input', () => {
+                    localStorage.setItem('customer_email', emailEl.value.trim().toLowerCase());
+                });
+            }
+
             if (nameEl && emailEl) {
                 nameEl.addEventListener('blur', trackAbandonedCart);
                 emailEl.addEventListener('blur', trackAbandonedCart);

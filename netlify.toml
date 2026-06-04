@@ -1,0 +1,5 @@
+[functions]
+  directory = "netlify/functions"
+
+[functions."recover-carts-cron"]
+  schedule = "*/15 * * * *"

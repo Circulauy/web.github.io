@@ -1,0 +1,459 @@
+{
+  "sales": [
+    {
+      "id": "MOCK-1",
+      "created_at": "2026-05-30T17:15:34.291Z",
+      "source": "web",
+      "customer_name": "Juan Pérez",
+      "customer_email": "juan@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 2
+        }
+      ],
+      "delivery_option": "montevideo",
+      "district": "Montevideo - Pocitos",
+      "address": "Av. Brasil 1234, Apto 502",
+      "subtotal": 900,
+      "shipping_cost": 270,
+      "discount_applied": 0,
+      "total": 1170,
+      "payment_method": "mercadopago",
+      "status": "approved",
+      "mp_payment_id": "1234567890"
+    },
+    {
+      "id": "MOCK-2",
+      "created_at": "2026-06-01T17:15:34.292Z",
+      "source": "manual",
+      "customer_name": "María Rodríguez",
+      "customer_email": "maria@yahoo.com",
+      "items": [
+        {
+          "id": "posavasos-gris",
+          "name": "Posavasos Gris",
+          "price": 400,
+          "quantity": 1
+        }
+      ],
+      "delivery_option": "pickup",
+      "district": "Pick Up / Retiro en Tienda",
+      "address": "Retiro en local",
+      "subtotal": 400,
+      "shipping_cost": 0,
+      "discount_applied": 40,
+      "discount_code": "MOCK10",
+      "total": 360,
+      "payment_method": "efectivo",
+      "status": "approved"
+    },
+    {
+      "id": "MOCK-3",
+      "created_at": "2026-06-03T17:15:34.292Z",
+      "source": "web",
+      "customer_name": "Lucas Silva",
+      "customer_email": "lucas@gmail.com",
+      "items": [
+        {
+          "id": "bowl-blanco",
+          "name": "Bowl Blanco",
+          "price": 450,
+          "quantity": 1
+        },
+        {
+          "id": "posavasos-rosado",
+          "name": "Posavasos Rosado",
+          "price": 400,
+          "quantity": 2
+        }
+      ],
+      "delivery_option": "interior",
+      "district": "Maldonado - Piriápolis",
+      "address": "Ruta 37 Km 2",
+      "subtotal": 1250,
+      "shipping_cost": 300,
+      "discount_applied": 0,
+      "total": 1550,
+      "payment_method": "mercadopago",
+      "status": "approved",
+      "mp_payment_id": "9876543210"
+    }
+  ],
+  "discountCodes": [
+    {
+      "id": "d1",
+      "code": "MOCK10",
+      "discount_percent": 10,
+      "expires_at": "2026-06-19T17:15:34.292Z",
+      "is_used": false,
+      "created_at": "2026-06-04T17:15:34.292Z"
+    },
+    {
+      "id": "d2",
+      "code": "EXPIRED10",
+      "discount_percent": 10,
+      "expires_at": "2026-06-03T17:15:34.292Z",
+      "is_used": false,
+      "created_at": "2026-05-04T17:15:34.292Z"
+    },
+    {
+      "id": "d3",
+      "code": "USED10",
+      "discount_percent": 10,
+      "expires_at": "2026-06-14T17:15:34.292Z",
+      "is_used": true,
+      "used_at": "2026-06-04T17:15:34.292Z",
+      "created_at": "2026-06-04T17:15:34.292Z"
+    },
+    {
+      "id": "MOCK-CODE-1780593384999",
+      "code": "CIRCULA10-5QMT",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T17:16:24.988Z",
+      "is_used": false,
+      "created_at": "2026-06-04T17:16:24.999Z"
+    },
+    {
+      "id": "MOCK-CODE-1780593461645",
+      "code": "CIRCULA10-HMDO",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T17:17:41.645Z",
+      "is_used": false,
+      "created_at": "2026-06-04T17:17:41.645Z"
+    },
+    {
+      "id": "MOCK-CODE-1780595077968",
+      "code": "CIRCULA10-0ZOU",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T17:44:37.967Z",
+      "is_used": false,
+      "created_at": "2026-06-04T17:44:37.968Z"
+    },
+    {
+      "id": "MOCK-CODE-1780595170425",
+      "code": "CIRCULA10-CH8S",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T17:46:10.425Z",
+      "is_used": false,
+      "created_at": "2026-06-04T17:46:10.425Z"
+    },
+    {
+      "id": "MOCK-CODE-1780600779781",
+      "code": "CIRCULA10-IDHZ",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:19:39.781Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:19:39.781Z"
+    },
+    {
+      "id": "MOCK-CODE-1780601235682",
+      "code": "CIRCULA10-7EC0",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:27:15.682Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:27:15.682Z"
+    },
+    {
+      "id": "MOCK-CODE-1780601455019",
+      "code": "CIRCULA10-ETGM",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:30:55.019Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:30:55.019Z"
+    },
+    {
+      "id": "MOCK-CODE-1780602074477",
+      "code": "CIRCULA10-APGI",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:41:14.477Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:41:14.477Z"
+    },
+    {
+      "id": "MOCK-CODE-1780602180726",
+      "code": "CIRCULA10-QMJ3",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:43:00.726Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:43:00.726Z"
+    },
+    {
+      "id": "MOCK-CODE-1780602321143",
+      "code": "CIRCULA10-O093",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:45:21.143Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:45:21.143Z"
+    },
+    {
+      "id": "MOCK-CODE-1780602506276",
+      "code": "CIRCULA10-BRNN",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:48:26.276Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:48:26.276Z"
+    },
+    {
+      "id": "MOCK-CODE-1780602649462",
+      "code": "CIRCULA10-Y46D",
+      "discount_percent": 10,
+      "expires_at": "2026-06-11T19:50:49.462Z",
+      "is_used": false,
+      "created_at": "2026-06-04T19:50:49.462Z"
+    }
+  ],
+  "abandonedCarts": [
+    {
+      "id": "MOCK-CART-1",
+      "created_at": "2026-06-04T15:15:34.292Z",
+      "customer_name": "Andrés Gómez",
+      "customer_email": "andres@gmail.com",
+      "items": [
+        {
+          "id": "bowl-negro",
+          "name": "Bowl Negro",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-5QMT"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO",
+      "created_at": "2026-06-04T16:17:34.292Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        },
+        {
+          "id": "bowl-blanco",
+          "name": "Bowl Blanco",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 900,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-HMDO"
+    },
+    {
+      "id": "MOCK-CART-2",
+      "created_at": "2026-06-04T05:15:34.292Z",
+      "customer_name": "Camila Ortiz",
+      "customer_email": "camila@hotmail.com",
+      "items": [
+        {
+          "id": "posavasos-azul-blanco",
+          "name": "Posavasos Azul y Blanco",
+          "price": 400,
+          "quantity": 2
+        },
+        {
+          "id": "bowl-naranja",
+          "name": "Bowl Naranja",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 1250,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-ABCD"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-NEW",
+      "created_at": "2026-06-04T16:22:25.726Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "skipped"
+    },
+    {
+      "id": "MOCK-CART-TEST",
+      "created_at": "2026-06-04T15:00:00.000Z",
+      "customer_name": "Test Client",
+      "customer_email": "testclient@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-0ZOU"
+    },
+    {
+      "id": "MOCK-CART-MANUAL-TEST",
+      "created_at": "2026-06-04T17:00:00.000Z",
+      "customer_name": "Manual Test Client",
+      "customer_email": "manualtestclient@gmail.com",
+      "items": [
+        {
+          "id": "posavasos-gris",
+          "name": "Posavasos Gris",
+          "price": 400,
+          "quantity": 2
+        }
+      ],
+      "total": 800,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-CH8S"
+    },
+    {
+      "id": "MOCK-CART-MANUAL-TEST-2",
+      "created_at": "2026-06-04T17:10:00.000Z",
+      "customer_name": "Manual Test Client 2",
+      "customer_email": "manualtestclient2@gmail.com",
+      "items": [
+        {
+          "id": "bowl-negro",
+          "name": "Bowl Negro",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-IDHZ"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-4",
+      "created_at": "2026-06-04T19:20:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-7EC0"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-5",
+      "created_at": "2026-06-04T19:25:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-ETGM"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-6",
+      "created_at": "2026-06-04T19:40:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-APGI"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-7",
+      "created_at": "2026-06-04T19:42:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-QMJ3"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-8",
+      "created_at": "2026-06-04T19:44:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-O093"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-9",
+      "created_at": "2026-06-04T19:47:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-BRNN"
+    },
+    {
+      "id": "MOCK-CART-RODRIGO-TEST-10",
+      "created_at": "2026-06-04T19:50:00.000Z",
+      "customer_name": "Rodrigo Madeira",
+      "customer_email": "madeirarodrigo21@gmail.com",
+      "items": [
+        {
+          "id": "bowl-azul",
+          "name": "Bowl Azul",
+          "price": 450,
+          "quantity": 1
+        }
+      ],
+      "total": 450,
+      "status": "emailed",
+      "discount_code": "CIRCULA10-Y46D"
+    }
+  ]
+}

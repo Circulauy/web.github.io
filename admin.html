@@ -866,6 +866,18 @@
                 status: "pending"
             },
             {
+                id: "MOCK-CART-RODRIGO",
+                created_at: new Date(Date.now() - 58*60*1000).toISOString(), // hace 58 minutos
+                customer_name: "Rodrigo Madeira",
+                customer_email: "madeirarodrigo21@gmail.com",
+                items: [
+                    { id: "bowl-azul", name: "Bowl Azul", price: 450, quantity: 1 },
+                    { id: "bowl-blanco", name: "Bowl Blanco", price: 450, quantity: 1 }
+                ],
+                total: 900,
+                status: "pending"
+            },
+            {
                 id: "MOCK-CART-2",
                 created_at: new Date(Date.now() - 12*60*60*1000).toISOString(),
                 customer_name: "Camila Ortiz",
@@ -1173,7 +1185,9 @@
             const errorEl = document.getElementById('login-error');
             errorEl.classList.add('hidden');
 
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            const isLocal = window.location.protocol === 'file:' || 
+                            (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
+                            (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
 
             if (isLocal) {
                 // En modo local simulado, aceptamos cualquier contraseña
@@ -1231,7 +1245,9 @@
             try {
                 // Chequear modo simulado
                 const mockBadge = document.getElementById('mock-badge');
-                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+                const isLocal = window.location.protocol === 'file:' || 
+                                (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
+                                (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
                 if (isLocal) {
                     if (mockBadge) mockBadge.classList.remove('hidden');
                 }
@@ -1259,7 +1275,9 @@
 
         // CLIENTE API REST NETLIFY FUNCTIONS
         async function fetchAPI(action, password, options = {}) {
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            const isLocal = window.location.protocol === 'file:' || 
+                            (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
+                            (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
             
             if (isLocal) {
                 return handleLocalMockRequest(action, options);
@@ -2379,6 +2397,8 @@
                     statusBadge = `<span class="bg-sky-500/20 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase" title="Cupón: ${cart.discount_code || 'N/A'}">Contactado</span>`;
                 } else if (cart.status === 'completed') {
                     statusBadge = `<span class="bg-green-500/20 text-green-400 border border-green-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Recuperado</span>`;
+                } else if (cart.status === 'skipped') {
+                    statusBadge = `<span class="bg-slate-500/20 text-slate-400 border border-slate-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase" title="Omitido: ya se envió en los últimos 6 meses">Omitido</span>`;
                 }
 
                 const isCompleted = cart.status === 'completed';

@@ -50,9 +50,17 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
         .join('');
 
     let deliveryLabel = "Entrega en Mano";
-    if (deliveryOption === 'montevideo') deliveryLabel = "🚛 Envío Montevideo";
-    else if (deliveryOption === 'interior') deliveryLabel = "🚚 Envío Interior";
-    else if (deliveryOption === 'pickup') deliveryLabel = "🏪 Retiro en Local (Pick Up)";
+    let deliveryIcon = "handshake";
+    if (deliveryOption === 'montevideo') {
+        deliveryLabel = "Envío Montevideo";
+        deliveryIcon = "truck";
+    } else if (deliveryOption === 'interior') {
+        deliveryLabel = "Envío Interior";
+        deliveryIcon = "shipped"; // Shipped icon on Icons8
+    } else if (deliveryOption === 'pickup') {
+        deliveryLabel = "Retiro en Local (Pick Up)";
+        deliveryIcon = "shop";
+    }
 
     // Banner de regalo / cupón si fue generado
     let couponHtml = '';
@@ -62,7 +70,7 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
         
         couponHtml = `
             <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px dashed #4ade80; padding: 24px; border-radius: 12px; margin-top: 30px; text-align: center; box-shadow: 0 4px 6px -1px rgba(22,163,74,0.03);">
-                <span style="font-size: 26px; display: block; margin-bottom: 6px;">🎁</span>
+                <img src="https://img.icons8.com/ios-filled/100/166534/gift.png" width="28" height="28" style="height: 28px; width: 28px; display: block; margin: 0 auto 8px auto;" />
                 <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #166534; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                     ¡Un obsequio especial para tu próxima compra!
                 </h4>
@@ -88,7 +96,7 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
         from: process.env.EMAIL_USER,
         to: buyerEmail,
         cc: process.env.EMAIL_USER, // Se auto-envía una copia al vendedor
-        subject: `✅ ¡Gracias por tu compra! - Circula`,
+        subject: `¡Gracias por tu compra! - Circula`,
         html: `
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; margin: 0; padding: 40px 0; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
                 <tr>
@@ -96,22 +104,30 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
                         <div style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid #e2e8f0; text-align: left;">
                             
                             <!-- Header con Logo -->
-                            <div style="background-color: #ffffff; padding: 25px 30px; text-align: center; border-bottom: 1px solid #f1f5f9;">
-                                <div style="display: inline-block; background-color: #ffffff; padding: 8px 16px; border-radius: 8px;">
-                                    <img src="https://circula.uy/images/logo.png" alt="Circula - Alternativa Sustentable" style="max-height: 55px; height: 55px; width: auto; display: inline-block; margin: 0 auto; vertical-align: middle;" />
-                                </div>
-                            </div>
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff; border-bottom: 1px solid #f1f5f9;" bgcolor="#ffffff">
+                                <tr>
+                                    <td align="center" style="padding: 20px 30px; background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff;" bgcolor="#ffffff">
+                                        <table cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff;" bgcolor="#ffffff">
+                                            <tr>
+                                                <td style="padding: 10px 20px; background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff;" bgcolor="#ffffff">
+                                                    <img src="https://circula.uy/images/logo.png" alt="Circula" width="220" height="65" style="display: block; width: 220px; height: 65px; border: 0;" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
                             
                             <!-- Banner de Comprobante -->
                             <div style="background: linear-gradient(135deg, #79C7C7 0%, #5ba8a8 100%); padding: 15px 30px; text-align: center; color: white;">
-                                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">✅ Comprobante de Compra</p>
+                                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"><img src="https://img.icons8.com/ios-filled/100/ffffff/checked.png" width="14" height="14" style="height: 14px; width: 14px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> Comprobante de Compra</p>
                             </div>
                             
                             <!-- Contenedor con padding -->
                             <div style="padding: 30px;">
                                 <div style="text-align: center; margin-bottom: 25px;">
-                                    <span style="background-color: #f0fdf4; color: #16a34a; padding: 6px 16px; border-radius: 9999px; font-size: 13px; font-weight: 600; display: inline-block; border: 1px solid #dcfce7;">
-                                        ✓ Venta Aprobada y Registrada
+                                    <span style="background-color: #f0fdf4; color: #16a34a; padding: 6px 16px; border-radius: 9999px; font-size: 13px; font-weight: 600; display: inline-block; border: 1px solid #dcfce7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                                        <img src="https://img.icons8.com/ios-filled/100/16a34a/checked.png" width="13" height="13" style="height: 13px; width: 13px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> Venta Aprobada y Registrada
                                     </span>
                                 </div>
                                 
@@ -146,7 +162,9 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
                                         </tr>
                                         ${nShippingCost > 0 ? `
                                         <tr>
-                                            <td style="padding: 4px 0; color: #64748b;">Envío (${deliveryLabel})</td>
+                                            <td style="padding: 4px 0; color: #64748b;">
+                                                <img src="https://img.icons8.com/ios-filled/100/64748b/${deliveryIcon}.png" width="12" height="12" style="height: 12px; width: 12px; vertical-align: middle; margin-right: 4px; margin-top: -2px;" /> Envío (${deliveryLabel})
+                                            </td>
                                             <td style="padding: 4px 0; text-align: right; color: #334155; font-weight: 500;">+$${nShippingCost.toLocaleString()} UYU</td>
                                         </tr>` : ''}
                                         ${nDiscountApplied > 0 ? `
@@ -163,9 +181,14 @@ async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal
                                 
                                 <!-- Información de Entrega -->
                                 <div style="margin-bottom: 25px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                                    <h4 style="margin: 0 0 8px 0; font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">📦 Información de Entrega</h4>
+                                    <h4 style="margin: 0 0 8px 0; font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <img src="https://img.icons8.com/ios-filled/100/475569/box.png" width="13" height="13" style="height: 13px; width: 13px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> Información de Entrega
+                                    </h4>
                                     <div style="background-color: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #f1f5f9; font-size: 13px; color: #475569; line-height: 1.5;">
-                                        <div style="margin-bottom: 4px;"><strong>Método:</strong> ${deliveryLabel}</div>
+                                        <div style="margin-bottom: 4px;">
+                                            <strong>Método:</strong> 
+                                            <img src="https://img.icons8.com/ios-filled/100/475569/${deliveryIcon}.png" width="12" height="12" style="height: 12px; width: 12px; vertical-align: middle; margin-right: 4px; margin-top: -2px;" /> ${deliveryLabel}
+                                        </div>
                                         ${district ? `<div style="margin-bottom: 4px;"><strong>Barrio / Localidad:</strong> ${district}</div>` : ''}
                                         ${address ? `<div><strong>Dirección:</strong> ${address}</div>` : ''}
                                     </div>
@@ -239,7 +262,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: buyerEmail,
-        subject: `🌿 ¡Dejaste algo especial en tu carrito! - Circula`,
+        subject: `¡Dejaste algo especial en tu carrito! - Circula`,
         html: `
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; margin: 0; padding: 40px 0; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
                 <tr>
@@ -247,15 +270,17 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                         <div style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid #e2e8f0; text-align: left;">
                             
                             <!-- Header con Logo -->
-                            <div style="background-color: #ffffff; padding: 25px 30px; text-align: center; border-bottom: 1px solid #f1f5f9;">
-                                <div style="display: inline-block; background-color: #ffffff; padding: 8px 16px; border-radius: 8px;">
-                                    <img src="https://circula.uy/images/logo.png" alt="Circula - Alternativa Sustentable" style="max-height: 55px; height: 55px; width: auto; display: inline-block; margin: 0 auto; vertical-align: middle;" />
-                                </div>
-                            </div>
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(#ffffff, #ffffff) !important; background-color: #ffffff !important; border-bottom: 1px solid #f1f5f9; border-top-left-radius: 12px; border-top-right-radius: 12px;" bgcolor="#ffffff">
+                                <tr>
+                                    <td align="center" style="padding: 25px 0; background: linear-gradient(#ffffff, #ffffff) !important; background-color: #ffffff !important; border-top-left-radius: 12px; border-top-right-radius: 12px;" bgcolor="#ffffff">
+                                        <img src="https://circula.uy/images/logo.png" alt="Circula" width="200" height="59" style="display: block; width: 200px; height: 59px; border: 0; margin: 0 auto;" />
+                                    </td>
+                                </tr>
+                            </table>
                             
                             <!-- Banner de Urgencia -->
                             <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 15px 30px; text-align: center; color: #0369a1;">
-                                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">🌿 ¿Te olvidaste de algo especial?</p>
+                                <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"><img src="https://img.icons8.com/ios-filled/100/0369a1/leaf.png" width="14" height="14" style="height: 14px; width: 14px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> ¿Te olvidaste de algo especial?</p>
                             </div>
                             
                             <!-- Contenedor con padding -->
@@ -269,9 +294,9 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                 
                                 <!-- Tarjeta de Beneficio / Descuento -->
                                 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1px dashed #f87171; padding: 24px; border-radius: 12px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 6px -1px rgba(220,38,38,0.03);">
-                                    <span style="font-size: 28px; display: block; margin-bottom: 6px;">✨</span>
+                                    <img src="https://img.icons8.com/ios-filled/100/b91c1c/fantasy.png" width="28" height="28" style="height: 28px; width: 28px; display: block; margin: 0 auto 8px auto;" />
                                     <h4 style="margin: 0 0 6px 0; font-size: 16px; color: #991b1b; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                                        ¡TENGO QUE COMPRAR YA!
+                                        Beneficio Exclusivo
                                     </h4>
                                     <p style="margin: 0 0 16px 0; font-size: 13px; color: #991b1b; opacity: 0.9; line-height: 1.4;">
                                         Completa tu pedido hoy mismo y obtén un <strong>10% de descuento de regalo</strong> en tu compra total.
@@ -280,13 +305,13 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                         ${couponCode}
                                     </div>
                                     <p style="margin: 12px 0 0 0; font-size: 12px; color: #991b1b; font-weight: 600;">
-                                        ⚠️ Cupón válido por solo 7 días (vence el ${expiryDateStr}).
+                                        <img src="https://img.icons8.com/ios-filled/100/b91c1c/exclamation-mark.png" width="12" height="12" style="height: 12px; width: 12px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> Cupón válido por solo 7 días (vence el ${expiryDateStr}).
                                     </p>
                                 </div>
-
+ 
                                 <!-- Tabla de Productos Olvidados -->
                                 <h3 style="font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
-                                    🛒 Resumen de tu Carrito:
+                                    <img src="https://img.icons8.com/ios-filled/100/64748b/shopping-cart.png" width="13" height="13" style="height: 13px; width: 13px; vertical-align: middle; margin-right: 6px; margin-top: -2px;" /> Resumen de tu Carrito:
                                 </h3>
                                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
                                     <tbody>
@@ -296,7 +321,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                 
                                 <!-- Botón de CTA Principal -->
                                 <div style="text-align: center; margin: 30px 0 20px 0;">
-                                    <a href="https://www.circula.uy/tienda" target="_blank" style="display: inline-block; background-color: #79C7C7; color: #ffffff; padding: 14px 32px; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(121, 199, 199, 0.3); transition: background-color 0.2s;">
+                                    <a href="https://www.circula.uy/tienda.html" target="_blank" style="display: inline-block; background-color: #79C7C7; color: #ffffff; padding: 14px 32px; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(121, 199, 199, 0.3); transition: background-color 0.2s;">
                                         Volver al Carrito y Comprar
                                     </a>
                                 </div>
@@ -346,7 +371,14 @@ exports.handler = async (event, context) => {
     }
 
     // 1. AUTENTICACIÓN
-    const correctPassword = (process.env.ADMIN_PASSWORD || '').trim();
+    const authHeader = event.headers.authorization || event.headers.Authorization;
+    const password = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
+
+    let correctPassword = (process.env.ADMIN_PASSWORD || '').trim();
+    if (!correctPassword && db.isMockMode) {
+        correctPassword = password; // En desarrollo local simulado aceptamos cualquier contraseña
+    }
+
     if (!correctPassword) {
         console.error("❌ ADMIN_PASSWORD no está configurada en las variables de entorno de Netlify.");
         return {
@@ -358,9 +390,6 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ error: "Configuración del servidor incompleta. ADMIN_PASSWORD no configurada." })
         };
     }
-
-    const authHeader = event.headers.authorization || event.headers.Authorization;
-    const password = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
 
     if (password !== correctPassword) {
         return {
