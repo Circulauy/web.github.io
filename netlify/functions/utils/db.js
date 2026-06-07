@@ -78,8 +78,8 @@ async function validateDiscountCode(code) {
         return { valid: true, discount_percent: found.discount_percent, code: found.code };
     }
 
-    // Usar 'ieq' para coincidencia de texto insensible a mayúsculas
-    const data = await supabaseRequest(`discount_codes?code=ieq.${cleanCode}&select=*`);
+    // Usar 'ilike' para coincidencia de texto insensible a mayúsculas (ieq no es un operador válido en PostgREST)
+    const data = await supabaseRequest(`discount_codes?code=ilike.${cleanCode}&select=*`);
     if (!data || data.length === 0) {
         return { valid: false, error: "El código de descuento no existe." };
     }
@@ -113,7 +113,7 @@ async function markDiscountCodeAsUsed(code) {
         return;
     }
 
-    await supabaseRequest(`discount_codes?code=ieq.${cleanCode}`, {
+    await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
         method: 'PATCH',
         body: JSON.stringify({
             is_used: true,
