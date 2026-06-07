@@ -343,8 +343,8 @@
         };
 
         // --- DISCOUNT STATE ---
-        let appliedDiscountCode = null;
-        let appliedDiscountPercent = 0;
+        let appliedDiscountCode = localStorage.getItem('appliedDiscountCode') || null;
+        let appliedDiscountPercent = parseFloat(localStorage.getItem('appliedDiscountPercent')) || 0;
 
         async function applyDiscountCode() {
             const input = document.getElementById('discount-code-input');
@@ -388,6 +388,8 @@
                 if (data.valid) {
                     appliedDiscountCode = data.code;
                     appliedDiscountPercent = data.discount_percent;
+                    localStorage.setItem('appliedDiscountCode', appliedDiscountCode);
+                    localStorage.setItem('appliedDiscountPercent', appliedDiscountPercent);
 
                     msg.textContent = `¡Cupón aplicado! Descuento del ${appliedDiscountPercent}%`;
                     msg.className = "text-xs mt-1 text-green-600 font-semibold block";
@@ -420,6 +422,8 @@
 
             appliedDiscountCode = null;
             appliedDiscountPercent = 0;
+            localStorage.removeItem('appliedDiscountCode');
+            localStorage.removeItem('appliedDiscountPercent');
 
             if (input) {
                 input.value = "";
@@ -857,6 +861,19 @@
             if (nameEl && emailEl) {
                 nameEl.addEventListener('blur', trackAbandonedCart);
                 emailEl.addEventListener('blur', trackAbandonedCart);
+            }
+
+            // Inicializar estado del cupón precargado si existe
+            const discountInput = document.getElementById('discount-code-input');
+            const discountBtn = document.getElementById('apply-discount-btn');
+            const discountMsg = document.getElementById('discount-message');
+            if (appliedDiscountCode && discountInput && discountBtn && discountMsg) {
+                discountInput.value = appliedDiscountCode;
+                discountInput.disabled = true;
+                discountBtn.textContent = "Quitar";
+                discountBtn.onclick = removeDiscountCode;
+                discountMsg.textContent = `¡Cupón aplicado! Descuento del ${appliedDiscountPercent}%`;
+                discountMsg.className = "text-xs mt-1 text-green-600 font-semibold block";
             }
         });
 
