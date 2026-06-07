@@ -3,3 +3,10 @@
 
 [functions."recover-carts-cron"]
   schedule = "*/15 * * * *"
+
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
