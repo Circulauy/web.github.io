@@ -10,3 +10,52 @@
   status = 301
   force = true
 
+[[redirects]]
+  from = "/talleres.html"
+  to = "/talleres"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/nosotros.html"
+  to = "/nosotros"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/galeria.html"
+  to = "/galeria"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tienda.html"
+  to = "/tienda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contacto.html"
+  to = "/contacto"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/carrito.html"
+  to = "/carrito"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/datos.html"
+  to = "/datos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/detalle.html"
+  to = "/detalle"
+  status = 301
+  force = true
+
+
