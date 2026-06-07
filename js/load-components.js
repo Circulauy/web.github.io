@@ -1215,7 +1215,13 @@ function showExpoModal() {
                 <!-- Logos oficiales -->
                 <div class="flex justify-between items-center gap-4 mb-6 pb-4 border-b border-gray-100" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f4f6;">
                     <!-- Logo Ministerio de Ambiente -->
-                    <img src="https://www.gub.uy/ministerio-ambiente/sites/ministerio-ambiente/files/catalogo/Escudo%2520Presidencia%2520Uruguay_1.png" alt="Ministerio de Ambiente de Uruguay" class="h-10 sm:h-12 object-contain" style="height: 3rem; object-fit: contain;" />
+                    <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="https://www.gub.uy/ministerio-ambiente/sites/ministerio-ambiente/files/catalogo/Escudo%2520Presidencia%2520Uruguay_1.png" alt="Escudo de Uruguay" class="h-10 object-contain" style="height: 2.5rem; object-fit: contain;" />
+                        <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left; line-height: 1.1;">
+                            <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Ministerio</span>
+                            <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 13px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">de Ambiente</span>
+                        </div>
+                    </div>
                     
                     <!-- Logo Expo Uruguay Sostenible 2026 -->
                     <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left;">
