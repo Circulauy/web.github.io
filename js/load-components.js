@@ -1212,23 +1212,9 @@ function showExpoModal() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
 
-                <!-- Logos oficiales -->
-                <div class="flex justify-between items-center gap-4 mb-6 pb-4 border-b border-gray-100" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f4f6;">
-                    <!-- Logo Ministerio de Ambiente -->
-                    <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img src="https://www.gub.uy/ministerio-ambiente/sites/ministerio-ambiente/files/catalogo/Escudo%2520Presidencia%2520Uruguay_1.png" alt="Escudo de Uruguay" class="h-10 object-contain" style="height: 2.5rem; object-fit: contain;" />
-                        <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left; line-height: 1.1;">
-                            <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Ministerio</span>
-                            <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 13px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">de Ambiente</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Logo Expo Uruguay Sostenible 2026 -->
-                    <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left;">
-                        <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1;">Expo Uruguay</span>
-                        <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 14px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Sostenible</span>
-                        <span class="text-xs font-bold text-rp-teal leading-none" style="font-size: 12px; font-weight: 700; color: #79C7C7; line-height: 1;">2026</span>
-                    </div>
+                <!-- Banner Oficial -->
+                <div class="mb-6 pb-4 border-b border-gray-100" style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f4f6; text-align: center;">
+                    <img src="images/expo-sostenible-banner.png" alt="Expo Uruguay Sostenible 2026 - Antel Arena - Ministerio de Ambiente" class="w-full h-auto object-contain rounded-lg" style="width: 100%; height: auto; object-fit: contain; border-radius: 0.5rem;" />
                 </div>
 
                 <!-- Contenido -->
@@ -1268,14 +1254,19 @@ function showExpoModal() {
                             </div>
                             <div style="display: flex; flex-direction: column;">
                                 <span class="block text-xs font-bold text-gray-400 uppercase leading-none" style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; margin-bottom: 2px;">Ubicación</span>
-                                <span class="text-sm font-extrabold text-rp-teal uppercase" style="font-size: 0.875rem; font-weight: 800; color: #79C7C7; text-transform: uppercase;">Stand C52</span>
+                                <span class="text-sm font-extrabold text-rp-teal uppercase" style="font-size: 0.875rem; font-weight: 800; color: #79C7C7; text-transform: uppercase;">Stand C52 (Antel Arena)</span>
                             </div>
                         </div>
                     </div>
 
-                    <button type="button" id="expo-modal-btn" class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-lg active:scale-[0.98]" style="width: 100%; padding: 0.75rem; background-color: #79C7C7; color: #ffffff; font-weight: 700; border: none; border-radius: 0.5rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(121, 199, 199, 0.4);">
-                        ¡Nos vemos allí!
-                    </button>
+                     <div class="flex gap-3" style="display: flex; gap: 0.75rem; width: 100%;">
+                        <a href="https://www.gub.uy/ministerio-ambiente/expo-uruguay-sostenible" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-white border-2 border-rp-teal text-rp-teal font-bold rounded-lg hover:bg-rp-blue-light transition text-center active:scale-[0.98]" style="flex: 1; padding: 0.75rem; border: 2px solid #79C7C7; background-color: #ffffff; color: #79C7C7; font-weight: 700; border-radius: 0.5rem; text-decoration: none; text-align: center; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; display: inline-block;">
+                            Más info
+                        </a>
+                        <button type="button" id="expo-modal-btn" class="flex-1 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-lg active:scale-[0.98]" style="flex: 1; padding: 0.75rem; background-color: #79C7C7; color: #ffffff; font-weight: 700; border: none; border-radius: 0.5rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(121, 199, 199, 0.4);">
+                            ¡Nos vemos allí!
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
