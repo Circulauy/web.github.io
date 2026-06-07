@@ -382,13 +382,31 @@ function loadWhatsApp() {
 
 window.toggleChat = function () {
     const chatBox = document.getElementById('whatsapp-chat-box');
-    if (chatBox) chatBox.classList.toggle('hidden');
+    if (chatBox) {
+        const wasHidden = chatBox.classList.contains('hidden');
+        chatBox.classList.toggle('hidden');
+        if (wasHidden && typeof window.trackGA4Event === 'function') {
+            window.trackGA4Event('whatsapp_chat_opened', {
+                event_category: 'Engagement',
+                event_label: 'WhatsApp Floating Chatbox'
+            });
+        }
+    }
 };
 
 window.enviarWhatsApp = function () {
     const input = document.getElementById('mensaje-usuario');
     const msg = input.value.trim();
     if (!msg) return alert("Escribe un mensaje.");
+    
+    if (typeof window.trackGA4Event === 'function') {
+        window.trackGA4Event('whatsapp_message_sent', {
+            event_category: 'Conversion',
+            event_label: 'WhatsApp Message Sent',
+            message_length: msg.length
+        });
+    }
+
     window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
     document.getElementById('whatsapp-chat-box').classList.add('hidden');
     input.value = '';
@@ -907,27 +925,91 @@ window.updateCartCount = function () {
     updateCartDropdown();
 }
 
+// ==========================================
+// GOOGLE ANALYTICS (GA4) EVENT TRACKING HELPER
+// ==========================================
+window.trackGA4Event = function(eventName, params) {
+    try {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: eventName,
+            ...params
+        });
+        console.log(`[GA4] Evento trackeado: ${eventName}`, params);
+    } catch (e) {
+        console.error(`[GA4] Error al trackear ${eventName}:`, e);
+    }
+};
+
 window.incrementCartItem = function (index) {
     let cart = getCart();
     if (cart[index]) {
-        cart[index].quantity++;
+        const item = cart[index];
+        item.quantity++;
         saveCart(cart);
+
+        // Tracking add_to_cart en GA4 para incremento
+        trackGA4Event('add_to_cart', {
+            ecommerce: {
+                currency: 'UYU',
+                value: parseFloat(item.price),
+                items: [{
+                    item_id: item.id,
+                    item_name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: 1
+                }]
+            }
+        });
     }
 };
 
 window.decrementCartItem = function (index) {
     let cart = getCart();
     if (cart[index]) {
-        cart[index].quantity--;
-        if (cart[index].quantity <= 0) cart.splice(index, 1);
+        const item = cart[index];
+        item.quantity--;
+
+        // Tracking remove_from_cart en GA4 para decremento
+        trackGA4Event('remove_from_cart', {
+            ecommerce: {
+                currency: 'UYU',
+                value: parseFloat(item.price),
+                items: [{
+                    item_id: item.id,
+                    item_name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: 1
+                }]
+            }
+        });
+
+        if (item.quantity <= 0) cart.splice(index, 1);
         saveCart(cart);
     }
 };
 
 window.removeCartItem = function (index) {
     let cart = getCart();
-    cart.splice(index, 1);
-    saveCart(cart);
+    const removedItem = cart[index];
+    if (removedItem) {
+        cart.splice(index, 1);
+        saveCart(cart);
+
+        // Tracking remove_from_cart en GA4 para eliminación total
+        trackGA4Event('remove_from_cart', {
+            ecommerce: {
+                currency: 'UYU',
+                value: parseFloat(removedItem.price) * parseInt(removedItem.quantity),
+                items: [{
+                    item_id: removedItem.id,
+                    item_name: removedItem.name,
+                    price: parseFloat(removedItem.price),
+                    quantity: parseInt(removedItem.quantity)
+                }]
+            }
+        });
+    }
 };
 
 window.addItemToCart = function (arg1, arg2, arg3, arg4) {
@@ -1018,6 +1100,92 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('carrito') || window.location.pathname.includes('datos')) {
         renderCheckoutPage();
     }
+
+    // --- TRACKING DE ECOMMERCE EN CARGA DE PÁGINAS ---
+    if (window.location.pathname.includes('carrito')) {
+        const cart = getCart();
+        trackGA4Event('view_cart', {
+            ecommerce: {
+                currency: 'UYU',
+                value: cart.reduce((acc, item) => acc + (parseFloat(item.price) * parseInt(item.quantity)), 0),
+                items: cart.map(item => ({
+                    item_id: item.id,
+                    item_name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: parseInt(item.quantity)
+                }))
+            }
+        });
+    }
+
+    if (window.location.pathname.includes('datos')) {
+        const cart = getCart();
+        trackGA4Event('begin_checkout', {
+            ecommerce: {
+                currency: 'UYU',
+                value: cart.reduce((acc, item) => acc + (parseFloat(item.price) * parseInt(item.quantity)), 0),
+                items: cart.map(item => ({
+                    item_id: item.id,
+                    item_name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: parseInt(item.quantity)
+                }))
+            }
+        });
+    }
+
+    // --- TRACKING DE CLICS GENERALES (Interacciones clave y Enlaces de Salida) ---
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('a, button');
+        if (!target) return;
+
+        // Clic en Reservar Taller o enlaces que lleven a talleres
+        const text = target.textContent ? target.textContent.toUpperCase() : '';
+        const href = target.getAttribute('href') || '';
+        
+        if (text.includes('RESERVÁ TU TALLER') || href.includes('talleres')) {
+            trackGA4Event('workshop_reservation_click', {
+                event_category: 'Engagement',
+                event_label: target.textContent.trim() || 'Reservá tu Taller Link'
+            });
+        }
+
+        // Clics a redes sociales salientes
+        if (href.includes('instagram.com')) {
+            trackGA4Event('outbound_click', {
+                event_category: 'Social Media',
+                event_label: 'Instagram Link',
+                destination: href
+            });
+        } else if (href.includes('linkedin.com')) {
+            trackGA4Event('outbound_click', {
+                event_category: 'Social Media',
+                event_label: 'LinkedIn Link',
+                destination: href
+            });
+        }
+    });
+
+    // --- TRACKING DE EVENTO AGREGAR AL CARRITO ---
+    window.addEventListener('cart:item-added', (e) => {
+        try {
+            const { product } = e.detail;
+            trackGA4Event('add_to_cart', {
+                ecommerce: {
+                    currency: 'UYU',
+                    value: parseFloat(product.price) * parseInt(product.quantity),
+                    items: [{
+                        item_id: product.id,
+                        item_name: product.name,
+                        price: parseFloat(product.price),
+                        quantity: parseInt(product.quantity)
+                    }]
+                }
+            });
+        } catch (err) {
+            console.error('Error al trackear add_to_cart en GA4:', err);
+        }
+    });
 
     setTimeout(() => window.updateCartCount(), 500);
 });
