@@ -1187,5 +1187,133 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- ANUNCIO EXPO URUGUAY SOSTENIBLE 2026 ---
+    const now = new Date();
+    const expirationDate = new Date("2026-06-14T19:00:00-03:00"); // Zona horaria de Uruguay (UTC-3)
+    if (now < expirationDate) {
+        if (!sessionStorage.getItem('expo_modal_shown')) {
+            showExpoModal();
+        }
+    }
+
     setTimeout(() => window.updateCartCount(), 500);
 });
+
+// ==========================================
+// FUNCIÓN PARA MOSTRAR EL MODAL DE LA EXPO 2026
+// ==========================================
+function showExpoModal() {
+    const modalHTML = `
+        <div id="expo-announcement-modal" class="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000; align-items: center; justify-content: center; padding: 1rem; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); opacity: 0;">
+            <div class="relative w-full max-w-lg bg-white rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-200 transform scale-95 transition-all duration-300" id="expo-modal-card" style="background-color: #ffffff; border-radius: 1rem; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 32rem; width: 100%; border: 1px solid #e5e7eb; position: relative;">
+                
+                <!-- Botón Cerrar -->
+                <button type="button" id="expo-modal-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: #9ca3af; padding: 4px;" aria-label="Cerrar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1.5rem; height: 1.5rem;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+
+                <!-- Logos oficiales -->
+                <div class="flex justify-between items-center gap-4 mb-6 pb-4 border-b border-gray-100" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f4f6;">
+                    <!-- Logo Ministerio de Ambiente -->
+                    <img src="https://www.gub.uy/ministerio-ambiente/sites/ministerio-ambiente/files/catalogo/Escudo%2520Presidencia%2520Uruguay_1.png" alt="Ministerio de Ambiente de Uruguay" class="h-10 sm:h-12 object-contain" style="height: 3rem; object-fit: contain;" />
+                    
+                    <!-- Logo Expo Uruguay Sostenible 2026 -->
+                    <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 3rem; height: 3rem; flex-shrink: 0;">
+                            <circle cx="32" cy="32" r="28" fill="#e0f7f7" opacity="0.6"/>
+                            <path d="M32 12c-5.5 8.5-12 10.5-12 18.5 0 6.6 5.4 12 12 12s12-5.4 12-12c0-8-6.5-10-12-18.5z" fill="#79C7C7"/>
+                            <path d="M32 20c-3 5-7 7-7 12 0 3.9 3.1 7 7 7s7-3.1 7-7c0-5-4-7-7-12z" fill="#A3E6BA"/>
+                            <path d="M32 42v6" stroke="#2c5e5e" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                        <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left;">
+                            <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1;">Expo Uruguay</span>
+                            <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 14px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Sostenible</span>
+                            <span class="text-xs font-bold text-rp-teal leading-none" style="font-size: 12px; font-weight: 700; color: #79C7C7; line-height: 1;">2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenido -->
+                <div class="text-center" style="text-align: center;">
+                    <span class="inline-block px-3 py-1 bg-rp-blue-light text-rp-teal font-extrabold text-xs tracking-widest rounded-full uppercase mb-4" style="display: inline-block; padding: 0.25rem 0.75rem; background-color: #e0f7f7; color: #79C7C7; font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em; border-radius: 9999px; text-transform: uppercase; margin-bottom: 1rem;">¡VISITÁ NUESTRO STAND!</span>
+                    <h2 class="text-2xl font-bold text-text-dark mb-4 leading-tight title-style" style="font-size: 1.5rem; font-weight: 700; color: #333333; margin-bottom: 1rem; line-height: 1.25; font-family: 'Patua One', cursive;">Estaremos en la <span class="text-rp-teal" style="color: #79C7C7;">Expo Uruguay Sostenible</span></h2>
+                    
+                    <p class="text-sm text-gray-600 mb-6 leading-relaxed" style="font-size: 0.875rem; color: #4b5563; margin-bottom: 1.5rem; line-height: 1.5; font-family: 'Inter', sans-serif;">
+                        Nos complace invitarlos a visitarnos en el evento ambiental más importante del país. Vení a conocer nuestros procesos de reciclaje de plástico y productos de diseño sostenible.
+                    </p>
+
+                    <!-- Tarjeta de Detalles -->
+                    <div class="bg-bg-light rounded-xl p-4 border border-rp-gray-soft/50 text-left mb-6 space-y-3" style="background-color: #fafafa; border-radius: 0.75rem; padding: 1rem; border: 1px solid #dddddd; text-align: left; margin-bottom: 1.5rem;">
+                        <div class="flex items-center gap-3 mb-3" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-rp-blue-light text-rp-teal" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; background-color: #e0f7f7; color: #79C7C7; flex-shrink: 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1rem; height: 1rem;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="block text-xs font-bold text-gray-400 uppercase leading-none" style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; margin-bottom: 2px;">Fechas</span>
+                                <span class="text-sm font-semibold text-text-dark" style="font-size: 0.875rem; font-weight: 600; color: #333333;">Del jueves 11/06 al domingo 14/06</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-3" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-rp-blue-light text-rp-teal" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; background-color: #e0f7f7; color: #79C7C7; flex-shrink: 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1rem; height: 1rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="block text-xs font-bold text-gray-400 uppercase leading-none" style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; margin-bottom: 2px;">Horario</span>
+                                <span class="text-sm font-semibold text-text-dark" style="font-size: 0.875rem; font-weight: 600; color: #333333;">De 10:00 a 19:00 hs</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-rp-blue-light text-rp-teal" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; background-color: #e0f7f7; color: #79C7C7; flex-shrink: 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1rem; height: 1rem;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="block text-xs font-bold text-gray-400 uppercase leading-none" style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1; margin-bottom: 2px;">Ubicación</span>
+                                <span class="text-sm font-extrabold text-rp-teal uppercase" style="font-size: 0.875rem; font-weight: 800; color: #79C7C7; text-transform: uppercase;">Stand C52</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="expo-modal-btn" class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-lg active:scale-[0.98]" style="width: 100%; padding: 0.75rem; background-color: #79C7C7; color: #ffffff; font-weight: 700; border: none; border-radius: 0.5rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(121, 199, 199, 0.4);">
+                        ¡Nos vemos allí!
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    const overlay = document.getElementById('expo-announcement-modal');
+    const card = document.getElementById('expo-modal-card');
+
+    overlay.style.display = 'flex';
+
+    setTimeout(() => {
+        overlay.style.opacity = '1';
+        if (card) {
+            card.style.transform = 'scale(1)';
+            card.style.opacity = '1';
+        }
+    }, 50);
+
+    function closeModal() {
+        overlay.style.opacity = '0';
+        if (card) {
+            card.style.transform = 'scale(0.95)';
+            card.style.opacity = '0';
+        }
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            overlay.remove();
+        }, 300);
+        sessionStorage.setItem('expo_modal_shown', 'true');
+    }
+
+    document.getElementById('expo-modal-close').addEventListener('click', closeModal);
+    document.getElementById('expo-modal-btn').addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
+}
