@@ -291,7 +291,7 @@
                                     <span id="checkout-subtotal" class="font-bold">$0.00</span>
                                 </div>
                                 <div id="discount-row" class="flex justify-between items-center text-green-600 font-semibold hidden">
-                                    <span>Descuento (10%)</span>
+                                    <span>Descuento (<span id="discount-percent-val">0</span>%)</span>
                                     <span id="checkout-discount">-$0.00</span>
                                 </div>
                                 <div class="flex justify-between items-center">
@@ -559,10 +559,12 @@
             let discountAmount = 0;
             const discountRow = document.getElementById('discount-row');
             const discountEl = document.getElementById('checkout-discount');
+            const discountPercentVal = document.getElementById('discount-percent-val');
 
             if (appliedDiscountPercent > 0) {
                 discountAmount = subtotal * (appliedDiscountPercent / 100);
                 if (discountEl) discountEl.textContent = `-$${discountAmount.toFixed(2)}`;
+                if (discountPercentVal) discountPercentVal.textContent = appliedDiscountPercent;
                 if (discountRow) discountRow.classList.remove('hidden');
             } else {
                 if (discountRow) discountRow.classList.add('hidden');
