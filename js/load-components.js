@@ -1191,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const now = new Date();
     const expirationDate = new Date("2026-06-14T19:00:00-03:00"); // Zona horaria de Uruguay (UTC-3)
     if (now < expirationDate) {
-        if (!sessionStorage.getItem('expo_modal_shown')) {
+        if (!localStorage.getItem('expo_modal_shown')) {
             showExpoModal();
         }
     }
@@ -1218,18 +1218,10 @@ function showExpoModal() {
                     <img src="https://www.gub.uy/ministerio-ambiente/sites/ministerio-ambiente/files/catalogo/Escudo%2520Presidencia%2520Uruguay_1.png" alt="Ministerio de Ambiente de Uruguay" class="h-10 sm:h-12 object-contain" style="height: 3rem; object-fit: contain;" />
                     
                     <!-- Logo Expo Uruguay Sostenible 2026 -->
-                    <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 3rem; height: 3rem; flex-shrink: 0;">
-                            <circle cx="32" cy="32" r="28" fill="#e0f7f7" opacity="0.6"/>
-                            <path d="M32 12c-5.5 8.5-12 10.5-12 18.5 0 6.6 5.4 12 12 12s12-5.4 12-12c0-8-6.5-10-12-18.5z" fill="#79C7C7"/>
-                            <path d="M32 20c-3 5-7 7-7 12 0 3.9 3.1 7 7 7s7-3.1 7-7c0-5-4-7-7-12z" fill="#A3E6BA"/>
-                            <path d="M32 42v6" stroke="#2c5e5e" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
-                        <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left;">
-                            <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1;">Expo Uruguay</span>
-                            <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 14px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Sostenible</span>
-                            <span class="text-xs font-bold text-rp-teal leading-none" style="font-size: 12px; font-weight: 700; color: #79C7C7; line-height: 1;">2026</span>
-                        </div>
+                    <div class="flex flex-col text-left" style="display: flex; flex-direction: column; text-align: left;">
+                        <span class="text-[9px] font-bold tracking-wider text-gray-400 uppercase leading-none" style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; line-height: 1;">Expo Uruguay</span>
+                        <span class="text-sm font-extrabold text-text-dark uppercase leading-none" style="font-size: 14px; font-weight: 800; color: #2c5e5e; text-transform: uppercase; line-height: 1; font-family: 'Montserrat', sans-serif;">Sostenible</span>
+                        <span class="text-xs font-bold text-rp-teal leading-none" style="font-size: 12px; font-weight: 700; color: #79C7C7; line-height: 1;">2026</span>
                     </div>
                 </div>
 
@@ -1308,7 +1300,7 @@ function showExpoModal() {
             overlay.style.display = 'none';
             overlay.remove();
         }, 300);
-        sessionStorage.setItem('expo_modal_shown', 'true');
+        localStorage.setItem('expo_modal_shown', 'true');
     }
 
     document.getElementById('expo-modal-close').addEventListener('click', closeModal);
