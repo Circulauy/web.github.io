@@ -86,113 +86,151 @@ const PRODUCTS_DB = {
         name: 'Bandeja',
         price: null,
         desc: 'Una bandeja moderna y funcional, ideal para servir o decorar. Cada pieza presenta un patrón único e irrepetible, resultado de nuestro proceso artesanal de reciclaje de tapitas y envases de plástico.',
-        images: ['images/Tienda/bandeja.png'],
-        upcoming: true
+        images: ['images/Tienda/bandeja.png', 'images/Tienda/bandeja_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'banco-alto': {
         name: 'Banco Alto',
-        price: null,
+        price: 6465,
         desc: 'Asiento resistente e impermeable con estructura robusta combinada con una superficie superior de placa reciclada en nuestras texturas exclusivas. Ideal tanto para interiores como exteriores.',
-        images: ['images/Tienda/banco-alto.png'],
-        upcoming: true
+        images: ['images/Tienda/banco-alto.png', 'images/Tienda/banco-alto_detalle.png'],
+        specs: {
+            'Diámetro': '30 cm',
+            'Alto': '34 cm',
+            'Espesor de placa': '19 mm'
+        },
+        showImage: true
     },
     'banco-bajo': {
         name: 'Banco Bajo',
-        price: null,
+        price: 5386,
         desc: 'Taburete o asiento bajo ecológico y versátil, con una superficie de plástico 100% reciclado. Resistente al agua, duradero y con un diseño moderno.',
-        images: ['images/Tienda/banco-bajo.png'],
-        upcoming: true
+        images: ['images/Tienda/banco-bajo.png', 'images/Tienda/banco-bajo_detalle.png'],
+        specs: {
+            'Diámetro': '30 cm',
+            'Alto': '25 cm',
+            'Espesor de placa': '16 mm'
+        },
+        showImage: true
     },
     'comedero-mascotas': {
         name: 'Comedero / Bebedero para Mascotas',
-        price: null,
+        price: 3330,
         desc: 'Diseño higiénico, estable y duradero para tus animales. La base de alta resistencia está hecha de plástico 100% reciclado y cuenta con dos bowls de acero inoxidable desmontables.',
-        images: ['images/Tienda/comedero.png'],
-        upcoming: true
+        images: ['images/Tienda/comedero.png', 'images/Tienda/comedero_detalle.png'],
+        specs: {
+            'Ancho': '25 cm',
+            'Largo': '50 cm',
+            'Alto': '25 cm',
+            'Espesor de placa': '16 mm'
+        },
+        showImage: true
     },
     'espejo': {
         name: 'Espejo Circular (35 cm)',
         price: null,
         desc: 'Espejo de pared con un llamativo marco circular de 35 cm de diámetro fabricado a partir de nuestras placas recicladas. Aporta color, textura y sustentabilidad a cualquier ambiente.',
-        images: ['images/Tienda/espejo.png'],
-        upcoming: true
+        images: ['images/Tienda/espejo.png', 'images/Tienda/espejo_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'estanteria': {
         name: 'Estantería',
-        price: null,
+        price: 9650,
         desc: 'Estantería de diseño moderno con baldas fabricadas con plástico 100% reciclado. Ofrece gran resistencia a la humedad, al peso y es ideal para exhibir tus objetos favoritos.',
-        images: ['images/Tienda/estanteria.png'],
-        upcoming: true
+        images: ['images/Tienda/estanteria.png', 'images/Tienda/estanteria_detalle.png'],
+        specs: {
+            'Alto': '76 cm',
+            'Ancho': '76 cm',
+            'Profundidad': '18 cm',
+            'Espesor de placa': '19 mm'
+        },
+        showImage: true
     },
     'mesa': {
         name: 'Mesa',
-        price: null,
+        price: 8026,
         desc: 'Mesa ratona o de centro que combina una estructura metálica minimalista con una tapa superior de plástico 100% reciclado. Un punto focal ecológico y sofisticado para tu living.',
-        images: ['images/Tienda/mesa.png'],
-        upcoming: true
+        images: ['images/Tienda/mesa.png', 'images/Tienda/mesa_detalle.png'],
+        specs: {
+            'Diámetro': '70 cm',
+            'Alto': '37 cm',
+            'Espesor de placa': '16 mm'
+        },
+        showImage: true
     },
     'perchero-individual': {
         name: 'Perchero Individual',
         price: null,
         desc: 'Colgador de pared individual con botón torneado de plástico 100% reciclado. Una solución simple, estética y sustentable para organizar tus abrigos, bolsos o llaves.',
-        images: ['images/Tienda/perchero-individual.png'],
-        upcoming: true
+        images: ['images/Tienda/perchero-individual.png', 'images/Tienda/perchero-individual_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'perchero-multiple': {
         name: 'Perchero Múltiple',
         price: null,
         desc: 'Perchero de pared múltiple que cuenta con colgadores de plástico 100% reciclado sobre una base robusta. Perfecto para el recibidor, aportando color y diseño ecológico.',
-        images: ['images/Tienda/perchero-multiple.png'],
-        upcoming: true
+        images: ['images/Tienda/perchero-multiple.png', 'images/Tienda/perchero-multiple_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'porta-macetas': {
         name: 'Porta Macetas',
         price: null,
         desc: 'Soporte de diseño para tus plantas. Fabricado con placas de plástico reciclado, es totalmente impermeable y resistente a la humedad del riego. Resalta el verde de la naturaleza.',
-        images: ['images/Tienda/porta-macetas.png'],
-        upcoming: true
+        images: ['images/Tienda/porta-macetas.png', 'images/Tienda/porta-macetas_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'reloj': {
         name: 'Reloj de Pared',
         price: null,
         desc: 'Reloj de pared minimalista de funcionamiento silencioso. El cuadrante está hecho a partir de placa de plástico reciclado, convirtiendo cada minuto en un recordatorio de sustentabilidad.',
-        images: ['images/Tienda/reloj.png'],
-        upcoming: true
+        images: ['images/Tienda/reloj.png', 'images/Tienda/reloj_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'revistero': {
         name: 'Revistero',
         price: null,
         desc: 'Organizador y revistero de diseño geométrico fabricado con placas de plástico reciclado de alta densidad. Ligero, duradero y de producción ética uruguaya.',
-        images: ['images/Tienda/revistero.png'],
-        upcoming: true
+        images: ['images/Tienda/revistero.png', 'images/Tienda/revistero_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'stand-celular': {
         name: 'Soporte para Celular',
         price: null,
         desc: 'Soporte ergonómico de escritorio para celulares. Hecho de plástico 100% reciclado, ofrece una inclinación perfecta para videollamadas, ver contenido o trabajar.',
-        images: ['images/Tienda/stand-celular.png'],
-        upcoming: true
+        images: ['images/Tienda/stand-celular.png', 'images/Tienda/stand-celular_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'stand-celular-llavero': {
         name: 'Soporte para Celular Llavero',
         price: null,
         desc: 'Práctico soporte portátil para celulares con diseño tipo llavero. Llévalo en tus llaves y ten siempre a mano un soporte estable hecho de plástico reciclado.',
-        images: ['images/Tienda/stand-celular-llavero.png'],
-        upcoming: true
+        images: ['images/Tienda/stand-celular-llavero.png', 'images/Tienda/stand-celular-llavero_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'stand-laptop': {
         name: 'Soporte para Laptop / Computadora',
         price: null,
         desc: 'Soporte ergonómico desmontable de dos piezas encastrables en plástico 100% reciclado. Eleva la pantalla de tu laptop para mejorar tu postura y refrigerar tu equipo.',
-        images: ['images/Tienda/stand-laptop.png'],
-        upcoming: true
+        images: ['images/Tienda/stand-laptop.png', 'images/Tienda/stand-laptop_detalle.png'],
+        upcoming: true,
+        showImage: true
     },
     'trofeo-empresarial': {
         name: 'Trofeo Empresarial',
         price: null,
         desc: 'Premio o reconocimiento institucional sustentable. Diseñado a medida con placas de plástico 100% reciclado, ideal para empresas comprometidas con el medio ambiente.',
-        images: ['images/Tienda/trofeo.png'],
-        upcoming: true
+        images: ['images/Tienda/trofeo.png', 'images/Tienda/trofeo_detalle.png'],
+        upcoming: true,
+        showImage: true
     }
 };
 
@@ -474,96 +512,50 @@ function loadProductDetails() {
         const addBtn = document.getElementById('detail-add-btn');
 
         // Validar imágenes
-        const images = product.images && product.images.length > 0 ? product.images : ['images/logo.png'];
+        const rawImages = product.images && product.images.length > 0 ? product.images : ['images/logo.png'];
         let currentImageIndex = 0;
 
-        if (product.upcoming) {
-            // Ocultar imagen y controles
-            if (imgEl) imgEl.style.display = 'none';
-            if (prevBtn) prevBtn.classList.add('hidden');
-            if (nextBtn) nextBtn.classList.add('hidden');
-            if (thumbsContainer) thumbsContainer.style.display = 'none';
+        // Función para verificar la existencia física de la imagen
+        const checkImageExists = (url) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        };
 
-            // Crear y agregar placeholder
-            const parent = imgEl ? imgEl.parentElement : null;
-            if (parent) {
-                const existingPlaceholder = parent.querySelector('.detail-placeholder');
-                if (existingPlaceholder) existingPlaceholder.remove();
-
-                const placeholder = document.createElement('div');
-                placeholder.className = 'detail-placeholder w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 gap-4';
-                placeholder.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="text-sm font-medium text-gray-500">Foto disponible próximamente</span>
-                `;
-                parent.appendChild(placeholder);
-            }
-        } else {
-            // Mostrar imagen y controles si no es upcoming
-            if (imgEl) imgEl.style.display = 'block';
-            if (thumbsContainer) thumbsContainer.style.display = 'flex';
-            const parent = imgEl ? imgEl.parentElement : null;
-            if (parent) {
-                const existingPlaceholder = parent.querySelector('.detail-placeholder');
-                if (existingPlaceholder) existingPlaceholder.remove();
-            }
-
-            // Función interna para actualizar la imagen principal y miniaturas
-            const updateMainImage = function(index) {
-                // Asegurar límites
-                if (index < 0) index = images.length - 1;
-                if (index >= images.length) index = 0;
-                currentImageIndex = index;
-
-                // Cambiar SRC con una pequeña animación de opacidad
-                imgEl.style.opacity = '0.8';
-                setTimeout(() => {
-                    imgEl.src = images[currentImageIndex];
-                    imgEl.style.opacity = '1';
-                }, 150);
-
-                // Actualizar borde activo en miniaturas
-                if (thumbsContainer) {
-                     Array.from(thumbsContainer.children).forEach((thumb, i) => {
-                        if (i === currentImageIndex) {
-                            thumb.classList.add('border-rp-teal');
-                            thumb.classList.remove('border-transparent');
-                        } else {
-                            thumb.classList.remove('border-rp-teal');
-                            thumb.classList.add('border-transparent');
-                        }
-                    });
+        const showImageImmediately = !product.upcoming || product.showImage;
+        if (imgEl) {
+            if (showImageImmediately) {
+                imgEl.style.display = 'block';
+                imgEl.src = rawImages[0];
+                const parent = imgEl.parentElement;
+                if (parent) {
+                    const existingPlaceholder = parent.querySelector('.detail-placeholder');
+                    if (existingPlaceholder) existingPlaceholder.remove();
                 }
-            };
+            } else {
+                imgEl.style.display = 'none';
+                if (prevBtn) prevBtn.classList.add('hidden');
+                if (nextBtn) nextBtn.classList.add('hidden');
+                if (thumbsContainer) thumbsContainer.style.display = 'none';
 
-            // Inicializar Imagen
-            updateMainImage(0);
-            
-            // Generar Miniaturas y Configurar Flechas
-            if (thumbsContainer) {
-                thumbsContainer.innerHTML = '';
-                images.forEach((imgSrc, index) => {
-                    const thumb = document.createElement('img');
-                    thumb.src = imgSrc;
-                    // Clase base para miniaturas
-                    thumb.className = `w-20 h-20 object-cover rounded-lg cursor-pointer border-2 transition-all duration-300 hover:opacity-80 hover:scale-105`;
-                    
-                    thumb.onclick = () => updateMainImage(index);
-                    thumbsContainer.appendChild(thumb);
-                });
+                // Crear y agregar placeholder
+                const parent = imgEl.parentElement;
+                if (parent) {
+                    const existingPlaceholder = parent.querySelector('.detail-placeholder');
+                    if (existingPlaceholder) existingPlaceholder.remove();
 
-                // Configurar flechas si hay más de 1 imagen
-                if (images.length > 1) {
-                    if (prevBtn) {
-                        prevBtn.classList.remove('hidden');
-                        prevBtn.onclick = () => updateMainImage(currentImageIndex - 1);
-                    }
-                    if (nextBtn) {
-                        nextBtn.classList.remove('hidden');
-                        nextBtn.onclick = () => updateMainImage(currentImageIndex + 1);
-                    }
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'detail-placeholder w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-400 gap-4';
+                    placeholder.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-500">Foto disponible próximamente</span>
+                    `;
+                    parent.appendChild(placeholder);
                 }
             }
         }
@@ -575,62 +567,196 @@ function loadProductDetails() {
                 priceEl.textContent = 'Precio a consultar';
                 priceEl.className = 'text-3xl text-rp-teal font-extrabold mb-6';
             } else {
-                priceEl.textContent = `$${product.price}`;
+                priceEl.textContent = `$${product.price.toLocaleString('es-UY')}`;
                 priceEl.className = 'text-3xl text-rp-teal font-extrabold mb-6';
             }
         }
         if (descEl) descEl.textContent = product.desc || 'Sin descripción disponible.';
 
-        // Mostrar u ocultar sección de texturas (solo para la nueva línea / productos próximos)
+        // Renderizar especificaciones / medidas
+        const specsContainer = document.getElementById('detail-specs-container');
+        const specsGrid = document.getElementById('detail-specs-grid');
+        if (specsContainer && specsGrid) {
+            if (product.specs && Object.keys(product.specs).length > 0) {
+                specsContainer.classList.remove('hidden');
+                specsGrid.innerHTML = Object.entries(product.specs).map(([key, val]) => `
+                    <div class="bg-gray-50/50 border border-gray-100 rounded-xl p-3 text-center">
+                        <span class="block text-[10px] uppercase font-bold text-gray-400 mb-1 font-brand leading-none">${key}</span>
+                        <span class="text-sm font-semibold text-text-dark font-brand leading-normal">${val}</span>
+                    </div>
+                `).join('');
+            } else {
+                specsContainer.classList.add('hidden');
+                specsGrid.innerHTML = '';
+            }
+        }
+
+        // Mostrar u ocultar sección de texturas
+        const productRequiresTexture = !productId.startsWith('bowl-') && !productId.startsWith('posavasos-');
         const texturasEl = document.getElementById('texturas-disponibles');
         if (texturasEl) {
-            if (product.upcoming) {
+            if (productRequiresTexture) {
                 texturasEl.style.display = 'block';
             } else {
                 texturasEl.style.display = 'none';
             }
         }
         
-        // Lógica Botón Agregar
-        if (addBtn) {
-            if (product.upcoming) {
-                addBtn.innerHTML = '<i class="fab fa-whatsapp mr-2 text-xl"></i> CONSULTAR PRECIO';
-                addBtn.className = 'w-full py-4 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95 text-center';
-                addBtn.onclick = function(e) {
-                    e.preventDefault();
-                    const msg = `Hola Circula, me interesa el producto "${product.name}" de la tienda. ¿Podrían darme más información y el precio?`;
-                    window.open(`https://wa.me/59899395724?text=${encodeURIComponent(msg)}`, '_blank');
-                };
-            } else {
-                addBtn.className = 'w-full py-4 bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95';
-                addBtn.onclick = function() {
-                    window.addItemToCart({
-                        id: productId,
-                        name: product.name,
-                        price: product.price,
-                        quantity: 1,
-                        imageUrl: images[0] // Usa la primera imagen como principal para el carrito
-                    });
-                };
+        // Lógica Botón Agregar y Contenedor de Cantidad
+        const qtyInput = document.getElementById('detail-qty');
+        if (qtyInput) qtyInput.value = 1;
 
-                // Feedback visual desacoplado mediante el evento global
-                const handleItemAdded = function(e) {
-                    if (e.detail && e.detail.product && e.detail.product.id === productId) {
-                        const originalText = addBtn.innerHTML;
-                        addBtn.innerHTML = '<i class="fas fa-check mr-2"></i> ¡AGREGADO!';
-                        addBtn.classList.remove('bg-mp-blue');
-                        addBtn.classList.add('bg-green-600');
-                        
-                        setTimeout(() => {
-                            addBtn.innerHTML = originalText;
-                            addBtn.classList.remove('bg-green-600');
-                            addBtn.classList.add('bg-mp-blue');
-                        }, 2000);
+        // Resetear la selección de texturas al cargar
+        window.selectedTexture = null;
+        const swatches = document.querySelectorAll('.texture-swatch');
+        swatches.forEach(swatch => {
+            swatch.classList.remove('border-rp-teal', 'ring-2', 'ring-rp-teal/20', 'bg-white');
+            swatch.classList.add('border-gray-200', 'bg-gray-50/30');
+        });
+
+        // Filtrar imágenes que realmente existen y configurar la galería
+        Promise.all(rawImages.map(img => checkImageExists(img).then(exists => exists ? img : null)))
+            .then(filtered => {
+                const images = filtered.filter(img => img !== null);
+                const finalImages = images.length > 0 ? images : ['images/logo.png'];
+
+                if (showImageImmediately) {
+                    if (thumbsContainer) {
+                        thumbsContainer.style.display = 'flex';
+                        thumbsContainer.innerHTML = '';
+                        finalImages.forEach((imgSrc, index) => {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = `relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300 cursor-pointer hover:opacity-80 hover:scale-105 border-transparent`;
+
+                            const thumb = document.createElement('img');
+                            thumb.src = imgSrc;
+                            thumb.className = `w-full h-full object-cover object-center`;
+                            thumb.style.transform = 'scale(1.2)';
+                            thumb.style.transformOrigin = '35% 35%';
+
+                            wrapper.appendChild(thumb);
+
+                            if (index === currentImageIndex) {
+                                wrapper.classList.add('border-rp-teal');
+                                wrapper.classList.remove('border-transparent');
+                            }
+
+                            wrapper.onclick = () => updateMainImage(index);
+                            thumbsContainer.appendChild(wrapper);
+                        });
                     }
-                };
-                window.addEventListener('cart:item-added', handleItemAdded);
-            }
-        }
+
+                    // Función interna para actualizar la imagen principal y miniaturas
+                    const updateMainImage = function(index) {
+                        if (index < 0) index = finalImages.length - 1;
+                        if (index >= finalImages.length) index = 0;
+                        currentImageIndex = index;
+
+                        imgEl.style.opacity = '0.8';
+                        setTimeout(() => {
+                            imgEl.src = finalImages[currentImageIndex];
+                            imgEl.style.opacity = '1';
+                        }, 150);
+
+                        if (thumbsContainer) {
+                            Array.from(thumbsContainer.children).forEach((wrapper, i) => {
+                                if (i === currentImageIndex) {
+                                    wrapper.classList.add('border-rp-teal');
+                                    wrapper.classList.remove('border-transparent');
+                                } else {
+                                    wrapper.classList.remove('border-rp-teal');
+                                    wrapper.classList.add('border-transparent');
+                                }
+                            });
+                        }
+                    };
+
+                    // Configurar flechas si hay más de 1 imagen válida
+                    if (finalImages.length > 1) {
+                        if (prevBtn) {
+                            prevBtn.classList.remove('hidden');
+                            prevBtn.onclick = () => updateMainImage(currentImageIndex - 1);
+                        }
+                        if (nextBtn) {
+                            nextBtn.classList.remove('hidden');
+                            nextBtn.onclick = () => updateMainImage(currentImageIndex + 1);
+                        }
+                    } else {
+                        if (prevBtn) prevBtn.classList.add('hidden');
+                        if (nextBtn) nextBtn.classList.add('hidden');
+                    }
+                }
+
+                // Configurar botón de agregar al carrito con finalImages[0]
+                if (addBtn) {
+                    const qtySelector = document.getElementById('detail-qty-selector');
+                    const qtyContainer = document.getElementById('detail-qty-container');
+
+                    if (product.upcoming) {
+                        if (qtySelector) qtySelector.style.display = 'none';
+                        if (qtyContainer) qtyContainer.className = 'block mb-6';
+
+                        addBtn.innerHTML = '<i class="fab fa-whatsapp mr-2 text-xl"></i> CONSULTAR PRECIO';
+                        addBtn.className = 'w-full py-4 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95 text-center';
+                        addBtn.onclick = function(e) {
+                            e.preventDefault();
+                            const msg = `Hola Circula, me interesa el producto "${product.name}" de la tienda. ¿Podrían darme más información y el precio?`;
+                            window.open(`https://wa.me/59899395724?text=${encodeURIComponent(msg)}`, '_blank');
+                        };
+                    } else {
+                        if (qtySelector) qtySelector.style.display = 'flex';
+                        if (qtyContainer) qtyContainer.className = 'flex items-center space-x-4 mb-6';
+
+                        addBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i> AGREGAR AL CARRITO';
+                        addBtn.className = 'flex-1 h-[56px] bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95';
+                        addBtn.onclick = function() {
+                            const qtyVal = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+                            
+                            if (productRequiresTexture && !window.selectedTexture) {
+                                alert("Por favor, selecciona una textura de placa antes de agregar al carrito.");
+                                document.getElementById('texturas-disponibles')?.scrollIntoView({ behavior: 'smooth' });
+                                return;
+                            }
+
+                            const finalName = productRequiresTexture 
+                                ? `${product.name} (${window.selectedTexture})`
+                                : product.name;
+                            
+                            const finalId = productRequiresTexture
+                                ? `${productId}-${window.selectedTexture.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`
+                                : productId;
+
+                            window.addItemToCart({
+                                id: finalId,
+                                name: finalName,
+                                price: product.price,
+                                quantity: qtyVal,
+                                imageUrl: finalImages[0] // Usa la primera imagen válida como principal para el carrito
+                            });
+                        };
+
+                        // Feedback visual desacoplado mediante el evento global
+                        const handleItemAdded = function(e) {
+                            const checkId = productRequiresTexture
+                                ? `${productId}-${(window.selectedTexture || '').toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`
+                                : productId;
+                            if (e.detail && e.detail.product && e.detail.product.id === checkId) {
+                                const originalText = addBtn.innerHTML;
+                                addBtn.innerHTML = '<i class="fas fa-check mr-2"></i> ¡AGREGADO!';
+                                addBtn.classList.remove('bg-mp-blue');
+                                addBtn.classList.add('bg-green-600');
+                                
+                                setTimeout(() => {
+                                    addBtn.innerHTML = originalText;
+                                    addBtn.classList.remove('bg-green-600');
+                                    addBtn.classList.add('bg-mp-blue');
+                                }, 2000);
+                            }
+                        };
+                        window.addEventListener('cart:item-added', handleItemAdded);
+                    }
+                }
+            });
     } else {
         document.getElementById('detail-container').innerHTML = 
             '<div class="col-span-2 text-center py-20"><h2 class="text-2xl font-bold text-gray-400">Producto no encontrado.</h2><a href="tienda.html" class="text-rp-teal mt-4 block hover:underline">Volver a la tienda</a></div>';
@@ -668,7 +794,7 @@ function renderCheckoutPage() {
                 <img src="${item.imageUrl || 'images/logo.png'}" class="w-20 h-20 object-cover rounded-lg border border-gray-200">
                 <div>
                     <h3 class="font-bold text-lg text-text-dark">${item.name}</h3>
-                    <p class="text-sm text-gray-500">$${item.price} c/u</p>
+                    <p class="text-sm text-gray-500">$${parseFloat(item.price).toLocaleString('es-UY')} c/u</p>
                 </div>
             </div>
             
@@ -678,7 +804,7 @@ function renderCheckoutPage() {
                     <span class="px-3 py-1 font-bold text-sm">${item.quantity}</span>
                     <button onclick="incrementCartItem(${index}); renderCheckoutPage();" class="px-3 py-1 hover:bg-gray-100">+</button>
                 </div>
-                <p class="font-bold text-lg min-w-[80px] text-right">$${itemTotal.toFixed(2)}</p>
+                <p class="font-bold text-lg min-w-[80px] text-right">$${itemTotal.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</p>
                 <button onclick="removeCartItem(${index}); renderCheckoutPage();" class="text-red-500 hover:text-red-700">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -687,7 +813,7 @@ function renderCheckoutPage() {
         container.appendChild(row);
     });
 
-    if(totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+    if(totalEl) totalEl.textContent = `$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}`;
 }
 
 window.enviarPedidoWhatsApp = function() {
@@ -1052,7 +1178,7 @@ function updateCartDropdown() {
     const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     list.style.color = '#1f2937';
-    totalDisplay.textContent = `$${total.toFixed(2)}`;
+    totalDisplay.textContent = `$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}`;
 
     const titleStyle = document.querySelector('#cart-dropdown h4');
     if(titleStyle) titleStyle.textContent = `Resumen (${cart.length})`;
@@ -1069,7 +1195,7 @@ function updateCartDropdown() {
                         <span style="font-size: 12px; color: #6b7280;">Cant: ${item.quantity}</span>
                     </div>
                 </div>
-                <span style="font-weight: 700; font-size: 14px; color: #4b5563;">$${(item.price * item.quantity).toFixed(2)}</span>
+                <span style="font-weight: 700; font-size: 14px; color: #4b5563;">$${(item.price * item.quantity).toLocaleString('es-UY', { minimumFractionDigits: 2 })}</span>
             </div>
         `).join('');
         

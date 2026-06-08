@@ -105,12 +105,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=bandeja'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h7"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=bandeja'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Bandeja</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Bandeja de diseño moderno fabricada con plástico reciclado post-consumo.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -124,18 +125,22 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=banco-alto'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7H4a1 1 0 00-1 1v1h18V8a1 1 0 00-1-1zM5 9v10m14-10v10"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
-                            </div>
+                            <img src="images/Tienda/banco-alto.png" alt="Banco Alto"
+                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                style="object-position: center 15%;"
+                                onclick="window.location.href='detalle.html?product=banco-alto'">
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Banco (Versión Alta)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$6.465</p>
                             <p class="text-gray-600 mb-4 text-sm">Banco de estructura robusta y asiento superior con nuestras texturas recicladas.</p>
                         </div>
-                        <div class="flex items-center mt-2">
-                            <a href="https://wa.me/59899395724?text=Hola%2C%20me%20interesa%20el%20Banco%20Alto%20de%20Circula.%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n%20y%20el%20precio%3F" target="_blank"
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-banco-alto" min="1" value="1"
                                 onclick="event.stopPropagation()"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm text-center">CONSULTAR PRECIO</a>
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'banco-alto', 'Banco Alto', 6465, 'images/Tienda/banco-alto.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
                         </div>
                     </div>
 
@@ -143,18 +148,22 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=banco-bajo'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 10H4a1 1 0 00-1 1v1h18v-1a1 1 0 00-1-1zM5 12v6m14-6v6"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
-                            </div>
+                            <img src="images/Tienda/banco-bajo.png" alt="Banco Bajo"
+                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                style="object-position: 65% 15%;"
+                                onclick="window.location.href='detalle.html?product=banco-bajo'">
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Banco (Versión Baja)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$5.386</p>
                             <p class="text-gray-600 mb-4 text-sm">Taburete bajo ecológico con superficie superior resistente al agua y duradera.</p>
                         </div>
-                        <div class="flex items-center mt-2">
-                            <a href="https://wa.me/59899395724?text=Hola%2C%20me%20interesa%20el%20Banco%20Bajo%20de%20Circula.%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n%20y%20el%20precio%3F" target="_blank"
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-banco-bajo" min="1" value="1"
                                 onclick="event.stopPropagation()"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm text-center">CONSULTAR PRECIO</a>
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'banco-bajo', 'Banco Bajo', 5386, 'images/Tienda/banco-bajo.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
                         </div>
                     </div>
 
@@ -162,18 +171,22 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=comedero-mascotas'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2h-4M9 3v18M9 3h6"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
-                            </div>
+                            <img src="images/Tienda/comedero.png" alt="Comederos / Bebederos"
+                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                style="object-position: center;"
+                                onclick="window.location.href='detalle.html?product=comedero-mascotas'">
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Comederos / Bebederos</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$3.330</p>
                             <p class="text-gray-600 mb-4 text-sm">Diseño estable y ecológico con base reciclada y dos recipientes metálicos.</p>
                         </div>
-                        <div class="flex items-center mt-2">
-                            <a href="https://wa.me/59899395724?text=Hola%2C%20me%20interesa%20el%20Comedero%20para%20Mascotas%20de%20Circula.%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n%20y%20el%20precio%3F" target="_blank"
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-comedero" min="1" value="1"
                                 onclick="event.stopPropagation()"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm text-center">CONSULTAR PRECIO</a>
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'comedero-mascotas', 'Comedero / Bebedero', 3330, 'images/Tienda/comedero.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
                         </div>
                     </div>
 
@@ -181,12 +194,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=espejo'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="8" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M12 20v2M12 2v2"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=espejo'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Espejo (35 cm de diámetro)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Espejo con marco circular fabricado con nuestras exclusivas placas recicladas.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -200,18 +214,22 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=estanteria'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6h18M3 12h18M3 18h18"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
-                            </div>
+                            <img src="images/Tienda/estanteria.png" alt="Estanterías"
+                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                style="object-position: center 35%;"
+                                onclick="window.location.href='detalle.html?product=estanteria'">
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Estanterías</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$9.650</p>
                             <p class="text-gray-600 mb-4 text-sm">Baldas modulares de plástico reciclado, altamente resistentes a la humedad.</p>
                         </div>
-                        <div class="flex items-center mt-2">
-                            <a href="https://wa.me/59899395724?text=Hola%2C%20me%20interesa%20la%20Estanter%C3%ADa%20de%20Circula.%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n%20y%20el%20precio%3F" target="_blank"
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-estanteria" min="1" value="1"
                                 onclick="event.stopPropagation()"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm text-center">CONSULTAR PRECIO</a>
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'estanteria', 'Estantería', 9650, 'images/Tienda/estanteria.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
                         </div>
                     </div>
 
@@ -219,18 +237,22 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=mesa'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9h18M6 9v9m12-9v9"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
-                            </div>
+                            <img src="images/Tienda/mesa.png" alt="Mesas"
+                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                style="object-position: center;"
+                                onclick="window.location.href='detalle.html?product=mesa'">
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Mesas</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$8.026</p>
                             <p class="text-gray-600 mb-4 text-sm">Mesa ratona con estructura metálica y tapa de plástico 100% reciclado.</p>
                         </div>
-                        <div class="flex items-center mt-2">
-                            <a href="https://wa.me/59899395724?text=Hola%2C%20me%20interesa%20la%20Mesa%20de%20Circula.%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n%20y%20el%20precio%3F" target="_blank"
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-mesa" min="1" value="1"
                                 onclick="event.stopPropagation()"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm text-center">CONSULTAR PRECIO</a>
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'mesa', 'Mesa', 8026, 'images/Tienda/mesa.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
                         </div>
                     </div>
 
@@ -238,12 +260,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=perchero-multiple'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2m-6 7H3m18 0h-3M6 12l-2 4m14-4l2 4M12 5c-2 2-5 3-5 7h10c0-4-3-5-5-7z"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=perchero-multiple'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Percheros (Versión Múltiple)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Base organizadora con múltiples colgadores en plástico de alta densidad.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -257,12 +280,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=perchero-individual'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2m0 0c-2 2-4 3-4 5h8c0-2-2-3-4-5z"/><line x1="12" y1="22" x2="12" y2="10" stroke-width="1.5"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=perchero-individual'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Percheros (Versión Individual)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Colgador individual con botón de plástico reciclado, ideal para cualquier espacio.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -276,12 +300,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=porta-macetas'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C9 5 6 7 6 11a6 6 0 0012 0c0-4-3-6-6-9zM12 22v-5"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=porta-macetas'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Porta Macetas</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Soporte moderno para plantas, totalmente impermeable y de gran durabilidad.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -295,12 +320,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=reloj'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="9" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M12 7v5l3 3"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=reloj'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Relojes</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Reloj de pared minimalista y silencioso hecho con placas de diseño.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -314,12 +340,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=revistero'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-width="1.5" d="M13 4v6h6"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=revistero'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Revisteros</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Organizador de revistas geométrico y ecológico, resistente y liviano.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -333,12 +360,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=stand-celular'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="5" y="2" width="14" height="20" rx="2" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M12 18h.01"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=stand-celular'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Stands para celulares</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Soportes ergonómicos de escritorio para una visualización cómoda.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -352,12 +380,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=stand-celular-llavero'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="8" cy="8" r="4" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M12 8h8m-4-4v8"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=stand-celular-llavero'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Soporte Celular (Llavero)</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Versión compacta y portátil para llevar tu soporte a donde vayas.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -371,12 +400,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=stand-laptop'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="4" width="20" height="13" rx="2" stroke-width="1.5"/><path stroke-linecap="round" stroke-width="1.5" d="M2 19h20"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=stand-laptop'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Stands para Laptops</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Soportes ergonómicos de dos piezas encastrables para elevar tu laptop.</p>
                         </div>
                         <div class="flex items-center mt-2">
@@ -390,12 +420,13 @@
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
                         onclick="window.location.href='detalle.html?product=trofeo-empresarial'">
                         <div>
-                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gray-100 flex flex-col items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 21h8M12 17v4M5 3h14l-2 7a5 5 0 01-10 0L5 3zM5 3H2m17 0h3"/></svg>
-                                <span class="text-xs text-gray-400 font-medium">Foto disponible próximamente</span>
+                            <div class="w-full h-48 rounded-lg mb-4 border border-rp-gray-soft bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                                onclick="window.location.href='detalle.html?product=trofeo-empresarial'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-xs font-bold tracking-widest uppercase bg-rp-teal/10 text-rp-teal px-3 py-1 rounded-full border border-rp-teal/20">Próximamente</span>
                             </div>
                             <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Trofeos Empresariales</h3>
-                            <p class="text-gray-500 font-semibold mb-3 text-lg">Precio a consultar</p>
+                            <p class="text-gray-400 font-semibold mb-3 text-lg">Próximamente</p>
                             <p class="text-gray-600 mb-4 text-sm">Reconocimientos institucionales y premios sustentables personalizados.</p>
                         </div>
                         <div class="flex items-center mt-2">
