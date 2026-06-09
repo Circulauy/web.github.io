@@ -563,22 +563,28 @@ function setActiveLink() {
     
     document.querySelectorAll('#desktop-nav a').forEach(link => {
         let href = link.getAttribute('href');
-        if (href) href = href.replace('.html', ''); // Limpiar extension del href tambien
+        if (href) {
+            let cleanHref = href.split('/').pop().replace('.html', '');
+            if (cleanHref === '') cleanHref = 'index';
 
-        link.className = 'nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest';
-        
-        if (href === currentPath) {
-            link.className = 'font-brand font-bold text-sm text-rp-teal transition uppercase tracking-widest border-b-2 border-rp-teal';
+            link.className = 'nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest';
+            
+            if (cleanHref === currentPath) {
+                link.className = 'font-brand font-bold text-sm text-rp-teal transition uppercase tracking-widest border-b-2 border-rp-teal';
+            }
         }
     });
 
     document.querySelectorAll('#mobile-menu a').forEach(link => {
         let href = link.getAttribute('href');
-        if (href) href = href.replace('.html', '');
+        if (href) {
+            let cleanHref = href.split('/').pop().replace('.html', '');
+            if (cleanHref === '') cleanHref = 'index';
 
-        if (href === currentPath) {
-            link.classList.add('text-rp-teal', 'border-rp-teal');
-            link.classList.remove('text-text-dark', 'border-gray-300');
+            if (cleanHref === currentPath) {
+                link.classList.add('text-rp-teal', 'border-rp-teal');
+                link.classList.remove('text-text-dark', 'border-gray-300');
+            }
         }
     });
 }
@@ -1632,7 +1638,7 @@ function showExpoModal() {
                     </div>
 
                      <div class="flex gap-3" style="display: flex; gap: 0.75rem; width: 100%;">
-                        <a href="https://www.gub.uy/ministerio-ambiente/expo-uruguay-sostenible" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-white border-2 border-rp-teal text-rp-teal font-bold rounded-lg hover:bg-rp-blue-light transition text-center active:scale-[0.98]" style="flex: 1; padding: 0.75rem; border: 2px solid #79C7C7; background-color: #ffffff; color: #79C7C7; font-weight: 700; border-radius: 0.5rem; text-decoration: none; text-align: center; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; display: inline-block;">
+                        <a href="https://ambiente.gub.uy/comunicaciones" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-white border-2 border-rp-teal text-rp-teal font-bold rounded-lg hover:bg-rp-blue-light transition text-center active:scale-[0.98]" style="flex: 1; padding: 0.75rem; border: 2px solid #79C7C7; background-color: #ffffff; color: #79C7C7; font-weight: 700; border-radius: 0.5rem; text-decoration: none; text-align: center; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; display: inline-block;">
                             Más info
                         </a>
                         <button type="button" id="expo-modal-btn" class="flex-1 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-lg active:scale-[0.98]" style="flex: 1; padding: 0.75rem; background-color: #79C7C7; color: #ffffff; font-weight: 700; border: none; border-radius: 0.5rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(121, 199, 199, 0.4);">
