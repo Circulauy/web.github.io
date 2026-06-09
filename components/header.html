@@ -71,9 +71,8 @@
                 <h4 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2">Resumen del Carrito</h4>
                 <div id="dropdown-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;"><p style="text-align: center; color: #6b7280;">Cargando...</p></div>
                 <div id="dropdown-summary" style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: auto;">
-                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.25rem; margin-bottom: 1rem;">
-                        <span>Total:</span><span id="dropdown-total" style="color: #009ee3;">$0.00</span>
-                    </div>
+                    <!-- El bloque de totales (subtotal + descuento + total) se inyecta dinámicamente por updateCartDropdown() -->
+
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <button onclick="window.location.href='datos.html'" class="btn-checkout btn-checkout-blue">
                             Finalizar Compra

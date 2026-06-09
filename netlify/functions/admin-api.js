@@ -426,6 +426,13 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'get_discounts') {
+                // Migrar LABASURAESUNCONCEPTO a multiuso de forma automática
+                try {
+                    await db.makeCouponMultiUse('LABASURAESUNCONCEPTO');
+                } catch (e) {
+                    console.error("Error al migrar LABASURAESUNCONCEPTO:", e);
+                }
+
                 const discounts = await db.getDiscountCodes();
                 return {
                     statusCode: 200,
@@ -544,10 +551,11 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'generate_discount') {
-                const { code: customCode, percent: customPercent, expires_days } = body || {};
+                const { code: customCode, percent: customPercent, expires_days, is_single_use } = body || {};
                 
                 const percent = Number(customPercent) || 10;
                 const days = Number(expires_days) || 30;
+                const isSingleUse = is_single_use !== undefined ? !!is_single_use : true;
                 
                 let code = customCode ? customCode.trim().toUpperCase() : '';
                 if (!code) {
@@ -559,7 +567,7 @@ exports.handler = async (event, context) => {
                 expiryDate.setUTCHours(2, 59, 59, 999);
                 const expiresAt = expiryDate.toISOString();
                 
-                const newDiscount = await db.createDiscountCode(code, percent, expiresAt);
+                const newDiscount = await db.createDiscountCode(code, percent, expiresAt, isSingleUse);
                 
                 return {
                     statusCode: 200,

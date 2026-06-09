@@ -73,7 +73,7 @@ async function validateDiscountCode(code) {
         const dbData = readMockDb();
         const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (!found) return { valid: false, error: "El código de descuento no existe." };
-        if (found.is_used) return { valid: false, error: "El código de descuento ya ha sido usado." };
+        if (found.is_single_use !== false && found.is_used) return { valid: false, error: "El código de descuento ya ha sido usado." };
         if (new Date(found.expires_at) < new Date()) return { valid: false, error: "El código de descuento ha expirado." };
         return { valid: true, discount_percent: found.discount_percent, code: found.code };
     }
@@ -85,7 +85,7 @@ async function validateDiscountCode(code) {
     }
     
     const coupon = data[0];
-    if (coupon.is_used) {
+    if (coupon.is_single_use !== false && coupon.is_used) {
         return { valid: false, error: "El código de descuento ya ha sido usado." };
     }
     if (new Date(coupon.expires_at) < new Date()) {
@@ -106,26 +106,34 @@ async function markDiscountCodeAsUsed(code) {
         const dbData = readMockDb();
         const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (found) {
-            found.is_used = true;
-            found.used_at = new Date().toISOString();
-            writeMockDb(dbData);
+            if (found.is_single_use !== false) {
+                found.is_used = true;
+                found.used_at = new Date().toISOString();
+                writeMockDb(dbData);
+            }
         }
         return;
     }
 
-    await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-            is_used: true,
-            used_at: new Date().toISOString()
-        })
-    });
+    const data = await supabaseRequest(`discount_codes?code=ilike.${cleanCode}&select=is_single_use`);
+    if (data && data.length > 0) {
+        const coupon = data[0];
+        if (coupon.is_single_use !== false) {
+            await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    is_used: true,
+                    used_at: new Date().toISOString()
+                })
+            });
+        }
+    }
 }
 
 /**
  * Crea un nuevo código de descuento
  */
-async function createDiscountCode(code, percent = 10, expiresAt) {
+async function createDiscountCode(code, percent = 10, expiresAt, isSingleUse = true) {
     const cleanCode = code.trim().toUpperCase();
     const expiry = expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 días
 
@@ -137,6 +145,7 @@ async function createDiscountCode(code, percent = 10, expiresAt) {
             discount_percent: percent,
             expires_at: expiry,
             is_used: false,
+            is_single_use: isSingleUse,
             created_at: new Date().toISOString()
         };
         dbData.discountCodes.push(newCode);
@@ -150,10 +159,11 @@ async function createDiscountCode(code, percent = 10, expiresAt) {
         body: JSON.stringify({
             code: cleanCode,
             discount_percent: percent,
-            expires_at: expiry
+            expires_at: expiry,
+            is_single_use: isSingleUse
         })
     });
-    return result ? result[0] : { code: cleanCode, discount_percent: percent, expires_at: expiry };
+    return result ? result[0] : { code: cleanCode, discount_percent: percent, expires_at: expiry, is_single_use: isSingleUse };
 }
 
 /**
@@ -491,6 +501,30 @@ async function deleteAbandonedCart(id) {
     return true;
 }
 
+async function makeCouponMultiUse(code) {
+    if (!code) return;
+    const cleanCode = code.trim().toUpperCase();
+    if (isMockMode) {
+        const dbData = readMockDb();
+        const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
+        if (found) {
+            found.is_single_use = false;
+            writeMockDb(dbData);
+        }
+        return;
+    }
+    try {
+        await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                is_single_use: false
+            })
+        });
+    } catch (err) {
+        console.error(`Error updating coupon ${code} to multi-use:`, err);
+    }
+}
+
 module.exports = {
     isMockMode,
     validateDiscountCode,
@@ -508,6 +542,7 @@ module.exports = {
     getAbandonedCartById,
     updateAbandonedCartStatus,
     markAbandonedCartAsCompleted,
-    deleteAbandonedCart
+    deleteAbandonedCart,
+    makeCouponMultiUse
 };
 

@@ -1277,14 +1277,21 @@ window.addItemToCart = function (arg1, arg2, arg3, arg4) {
 
 function updateCartDropdown() {
     const list = document.getElementById('dropdown-items-list');
+    if (!list) return;
+
+    // #dropdown-total se inyecta dinámicamente; se obtiene después del render si ya existe
     const totalDisplay = document.getElementById('dropdown-total');
-    if (!list || !totalDisplay) return;
 
     const cart = getCart();
-    const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+    // Leer descuento del localStorage
+    const discountCode = localStorage.getItem('appliedDiscountCode');
+    const discountPercent = parseFloat(localStorage.getItem('appliedDiscountPercent')) || 0;
+    const discountAmount = discountPercent > 0 ? subtotal * (discountPercent / 100) : 0;
+    const total = subtotal - discountAmount;
 
     list.style.color = '#1f2937';
-    totalDisplay.textContent = `$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}`;
 
     const titleStyle = document.querySelector('#cart-dropdown h4');
     if(titleStyle) titleStyle.textContent = `Resumen (${cart.length})`;
@@ -1309,7 +1316,40 @@ function updateCartDropdown() {
             list.insertAdjacentHTML('beforeend', `<p style="text-align: center; font-size: 12px; font-weight: 600; color: #79C7C7; margin-top: 12px;">+ ${cart.length - 3} más</p>`);
         }
     }
-    
+
+    // Actualizar el bloque de totales en el dropdown-summary
+    let summaryTotalsEl = document.getElementById('dropdown-totals-block');
+    const summaryContainer = document.getElementById('dropdown-summary');
+    if (summaryContainer) {
+        // Remover bloque anterior si existe
+        if (summaryTotalsEl) summaryTotalsEl.remove();
+
+        const totalsHTML = discountPercent > 0 ? `
+            <div id="dropdown-totals-block" style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6b7280; margin-bottom: 0.4rem;">
+                    <span>Subtotal</span>
+                    <span>$${subtotal.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #16a34a; font-weight: 600; margin-bottom: 0.5rem;">
+                    <span>Descuento (${discountCode}, ${discountPercent}%)</span>
+                    <span>-$${discountAmount.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.125rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+                    <span>Total</span>
+                    <span id="dropdown-total" style="color: #009ee3;">$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</span>
+                </div>
+            </div>
+        ` : `
+            <div id="dropdown-totals-block" style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.25rem; margin-bottom: 1rem;">
+                <span>Total:</span><span id="dropdown-total" style="color: #009ee3;">$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</span>
+            </div>
+        `;
+        summaryContainer.insertAdjacentHTML('afterbegin', totalsHTML);
+    } else {
+        // Fallback: actualizar el span de total directamente
+        totalDisplay.textContent = `$${total.toLocaleString('es-UY', { minimumFractionDigits: 2 })}`;
+    }
+
     const btns = document.querySelectorAll('#dropdown-summary button, #dropdown-summary a');
     btns.forEach(btn => {
         btn.style.opacity = cart.length === 0 ? '0.5' : '1';
