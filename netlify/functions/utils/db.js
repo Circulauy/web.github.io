@@ -73,7 +73,10 @@ async function validateDiscountCode(code) {
         const dbData = readMockDb();
         const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (!found) return { valid: false, error: "El código de descuento no existe." };
-        if (found.is_single_use !== false && found.is_used) return { valid: false, error: "El código de descuento ya ha sido usado." };
+        
+        // Forzar multiuso para LABASURAESUNCONCEPTO
+        const isSingleUse = cleanCode === 'LABASURAESUNCONCEPTO' ? false : (found.is_single_use !== false);
+        if (isSingleUse && found.is_used) return { valid: false, error: "El código de descuento ya ha sido usado." };
         if (new Date(found.expires_at) < new Date()) return { valid: false, error: "El código de descuento ha expirado." };
         return { valid: true, discount_percent: found.discount_percent, code: found.code };
     }
@@ -85,7 +88,9 @@ async function validateDiscountCode(code) {
     }
     
     const coupon = data[0];
-    if (coupon.is_single_use !== false && coupon.is_used) {
+    // Forzar multiuso para LABASURAESUNCONCEPTO
+    const isSingleUse = cleanCode === 'LABASURAESUNCONCEPTO' ? false : (coupon.is_single_use !== false);
+    if (isSingleUse && coupon.is_used) {
         return { valid: false, error: "El código de descuento ya ha sido usado." };
     }
     if (new Date(coupon.expires_at) < new Date()) {
@@ -101,6 +106,11 @@ async function validateDiscountCode(code) {
 async function markDiscountCodeAsUsed(code) {
     if (!code) return;
     const cleanCode = code.trim().toUpperCase();
+
+    // No marcar como usado si es multiuso (como LABASURAESUNCONCEPTO)
+    if (cleanCode === 'LABASURAESUNCONCEPTO') {
+        return;
+    }
 
     if (isMockMode) {
         const dbData = readMockDb();
@@ -172,9 +182,23 @@ async function createDiscountCode(code, percent = 10, expiresAt, isSingleUse = t
 async function getDiscountCodes() {
     if (isMockMode) {
         const dbData = readMockDb();
+        // Asegurarse de que LABASURAESUNCONCEPTO sea multiuso si está en el mock
+        const found = dbData.discountCodes.find(d => d.code.toUpperCase() === 'LABASURAESUNCONCEPTO');
+        if (found) {
+            found.is_single_use = false;
+        }
         return [...dbData.discountCodes].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
-    return supabaseRequest('discount_codes?select=*&order=created_at.desc');
+    const codes = await supabaseRequest('discount_codes?select=*&order=created_at.desc');
+    if (Array.isArray(codes)) {
+        return codes.map(c => {
+            if (c.code && c.code.trim().toUpperCase() === 'LABASURAESUNCONCEPTO') {
+                return { ...c, is_single_use: false };
+            }
+            return c;
+        });
+    }
+    return codes;
 }
 
 /**
