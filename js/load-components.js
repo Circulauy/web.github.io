@@ -142,7 +142,7 @@ const PRODUCTS_DB = {
             'Espesor de placa': '10 mm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'banco-alto': {
         name: 'Banco Alto',
@@ -191,7 +191,7 @@ const PRODUCTS_DB = {
             'Espesor de placa': '16 mm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'estanteria': {
         name: 'Estantería',
@@ -228,7 +228,7 @@ const PRODUCTS_DB = {
             'Profundidad': '6 cm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'perchero-multiple': {
         name: 'Perchero Múltiple',
@@ -241,7 +241,7 @@ const PRODUCTS_DB = {
             'Profundidad': '8 cm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'porta-macetas': {
         name: 'Porta Macetas',
@@ -254,7 +254,7 @@ const PRODUCTS_DB = {
             'Diámetro interno': '18 cm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'reloj': {
         name: 'Reloj de Pared',
@@ -304,7 +304,7 @@ const PRODUCTS_DB = {
             'Espesor': '10 mm'
         },
         upcoming: true,
-        showImage: true
+        showImage: false
     },
     'stand-laptop': {
         name: 'Soporte para Laptop / Computadora',
