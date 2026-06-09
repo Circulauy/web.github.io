@@ -87,7 +87,7 @@ const PRODUCTS_DB = {
         images: ['images/Tienda/Posavasos azul y Blanco.jpeg', 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg'],
         specs: {
             'Diámetro': '9 cm',
-            'Espesor': '4 mm'
+            'Espesor': '10 mm'
         }
     },
     'posavasos-azul-celeste': { 
@@ -97,7 +97,7 @@ const PRODUCTS_DB = {
         images: ['images/Tienda/Posavasos Azul y Celeste.jpeg', 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg'],
         specs: {
             'Diámetro': '9 cm',
-            'Espesor': '4 mm'
+            'Espesor': '10 mm'
         }
     },
     'posavasos-blanco': { 
@@ -107,7 +107,7 @@ const PRODUCTS_DB = {
         images: ['images/Tienda/Posavasos Blanco.jpeg', 'images/Tienda/Posavasos Blanco Etiqueta.jpeg'],
         specs: {
             'Diámetro': '9 cm',
-            'Espesor': '4 mm'
+            'Espesor': '10 mm'
         }
     },
     'posavasos-gris': { 
@@ -117,7 +117,7 @@ const PRODUCTS_DB = {
         images: ['images/Tienda/Posavasos Gris.jpeg', 'images/Tienda/Posavasos Gris Etiqueta.jpeg'],
         specs: {
             'Diámetro': '9 cm',
-            'Espesor': '4 mm'
+            'Espesor': '10 mm'
         }
     },
     'posavasos-rosado': { 
@@ -127,7 +127,7 @@ const PRODUCTS_DB = {
         images: ['images/Tienda/Posavasos Rosado.jpeg', 'images/Tienda/Posavasos Rosado Etiqueta.jpeg'],
         specs: {
             'Diámetro': '9 cm',
-            'Espesor': '4 mm'
+            'Espesor': '10 mm'
         }
     },
     'bandeja': {
@@ -139,7 +139,7 @@ const PRODUCTS_DB = {
             'Ancho': '30 cm',
             'Largo': '40 cm',
             'Alto': '4 cm',
-            'Espesor de placa': '12 mm'
+            'Espesor de placa': '10 mm'
         },
         upcoming: true,
         showImage: true
@@ -262,8 +262,8 @@ const PRODUCTS_DB = {
         desc: 'Reloj de pared minimalista de funcionamiento silencioso. El cuadrante está hecho a partir de placa de plástico reciclado, convirtiendo cada minuto en un recordatorio de sustentabilidad.',
         images: ['images/Tienda/reloj.png', 'images/Tienda/reloj_detalle.png'],
         specs: {
-            'Diámetro': '30 cm',
-            'Espesor de placa': '12 mm'
+            'Diámetro': '25 cm',
+            'Espesor de placa': '10 mm'
         },
         showImage: true
     },
@@ -276,7 +276,7 @@ const PRODUCTS_DB = {
             'Alto': '30 cm',
             'Ancho': '35 cm',
             'Profundidad': '20 cm',
-            'Espesor de placa': '12 mm'
+            'Espesor de placa': '10 mm'
         },
         showImage: true
     },
@@ -289,7 +289,7 @@ const PRODUCTS_DB = {
             'Alto': '12 cm',
             'Ancho': '8 cm',
             'Profundidad': '9 cm',
-            'Espesor de placa': '12 mm'
+            'Espesor de placa': '10 mm'
         },
         showImage: true
     },
@@ -301,7 +301,7 @@ const PRODUCTS_DB = {
         specs: {
             'Largo': '6 cm',
             'Ancho': '2.5 cm',
-            'Espesor': '6 mm'
+            'Espesor': '10 mm'
         },
         upcoming: true,
         showImage: true
@@ -315,7 +315,7 @@ const PRODUCTS_DB = {
             'Ancho': '26 cm',
             'Largo': '25 cm',
             'Alto': '14 cm',
-            'Espesor de placa': '12 mm'
+            'Espesor de placa': '10 mm'
         },
         showImage: true
     },
@@ -327,7 +327,7 @@ const PRODUCTS_DB = {
         specs: {
             'Alto': '20 cm',
             'Ancho': '15 cm',
-            'Espesor de placa': '12 mm'
+            'Espesor de placa': '10 mm'
         },
         upcoming: true,
         showImage: true
