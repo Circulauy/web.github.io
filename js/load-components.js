@@ -8,7 +8,8 @@
 // ==========================================
 const NUMERO_WHATSAPP = "59899395724";
 
-// Base de datos con ARRAY de imágenes para la galconst PRODUCTS_DB = {
+// Base de datos con ARRAY de imágenes para la galería
+const PRODUCTS_DB = {
     'bowl-azul': { 
         name: 'Bowl Azul', 
         price: 450, 
