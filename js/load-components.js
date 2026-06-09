@@ -228,7 +228,7 @@ const PRODUCTS_DB = {
         name: 'Trofeo Empresarial',
         price: null,
         desc: 'Premio o reconocimiento institucional sustentable. Diseñado a medida con placas de plástico 100% reciclado, ideal para empresas comprometidas con el medio ambiente.',
-        images: ['images/Tienda/trofeo.png', 'images/Tienda/trofeo_detalle.png'],
+        images: ['images/Logo Werfen Web.jpeg'],
         upcoming: true,
         showImage: true
     }
