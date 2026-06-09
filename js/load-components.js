@@ -8,85 +8,138 @@
 // ==========================================
 const NUMERO_WHATSAPP = "59899395724";
 
-// Base de datos con ARRAY de imágenes para la galería
-const PRODUCTS_DB = {
+// Base de datos con ARRAY de imágenes para la galconst PRODUCTS_DB = {
     'bowl-azul': { 
         name: 'Bowl Azul', 
         price: 450, 
         desc: 'Fabricado con 100% de plástico reciclado post-consumo. Ideal para darle vida a tu hogar con un toque sustentable.', 
-        images: ['images/Tienda/Bowl Azul Arriba.jpeg', 'images/Tienda/Bowl Azul Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Azul Arriba.jpeg', 'images/Tienda/Bowl Azul Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-blanco': { 
         name: 'Bowl Blanco', 
         price: 450, 
         desc: 'Elegancia y sustentabilidad. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Blanco Arriba.jpeg', 'images/Tienda/Bowl Blanco Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Blanco Arriba.jpeg', 'images/Tienda/Bowl Blanco Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-gris': { 
         name: 'Bowl Gris', 
         price: 450, 
         desc: 'Minimalista y ecológico. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Gris Arriba.jpeg', 'images/Tienda/Bowl Gris Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Gris Arriba.jpeg', 'images/Tienda/Bowl Gris Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-navideno': { 
         name: 'Bowl Navideño', 
         price: 450, 
         desc: 'Edición especial con colores festivos. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Navideño Arriba.jpeg', 'images/Tienda/Bowl Navideño Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Navideño Arriba.jpeg', 'images/Tienda/Bowl Navideño Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-negro': { 
         name: 'Bowl Negro', 
         price: 450, 
         desc: 'Sobriedad y diseño. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Negro Arriba.jpeg', 'images/Tienda/Bowl Negro Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Negro Arriba.jpeg', 'images/Tienda/Bowl Negro Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-naranja': { 
         name: 'Bowl Naranja', 
         price: 450, 
         desc: 'Energía pura. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Naranja Arriba.jpeg', 'images/Tienda/Bowl Naranja Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Naranja Arriba.jpeg', 'images/Tienda/Bowl Naranja Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'bowl-verde': { 
         name: 'Bowl Verde', 
         price: 450, 
         desc: 'Conexión con la naturaleza. Fabricado con 100% de plástico reciclado post-consumo.', 
-        images: ['images/Tienda/Bowl Verde Arriba.jpeg', 'images/Tienda/Bowl Verde Costado.jpeg'] 
+        images: ['images/Tienda/Bowl Verde Arriba.jpeg', 'images/Tienda/Bowl Verde Costado.jpeg'],
+        specs: {
+            'Diámetro': '14 cm',
+            'Alto': '6 cm'
+        }
     },
     'posavasos-azul-blanco': { 
         name: 'Posavasos Azul y Blanco', 
         price: 400, 
         desc: 'Set de posavasos únicos. 100% plástico reciclado.', 
-        images: ['images/Tienda/Posavasos azul y Blanco.jpeg', 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg'] 
+        images: ['images/Tienda/Posavasos azul y Blanco.jpeg', 'images/Tienda/Posavasos azul y Blanco Etiqueta.jpeg'],
+        specs: {
+            'Diámetro': '9 cm',
+            'Espesor': '4 mm'
+        }
     },
     'posavasos-azul-celeste': { 
         name: 'Posavasos Azul y Celeste', 
         price: 400, 
         desc: 'Set de 6 unidades. Tonos marinos. 100% plástico reciclado.', 
-        images: ['images/Tienda/Posavasos Azul y Celeste.jpeg', 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg'] 
+        images: ['images/Tienda/Posavasos Azul y Celeste.jpeg', 'images/Tienda/Posavasos azul y Celeste Etiqueta.jpeg'],
+        specs: {
+            'Diámetro': '9 cm',
+            'Espesor': '4 mm'
+        }
     },
     'posavasos-blanco': { 
         name: 'Posavasos Blanco', 
         price: 400, 
         desc: 'Set de 6 unidades. Pureza reciclada.', 
-        images: ['images/Tienda/Posavasos Blanco.jpeg', 'images/Tienda/Posavasos Blanco Etiqueta.jpeg'] 
+        images: ['images/Tienda/Posavasos Blanco.jpeg', 'images/Tienda/Posavasos Blanco Etiqueta.jpeg'],
+        specs: {
+            'Diámetro': '9 cm',
+            'Espesor': '4 mm'
+        }
     },
     'posavasos-gris': { 
         name: 'Posavasos Gris', 
         price: 400, 
         desc: 'Set de 6 unidades. Estilo industrial.', 
-        images: ['images/Tienda/Posavasos Gris.jpeg', 'images/Tienda/Posavasos Gris Etiqueta.jpeg'] 
+        images: ['images/Tienda/Posavasos Gris.jpeg', 'images/Tienda/Posavasos Gris Etiqueta.jpeg'],
+        specs: {
+            'Diámetro': '9 cm',
+            'Espesor': '4 mm'
+        }
     },
     'posavasos-rosado': { 
         name: 'Posavasos Rosado', 
         price: 400, 
         desc: 'Set de 6 unidades. Toque suave y sustentable.', 
-        images: ['images/Tienda/Posavasos Rosado.jpeg', 'images/Tienda/Posavasos Rosado Etiqueta.jpeg'] 
+        images: ['images/Tienda/Posavasos Rosado.jpeg', 'images/Tienda/Posavasos Rosado Etiqueta.jpeg'],
+        specs: {
+            'Diámetro': '9 cm',
+            'Espesor': '4 mm'
+        }
     },
     'bandeja': {
         name: 'Bandeja',
         price: null,
         desc: 'Una bandeja moderna y funcional, ideal para servir o decorar. Cada pieza presenta un patrón único e irrepetible, resultado de nuestro proceso artesanal de reciclaje de tapitas y envases de plástico.',
         images: ['images/Tienda/bandeja.png', 'images/Tienda/bandeja_detalle.png'],
+        specs: {
+            'Ancho': '30 cm',
+            'Largo': '40 cm',
+            'Alto': '4 cm',
+            'Espesor de placa': '12 mm'
+        },
         upcoming: true,
         showImage: true
     },
@@ -132,6 +185,10 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Espejo de pared con un llamativo marco circular de 35 cm de diámetro fabricado a partir de nuestras placas recicladas. Aporta color, textura y sustentabilidad a cualquier ambiente.',
         images: ['images/Tienda/espejo.png', 'images/Tienda/espejo_detalle.png'],
+        specs: {
+            'Diámetro': '35 cm',
+            'Espesor de placa': '16 mm'
+        },
         upcoming: true,
         showImage: true
     },
@@ -165,6 +222,10 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Colgador de pared individual con botón torneado de plástico 100% reciclado. Una solución simple, estética y sustentable para organizar tus abrigos, bolsos o llaves.',
         images: ['images/Tienda/perchero-individual.png', 'images/Tienda/perchero-individual_detalle.png'],
+        specs: {
+            'Diámetro': '8 cm',
+            'Profundidad': '6 cm'
+        },
         upcoming: true,
         showImage: true
     },
@@ -173,6 +234,11 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Perchero de pared múltiple que cuenta con colgadores de plástico 100% reciclado sobre una base robusta. Perfecto para el recibidor, aportando color y diseño ecológico.',
         images: ['images/Tienda/perchero-multiple.png', 'images/Tienda/perchero-multiple_detalle.png'],
+        specs: {
+            'Ancho': '50 cm',
+            'Alto': '10 cm',
+            'Profundidad': '8 cm'
+        },
         upcoming: true,
         showImage: true
     },
@@ -181,31 +247,49 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Soporte de diseño para tus plantas. Fabricado con placas de plástico reciclado, es totalmente impermeable y resistente a la humedad del riego. Resalta el verde de la naturaleza.',
         images: ['images/Tienda/porta-macetas.png', 'images/Tienda/porta-macetas_detalle.png'],
+        specs: {
+            'Alto': '22 cm',
+            'Ancho': '20 cm',
+            'Diámetro interno': '18 cm'
+        },
         upcoming: true,
         showImage: true
     },
     'reloj': {
         name: 'Reloj de Pared',
-        price: null,
+        price: 1400,
         desc: 'Reloj de pared minimalista de funcionamiento silencioso. El cuadrante está hecho a partir de placa de plástico reciclado, convirtiendo cada minuto en un recordatorio de sustentabilidad.',
         images: ['images/Tienda/reloj.png', 'images/Tienda/reloj_detalle.png'],
-        upcoming: true,
+        specs: {
+            'Diámetro': '30 cm',
+            'Espesor de placa': '12 mm'
+        },
         showImage: true
     },
     'revistero': {
         name: 'Revistero',
-        price: null,
+        price: 7054,
         desc: 'Organizador y revistero de diseño geométrico fabricado con placas de plástico reciclado de alta densidad. Ligero, duradero y de producción ética uruguaya.',
         images: ['images/Tienda/revistero.png', 'images/Tienda/revistero_detalle.png'],
-        upcoming: true,
+        specs: {
+            'Alto': '30 cm',
+            'Ancho': '35 cm',
+            'Profundidad': '20 cm',
+            'Espesor de placa': '12 mm'
+        },
         showImage: true
     },
     'stand-celular': {
         name: 'Soporte para Celular',
-        price: null,
+        price: 350,
         desc: 'Soporte ergonómico de escritorio para celulares. Hecho de plástico 100% reciclado, ofrece una inclinación perfecta para videollamadas, ver contenido o trabajar.',
         images: ['images/Tienda/stand-celular.png', 'images/Tienda/stand-celular_detalle.png'],
-        upcoming: true,
+        specs: {
+            'Alto': '12 cm',
+            'Ancho': '8 cm',
+            'Profundidad': '9 cm',
+            'Espesor de placa': '12 mm'
+        },
         showImage: true
     },
     'stand-celular-llavero': {
@@ -213,15 +297,25 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Práctico soporte portátil para celulares con diseño tipo llavero. Llévalo en tus llaves y ten siempre a mano un soporte estable hecho de plástico reciclado.',
         images: ['images/Tienda/stand-celular-llavero.png', 'images/Tienda/stand-celular-llavero_detalle.png'],
+        specs: {
+            'Largo': '6 cm',
+            'Ancho': '2.5 cm',
+            'Espesor': '6 mm'
+        },
         upcoming: true,
         showImage: true
     },
     'stand-laptop': {
         name: 'Soporte para Laptop / Computadora',
-        price: null,
+        price: 580,
         desc: 'Soporte ergonómico desmontable de dos piezas encastrables en plástico 100% reciclado. Eleva la pantalla de tu laptop para mejorar tu postura y refrigerar tu equipo.',
         images: ['images/Tienda/stand-laptop.png', 'images/Tienda/stand-laptop_detalle.png'],
-        upcoming: true,
+        specs: {
+            'Ancho': '26 cm',
+            'Largo': '25 cm',
+            'Alto': '14 cm',
+            'Espesor de placa': '12 mm'
+        },
         showImage: true
     },
     'trofeo-empresarial': {
@@ -229,6 +323,11 @@ const PRODUCTS_DB = {
         price: null,
         desc: 'Premio o reconocimiento institucional sustentable. Diseñado a medida con placas de plástico 100% reciclado, ideal para empresas comprometidas con el medio ambiente.',
         images: ['images/Logo Werfen Web.jpeg'],
+        specs: {
+            'Alto': '20 cm',
+            'Ancho': '15 cm',
+            'Espesor de placa': '12 mm'
+        },
         upcoming: true,
         showImage: true
     }
