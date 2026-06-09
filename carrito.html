@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula | Carrito</title>
-    <meta name="description" content="Revisa tu carrito de compras y finaliza tu pedido de productos reciclados.">
+    <meta name="description" content="Revisá tu carrito de compras y finalizá tu pedido de productos reciclados.">
     <link rel="canonical" href="https://www.circula.uy/carrito">
     <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
     <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
@@ -423,7 +423,7 @@
 
             const code = input.value.trim();
             if (!code) {
-                alert("Por favor ingresa un código de descuento.");
+                alert("Por favor ingresá un código de descuento.");
                 return;
             }
 
@@ -565,7 +565,7 @@
         }
 
         function clearCart() {
-            if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+            if (confirm('¿Estás seguro de que querés vaciar el carrito?')) {
                 localStorage.removeItem('cartItems');
                 localStorage.removeItem('appliedDiscountCode');
                 localStorage.removeItem('appliedDiscountPercent');

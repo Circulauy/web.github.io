@@ -16,13 +16,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] } } } }</script>
     <style>
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis-scrolling iframe {
+            pointer-events: none;
+        }
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: auto;
             scrollbar-width: none
         }
 
@@ -150,53 +166,60 @@
             }
         }
 
-        /* --- HEADER DARK MODE TRANSITION --- */
+        /* --- HEADER TRANSITION --- */
         #main-header {
-            transition: background-color 0.3s ease, border 0.3s ease, backdrop-filter 0.3s ease;
+            transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
         }
 
-        /* Cuando el video está activo (clase inyectada por JS) */
-        body.video-active #main-header {
+        /* Estado transparente cuando el video está activo — clase controlada por JS */
+        #main-header.header-transparent {
+            position: fixed !important;
+            width: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: 0 !important;
             background-color: transparent !important;
             backdrop-filter: none !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            -webkit-backdrop-filter: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: none !important;
         }
 
-        /* Invertir Logo a Blanco */
-        body.video-active #header-logo {
+        /* Logo blanco */
+        #main-header.header-transparent #header-logo,
+        #main-header.header-transparent #header-logo-img {
             filter: brightness(0) invert(1);
+            transition: filter 0.4s ease;
         }
 
-        /* Textos e Iconos Blancos */
-        body.video-active .nav-link {
+        /* Links blancos */
+        #main-header.header-transparent .nav-link {
             color: white !important;
         }
-
-        body.video-active .nav-link:hover {
+        #main-header.header-transparent .nav-link:hover {
             color: #79C7C7 !important;
         }
 
-        body.video-active header i,
-        body.video-active header svg,
-        body.video-active #cart-count {
+        /* Iconos blancos */
+        #main-header.header-transparent i,
+        #main-header.header-transparent svg {
             color: white !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
+        }
+        #main-header.header-transparent a:hover i,
+        #main-header.header-transparent a:hover svg {
+            color: #79C7C7 !important;
         }
 
-        /* Ajuste específico para el contador del carrito */
-        body.video-active #cart-count {
+        /* Cart count */
+        #main-header.header-transparent #cart-count {
             background-color: #79C7C7 !important;
             color: white !important;
+            border-color: rgba(255,255,255,0.2) !important;
         }
 
-        body.video-active header a:hover i,
-        body.video-active header a:hover svg {
-            color: #79C7C7 !important;
-        }
-
-        /* Hamburguesa Móvil en blanco */
-        body.video-active #line-top,
-        body.video-active #line-bottom {
+        /* Hamburguesa móvil */
+        #main-header.header-transparent #line-top,
+        #main-header.header-transparent #line-bottom {
             background-color: white !important;
         }
 
@@ -244,7 +267,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
 
-    <header id="main-header" class="sticky top-0 z-[70] bg-white/90 backdrop-blur-md border-b border-gray-200/50">
+    <header id="main-header" class="fixed top-0 left-0 right-0 w-full z-[70] bg-white/90 backdrop-blur-md border-b border-gray-200/50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
 
             <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition">
@@ -340,55 +363,16 @@
     </header>
 
     <main>
-        <section id="hero-section"
-            class="relative section-padding pt-32 pb-16 md:pt-40 md:pb-40 flex items-center justify-end min-h-[70vh] border-b border-rp-gray-soft">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <h1
-                    class="text-4xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
-                    Transformamos la basura plástica en <span class="text-white">Materia Prima</span> de Valor
-                </h1>
-                <p class="text-base md:text-xl text-white/80 mb-10 max-w-3xl mx-auto">
-                    Proyectos integrales para empresas e instituciones educativas.
-                </p>
-                <a href="talleres"
-                    class="inline-block px-10 py-4 bg-white text-rp-teal text-lg font-bold rounded-full shadow-lg hover:bg-white/90 transition">
-                    RESERVÁ TU TALLER
-                </a>
-            </div>
-        </section>
-
-        <section id="impact-stats" class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-4xl font-bold mb-12 title-style">NUESTRO <span class="text-rp-teal">IMPACTO</span>
-                    MEDIDO</h2>
-                <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-                    <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal">
-                        <div class="text-6xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
-                            <span class="text-6xl ml-1">+</span>
-                            <span id="counter-plastic">1100</span>
-                        </div>
-                        <p class="text-2xl font-semibold mb-1">kg de plástico</p>
-                        <p class="text-gray-500">Reciclado y transformado en nuevos productos.</p>
-                    </div>
-                    <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal">
-                        <div class="text-6xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
-                            <span class="text-6xl ml-1">+</span>
-                            <span id="counter-space">1000</span>
-                        </div>
-                        <p class="text-2xl font-semibold mb-1">personas</p>
-                        <p class="text-gray-500">Concientizadas sobre el impacto del plástico en el medio ambiente.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="featured-project-video" class="relative h-[150vh] lg:h-[300vh] bg-rp-blue-light">
+        <section id="featured-project-video" class="relative h-[250vh] lg:h-[450vh] bg-rp-blue-light">
             <div id="video-pin-container" class="h-screen w-full flex items-center justify-center overflow-hidden">
                 <div id="video-grow-container"
-                    class="relative w-[80vw] h-[80vh] rounded-xl shadow-2xl overflow-hidden bg-rp-blue-light">
+                    class="relative w-full h-full overflow-hidden bg-rp-blue-light">
 
                     <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
                         preload="auto" muted playsinline webkit-playsinline>
+                        <source src="images/salida_optimizada.mp4" type="video/mp4">
+                        <source src="images/video_optimizado.mp4" type="video/mp4">
+                        <source src="images/video.mp4" type="video/mp4">
                         <source
                             src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4"
                             type="video/mp4">
@@ -396,15 +380,46 @@
 
                     <div id="video-text-overlay"
                         class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
-                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-white title-style">ASÍ SE VE TU PROYECTO CON
-                        </h2>
-                        <h2 class="text-5xl md:text-6xl font-bold mb-4 text-rp-teal title-style">NOSOTROS</h2>
+                        <h2 class="text-5xl md:text-6xl font-bold mb-1 text-white title-style">ASÍ SE VE TU PROYECTO CON</h2>
+                        <h2 class="text-5xl md:text-6xl font-bold text-rp-teal title-style">NOSOTROS</h2>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft">
+        <section id="impact-stats" class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft reveal-element">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-4xl font-bold mb-12 title-style">NUESTRO <span class="text-rp-teal">IMPACTO</span> MEDIDO</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-100">
+                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
+                            <span class="text-4xl ml-1">+</span>
+                            <span id="counter-tapitas-global">550.000</span>
+                        </div>
+                        <p class="text-xl font-bold mb-1">tapitas plásticas</p>
+                        <p class="text-gray-500 text-sm">Recuperadas y transformadas en nuevos productos.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-200">
+                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
+                            <span class="text-4xl ml-1">+</span>
+                            <span id="counter-water-global">198.000</span>
+                        </div>
+                        <p class="text-xl font-bold mb-1">litros de agua</p>
+                        <p class="text-gray-500 text-sm">Ahorrados al evitar la producción de plástico virgen.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-300">
+                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
+                            <span class="text-4xl ml-1">+</span>
+                            <span id="counter-space">1000</span>
+                        </div>
+                        <p class="text-xl font-bold mb-1">personas</p>
+                        <p class="text-gray-500 text-sm">Concientizadas sobre el impacto de los residuos plásticos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured-products" class="bg-white section-padding text-text-dark border-b border-rp-gray-soft reveal-element">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-5xl font-bold mb-3 title-style"><span class="text-rp-teal">DESTACADOS</span></h2>
@@ -415,7 +430,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
+                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-100">
                         <div>
                             <img src="images/Tienda/Bowl Azul Arriba.jpeg" alt="Bowl Azul Destacado"
                                 class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
@@ -433,7 +448,7 @@
                     </div>
 
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
+                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-200">
                         <div>
                             <img src="images/Tienda/Bowl Navideño Arriba.jpeg" alt="Bowl Navideño Destacado"
                                 class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
@@ -451,7 +466,7 @@
                     </div>
 
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between">
+                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-300">
                         <div>
                             <img src="images/Tienda/Bowl Verde Arriba.jpeg" alt="Bowl Verde Destacado"
                                 class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
@@ -477,10 +492,378 @@
                     </a>
                 </div>
             </div>
+           <!-- CALCULADORA DE IMPACTO ECOLÓGICO -->
+        <section id="calculadora-impacto" class="bg-white section-padding border-b border-rp-gray-soft">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-3 title-style">MEDÍ TU <span class="text-rp-teal">IMPACTO ECOLÓGICO</span></h2>
+                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
+                        Al elegir productos de plástico 100% reciclado, evitás que toneladas de plástico terminen en vertederos u océanos. ¡Calculá tu huella positiva!
+                    </p>
+                </div>
+
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-rp-gray-soft p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Configuración de Productos -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-6 text-text-dark title-style border-b border-gray-100 pb-3">Agregá productos a tu cálculo:</h3>
+                        
+                        <div class="space-y-5 max-h-[450px] overflow-y-auto pr-3" style="scrollbar-width: thin; scrollbar-color: #79C7C7 #f3f4f6;">
+                            <!-- Estantería -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Estantería</h4>
+                                    <p class="text-xs text-gray-500">10 kg (~5.000 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('estanteria', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-estanteria" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('estanteria', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Mesa -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Mesa Ratona</h4>
+                                    <p class="text-xs text-gray-500">8,5 kg (~4.250 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('mesa', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-mesa" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('mesa', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Banco Alto -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Banco Alto</h4>
+                                    <p class="text-xs text-gray-500">5 kg (~2.500 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('banco_alto', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-banco_alto" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('banco_alto', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Banco Bajo -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Banco Bajo</h4>
+                                    <p class="text-xs text-gray-500">4 kg (~2.000 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('banco_bajo', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-banco_bajo" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('banco_bajo', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Revistero -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Revistero</h4>
+                                    <p class="text-xs text-gray-500">4 kg (~2.000 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('revistero', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-revistero" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('revistero', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Comedero -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Comedero de Mascotas</h4>
+                                    <p class="text-xs text-gray-500">3 kg (~1.500 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('comedero', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-comedero" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('comedero', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Espejo -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Espejo Circular</h4>
+                                    <p class="text-xs text-gray-500">2 kg (~1.000 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('espejo', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-espejo" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('espejo', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Reloj -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Reloj de Pared</h4>
+                                    <p class="text-xs text-gray-500">0,8 kg (~400 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('reloj', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-reloj" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('reloj', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Laptop Stand -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Soporte para Laptop</h4>
+                                    <p class="text-xs text-gray-500">0,4 kg (~200 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('laptop_stand', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-laptop_stand" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('laptop_stand', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Trofeo -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Trofeo Empresarial</h4>
+                                    <p class="text-xs text-gray-500">0,3 kg (~150 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('trofeo', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-trofeo" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('trofeo', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Celular Stand -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Soporte para Celular</h4>
+                                    <p class="text-xs text-gray-500">0,2 kg (~100 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('celular_stand', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-celular_stand" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('celular_stand', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Bowls -->
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-text-dark text-sm">Bowl Circular</h4>
+                                    <p class="text-xs text-gray-500">0,18 kg (~90 tapitas)</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="updateImpactQty('bowl', -1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                    <span id="qty-impact-bowl" class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                    <button onclick="updateImpactQty('bowl', 1)" class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Resultados de Impacto -->
+                    <div class="bg-gradient-to-br from-rp-blue-light to-white p-6 md:p-8 rounded-3xl border border-rp-teal/30 flex flex-col justify-between shadow-inner reveal-element">
+                        <div>
+                            <h3 class="text-xl font-bold mb-6 text-text-dark title-style text-center md:text-left">Tu Ahorro Ambiental:</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-rp-teal/15 flex items-center justify-center text-rp-teal shadow-sm">
+                                        <i class="fas fa-recycle text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="block text-2xl font-extrabold text-text-dark" id="impact-val-tapitas">0</span>
+                                        <span class="text-xs font-semibold uppercase text-gray-500 font-brand">Tapitas recuperadas</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-rp-mint/15 flex items-center justify-center text-rp-teal shadow-sm">
+                                        <i class="fas fa-weight-hanging text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="block text-2xl font-extrabold text-text-dark" id="impact-val-kg">0.00 kg</span>
+                                        <span class="text-xs font-semibold uppercase text-gray-500 font-brand">Plástico recuperado</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-500 shadow-sm">
+                                        <i class="fas fa-tint text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="block text-2xl font-extrabold text-text-dark" id="impact-val-water">0 L</span>
+                                        <span class="text-xs font-semibold uppercase text-gray-500 font-brand">Litros de agua ahorrados</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                                        <i class="fas fa-cloud text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="block text-2xl font-extrabold text-text-dark" id="impact-val-co2">0.00 kg</span>
+                                        <span class="text-xs font-semibold uppercase text-gray-500 font-brand">Emisiones de CO2 evitadas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-rp-teal/10">
+                            <p class="text-center text-xs text-gray-500 font-bold uppercase tracking-wider mb-3 font-brand">Equivalencia en volumen:</p>
+                            <div class="grid grid-cols-3 gap-2 text-center font-brand">
+                                <div class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                    <span class="block text-base md:text-lg font-extrabold text-rp-teal leading-none" id="impact-equiv-futbol">0</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Pelotas de fútbol</span>
+                                </div>
+                                <div class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                    <span class="block text-base md:text-lg font-extrabold text-rp-teal leading-none" id="impact-equiv-bidones">0</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Bidones 6L</span>
+                                </div>
+                                <div class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                    <span class="block text-base md:text-lg font-extrabold text-rp-teal leading-none" id="impact-equiv-garrafas">0</span>
+                                    <span class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Garrafas 13kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                // Estado del calculador de impacto
+                const impactQty = {
+                    estanteria: 0,
+                    mesa: 0,
+                    banco_alto: 0,
+                    banco_bajo: 0,
+                    revistero: 0,
+                    comedero: 0,
+                    espejo: 0,
+                    reloj: 0,
+                    laptop_stand: 0,
+                    trofeo: 0,
+                    celular_stand: 0,
+                    bowl: 0
+                };
+                const impactFactors = {
+                    estanteria: { tapitas: 5000, peso: 10.0 },
+                    mesa: { tapitas: 4250, peso: 8.5 },
+                    banco_alto: { tapitas: 2500, peso: 5.0 },
+                    banco_bajo: { tapitas: 2000, peso: 4.0 },
+                    revistero: { tapitas: 2000, peso: 4.0 },
+                    comedero: { tapitas: 1500, peso: 3.0 },
+                    espejo: { tapitas: 1000, peso: 2.0 },
+                    reloj: { tapitas: 400, peso: 0.8 },
+                    laptop_stand: { tapitas: 200, peso: 0.4 },
+                    trofeo: { tapitas: 150, peso: 0.3 },
+                    celular_stand: { tapitas: 100, peso: 0.2 },
+                    bowl: { tapitas: 90, peso: 0.18 }
+                };
+
+                window.updateImpactQty = function(type, delta) {
+                    if (impactQty[type] !== undefined) {
+                        impactQty[type] = Math.max(0, impactQty[type] + delta);
+                        const qtyEl = document.getElementById('qty-impact-' + type);
+                        if (qtyEl) qtyEl.textContent = impactQty[type];
+                        calculateTotalImpact();
+                    }
+                };
+
+                let prevTapitas = 0;
+                let prevPeso = 0;
+                let prevWater = 0;
+                let prevCO2 = 0;
+                let prevFutbol = 0;
+                let prevBidones = 0;
+                let prevGarrafas = 0;
+
+                function animateNumber(elementId, start, end, suffix = '', decimals = 0) {
+                    const el = document.getElementById(elementId);
+                    if (!el) return;
+                    const duration = 400; // ms
+                    const startTime = performance.now();
+
+                    function update(now) {
+                        const elapsed = now - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const ease = 1 - Math.pow(1 - progress, 3); // cubic out
+                        const current = start + (end - start) * ease;
+                        
+                        let text = current.toFixed(decimals);
+                        if (decimals === 0) {
+                            text = parseInt(text).toLocaleString('es-UY');
+                        } else {
+                            text = parseFloat(text).toLocaleString('es-UY', {
+                                minimumFractionDigits: decimals,
+                                maximumFractionDigits: decimals
+                            });
+                        }
+                        el.textContent = text + suffix;
+
+                        if (progress < 1) {
+                            requestAnimationFrame(update);
+                        } else {
+                            // Asegurar valor exacto al final
+                            let finalText = end.toFixed(decimals);
+                            if (decimals === 0) {
+                                finalText = parseInt(finalText).toLocaleString('es-UY');
+                            } else {
+                                  finalText = parseFloat(finalText).toLocaleString('es-UY', {
+                                    minimumFractionDigits: decimals,
+                                    maximumFractionDigits: decimals
+                                });
+                            }
+                            el.textContent = finalText + suffix;
+                        }
+                    }
+                    requestAnimationFrame(update);
+                }
+
+                function calculateTotalImpact() {
+                    let totalTapitas = 0;
+                    let totalPeso = 0; // en kg
+
+                    for (const [key, val] of Object.entries(impactQty)) {
+                        const factors = impactFactors[key];
+                        totalTapitas += val * factors.tapitas;
+                        totalPeso += val * factors.peso;
+                    }
+
+                    // 180 litros de agua por kg de plástico reciclado
+                    const totalWater = totalPeso * 180;
+                    // 2 kg de CO2 evitado por kg de plástico reciclado (PEAD)
+                    const totalCO2 = totalPeso * 2.0;
+                    const futbol = totalTapitas / 460;
+                    const bidones = totalTapitas / 500;
+                    const garrafas = totalTapitas / 2250;
+
+                    // Animar números
+                    animateNumber('impact-val-tapitas', prevTapitas, totalTapitas, '', 0);
+                    animateNumber('impact-val-kg', prevPeso, totalPeso, ' kg', 2);
+                    animateNumber('impact-val-water', prevWater, totalWater, ' L', 1);
+                    animateNumber('impact-val-co2', prevCO2, totalCO2, ' kg', 2);
+                    animateNumber('impact-equiv-futbol', prevFutbol, futbol, '', 1);
+                    animateNumber('impact-equiv-bidones', prevBidones, bidones, '', 1);
+                    animateNumber('impact-equiv-garrafas', prevGarrafas, garrafas, '', 1);
+
+                    prevTapitas = totalTapitas;
+                    prevPeso = totalPeso;
+                    prevWater = totalWater;
+                    prevCO2 = totalCO2;
+                    prevFutbol = futbol;
+                    prevBidones = bidones;
+                    prevGarrafas = garrafas;
+                }
+            </script>
         </section>
 
-
-        <section id="clientes" class="bg-rp-blue-light section-padding border-t border-b border-rp-gray-soft">
+        <section id="clientes" class="bg-rp-blue-light section-padding border-t border-b border-rp-gray-soft reveal-element">
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -549,7 +932,7 @@
         </section>
 
 
-        <section id="about" class="bg-bg-light section-padding">
+        <section id="about" class="bg-bg-light section-padding reveal-element">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold mb-3 title-style">¿QUÉ <span class="text-rp-teal">NOS MUEVE?</span>
@@ -561,7 +944,7 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8 text-center">
-                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft reveal-element reveal-delay-100">
                         <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2">
@@ -570,10 +953,10 @@
                                 <path d="M16 10h4l2 3v5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-5l2-3z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-bold mb-2 text-text-dark">RECOGIDA</h3>
+                        <h3 class="text-xl font-bold mb-2 text-text-dark">RECOLECCIÓN</h3>
                         <p class="text-gray-600 text-sm">Gestión de residuos plásticos con trazabilidad total.</p>
                     </div>
-                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft reveal-element reveal-delay-200">
                         <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2">
@@ -589,7 +972,7 @@
                         <p class="text-gray-600 text-sm">Talleres para concientizar y activar el cambio en niños,
                             jóvenes y profesionales.</p>
                     </div>
-                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft">
+                    <div class="p-6 bg-white rounded-xl shadow-md card-hover border border-rp-gray-soft reveal-element reveal-delay-300">
                         <div class="mb-4 inline-block p-3 rounded-full bg-rp-blue-light">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2">
@@ -641,68 +1024,149 @@
     </script>
 
     <script>
-        // GSAP ScrollTrigger for video and Header
+        // GSAP ScrollTrigger registration (must come first)
         gsap.registerPlugin(ScrollTrigger);
+
+        // --- INICIALIZAR LENIS (SCROLL SUAVE PREMIUM) ---
+        let lenis;
+        if (typeof Lenis !== 'undefined') {
+            lenis = new Lenis({
+                duration: 0.9,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smooth: true,
+                gestureDirection: 'vertical',
+                smoothTouch: false,
+            });
+
+            // Integración correcta Lenis + GSAP: usar gsap.ticker en lugar de rAF manual
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+
+            // Sincronizar ScrollTrigger con Lenis
+            lenis.on('scroll', ScrollTrigger.update);
+        } else {
+            console.warn('Lenis no disponible, usando scroll nativo.');
+        }
+
         const video = document.getElementById('scroll-video');
         const videoSection = document.getElementById('featured-project-video');
-        const videoContainer = document.getElementById('video-grow-container');
         const videoOverlay = document.getElementById('video-text-overlay');
 
         if (video && videoSection) {
+            // Pausar el video — Controlamos currentTime manualmente en un loop de rAF para máxima fluidez
+            video.pause();
+            video.currentTime = 0;
 
-            // --- HEADER COLOR CHANGE LOGIC ---
-            ScrollTrigger.create({
-                trigger: videoSection,
-                start: "top top", // Cuando la parte superior del video toca el top de la ventana
-                end: "bottom bottom", // Hasta que el video termina
-                onEnter: () => document.body.classList.add('video-active'),
-                onLeave: () => document.body.classList.remove('video-active'),
-                onEnterBack: () => document.body.classList.add('video-active'),
-                onLeaveBack: () => document.body.classList.remove('video-active'),
-            });
+            let scrollProgress = 0;
+            let smoothProgress = 0;
+            let isInitialized = false;
 
-            // --- VIDEO SCROLL LOGIC (Optimized) ---
-            ScrollTrigger.create({
-                trigger: videoSection,
-                start: 'top top',
-                end: 'bottom bottom',
-                pin: '#video-pin-container',
-                pinSpacing: false,
-                onUpdate: (self) => {
-                    const progress = self.progress;
-                    if (isFinite(video.duration)) {
-                        video.currentTime = video.duration * progress;
+            // Loop de animación suavizado por requestAnimationFrame (rAF) + Seek Throttling por tiempo
+            let lastSeekTime = 0;
+            const seekThrottleMs = 30; // Máximo ~33 seeks por segundo para no saturar al decodificador de video del navegador
+
+            function updateVideoFrame() {
+                if (video && isInitialized) {
+                    const duration = video.duration;
+                    if (duration && isFinite(duration)) {
+                        // Interpolación un poco más gradual (coeficiente de 0.08) para máxima suavidad visual
+                        smoothProgress += (scrollProgress - smoothProgress) * 0.08;
+
+                        if (Math.abs(scrollProgress - smoothProgress) < 0.0002) {
+                            smoothProgress = scrollProgress;
+                        }
+
+                        const targetTime = smoothProgress * duration;
+                        const now = performance.now();
+
+                        // Seek Throttling: Solo busca el frame si:
+                        // 1. El navegador no está ocupado buscando ("seeking").
+                        // 2. Ha pasado suficiente tiempo desde el último seek (seekThrottleMs).
+                        // 3. La diferencia entre el tiempo actual del video y el objetivo es significativa (> 0.02s).
+                        if (!video.seeking && (now - lastSeekTime >= seekThrottleMs) && Math.abs(video.currentTime - targetTime) > 0.02) {
+                            video.currentTime = targetTime;
+                            lastSeekTime = now;
+                        }
                     }
+                }
+                requestAnimationFrame(updateVideoFrame);
+            }
+            requestAnimationFrame(updateVideoFrame);
 
-                    // --- FULL SCREEN ANIMATION ---
-                    // El video empieza en 80% (scale 1) y crece hasta 100% (scale ~1.25) rápido
-                    // Multiplicamos por 1.25 porque 80vw * 1.25 = 100vw
-                    const scale = 1 + (progress * 0.4);
-
-                    // Limitamos el scale maximo a algo razonable para que no se vea pixelado
-                    const finalScale = Math.min(scale, 1.3);
-
-                    videoContainer.style.transform = `scale(${finalScale})`;
-
-                    // Ajustamos el border radius para que desaparezca al hacerse full screen
-                    if (progress > 0.2) {
-                        videoContainer.style.borderRadius = "0px";
-                    } else {
-                        videoContainer.style.borderRadius = "0.75rem"; // xl
-                    }
-
-                    // Fade in overlay at the end
-                    if (progress > 0.6) {
-                        const overlayOpacity = (progress - 0.6) / 0.4;
-                        videoOverlay.style.opacity = overlayOpacity;
-                    } else {
-                        videoOverlay.style.opacity = 0;
+            // Evento de seguridad para catch-up inmediato al terminar cada seek
+            video.addEventListener('seeked', () => {
+                if (isInitialized) {
+                    const duration = video.duration;
+                    if (duration && isFinite(duration)) {
+                        const targetTime = smoothProgress * duration;
+                        if (Math.abs(video.currentTime - targetTime) > 0.01) {
+                            video.currentTime = targetTime;
+                            lastSeekTime = performance.now();
+                        }
                     }
                 }
             });
 
+            // --- VIDEO SCROLL TRIGGERS ---
+            function initVideoScroll() {
+                const duration = video.duration;
+                if (!duration || !isFinite(duration) || duration === 0) {
+                    video.addEventListener('loadedmetadata', initVideoScroll, { once: true });
+                    return;
+                }
+
+                console.log('GSAP/rAF: Video scroll init, duración:', duration, 's');
+
+                const existing = ScrollTrigger.getById('video-main-trigger');
+                if (existing) existing.kill();
+
+                ScrollTrigger.create({
+                    id: 'video-main-trigger',
+                    trigger: videoSection,
+                    pin: '#video-pin-container',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    pinSpacing: true,
+                    onUpdate: (self) => {
+                        scrollProgress = self.progress;
+                        if (!isInitialized) {
+                            smoothProgress = self.progress;
+                            isInitialized = true;
+                        }
+
+                        // Animación manual del overlay de texto para coincidir con la sincronización
+                        if (videoOverlay) {
+                            let opacity = 0;
+                            if (self.progress < 0.15) {
+                                opacity = 0;
+                            } else if (self.progress >= 0.15 && self.progress < 0.35) {
+                                opacity = (self.progress - 0.15) / 0.2; // Fade in
+                            } else {
+                                opacity = 1; // Mantener visible hasta el final del video
+                            }
+                            videoOverlay.style.opacity = opacity;
+                        }
+
+                        // Sincronizar el estado de transparencia del header
+                        if (typeof window.handleHeaderScroll === 'function') {
+                            window.handleHeaderScroll();
+                        }
+                    }
+                });
+            }
+
+            initVideoScroll();
+
             window.addEventListener('headerLoaded', () => {
                 ScrollTrigger.refresh();
+                // Verificar estado del header después de cargar componentes
+                setTimeout(() => {
+                    if (typeof window.handleHeaderScroll === 'function') {
+                        window.handleHeaderScroll();
+                    }
+                }, 150);
             });
         }
 
@@ -713,24 +1177,26 @@
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
-                    element.textContent = Math.floor(target);
+                    element.textContent = Math.floor(target).toLocaleString('es-UY');
                     clearInterval(timer);
                 } else {
-                    element.textContent = Math.floor(current);
+                    element.textContent = Math.floor(current).toLocaleString('es-UY');
                 }
-            }, 20);
+            }, 15);
         }
 
-        const counterPlastic = document.getElementById('counter-plastic');
+        const counterTapitas = document.getElementById('counter-tapitas-global');
+        const counterWater = document.getElementById('counter-water-global');
         const counterSpace = document.getElementById('counter-space');
 
-        if (counterPlastic && counterSpace) {
+        if (counterTapitas && counterWater && counterSpace) {
             ScrollTrigger.create({
                 trigger: '#impact-stats',
                 start: 'top center',
                 once: true,
                 onEnter: () => {
-                    animateCounter(counterPlastic, 1100);
+                    animateCounter(counterTapitas, 550000);
+                    animateCounter(counterWater, 198000);
                     animateCounter(counterSpace, 1000);
                 }
             });

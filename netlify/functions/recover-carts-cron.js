@@ -81,7 +81,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                     ¡Hola <strong>${buyerName}</strong>!
                                 </p>
                                 <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                                    Notamos que dejaste algunos productos increíbles en tu carrito de compras. Para ayudarte a dar el paso hacia una alternativa más sustentable, ¡tenemos una sorpresa especial para ti!
+                                    Notamos que dejaste algunos productos increíbles en tu carrito de compras. Para ayudarte a dar el paso hacia una alternativa más sustentable, ¡tenemos una sorpresa especial para vos!
                                 </p>
                                 
                                 <!-- Tarjeta de Beneficio / Descuento -->
@@ -91,7 +91,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                         Beneficio Exclusivo
                                     </h4>
                                     <p style="margin: 0 0 16px 0; font-size: 13px; color: #991b1b; opacity: 0.9; line-height: 1.4;">
-                                        Completa tu pedido hoy mismo y obtén un <strong>10% de descuento de regalo</strong> en tu compra total.
+                                        Completá tu pedido hoy mismo y obtené un <strong>10% de descuento de regalo</strong> en tu compra total.
                                     </p>
                                     <div style="display: inline-block; background-color: #ffffff; border: 2px solid #fca5a5; padding: 12px 24px; font-size: 22px; font-weight: 800; color: #b91c1c; letter-spacing: 3px; font-family: 'Courier New', Courier, monospace; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
                                         ${couponCode}
@@ -121,7 +121,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                                 <!-- Footer de la tarjeta -->
                                 <div style="text-align: center; margin-top: 35px; border-top: 1px solid #f1f5f9; padding-top: 25px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                                     <p style="font-size: 12px; color: #94a3b8; margin: 0 0 8px 0; line-height: 1.5;">
-                                        Si ya completaste esta compra usando otro correo o método, puedes ignorar este mensaje.
+                                        Si ya completaste esta compra usando otro correo o método, podés ignorar este mensaje.
                                     </p>
                                     <p style="font-size: 13px; font-weight: 700; color: #79C7C7; margin: 8px 0 0 0; letter-spacing: 0.5px;">Equipo Circula</p>
                                 </div>

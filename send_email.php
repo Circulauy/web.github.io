@@ -7,11 +7,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $to = "circulauy@gmail.com";
+        $to = "contacto@circula.uy";
         $subject = "Nueva suscripción al newsletter";
         $message = "El siguiente correo electrónico se ha suscrito al newsletter: " . $email;
-        $headers = "From: circulauy@gmail.com\r\n" .
-                   "Reply-To: circulauy@gmail.com\r\n" .
+        $headers = "From: contacto@circula.uy\r\n" .
+                   "Reply-To: contacto@circula.uy\r\n" .
                    "X-Mailer: PHP/" . phpversion();
 
         if (mail($to, $subject, $message, $headers)) {

@@ -296,7 +296,7 @@ const PRODUCTS_DB = {
     'stand-celular-llavero': {
         name: 'Soporte para Celular Llavero',
         price: null,
-        desc: 'Práctico soporte portátil para celulares con diseño tipo llavero. Llévalo en tus llaves y ten siempre a mano un soporte estable hecho de plástico reciclado.',
+        desc: 'Práctico soporte portátil para celulares con diseño tipo llavero. Llevalo en tus llaves y tené siempre a mano un soporte estable hecho de plástico reciclado.',
         images: ['images/Tienda/stand-celular-llavero.png', 'images/Tienda/stand-celular-llavero_detalle.png'],
         specs: {
             'Largo': '6 cm',
@@ -422,7 +422,7 @@ function loadHeader() {
         .then(response => response.ok ? response.text() : Promise.reject(response.status))
         .then(data => {
             if (placeholder) {
-                placeholder.outerHTML = `<header id="main-header" class="sticky top-0 z-[70] bg-white/90 backdrop-blur-md border-b border-gray-200/50">${data}</header>`;
+                placeholder.outerHTML = `<header id="main-header" class="sticky top-0 z-[70] bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-400">${data}</header>`;
             } else if (element) {
                 element.innerHTML = data;
                 if (!element.id) element.id = 'main-header';
@@ -535,7 +535,7 @@ window.toggleChat = function () {
 window.enviarWhatsApp = function () {
     const input = document.getElementById('mensaje-usuario');
     const msg = input.value.trim();
-    if (!msg) return alert("Escribe un mensaje.");
+    if (!msg) return alert("Escribí un mensaje.");
     
     if (typeof window.trackGA4Event === 'function') {
         window.trackGA4Event('whatsapp_message_sent', {
@@ -598,7 +598,7 @@ function loadProductDetails() {
         document.title = `${product.name} | Producto Sustentable Reciclado | Circula`;
         const metaDesc = document.getElementById('page-desc') || document.querySelector('meta[name="description"]');
         if (metaDesc) {
-            metaDesc.setAttribute('content', `${product.name} - ${product.desc} Fabricado artesanalmente en Uruguay a partir de plástico reciclado. Conoce nuestras texturas: Noche de Rocha, Piedras de Arequita, Marea del Polonio y Cuarzo de Artigas.`);
+            metaDesc.setAttribute('content', `${product.name} - ${product.desc} Fabricado artesanalmente en Uruguay a partir de plástico reciclado. Conocé nuestras texturas: Noche de Rocha, Piedras de Arequita, Marea del Polonio y Cuarzo de Artigas.`);
         }
         
         const imgEl = document.getElementById('detail-img');
@@ -1051,7 +1051,7 @@ function showEmailPromptModal(pendingProduct) {
             <!-- Título y Subtítulo -->
             <h3 class="text-2xl font-bold text-center text-text-dark title-style mb-2" style="font-family: 'Montserrat', sans-serif;">¡Casi listo!</h3>
             <p class="text-sm text-gray-500 text-center mb-6 leading-relaxed">
-                Para agregar este producto al carrito y recibir el seguimiento de tu compra (¡incluyendo beneficios especiales!), por favor ingresa tus datos.
+                Para agregar este producto al carrito y recibir el seguimiento de tu compra (¡incluyendo beneficios especiales!), por favor ingresá tus datos.
             </p>
 
             <!-- Formulario -->
@@ -1312,12 +1312,158 @@ function updateCartDropdown() {
 }
 
 // ==========================================
-// 8. INICIALIZACIÓN GLOBAL
+// 8. INICIALIZACIÓN PREMIUM (HEADER SCROLL & SCROLL REVEAL)
+// ==========================================
+function initializePremiumFeatures() {
+    // 1. Inyectar estilos CSS dinámicos en el head
+    const styleEl = document.createElement('style');
+    styleEl.innerHTML = `
+        /* --- ESTILOS DE TRANSICIÓN DEL HEADER AL HACER SCROLL --- */
+        #main-header {
+            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        #main-header.scrolled {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03) !important;
+            background-color: rgba(255, 255, 255, 0.96) !important;
+            backdrop-filter: blur(12px) !important;
+            border-bottom-color: rgba(229, 231, 235, 0.5) !important;
+        }
+        /* Ajustar padding vertical del container dentro del header al hacer scroll */
+        #main-header.scrolled > div {
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+        }
+
+        /* --- CABECERAS DE SECCIÓN CON PARALLAX OPTIMIZADO PARA MÓVILES --- */
+        .premium-hero-bg {
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }
+        @media (max-width: 768px) {
+            .premium-hero-bg {
+                background-attachment: scroll !important;
+            }
+        }
+
+        /* --- SISTEMA DE REVELADO DE ELEMENTOS AL HACER SCROLL (SCROLL REVEAL) --- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Retardos para animaciones secuenciales (stagger) */
+        .reveal-delay-100 { transition-delay: 100ms !important; }
+        .reveal-delay-200 { transition-delay: 200ms !important; }
+        .reveal-delay-300 { transition-delay: 300ms !important; }
+        .reveal-delay-400 { transition-delay: 400ms !important; }
+        .reveal-delay-500 { transition-delay: 500ms !important; }
+    `;
+    document.head.appendChild(styleEl);
+
+    // 2. Controlar la clase .scrolled y .header-transparent del Header
+    window.handleHeaderScroll = () => {
+        const header = document.getElementById('main-header');
+        if (header) {
+            const videoSection = document.getElementById('featured-project-video');
+            const headerHeight = header.offsetHeight || 80;
+            
+            if (videoSection) {
+                // Estamos en la Home con video
+                const nextSection = document.getElementById('impact-stats');
+                const isVideoActive = nextSection 
+                    ? (nextSection.getBoundingClientRect().top > headerHeight)
+                    : (window.scrollY < (videoSection.offsetHeight - headerHeight));
+                
+                if (isVideoActive) {
+                    header.classList.add('header-transparent');
+                    header.classList.remove('scrolled');
+                } else {
+                    header.classList.remove('header-transparent');
+                    header.classList.add('scrolled');
+                }
+            } else {
+                // Resto de las páginas
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+        }
+    };
+    window.addEventListener('scroll', window.handleHeaderScroll);
+    window.handleHeaderScroll(); // Ejecutar en carga por si recargan a mitad de página
+
+    // 3. Inicializar el IntersectionObserver para Scroll Reveal
+    if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target); // Dejar de observar una vez revelado
+                }
+            });
+        }, {
+            threshold: 0.1, // Dispara cuando el 10% del elemento es visible
+            rootMargin: '0px 0px -50px 0px' // Margen inferior
+        });
+
+        const observeElements = () => {
+            // Auto-asignar clases de reveal en Tienda
+            if (window.location.pathname.includes('tienda')) {
+                const cards = document.querySelectorAll('.card-hover');
+                cards.forEach((card, index) => {
+                    card.classList.add('reveal-element');
+                    const delayClass = `reveal-delay-${((index % 3) + 1) * 100}`;
+                    card.classList.add(delayClass);
+                });
+                const headerElements = document.querySelectorAll('main h1, main p');
+                headerElements.forEach(el => el.classList.add('reveal-element'));
+            }
+
+            // Auto-asignar clases de reveal en Nosotros
+            if (window.location.pathname.includes('nosotros')) {
+                const services = document.querySelectorAll('.card-hover');
+                services.forEach((service, index) => {
+                    service.classList.add('reveal-element');
+                    service.classList.add(`reveal-delay-${((index % 3) + 1) * 100}`);
+                });
+                const team = document.querySelectorAll('.flex.flex-col.items-center.text-center.group');
+                team.forEach((member, index) => {
+                    member.classList.add('reveal-element');
+                    member.classList.add(`reveal-delay-${((index % 5) + 1) * 100}`);
+                });
+            }
+
+            const elements = document.querySelectorAll('.reveal-element');
+            elements.forEach(el => revealObserver.observe(el));
+        };
+
+        observeElements();
+        window.addEventListener('headerLoaded', observeElements);
+        window.addEventListener('contentLoaded', observeElements);
+        setTimeout(observeElements, 500); // re-intentar a los 500ms
+    } else {
+        // Fallback
+        document.querySelectorAll('.reveal-element').forEach(el => el.classList.add('revealed'));
+    }
+}
+
+// ==========================================
+// 9. INICIALIZACIÓN GLOBAL
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     loadHeader();
     loadFooter();
     loadWhatsApp();
+    initializePremiumFeatures();
     
     // Detectar si estamos en páginas específicas
     if (window.location.pathname.includes('detalle')) {

@@ -12,7 +12,7 @@ exports.handler = async function (event, context) {
     };
   }
 
-  // Configurar el transporte SMTP para Gmail (puedes cambiarlo a cualquier otro proveedor SMTP)
+  // Configurar el transporte SMTP para Gmail (podés cambiarlo a cualquier otro proveedor SMTP)
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -24,8 +24,8 @@ exports.handler = async function (event, context) {
 
   // Definir el contenido del correo electrónico
   let mailOptions = {
-    from: "circulauy@gmail.com", // Remitente (mismo que `user` en `auth`)
-    to: "circulauy@gmail.com", // Destinatario (el correo al que quieres enviar)
+    from: process.env.EMAIL_USER || "contacto@circula.uy", // Remitente
+    to: "contacto@circula.uy", // Destinatario (el correo al que querés enviar)
     subject: "Nueva suscripción al newsletter",
     text: `El siguiente correo electrónico se ha suscrito al newsletter: ${email}`,
   };

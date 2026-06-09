@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circula | Checkout</title>
-    <meta name="description" content="Finaliza tu compra de productos reciclados de Circula.">
+    <meta name="description" content="Finalizá tu compra de productos reciclados de Circula.">
     <link rel="canonical" href="https://www.circula.uy/datos">
     <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
     <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
@@ -273,7 +273,7 @@
 
                             <!-- Cupón de Descuento -->
                             <div class="border-t border-rp-gray-soft pt-4 pb-2 mb-2">
-                                <label class="block text-xs font-bold text-text-dark mb-1 uppercase tracking-wider">¿Tienes un cupón?</label>
+                                <label class="block text-xs font-bold text-text-dark mb-1 uppercase tracking-wider">¿Tenés un cupón?</label>
                                 <div class="flex gap-2">
                                     <input type="text" id="discount-code-input" placeholder="Ej: CIRCULA10-XXXX" 
                                         class="w-full px-3 py-2 border border-rp-border-default rounded-lg text-sm focus:ring-1 focus:ring-rp-teal focus:border-rp-teal outline-none uppercase">
@@ -355,7 +355,7 @@
 
             const code = input.value.trim();
             if (!code) {
-                alert("Por favor ingresa un código de descuento.");
+                alert("Por favor ingresá un código de descuento.");
                 return;
             }
 
@@ -634,7 +634,7 @@
 
             const cartItems = getCheckoutCart();
             if (cartItems.length === 0) {
-                alert("Tu carrito está vacío. Agrega productos antes de finalizar la compra.");
+                alert("Tu carrito está vacío. Agregá productos antes de finalizar la compra.");
                 window.location.href = 'carrito';
                 return;
             }
