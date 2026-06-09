@@ -273,7 +273,7 @@ const PRODUCTS_DB = {
         desc: 'Organizador y revistero de diseño geométrico fabricado con placas de plástico reciclado de alta densidad. Ligero, duradero y de producción ética uruguaya.',
         images: ['images/Tienda/revistero.png', 'images/Tienda/revistero_detalle.png'],
         specs: {
-            'Alto': '30 cm',
+            'Alto': '50 cm',
             'Ancho': '35 cm',
             'Profundidad': '20 cm',
             'Espesor de placa': '10 mm'
