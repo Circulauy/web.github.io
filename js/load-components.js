@@ -146,7 +146,7 @@ const PRODUCTS_DB = {
     },
     'banco-alto': {
         name: 'Banco Alto',
-        price: 6465,
+        price: 5659,
         desc: 'Asiento resistente e impermeable con estructura robusta combinada con una superficie superior de placa reciclada en nuestras texturas exclusivas. Ideal tanto para interiores como exteriores.',
         images: ['images/Tienda/banco-alto.png', 'images/Tienda/banco-alto_detalle.png'],
         specs: {
@@ -158,7 +158,7 @@ const PRODUCTS_DB = {
     },
     'banco-bajo': {
         name: 'Banco Bajo',
-        price: 5386,
+        price: 4579,
         desc: 'Taburete o asiento bajo ecológico y versátil, con una superficie de plástico 100% reciclado. Resistente al agua, duradero y con un diseño moderno.',
         images: ['images/Tienda/banco-bajo.png', 'images/Tienda/banco-bajo_detalle.png'],
         specs: {
@@ -170,7 +170,7 @@ const PRODUCTS_DB = {
     },
     'comedero-mascotas': {
         name: 'Comedero / Bebedero para Mascotas',
-        price: 3330,
+        price: 3199,
         desc: 'Diseño higiénico, estable y duradero para tus animales. La base de alta resistencia está hecha de plástico 100% reciclado y cuenta con dos bowls de acero inoxidable desmontables.',
         images: ['images/Tienda/comedero.png', 'images/Tienda/comedero_detalle.png'],
         specs: {
@@ -183,19 +183,18 @@ const PRODUCTS_DB = {
     },
     'espejo': {
         name: 'Espejo Circular (35 cm)',
-        price: null,
+        price: 3449,
         desc: 'Espejo de pared con un llamativo marco circular de 35 cm de diámetro fabricado a partir de nuestras placas recicladas. Aporta color, textura y sustentabilidad a cualquier ambiente.',
-        images: ['images/Tienda/espejo.png', 'images/Tienda/espejo_detalle.png'],
+        images: ['images/espejo.jpeg'],
         specs: {
             'Diámetro': '35 cm',
             'Espesor de placa': '16 mm'
         },
-        upcoming: true,
-        showImage: false
+        showImage: true
     },
     'estanteria': {
         name: 'Estantería',
-        price: 9650,
+        price: 6999,
         desc: 'Estantería de diseño moderno con baldas fabricadas con plástico 100% reciclado. Ofrece gran resistencia a la humedad, al peso y es ideal para exhibir tus objetos favoritos.',
         images: ['images/Tienda/estanteria.png', 'images/Tienda/estanteria_detalle.png'],
         specs: {
@@ -208,7 +207,7 @@ const PRODUCTS_DB = {
     },
     'mesa': {
         name: 'Mesa',
-        price: 8026,
+        price: 7499,
         desc: 'Mesa ratona o de centro que combina una estructura metálica minimalista con una tapa superior de plástico 100% reciclado. Un punto focal ecológico y sofisticado para tu living.',
         images: ['images/Tienda/mesa.png', 'images/Tienda/mesa_detalle.png'],
         specs: {
@@ -269,7 +268,7 @@ const PRODUCTS_DB = {
     },
     'revistero': {
         name: 'Revistero',
-        price: 7054,
+        price: 1757,
         desc: 'Organizador y revistero de diseño geométrico fabricado con placas de plástico reciclado de alta densidad. Ligero, duradero y de producción ética uruguaya.',
         images: ['images/Tienda/revistero.png', 'images/Tienda/revistero_detalle.png'],
         specs: {
@@ -282,7 +281,7 @@ const PRODUCTS_DB = {
     },
     'stand-celular': {
         name: 'Soporte para Celular',
-        price: 350,
+        price: 379,
         desc: 'Soporte ergonómico de escritorio para celulares. Hecho de plástico 100% reciclado, ofrece una inclinación perfecta para videollamadas, ver contenido o trabajar.',
         images: ['images/Tienda/stand-celular.png', 'images/Tienda/stand-celular_detalle.png'],
         specs: {
@@ -308,9 +307,9 @@ const PRODUCTS_DB = {
     },
     'stand-laptop': {
         name: 'Soporte para Laptop / Computadora',
-        price: 580,
+        price: 619,
         desc: 'Soporte ergonómico desmontable de dos piezas encastrables en plástico 100% reciclado. Eleva la pantalla de tu laptop para mejorar tu postura y refrigerar tu equipo.',
-        images: ['images/Tienda/stand-laptop.png', 'images/Tienda/stand-laptop_detalle.png'],
+        images: ['images/stand-laptop.jpeg', 'images/Tienda/stand-laptop_detalle.png'],
         specs: {
             'Ancho': '26 cm',
             'Largo': '25 cm',
