@@ -100,38 +100,57 @@
 
             // 2. Retrieve Cart Items from LocalStorage
             let cartItems = [];
+            let isNewPurchase = false;
             try {
                 const storedCart = localStorage.getItem('cartItems');
                 if (storedCart) {
                     cartItems = JSON.parse(storedCart);
+                    isNewPurchase = true;
                 }
             } catch (e) {
                 console.error("Error reading cart from storage:", e);
             }
 
-            // 3. Fire GA4 Purchase Event (ONLY if we have items)
-            if (cartItems.length > 0) {
-                // Calculate Total
-                const value = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({
-                    event: 'purchase',
-                    ecommerce: {
-                        transaction_id: transactionId,
-                        value: value,
-                        currency: 'UYU',
-                        items: cartItems.map(item => ({
-                            item_name: item.name,
-                            item_id: item.name.toLowerCase().replace(/\s+/g, '_'),
-                            price: item.price,
-                            quantity: item.quantity
-                        }))
+            // Si el carrito está vacío, intentar recuperar la última compra (para refrescos de página)
+            if (cartItems.length === 0) {
+                try {
+                    const lastCart = localStorage.getItem('lastOrderItems');
+                    if (lastCart) {
+                        cartItems = JSON.parse(lastCart);
                     }
-                });
-                console.log("GA4 Purchase Event Sent:", transactionId, value);
+                } catch(e) {
+                    console.error("Error al leer última compra:", e);
+                }
+            }
+
+            // 3. Fire GA4 Purchase Event (ONLY if it's a new purchase)
+            if (cartItems.length > 0) {
+                if (isNewPurchase) {
+                    // Calculate Total
+                    const value = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        event: 'purchase',
+                        ecommerce: {
+                            transaction_id: transactionId,
+                            value: value,
+                            currency: 'UYU',
+                            items: cartItems.map(item => ({
+                                item_name: item.name,
+                                item_id: item.name.toLowerCase().replace(/\s+/g, '_'),
+                                price: item.price,
+                                quantity: item.quantity
+                            }))
+                        }
+                    });
+                    console.log("GA4 Purchase Event Sent:", transactionId, value);
+                }
 
                 // --- CONFIGURACIÓN DE FICHA DE IMPACTO ---
+                const customerName = localStorage.getItem('customer_name') || 'Cliente';
+                const customerEmail = localStorage.getItem('customer_email') || 'cliente@circula.uy';
+
                 const itemsParam = encodeURIComponent(JSON.stringify(cartItems.map(item => ({
                     id: item.id || item.name.toLowerCase().replace(/\s+/g, '-'),
                     name: item.name,
@@ -141,14 +160,17 @@
                 const impactBtn = document.getElementById('download-impact-btn');
                 const impactContainer = document.getElementById('impact-container');
                 if (impactBtn && impactContainer) {
-                    impactBtn.href = `https://crea.circula.uy/ficha?items=${itemsParam}`;
+                    impactBtn.href = `https://crea.circula.uy/ficha?items=${itemsParam}&client_name=${encodeURIComponent(customerName)}&client_email=${encodeURIComponent(customerEmail)}`;
                     impactContainer.classList.remove('hidden');
                 }
 
-                // 4. Clear Cart
-                localStorage.removeItem('cartItems');
+                // 4. Guardar como última compra y borrar el carrito activo
+                if (isNewPurchase) {
+                    localStorage.setItem('lastOrderItems', JSON.stringify(cartItems));
+                    localStorage.removeItem('cartItems');
+                }
             } else {
-                console.warn("Cart was empty or already cleared. Purchase event skipped (or duplicate).");
+                console.warn("No items found for purchase.");
             }
         });
     </script>
