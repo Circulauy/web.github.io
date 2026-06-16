@@ -807,7 +807,23 @@
             'posavasos-azul-celeste': { name: 'Posavasos Azul y Celeste', price: 400 },
             'posavasos-blanco': { name: 'Posavasos Blanco', price: 400 },
             'posavasos-gris': { name: 'Posavasos Gris', price: 400 },
-            'posavasos-rosado': { name: 'Posavasos Rosado', price: 400 }
+            'posavasos-rosado': { name: 'Posavasos Rosado', price: 400 },
+            'bandeja': { name: 'Bandeja', price: 0 },
+            'banco-alto': { name: 'Banco Alto', price: 5659 },
+            'banco-bajo': { name: 'Banco Bajo', price: 4579 },
+            'comedero-mascotas': { name: 'Comedero / Bebedero para Mascotas', price: 3199 },
+            'espejo': { name: 'Espejo Circular (35 cm)', price: 3449 },
+            'estanteria': { name: 'Estantería', price: 6999 },
+            'mesa': { name: 'Mesa', price: 7499 },
+            'perchero-individual': { name: 'Perchero Individual', price: 0 },
+            'perchero-multiple': { name: 'Perchero Múltiple', price: 0 },
+            'porta-macetas': { name: 'Porta Macetas', price: 0 },
+            'reloj': { name: 'Reloj de Pared', price: 1400 },
+            'revistero': { name: 'Revistero', price: 1757 },
+            'stand-celular': { name: 'Soporte para Celular', price: 379 },
+            'stand-celular-llavero': { name: 'Soporte para Celular Llavero', price: 0 },
+            'stand-laptop': { name: 'Soporte para Laptop / Computadora', price: 619 },
+            'trofeo-empresarial': { name: 'Trofeo Empresarial', price: 0 }
         };
 
         const DELIVERY_COSTS = {
@@ -1213,7 +1229,8 @@
             Object.entries(ADMIN_PRODUCTS_DB).forEach(([id, p]) => {
                 const opt = document.createElement('option');
                 opt.value = id;
-                opt.textContent = `${p.name} ($${p.price})`;
+                const priceText = p.price > 0 ? `$${p.price}` : 'Precio a consultar';
+                opt.textContent = `${p.name} (${priceText})`;
                 selector.appendChild(opt);
             });
         }

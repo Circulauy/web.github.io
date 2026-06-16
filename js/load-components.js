@@ -1518,6 +1518,78 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCheckoutPage();
     }
 
+    // --- INTEGRACIÓN CON CREA.CIRCULA.UY (DISEÑO PERSONALIZADO) ---
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Soporte para múltiples ítems en lote (lista)
+    if (urlParams.get('add-custom-list') === 'true') {
+        try {
+            const rawItems = urlParams.get('items');
+            if (rawItems) {
+                const items = JSON.parse(decodeURIComponent(rawItems));
+                setTimeout(() => {
+                    if (typeof window.addItemToCart === 'function') {
+                        items.forEach(item => {
+                            window.addItemToCart({
+                                id: item.id,
+                                name: item.name,
+                                price: parseFloat(item.price) || 0,
+                                quantity: parseInt(item.qty) || 1,
+                                imageUrl: item.img || 'images/logo.png'
+                            });
+                        });
+                        
+                        // Limpiar parámetros para evitar duplicaciones al refrescar
+                        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+                        
+                        // Redirigir al carrito si no está allí
+                        if (!window.location.pathname.includes('carrito')) {
+                            window.location.href = 'carrito.html';
+                        } else {
+                            renderCheckoutPage();
+                        }
+                    }
+                }, 500);
+            }
+        } catch (e) {
+            console.error("Error al parsear add-custom-list:", e);
+        }
+    } else if (urlParams.get('add-custom') === 'true') {
+        // Soporte para un único ítem
+        const id = urlParams.get('id') || 'custom-product';
+        const name = urlParams.get('name') || 'Producto Personalizado';
+        const price = parseFloat(urlParams.get('price')) || 0;
+        const imageUrl = urlParams.get('img') || 'images/logo.png';
+        const quantity = parseInt(urlParams.get('qty')) || 1;
+        const colors = urlParams.get('colors');
+        
+        const finalName = colors ? `${name} (${colors})` : name;
+        
+        setTimeout(() => {
+            if (typeof window.addItemToCart === 'function') {
+                window.addItemToCart({
+                    id: id,
+                    name: finalName,
+                    price: price,
+                    quantity: quantity,
+                    imageUrl: imageUrl
+                });
+                
+                // Limpiar parámetros para evitar duplicaciones al refrescar
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+                
+                // Redirigir al carrito si no está allí
+                if (!window.location.pathname.includes('carrito')) {
+                    window.location.href = 'carrito.html';
+                } else {
+                    renderCheckoutPage();
+                }
+            }
+        }, 500);
+    }
+
     // --- TRACKING DE ECOMMERCE EN CARGA DE PÁGINAS ---
     if (window.location.pathname.includes('carrito')) {
         const cart = getCart();
