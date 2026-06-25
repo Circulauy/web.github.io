@@ -68,22 +68,31 @@
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h1 class="text-3xl font-bold text-text-dark mb-2 title-style">¡PAGO APROBADO!</h1>
-            <p class="text-lg text-gray-600 mb-4">Gracias por tu compra. Recibirás una confirmación por correo electrónico en breve.</p>
-            
+            <p class="text-lg text-gray-600 mb-4">Gracias por tu compra. Recibirás una confirmación por correo
+                electrónico en breve.</p>
+
             <!-- Contenedor Ficha de Impacto -->
-            <div id="impact-container" class="hidden my-6 p-5 bg-rp-blue-light/50 border border-rp-teal/30 rounded-lg text-center">
+            <div id="impact-container"
+                class="hidden my-6 p-5 bg-rp-blue-light/50 border border-rp-teal/30 rounded-lg text-center">
                 <h3 class="text-sm font-bold uppercase tracking-wider text-text-dark/80 mb-2">🌿 Tu Huella Positiva</h3>
-                <p class="text-sm text-gray-600 mb-4">Descargá la ficha oficial con el impacto ambiental de los productos que acabás de adquirir.</p>
+                <p class="text-sm text-gray-600 mb-4">Descargá la ficha oficial con el impacto ambiental de los
+                    productos que acabás de adquirir.</p>
                 <a id="download-impact-btn" href="#" target="_blank"
                     class="inline-flex items-center justify-center gap-2 py-2.5 px-6 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition text-sm shadow-md w-full sm:w-auto">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:1rem;height:1rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"
+                        style="width:1rem;height:1rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
                     DESCARGAR FICHA DE IMPACTO (PDF)
                 </a>
             </div>
 
             <div class="mt-6">
                 <a href="index#tienda"
-                    class="inline-block py-2.5 px-6 bg-text-dark text-white font-semibold rounded-lg hover:bg-text-dark/95 transition">Volver a la Tienda</a>
+                    class="inline-block py-2.5 px-6 bg-text-dark text-white font-semibold rounded-lg hover:bg-text-dark/95 transition">Volver
+                    a la Tienda</a>
             </div>
         </div>
     </main>
@@ -118,7 +127,7 @@
                     if (lastCart) {
                         cartItems = JSON.parse(lastCart);
                     }
-                } catch(e) {
+                } catch (e) {
                     console.error("Error al leer última compra:", e);
                 }
             }
@@ -156,7 +165,7 @@
                     name: item.name,
                     qty: item.quantity
                 }))));
-                
+
                 const impactBtn = document.getElementById('download-impact-btn');
                 const impactContainer = document.getElementById('impact-container');
                 if (impactBtn && impactContainer) {
