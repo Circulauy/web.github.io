@@ -2,7 +2,7 @@
 
 const mercadopago = require('mercadopago');
 const nodemailer = require('nodemailer');
-const { saveSale, markDiscountCodeAsUsed, markAbandonedCartAsCompleted } = require('./utils/db');
+const { saveSale, markDiscountCodeAsUsed, markAbandonedCartAsCompleted, getSaleByMpPaymentId } = require('./utils/db');
 
 // ===========================================
 // CONFIGURACIÓN MP + EMAIL
@@ -152,6 +152,21 @@ exports.handler = async (event) => {
 
         // 5. Si el pago está APROBADO, guardamos en base de datos y enviamos los correos
         if (payment.status === "approved") {
+            // Evitar procesamiento duplicado (idempotencia)
+            const paymentIdStr = String(payment.id);
+            try {
+                const existingSale = await getSaleByMpPaymentId(paymentIdStr);
+                if (existingSale) {
+                    console.log(`⚠️ Webhook: El pago con ID ${paymentIdStr} ya fue procesado anteriormente. Omitiendo duplicado.`);
+                    return {
+                        statusCode: 200,
+                        body: JSON.stringify({ message: "Webhook procesado correctamente (pago ya registrado anteriormente)" })
+                    };
+                }
+            } catch (checkErr) {
+                console.error("❌ Error al verificar si el pago ya existe:", checkErr);
+            }
+
             console.log("✅ Pago aprobado. Guardando venta y enviando correos...");
 
             // Separar el costo de envío de los items comprados

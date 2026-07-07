@@ -202,9 +202,36 @@ async function getDiscountCodes() {
 }
 
 /**
+ * Busca una venta por su mp_payment_id
+ */
+async function getSaleByMpPaymentId(mpPaymentId) {
+    if (!mpPaymentId) return null;
+    const paymentIdStr = String(mpPaymentId).trim();
+    if (isMockMode) {
+        const dbData = readMockDb();
+        return dbData.sales.find(s => s.mp_payment_id && String(s.mp_payment_id).trim() === paymentIdStr) || null;
+    }
+    try {
+        const data = await supabaseRequest(`sales?mp_payment_id=eq.${paymentIdStr}&select=*`);
+        return data && data.length > 0 ? data[0] : null;
+    } catch (err) {
+        console.error(`Error al buscar venta por mp_payment_id (${paymentIdStr}):`, err);
+        return null;
+    }
+}
+
+/**
  * Registra una venta en la base de datos
  */
 async function saveSale(saleData) {
+    if (saleData.mp_payment_id) {
+        const existing = await getSaleByMpPaymentId(saleData.mp_payment_id);
+        if (existing) {
+            console.log(`⚠️ BASE DE DATOS: Venta con mp_payment_id ${saleData.mp_payment_id} ya existe. Evitando duplicado.`);
+            return existing;
+        }
+    }
+
     const formattedSale = {
         source: saleData.source || 'web',
         customer_name: saleData.customer_name,
@@ -239,6 +266,7 @@ async function saveSale(saleData) {
     });
     return result ? result[0] : formattedSale;
 }
+
 
 /**
  * Obtiene el historial de ventas
@@ -556,6 +584,7 @@ module.exports = {
     createDiscountCode,
     getDiscountCodes,
     saveSale,
+    getSaleByMpPaymentId,
     getSales,
     getStats,
     deleteSale,
