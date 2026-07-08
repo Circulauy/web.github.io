@@ -273,29 +273,48 @@
             }
         }
 
-        @keyframes scrollDown {
+        /* Pulsing & sliding dot animation inside the scroll pill */
+        @keyframes scrollDot {
+            0% {
+                transform: translateY(-8px);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(8px);
+                opacity: 0;
+            }
+        }
+
+        .scroll-pill-dot {
+            animation: scrollDot 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Sequential chevron fade and translate down */
+        @keyframes chevronSlide {
             0% {
                 opacity: 0;
-                transform: translateY(-5px);
+                transform: translateY(-4px) scale(0.9);
             }
-
             50% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1.05);
             }
-
             100% {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(4px) scale(0.9);
             }
         }
 
-        .scroll-arrow {
-            animation: scrollDown 2s infinite ease-in-out;
-        }
-
-        .scroll-arrow:nth-child(2) {
-            animation-delay: 0.3s;
+        .animated-chevron {
+            animation: chevronSlide 2s infinite ease-in-out;
+            color: #79C7C7; /* rp-teal */
+            filter: drop-shadow(0 0 5px rgba(121, 199, 199, 0.6));
         }
 
         /* iOS smooth scrolling */
@@ -425,13 +444,42 @@
         <div class="info-title" id="ui-title">...</div>
         <div class="info-subtitle" id="ui-subtitle">...</div>
     </div>
-    <div class="cursor-hint flex flex-col items-center gap-[-0.5rem]" id="hint">
-        <svg class="scroll-arrow w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-        <svg class="scroll-arrow w-6 h-6 text-white/50 -mt-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
+    <div class="cursor-hint flex flex-col items-center gap-2 opacity-0 transition-all duration-1000" id="hint">
+        <!-- Interactive Scroll Pill Capsule -->
+        <div class="w-6 h-10 rounded-full border-2 border-[#79C7C7]/50 flex justify-center p-1 bg-black/40 backdrop-blur-sm shadow-[0_0_15px_rgba(121,199,199,0.15)]">
+            <div class="w-1 h-2.5 bg-[#79C7C7] rounded-full scroll-pill-dot shadow-[0_0_8px_#79C7C7]"></div>
+        </div>
+        
+        <!-- Glowing Arrow indicator -->
+        <div class="flex flex-col items-center -mt-1">
+            <svg class="animated-chevron w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </div>
+
+        <!-- Explanatory Text with premium styling -->
+        <div class="text-center pointer-events-none select-none">
+            <span class="block text-[10px] font-brand font-bold uppercase tracking-[0.25em] text-white/95">
+                Desliza o gira hacia abajo
+            </span>
+            <span class="block text-[8px] font-brand font-semibold uppercase tracking-[0.15em] text-[#79C7C7]/80 mt-0.5">
+                para ver más proyectos
+            </span>
+        </div>
+    </div>
+
+    <!-- Floating Vertical Progress Indicator (Desktop & Mobile) -->
+    <div id="scroll-progress-container-parent" class="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center pointer-events-none transition-opacity duration-500 opacity-0">
+        <!-- Progress track line -->
+        <div class="relative w-[2px] sm:w-[3px] h-[120px] sm:h-[150px] bg-white/10 rounded-full overflow-hidden">
+            <div id="scroll-progress-bar" class="absolute top-0 left-0 w-full bg-[#79C7C7] rounded-full transition-all duration-75" style="height: 0%;"></div>
+        </div>
+        <!-- Current/Total Page count indicator -->
+        <div class="mt-3 flex flex-col items-center text-[10px] sm:text-xs font-brand font-bold tracking-widest text-white/30 select-none">
+            <span id="scroll-current-num" class="text-white text-shadow-md">01</span>
+            <span class="text-white/10 my-0.5 text-[8px] sm:text-[9px]">/</span>
+            <span id="scroll-total-num">--</span>
+        </div>
     </div>
     <div class="modal" id="modal">
         <div class="modal-content">
@@ -645,6 +693,10 @@
                 createMeshes();
                 raf();
 
+                // Set total slide count in scroll indicator
+                const totalNumEl = document.getElementById('scroll-total-num');
+                if (totalNumEl) totalNumEl.textContent = String(slides.length).padStart(2, '0');
+
                 // Animate preloader progress
                 let progress = 0;
                 const progressEl = document.getElementById('loading-progress');
@@ -661,6 +713,15 @@
                             if (preloader) {
                                 preloader.classList.add('hidden');
                             }
+                            // Show hint and scroll progress container
+                            const hint = document.getElementById('hint');
+                            if (hint) {
+                                hint.classList.remove('opacity-0');
+                            }
+                            const progressParent = document.getElementById('scroll-progress-container-parent');
+                            if (progressParent) {
+                                progressParent.classList.remove('opacity-0');
+                            }
                         }, 300);
                     }
                 }, 30);
@@ -673,6 +734,14 @@
                 const preloader = document.getElementById('preloader');
                 if (preloader) {
                     preloader.classList.add('hidden');
+                }
+                const hint = document.getElementById('hint');
+                if (hint) {
+                    hint.classList.remove('opacity-0');
+                }
+                const progressParent = document.getElementById('scroll-progress-container-parent');
+                if (progressParent) {
+                    progressParent.classList.remove('opacity-0');
                 }
             }
         }
@@ -1035,6 +1104,18 @@
             if (slides.length > 0) {
                 const scrollForMeshes = Math.min(state.currentScroll, maxSlideIndex);
 
+                // Update scroll progress bar percentage
+                const progressPct = Math.max(0, Math.min(100, (state.currentScroll / maxSlideIndex) * 100));
+                const progressBar = document.getElementById('scroll-progress-bar');
+                if (progressBar) progressBar.style.height = `${progressPct}%`;
+
+                // Update current slide number display
+                const currentNumEl = document.getElementById('scroll-current-num');
+                if (currentNumEl) {
+                    const currentIdx = Math.max(1, Math.min(slides.length, Math.round(state.currentScroll) + 1));
+                    currentNumEl.textContent = String(currentIdx).padStart(2, '0');
+                }
+
                 if (state.currentScroll > maxSlideIndex + 0.1) {
                     const footer = document.getElementById('gallery-footer');
                     // Calculate progress from 0 to 1 as we move *beyond* the last slide
@@ -1045,16 +1126,28 @@
 
                     const info = document.getElementById('info');
                     const hint = document.getElementById('hint');
+                    const progressParent = document.getElementById('scroll-progress-container-parent');
                     // Hide UI info as footer appears
                     const opacity = Math.max(0, 1 - footerTrig * 3);
                     if (info) info.style.opacity = opacity;
                     if (hint) hint.style.opacity = opacity;
+                    if (progressParent) progressParent.style.opacity = opacity;
                 }
 
                 else {
                     if (footer) footer.style.transform = `translateY(100%)`;
                     const info = document.getElementById('info');
+                    const hint = document.getElementById('hint');
+                    const progressParent = document.getElementById('scroll-progress-container-parent');
                     if (info) info.style.opacity = 1;
+                    if (progressParent && !state.inModal) progressParent.style.opacity = 1;
+
+                    // Fade out hint as we scroll down to keep UI clean
+                    if (hint && !state.inModal) {
+                        const hintOpacity = Math.max(0, 1 - state.currentScroll * 1.5);
+                        hint.style.opacity = hintOpacity;
+                        hint.style.pointerEvents = hintOpacity < 0.1 ? 'none' : 'auto';
+                    }
                 }
 
                 const RADIUS = 80;
