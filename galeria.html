@@ -508,6 +508,33 @@
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x050505);
 
+        // --- ATMOSPHERIC PARTICLES SETUP ---
+        const particleCount = state.isMobile ? 120 : 350;
+        const particleGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const randomSpeeds = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 160; // X
+            positions[i + 1] = (Math.random() - 0.5) * 130; // Y
+            positions[i + 2] = (Math.random() - 0.5) * 100 - 40; // Z
+            randomSpeeds[i / 3] = 0.03 + Math.random() * 0.07;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const particleMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: state.isMobile ? 0.35 : 0.55,
+            transparent: true,
+            opacity: 0.45,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 50;
         camera.rotation.set(0, 0, 0);
@@ -1169,6 +1196,35 @@
                         if (mesh.material) mesh.material.opacity = 0;
                     }
                 });
+            }
+
+            // Update atmospheric particles drift and parallax
+            if (particles) {
+                // Parallax shift based on mouse
+                particles.position.x += (mouse.x * 2.5 - particles.position.x) * 0.03;
+                particles.position.y += (mouse.y * 2.5 - particles.position.y) * 0.03;
+                
+                // Slow rotation
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+
+                // Drift downwards, acceleration on scroll
+                const positionsArr = particleGeometry.attributes.position.array;
+                const scrollDelta = Math.abs(state.targetScroll - state.currentScroll);
+                const speedMultiplier = 1.0 + scrollDelta * 5.0;
+
+                for (let i = 1; i < positionsArr.length; i += 3) {
+                    const speed = randomSpeeds[(i - 1) / 3] * speedMultiplier;
+                    positionsArr[i] -= speed; // decrease Y coord
+
+                    // Wrap around if falls below viewport
+                    if (positionsArr[i] < -65) {
+                        positionsArr[i] = 65;
+                        positionsArr[i - 1] = (Math.random() - 0.5) * 160; // X
+                        positionsArr[i + 1] = (Math.random() - 0.5) * 100 - 40; // Z
+                    }
+                }
+                particleGeometry.attributes.position.needsUpdate = true;
             }
 
             renderer.render(scene, camera);

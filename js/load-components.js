@@ -1414,6 +1414,21 @@ function initializePremiumFeatures() {
         .reveal-delay-300 { transition-delay: 300ms !important; }
         .reveal-delay-400 { transition-delay: 400ms !important; }
         .reveal-delay-500 { transition-delay: 500ms !important; }
+
+        /* --- SISTEMA DE REVELADO DE TEXTO MÁSCARA (KINETIC TEXT REVEAL) --- */
+        .reveal-text-mask {
+            overflow: hidden;
+            display: block;
+        }
+        .reveal-text-child {
+            display: block;
+            transform: translateY(110%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        .reveal-text-child.revealed {
+            transform: translateY(0);
+        }
     `;
     document.head.appendChild(styleEl);
 
@@ -1465,6 +1480,34 @@ function initializePremiumFeatures() {
             rootMargin: '0px 0px -50px 0px' // Margen inferior
         });
 
+        const initMagneticButtons = () => {
+            if (window.innerWidth < 768) return; // Solo escritorio
+            
+            const targets = document.querySelectorAll('.nav-link, #desktop-nav a, #mobile-menu-button, .social-icon, #whatsapp-icon, #cart-dropdown-container, .btn-magnetic, .magnetic-btn');
+            targets.forEach(btn => {
+                if (btn.classList.contains('magnetic-processed')) return;
+                btn.classList.add('magnetic-processed');
+                
+                btn.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                
+                btn.addEventListener('mousemove', (e) => {
+                    const bound = btn.getBoundingClientRect();
+                    const btnX = bound.left + bound.width / 2;
+                    const btnY = bound.top + bound.height / 2;
+                    
+                    const deltaX = e.clientX - btnX;
+                    const deltaY = e.clientY - btnY;
+                    
+                    const pullPower = 0.35; 
+                    btn.style.transform = `translate3d(${deltaX * pullPower}px, ${deltaY * pullPower}px, 0px)`;
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = 'translate3d(0px, 0px, 0px)';
+                });
+            });
+        };
+
         const observeElements = () => {
             // Auto-asignar clases de reveal en Tienda
             if (window.location.pathname.includes('tienda')) {
@@ -1492,8 +1535,24 @@ function initializePremiumFeatures() {
                 });
             }
 
+            // Auto-asignar clases de reveal text mask en títulos h1 y h2 de la página
+            const headers = document.querySelectorAll('h1, h2');
+            headers.forEach(h => {
+                if (h.classList.contains('reveal-processed') || h.closest('#modal') || h.closest('#whatsapp-chat-box') || h.closest('#dropdown-summary') || h.closest('#cart-dropdown') || h.closest('#expo-announcement-modal')) return;
+                h.classList.add('reveal-processed');
+
+                const originalHTML = h.innerHTML;
+                h.innerHTML = `<span class="reveal-text-mask"><span class="reveal-text-child">${originalHTML}</span></span>`;
+                
+                const child = h.querySelector('.reveal-text-child');
+                if (child) revealObserver.observe(child);
+            });
+
             const elements = document.querySelectorAll('.reveal-element');
             elements.forEach(el => revealObserver.observe(el));
+
+            // Inicializar botones magnéticos
+            initMagneticButtons();
         };
 
         observeElements();
