@@ -273,48 +273,20 @@
             }
         }
 
-        /* Pulsing & sliding dot animation inside the scroll pill */
-        @keyframes scrollDot {
+        @keyframes scrollLine {
             0% {
-                transform: translateY(-8px);
-                opacity: 0;
+                transform: translateY(-100%);
             }
-            15% {
-                opacity: 1;
-            }
-            85% {
-                opacity: 1;
+            70% {
+                transform: translateY(200%);
             }
             100% {
-                transform: translateY(8px);
-                opacity: 0;
+                transform: translateY(200%);
             }
         }
 
-        .scroll-pill-dot {
-            animation: scrollDot 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Sequential chevron fade and translate down */
-        @keyframes chevronSlide {
-            0% {
-                opacity: 0;
-                transform: translateY(-4px) scale(0.9);
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(0) scale(1.05);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(4px) scale(0.9);
-            }
-        }
-
-        .animated-chevron {
-            animation: chevronSlide 2s infinite ease-in-out;
-            color: #79C7C7; /* rp-teal */
-            filter: drop-shadow(0 0 5px rgba(121, 199, 199, 0.6));
+        .scroll-line-anim {
+            animation: scrollLine 2.2s infinite cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* iOS smooth scrolling */
@@ -329,23 +301,7 @@
             transform: scale(1.1);
         }
 
-        /* Custom Cursor Follower */
-        #custom-cursor {
-            transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
-        }
-        #custom-cursor-ring {
-            transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
-        }
 
-        /* Hide default cursor on desktop for custom cursor experience */
-        @media (min-width: 768px) {
-            body:not(.modal-open) {
-                cursor: none !important;
-            }
-            a, button, select, input, [role="button"], #desktop-nav, .modal-close {
-                cursor: pointer !important;
-            }
-        }
 
         /* Preloader - Nordic Style */
         #preloader {
@@ -452,43 +408,30 @@
         <p id="loading-progress">0%</p>
     </div>
 
-    <!-- Custom Cursor Follower (Desktop Only) -->
-    <div id="custom-cursor" class="fixed top-0 left-0 w-2 h-2 bg-[#79C7C7] rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:block transition-all duration-300 ease-out"></div>
-    <div id="custom-cursor-ring" class="fixed top-0 left-0 w-8 h-8 rounded-full border border-[#79C7C7]/50 pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:flex items-center justify-center transition-all duration-300 ease-out">
-        <span id="custom-cursor-text" class="text-[9px] font-brand font-bold uppercase tracking-[0.2em] text-[#79C7C7] opacity-0 transition-opacity duration-300 select-none">Ver</span>
-    </div>
-
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <header id="main-header"
         class="fixed top-0 z-50 w-full py-6 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent">
     </header>
-
+ 
     <div class="info-container" id="info">
         <div class="info-title" id="ui-title">...</div>
         <div class="info-subtitle" id="ui-subtitle">...</div>
     </div>
-    <div class="cursor-hint flex flex-col items-center gap-2 opacity-0 transition-all duration-1000" id="hint">
-        <!-- Interactive Scroll Pill Capsule -->
-        <div class="w-6 h-10 rounded-full border-2 border-[#79C7C7]/50 flex justify-center p-1 bg-black/40 backdrop-blur-sm shadow-[0_0_15px_rgba(121,199,199,0.15)]">
-            <div class="w-1 h-2.5 bg-[#79C7C7] rounded-full scroll-pill-dot shadow-[0_0_8px_#79C7C7]"></div>
+    <div class="cursor-hint flex flex-col items-center gap-3 opacity-0 transition-all duration-1000" id="hint">
+        <!-- Minimalist vertical animated line -->
+        <div class="relative w-[1px] h-12 bg-white/20 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/3 bg-[#79C7C7] scroll-line-anim"></div>
         </div>
         
-        <!-- Glowing Arrow indicator -->
-        <div class="flex flex-col items-center -mt-1">
-            <svg class="animated-chevron w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+        <!-- Minimalist text and thin arrow -->
+        <div class="flex flex-col items-center gap-1 select-none pointer-events-none">
+            <span class="text-[9px] font-brand font-bold uppercase tracking-[0.35em] text-white/50">
+                Deslizar
+            </span>
+            <svg class="w-4 h-4 text-white/30 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19 9l-7 7-7-7"></path>
             </svg>
-        </div>
-
-        <!-- Explanatory Text with premium styling -->
-        <div class="text-center pointer-events-none select-none">
-            <span class="block text-[10px] font-brand font-bold uppercase tracking-[0.25em] text-white/95">
-                Desliza o gira hacia abajo
-            </span>
-            <span class="block text-[8px] font-brand font-semibold uppercase tracking-[0.15em] text-[#79C7C7]/80 mt-0.5">
-                para ver más proyectos
-            </span>
         </div>
     </div>
 
@@ -1039,24 +982,10 @@
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        // Custom Cursor Coordinates & States
-        let mouseX = -100;
-        let mouseY = -100;
-        let cursorX = -100;
-        let cursorY = -100;
-        let ringX = -100;
-        let ringY = -100;
-        let isHoveringLink = false;
-
         window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            // For raycasting
+            // For raycasting & 3D tilt effect
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-            isHoveringLink = !!e.target.closest('a, button, [role="button"], #desktop-nav, .modal-close, #hint');
         });
 
         window.addEventListener('click', (e) => {
@@ -1160,38 +1089,9 @@
                     currentNumEl.textContent = String(currentIdx).padStart(2, '0');
                 }
 
-                // Custom Cursor Follower & Hover State Logic (Desktop only)
+                // Raycast check for hover state over current slide mesh (desktop only, for 3D tilt effect)
                 let isHoveringActiveMesh = false;
                 if (!state.isMobile && !state.inModal) {
-                    // Update cursor position with lerp
-                    cursorX += (mouseX - cursorX) * 0.25;
-                    cursorY += (mouseY - cursorY) * 0.25;
-                    ringX += (mouseX - ringX) * 0.12;
-                    ringY += (mouseY - ringY) * 0.12;
-
-                    const cursorEl = document.getElementById('custom-cursor');
-                    const ringEl = document.getElementById('custom-cursor-ring');
-                    const textEl = document.getElementById('custom-cursor-text');
-
-                    if (cursorEl) {
-                        cursorEl.style.left = `${cursorX}px`;
-                        cursorEl.style.top = `${cursorY}px`;
-                    }
-                    if (ringEl) {
-                        ringEl.style.left = `${ringX}px`;
-                        ringEl.style.top = `${ringY}px`;
-                    }
-
-                    // Show/Hide custom cursor over links vs generic page
-                    if (isHoveringLink) {
-                        if (cursorEl) cursorEl.style.opacity = '0';
-                        if (ringEl) ringEl.style.opacity = '0';
-                    } else {
-                        if (cursorEl) cursorEl.style.opacity = '1';
-                        if (ringEl) ringEl.style.opacity = '1';
-                    }
-
-                    // Raycast check for hover state over current slide mesh
                     raycaster.setFromCamera(mouse, camera);
                     const intersects = raycaster.intersectObjects(meshes);
                     if (intersects.length > 0) {
@@ -1199,35 +1099,6 @@
                         if (id === state.currentSlide) {
                             isHoveringActiveMesh = true;
                         }
-                    }
-
-                    // Update cursor elements properties based on hover state
-                    if (isHoveringActiveMesh && !isHoveringLink) {
-                        if (ringEl) {
-                            ringEl.style.width = '70px';
-                            ringEl.style.height = '70px';
-                            ringEl.style.borderColor = '#79C7C7';
-                            ringEl.style.backgroundColor = 'rgba(121, 199, 199, 0.1)';
-                        }
-                        if (cursorEl) {
-                            cursorEl.style.width = '4px';
-                            cursorEl.style.height = '4px';
-                            cursorEl.style.backgroundColor = '#79C7C7';
-                        }
-                        if (textEl) textEl.style.opacity = '1';
-                    } else {
-                        if (ringEl) {
-                            ringEl.style.width = '32px';
-                            ringEl.style.height = '32px';
-                            ringEl.style.borderColor = 'rgba(121, 199, 199, 0.5)';
-                            ringEl.style.backgroundColor = 'transparent';
-                        }
-                        if (cursorEl) {
-                            cursorEl.style.width = '8px';
-                            cursorEl.style.height = '8px';
-                            cursorEl.style.backgroundColor = '#79C7C7';
-                        }
-                        if (textEl) textEl.style.opacity = '0';
                     }
                 }
 
