@@ -420,17 +420,17 @@
     </div>
     <div class="cursor-hint flex flex-col items-center gap-3 opacity-0 transition-all duration-1000" id="hint">
         <!-- Minimalist vertical animated line -->
-        <div class="relative w-[1px] h-12 bg-white/20 overflow-hidden">
+        <div class="relative w-[1.5px] h-16 bg-white/30 overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1/3 bg-[#79C7C7] scroll-line-anim"></div>
         </div>
         
         <!-- Minimalist text and thin arrow -->
-        <div class="flex flex-col items-center gap-1 select-none pointer-events-none">
-            <span class="text-[9px] font-brand font-bold uppercase tracking-[0.35em] text-white/50">
+        <div class="flex flex-col items-center gap-1.5 select-none pointer-events-none">
+            <span class="text-[10px] font-brand font-bold uppercase tracking-[0.4em] text-white/80">
                 Deslizar
             </span>
-            <svg class="w-4 h-4 text-white/30 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19 9l-7 7-7-7"></path>
+            <svg class="w-5 h-5 text-[#79C7C7] animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path>
             </svg>
         </div>
     </div>
@@ -1089,18 +1089,9 @@
                     currentNumEl.textContent = String(currentIdx).padStart(2, '0');
                 }
 
-                // Raycast check for hover state over current slide mesh (desktop only, for 3D tilt effect)
-                let isHoveringActiveMesh = false;
-                if (!state.isMobile && !state.inModal) {
-                    raycaster.setFromCamera(mouse, camera);
-                    const intersects = raycaster.intersectObjects(meshes);
-                    if (intersects.length > 0) {
-                        const id = intersects[0].object.userData.id;
-                        if (id === state.currentSlide) {
-                            isHoveringActiveMesh = true;
-                        }
-                    }
-                }
+                // Check if mouse is within the central area of the screen (desktop only, for 3D tilt effect)
+                // This eliminates the raycasting loop jitter bug caused by the mesh tilting away from the ray.
+                const isHoveringActiveMesh = (!state.isMobile && !state.inModal && Math.abs(mouse.x) < 0.4 && Math.abs(mouse.y) < 0.55);
 
                 // Mesh 3D Hover Tilt Effect Logic
                 let targetTiltX = 0;
