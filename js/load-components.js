@@ -1362,77 +1362,10 @@ function updateCartDropdown() {
 }
 
 // ==========================================
-// 8. INICIALIZACIÓN PREMIUM (HEADER SCROLL & SCROLL REVEAL)
+// 8. INICIALIZACIÓN PREMIUM (HEADER SCROLL & SCROLL REVEAL & CURSOR & TILT)
 // ==========================================
 function initializePremiumFeatures() {
-    // 1. Inyectar estilos CSS dinámicos en el head
-    const styleEl = document.createElement('style');
-    styleEl.innerHTML = `
-        /* --- ESTILOS DE TRANSICIÓN DEL HEADER AL HACER SCROLL --- */
-        #main-header {
-            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        #main-header.scrolled {
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03) !important;
-            background-color: rgba(255, 255, 255, 0.96) !important;
-            backdrop-filter: blur(12px) !important;
-            border-bottom-color: rgba(229, 231, 235, 0.5) !important;
-        }
-        /* Ajustar padding vertical del container dentro del header al hacer scroll */
-        #main-header.scrolled > div {
-            padding-top: 0.6rem !important;
-            padding-bottom: 0.6rem !important;
-        }
-
-        /* --- CABECERAS DE SECCIÓN CON PARALLAX OPTIMIZADO PARA MÓVILES --- */
-        .premium-hero-bg {
-            background-size: cover !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-        }
-        @media (max-width: 768px) {
-            .premium-hero-bg {
-                background-attachment: scroll !important;
-            }
-        }
-
-        /* --- SISTEMA DE REVELADO DE ELEMENTOS AL HACER SCROLL (SCROLL REVEAL) --- */
-        .reveal-element {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, opacity;
-        }
-        .reveal-element.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Retardos para animaciones secuenciales (stagger) */
-        .reveal-delay-100 { transition-delay: 100ms !important; }
-        .reveal-delay-200 { transition-delay: 200ms !important; }
-        .reveal-delay-300 { transition-delay: 300ms !important; }
-        .reveal-delay-400 { transition-delay: 400ms !important; }
-        .reveal-delay-500 { transition-delay: 500ms !important; }
-
-        /* --- SISTEMA DE REVELADO DE TEXTO MÁSCARA (KINETIC TEXT REVEAL) --- */
-        .reveal-text-mask {
-            overflow: hidden;
-            display: block;
-        }
-        .reveal-text-child {
-            display: block;
-            transform: translateY(110%);
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform;
-        }
-        .reveal-text-child.revealed {
-            transform: translateY(0);
-        }
-    `;
-    document.head.appendChild(styleEl);
-
-    // 2. Controlar la clase .scrolled y .header-transparent del Header
+    // 1. Controlar la clase .scrolled y .header-transparent del Header
     window.handleHeaderScroll = () => {
         const header = document.getElementById('main-header');
         if (header) {
@@ -1466,7 +1399,146 @@ function initializePremiumFeatures() {
     window.addEventListener('scroll', window.handleHeaderScroll);
     window.handleHeaderScroll(); // Ejecutar en carga por si recargan a mitad de página
 
-    // 3. Inicializar el IntersectionObserver para Scroll Reveal
+    // 2. Cursor Personalizado Interactivo (Desktop Only)
+    const initCustomCursor = () => {
+        if (window.innerWidth < 768) return; // Solo en desktop
+        
+        // Crear elementos del cursor si no existen
+        let cursorDot = document.getElementById('custom-cursor-dot');
+        let cursorRing = document.getElementById('custom-cursor-ring');
+        
+        if (!cursorDot) {
+            cursorDot = document.createElement('div');
+            cursorDot.id = 'custom-cursor-dot';
+            document.body.appendChild(cursorDot);
+        }
+        
+        if (!cursorRing) {
+            cursorRing = document.createElement('div');
+            cursorRing.id = 'custom-cursor-ring';
+            cursorRing.innerHTML = '<span id="custom-cursor-text"></span>';
+            document.body.appendChild(cursorRing);
+        }
+        
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let isCursorVisible = false;
+        const textEl = document.getElementById('custom-cursor-text');
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (!isCursorVisible) {
+                cursorDot.style.opacity = '1';
+                cursorRing.style.opacity = '1';
+                isCursorVisible = true;
+            }
+            
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+        
+        document.addEventListener('mouseleave', () => {
+            cursorDot.style.opacity = '0';
+            cursorRing.style.opacity = '0';
+            isCursorVisible = false;
+        });
+        
+        // Loop de interpolación suave (Lerp) para el anillo exterior
+        const updateCursorRing = () => {
+            const lerpFactor = 0.12;
+            ringX += (mouseX - ringX) * lerpFactor;
+            ringY += (mouseY - ringY) * lerpFactor;
+            
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+            
+            requestAnimationFrame(updateCursorRing);
+        };
+        requestAnimationFrame(updateCursorRing);
+        
+        // Detectar elementos para hover dinámico del cursor
+        const updateHoverTargets = () => {
+            const hoverItems = document.querySelectorAll('a, button, .card-hover, .btn-checkout, input, select, textarea, [onclick]');
+            hoverItems.forEach(item => {
+                if (item.classList.contains('cursor-hover-processed')) return;
+                item.classList.add('cursor-hover-processed');
+                
+                item.addEventListener('mouseenter', () => {
+                    document.body.classList.add('cursor-active');
+                    
+                    // Texto contextual
+                    if (item.classList.contains('card-hover') || item.closest('#featured-products')) {
+                        textEl.textContent = "VER";
+                    } else if (item.closest('#cart-dropdown-container') || item.classList.contains('btn-checkout') || item.textContent.includes('AGREGAR')) {
+                        textEl.textContent = "COMPRAR";
+                    } else if (item.closest('#featured-project-video')) {
+                        textEl.textContent = "PLAY";
+                    } else {
+                        textEl.textContent = "";
+                        document.body.classList.add('cursor-blend');
+                    }
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('cursor-active', 'cursor-blend');
+                    textEl.textContent = "";
+                });
+            });
+        };
+        
+        updateHoverTargets();
+        window.addEventListener('headerLoaded', updateHoverTargets);
+        window.addEventListener('contentLoaded', updateHoverTargets);
+        setTimeout(updateHoverTargets, 1000);
+    };
+    initCustomCursor();
+
+    // 3. Efecto de Inclinación 3D (3D Tilt) en Tarjetas de Producto y Equipo
+    const init3DTilt = () => {
+        if (window.innerWidth < 768) return; // Solo en desktop
+        
+        const cards = document.querySelectorAll('.card-hover, .tilt-card');
+        cards.forEach(card => {
+            if (card.classList.contains('tilt-processed')) return;
+            card.classList.add('tilt-processed', 'tilt-card');
+            
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((centerY - y) / centerY) * 8; // Máximo 8 grados de inclinación
+                const rotateY = ((x - centerX) / centerX) * 8;
+                
+                gsap.to(card, {
+                    rotateX: rotateX,
+                    rotateY: rotateY,
+                    transformPerspective: 1000,
+                    ease: 'power2.out',
+                    duration: 0.3
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    rotateX: 0,
+                    rotateY: 0,
+                    ease: 'power2.out',
+                    duration: 0.5
+                });
+            });
+        });
+    };
+    init3DTilt();
+    window.addEventListener('contentLoaded', init3DTilt);
+    setTimeout(init3DTilt, 1000);
+
+    // 4. Inicializar el IntersectionObserver para Scroll Reveal
     if ('IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -1476,8 +1548,8 @@ function initializePremiumFeatures() {
                 }
             });
         }, {
-            threshold: 0.1, // Dispara cuando el 10% del elemento es visible
-            rootMargin: '0px 0px -50px 0px' // Margen inferior
+            threshold: 0.05,
+            rootMargin: '0px 0px -40px 0px'
         });
 
         const initMagneticButtons = () => {
@@ -1498,7 +1570,7 @@ function initializePremiumFeatures() {
                     const deltaX = e.clientX - btnX;
                     const deltaY = e.clientY - btnY;
                     
-                    const pullPower = 0.35; 
+                    const pullPower = 0.3; 
                     btn.style.transform = `translate3d(${deltaX * pullPower}px, ${deltaY * pullPower}px, 0px)`;
                 });
                 
@@ -1565,14 +1637,157 @@ function initializePremiumFeatures() {
     }
 }
 
+// 8.1. SIMULACIÓN DE PRELOADER EDUCATIVO Y PREMIUM
+function initPremiumPreloader() {
+    const percentEl = document.getElementById('loader-percent');
+    const barEl = document.getElementById('loader-bar');
+    const textEl = document.getElementById('loading-text');
+    const preloader = document.getElementById('preloader');
+    
+    if (!preloader) return;
+    if (!percentEl || !barEl) {
+        // Fallback preloader anterior
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    preloader.classList.add('hidden');
+                }, 700);
+            }, 500);
+        });
+        return;
+    }
+    
+    const messages = [
+        "Recolectando tapitas de plástico...",
+        "Clasificando por color y densidad...",
+        "Triturando plástico en partes pequeñas...",
+        "Moldeando placas de diseño a alta presión...",
+        "Diseñando productos de triple impacto...",
+        "¡Experiencia lista para circular!"
+    ];
+    
+    let currentPercent = 0;
+    let targetPercent = 0;
+    let messageIndex = 0;
+    window.pageHasLoaded = false;
+    
+    // Simular progreso de carga gradual
+    const interval = setInterval(() => {
+        const step = window.pageHasLoaded 
+            ? Math.floor(Math.random() * 15) + 5 
+            : Math.floor(Math.random() * 3) + 1;
+        targetPercent = Math.min(99, targetPercent + step);
+    }, 120);
+    
+    // Loop de renderizado para suavidad del preloader
+    function tick() {
+        if (currentPercent < targetPercent) {
+            currentPercent += 1;
+            percentEl.textContent = `${currentPercent}%`;
+            barEl.style.width = `${currentPercent}%`;
+            
+            // Cambiar textos según porcentaje
+            const msgIdx = Math.min(messages.length - 1, Math.floor((currentPercent / 100) * messages.length));
+            if (msgIdx !== messageIndex) {
+                messageIndex = msgIdx;
+                gsap.to(textEl, {
+                    opacity: 0,
+                    y: -10,
+                    duration: 0.15,
+                    onComplete: () => {
+                        textEl.textContent = messages[messageIndex];
+                        gsap.to(textEl, { opacity: 1, y: 0, duration: 0.25 });
+                    }
+                });
+            }
+        }
+        
+        if (currentPercent < 100) {
+            requestAnimationFrame(tick);
+        } else {
+            // Carga completada
+            clearInterval(interval);
+            percentEl.textContent = "100%";
+            barEl.style.width = "100%";
+            textEl.textContent = "¡BIENVENIDO A CIRCULA!";
+            
+            setTimeout(() => {
+                gsap.to(preloader, {
+                    opacity: 0,
+                    y: -50,
+                    duration: 0.8,
+                    ease: 'power3.inOut',
+                    onComplete: () => {
+                        preloader.style.display = 'none';
+                        preloader.classList.add('hidden');
+                        window.dispatchEvent(new Event('preloaderFinished'));
+                    }
+                });
+            }, 600);
+        }
+    }
+    requestAnimationFrame(tick);
+    
+    // Al cargar toda la página de verdad
+    window.addEventListener('load', () => {
+        window.pageHasLoaded = true;
+        const completeInterval = setInterval(() => {
+            if (targetPercent < 100) {
+                targetPercent = Math.min(100, targetPercent + 8);
+            } else {
+                clearInterval(completeInterval);
+            }
+        }, 30);
+    });
+    
+    // Respaldo de seguridad (máximo 8 segundos)
+    setTimeout(() => {
+        window.pageHasLoaded = true;
+        targetPercent = 100;
+    }, 8000);
+}
+
 // ==========================================
 // 9. INICIALIZACIÓN GLOBAL
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    loadHeader();
-    loadFooter();
-    loadWhatsApp();
-    initializePremiumFeatures();
+    console.log('Circula JS: DOMContentLoaded fired');
+    try {
+        console.log('Circula JS: Initializing Premium Preloader...');
+        initPremiumPreloader();
+    } catch(e) {
+        console.error('Error in initPremiumPreloader:', e);
+    }
+    
+    try {
+        console.log('Circula JS: Loading Header...');
+        loadHeader();
+    } catch(e) {
+        console.error('Error in loadHeader:', e);
+    }
+    
+    try {
+        console.log('Circula JS: Loading Footer...');
+        loadFooter();
+    } catch(e) {
+        console.error('Error in loadFooter:', e);
+    }
+    
+    try {
+        console.log('Circula JS: Loading WhatsApp...');
+        loadWhatsApp();
+    } catch(e) {
+        console.error('Error in loadWhatsApp:', e);
+    }
+    
+    try {
+        console.log('Circula JS: Initializing Premium Features...');
+        initializePremiumFeatures();
+    } catch(e) {
+        console.error('Error in initializePremiumFeatures:', e);
+    }
     
     // Detectar si estamos en páginas específicas
     if (window.location.pathname.includes('detalle')) {

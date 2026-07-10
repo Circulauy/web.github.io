@@ -64,6 +64,7 @@
             width: 100%
         }
     </style>
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 
 <body class="font-sans bg-white text-text-dark">
@@ -798,7 +799,7 @@
         <!-- Footer content loaded via js/load-components.js -->
     </footer>
 
-    <script src="js/load-components.js"></script>
+    <script src="js/load-components.js?v=1.0.1"></script>
     <script>
         function addToCart(event, id, name, price, img) {
             event.stopPropagation();
@@ -832,7 +833,6 @@
             setTimeout(() => { content.classList.remove('translate-x-full', 'opacity-0') }, 10);
             setTimeout(() => { content.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => toast.classList.add('hidden'), 300) }, 3000);
         }
-        // Removed redundant updateCartCount and Year logic as they are now in load-components.js
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: 'page_view', page_title: 'Tienda - Circula', page_location: window.location.href });
     </script>

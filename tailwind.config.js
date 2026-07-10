@@ -24,7 +24,7 @@ module.exports = {
         '24': '6rem', 
       },
       animation: {
-        'infinite-scroll': 'infinite-scroll 25s linear infinite',
+        'infinite-scroll': 'infinite-scroll 40s linear infinite',
       },
       keyframes: {
         'infinite-scroll': {

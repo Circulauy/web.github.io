@@ -1,2 +1,226 @@
+/* ==========================================================================
+   CIRCULA UY - ESTILOS E INTERACCIONES DE NIVEL MUNDIAL (PREMIUM STYLE SYSTEM)
+   ========================================================================== */
 
-/** ADD YOUR AWESOME CODES HERE **/
+/* --- 1. VARIABLES Y TOKENS DE DISEÑO --- */
+:root {
+  --rp-teal-rgb: 121, 199, 199;
+  --rp-mint-rgb: 163, 230, 186;
+  --rp-blue-light-rgb: 224, 247, 247;
+  --text-dark-rgb: 51, 51, 51;
+  --mp-blue-rgb: 0, 158, 227;
+  
+  --gradient-premium: linear-gradient(135deg, #79C7C7 0%, #A3E6BA 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+  --gradient-glass-dark: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.5) 100%);
+}
+
+/* --- 2. CURSOR INTERACTIVO PREMIUM (DESKTOP) --- */
+#custom-cursor-dot,
+#custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+  transition: opacity 0.3s ease, transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+  opacity: 0;
+}
+
+#custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #79C7C7;
+}
+
+#custom-cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid rgba(121, 199, 199, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#custom-cursor-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Cursor interactivo sobre elementos */
+body.cursor-active #custom-cursor-ring {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(121, 199, 199, 0.95);
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(121, 199, 199, 0.4);
+}
+
+body.cursor-active #custom-cursor-dot {
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+body.cursor-active #custom-cursor-text {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Cursor interactivo sobre elementos estándar */
+body.cursor-blend #custom-cursor-ring {
+  background-color: rgba(121, 199, 199, 0.2);
+  border-color: #79C7C7;
+}
+body.cursor-blend #custom-cursor-dot {
+  background-color: #79C7C7;
+}
+
+@media (min-width: 768px) {
+  body, a, button, select, input, textarea, .card-hover, [onclick] {
+    cursor: none !important;
+  }
+}
+
+/* --- 3. MEJORAS DE GLASSMORPHISM Y SOMBRAS --- */
+.premium-glass {
+  background: var(--gradient-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(121, 199, 199, 0.08);
+}
+
+.premium-glass-dark {
+  background: var(--gradient-glass-dark);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.shadow-rp-teal-glow {
+  box-shadow: 0 10px 30px -10px rgba(121, 199, 199, 0.35);
+}
+
+.shadow-rp-mint-glow {
+  box-shadow: 0 10px 30px -10px rgba(163, 230, 186, 0.35);
+}
+
+/* --- 4. PRELOADER PREMIUM --- */
+#preloader {
+  background-color: #fafafa !important;
+  background-image: radial-gradient(circle at center, #ffffff 0%, #e0f7f7 100%) !important;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.loader-logo-wrap {
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#preloader .loader-logo-wrap img {
+  height: 44px !important;
+  width: auto !important;
+  max-height: 44px !important;
+  max-width: 150px !important;
+  object-fit: contain !important;
+  margin-bottom: 0 !important;
+  animation: pulse-smooth 2s infinite ease-in-out !important;
+}
+
+@keyframes pulse-smooth {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.85; }
+}
+
+.loader-bar-bg {
+  width: 200px;
+  height: 3px;
+  background-color: rgba(121, 199, 199, 0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  position: relative;
+}
+
+.loader-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gradient-premium);
+  border-radius: 9999px;
+  transition: width 0.1s linear;
+}
+
+.loader-percentage {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 2.5rem;
+  color: #333333;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #79C7C7 0%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- 5. TILT 3D EFECTO HOVER --- */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+.tilt-inner {
+  transform: translateZ(30px);
+}
+
+/* --- 6. VIAJE INTERACTIVO DE TRANSFORMACIÓN --- */
+.journey-step-btn.active {
+  background-color: #79C7C7 !important;
+  color: white !important;
+  box-shadow: 0 10px 20px -5px rgba(121, 199, 199, 0.4);
+}
+
+.journey-step-btn.active .step-number {
+  background-color: white !important;
+  color: #79C7C7 !important;
+}
+
+/* --- 7. MEJORAS DE SCROLLBAR --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fafafa;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(121, 199, 199, 0.5);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(121, 199, 199, 0.8);
+}
