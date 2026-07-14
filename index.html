@@ -1093,7 +1093,7 @@
 
                     <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
                         style="object-position: center top;"
-                        autoplay preload="auto" muted playsinline webkit-playsinline>
+                        preload="auto" muted playsinline webkit-playsinline>
                         <source src="images/video_optimizado_8M.mp4" type="video/mp4">
                     </video>
 
@@ -2131,7 +2131,8 @@
 
             // Loop de animación suavizado por requestAnimationFrame (rAF) + Seek Throttling por tiempo
             let lastSeekTime = 0;
-            const seekThrottleMs = 30; // Máximo ~33 seeks por segundo para no saturar al decodificador de video del navegador
+            // En móviles limitamos la cantidad de seeks por segundo para no saturar el decodificador, ya que es más lento
+            const seekThrottleMs = (window.innerWidth < 768) ? 80 : 30; 
 
             function updateVideoFrame() {
                 if (video && isInitialized) {
