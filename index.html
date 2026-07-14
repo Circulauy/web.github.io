@@ -1089,7 +1089,7 @@
 
                     <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
                         style="object-position: center top;"
-                        preload="auto" muted playsinline webkit-playsinline>
+                        autoplay preload="auto" muted playsinline webkit-playsinline>
                         <source src="images/video_optimizado_8M.mp4" type="video/mp4" media="(min-width: 768px)">
                         <source src="images/video_optimizado.mp4" type="video/mp4">
                         <source src="images/salida_optimizada.mp4" type="video/mp4">
@@ -2106,6 +2106,23 @@
             // Pausar el video — Controlamos currentTime manualmente en un loop de rAF para máxima fluidez
             video.pause();
             video.currentTime = 0;
+
+            // --- HACK PARA MÓVILES (iOS/Safari) ---
+            // Los navegadores móviles pueden bloquear la precarga del video sin interacción (Low Power Mode o políticas de autoplay).
+            const forceLoadVideo = () => {
+                if (video.readyState < 2) {
+                    video.play().then(() => {
+                        video.pause();
+                    }).catch(e => console.log('Video autoplay blocked:', e));
+                }
+                window.removeEventListener('touchstart', forceLoadVideo);
+                window.removeEventListener('scroll', forceLoadVideo);
+                window.removeEventListener('click', forceLoadVideo);
+            };
+            window.addEventListener('touchstart', forceLoadVideo, { passive: true });
+            window.addEventListener('scroll', forceLoadVideo, { passive: true });
+            window.addEventListener('click', forceLoadVideo, { passive: true });
+            // --------------------------------------
 
             let scrollProgress = 0;
             let smoothProgress = 0;
