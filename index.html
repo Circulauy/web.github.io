@@ -956,21 +956,29 @@
                 pageHasLoaded = true;
             });
             
-            const scrollVid = document.getElementById('scroll-video');
-            if (scrollVid) {
-                if (scrollVid.readyState >= 3) {
-                    videoHasLoaded = true;
-                } else {
-                    scrollVid.addEventListener('canplaythrough', () => { videoHasLoaded = true; }, { once: true });
-                    scrollVid.addEventListener('error', () => { videoHasLoaded = true; }, { once: true });
-                    // Safety timeout: force hide preloader after 15s regardless of video load
-                    setTimeout(() => {
-                        videoHasLoaded = true;
-                    }, 15000);
+            // Preload de la secuencia de imágenes
+            window.canvasFrames = [];
+            let imagesLoadedCount = 0;
+            const totalFrames = 123;
+            for (let i = 1; i <= totalFrames; i++) {
+                const img = new Image();
+                const paddedIndex = i.toString().padStart(3, '0');
+                img.src = `images/secuencia/ezgif-frame-${paddedIndex}.jpg`;
+                img.onload = () => {
+                    imagesLoadedCount++;
+                    if (imagesLoadedCount >= totalFrames) videoHasLoaded = true; // Reutilizamos variable
+                };
+                img.onerror = () => {
+                    imagesLoadedCount++;
+                    if (imagesLoadedCount >= totalFrames) videoHasLoaded = true;
                 }
-            } else {
-                videoHasLoaded = true;
+                window.canvasFrames.push(img);
             }
+            
+            // Safety timeout: force hide preloader after 15s regardless of image load
+            setTimeout(() => {
+                videoHasLoaded = true;
+            }, 15000);
             
             setTimeout(() => {
                 if (preloader.style.display !== 'none') {
@@ -1091,11 +1099,8 @@
             <div id="video-pin-container" class="h-screen w-full flex items-center justify-center overflow-hidden">
                 <div id="video-grow-container" class="relative w-full h-full overflow-hidden bg-rp-blue-light">
 
-                    <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
-                        style="object-position: center top;"
-                        preload="auto" muted playsinline webkit-playsinline>
-                        <source src="images/video_optimizado_8M.mp4#t=0.001" type="video/mp4">
-                    </video>
+                    <canvas id="scroll-canvas" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
+                        style="object-position: center top;"></canvas>
 
                     <div id="initial-video-overlay" class="absolute inset-0 flex flex-col justify-end items-center z-20 pb-28 md:pb-12 pointer-events-none">
                         <div class="flex flex-col items-center gap-2 text-black font-bold animate-bounce opacity-90 drop-shadow-md">
@@ -2099,92 +2104,56 @@
             console.warn('Lenis no disponible, usando scroll nativo.');
         }
 
-        const video = document.getElementById('scroll-video');
+        const canvas = document.getElementById('scroll-canvas');
         const videoSection = document.getElementById('featured-project-video');
         const videoOverlay = document.getElementById('video-text-overlay');
 
-        if (video && videoSection) {
-            // Pausar el video — Controlamos currentTime manualmente en un loop de rAF para máxima fluidez
-            video.pause();
-            video.currentTime = 0;
-
-            // --- HACK PARA MÓVILES (iOS/Safari) ---
-            // Los navegadores móviles pueden bloquear la precarga del video sin interacción (Low Power Mode o políticas de autoplay).
-            const forceLoadVideo = () => {
-                if (video.readyState < 2) {
-                    video.play().then(() => {
-                        video.pause();
-                    }).catch(e => console.log('Video autoplay blocked:', e));
-                }
-                window.removeEventListener('touchstart', forceLoadVideo);
-                window.removeEventListener('scroll', forceLoadVideo);
-                window.removeEventListener('click', forceLoadVideo);
-            };
-            window.addEventListener('touchstart', forceLoadVideo, { passive: true });
-            window.addEventListener('scroll', forceLoadVideo, { passive: true });
-            window.addEventListener('click', forceLoadVideo, { passive: true });
-            // --------------------------------------
-
+        if (canvas && videoSection) {
+            const ctx = canvas.getContext('2d');
             let scrollProgress = 0;
             let smoothProgress = 0;
             let isInitialized = false;
 
-            // Loop de animación suavizado por requestAnimationFrame (rAF) + Seek Throttling por tiempo
-            let lastSeekTime = 0;
-            // En móviles limitamos la cantidad de seeks por segundo para no saturar el decodificador, ya que es más lento
-            const seekThrottleMs = (window.innerWidth < 768) ? 80 : 30; 
+            function renderFrame(progress) {
+                if (window.canvasFrames && window.canvasFrames.length > 0) {
+                    const totalFrames = window.canvasFrames.length;
+                    let frameIndex = Math.floor(progress * (totalFrames - 1));
+                    if (frameIndex < 0) frameIndex = 0;
+                    if (frameIndex >= totalFrames) frameIndex = totalFrames - 1;
+                    
+                    const img = window.canvasFrames[frameIndex];
+                    
+                    if (img && img.complete && img.naturalWidth !== 0) {
+                        // Ajustar la resolución interna del canvas a la imagen
+                        if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
+                            canvas.width = img.naturalWidth;
+                            canvas.height = img.naturalHeight;
+                        }
+                        ctx.drawImage(img, 0, 0);
+                    }
+                }
+            }
 
             function updateVideoFrame() {
-                if (video && isInitialized) {
-                    const duration = video.duration;
-                    if (duration && isFinite(duration)) {
-                        // Interpolación un poco más gradual (coeficiente de 0.08) para máxima suavidad visual
-                        smoothProgress += (scrollProgress - smoothProgress) * 0.08;
+                if (canvas && isInitialized) {
+                    // Interpolación gradual (0.08) para máxima suavidad visual
+                    smoothProgress += (scrollProgress - smoothProgress) * 0.08;
 
-                        if (Math.abs(scrollProgress - smoothProgress) < 0.0002) {
-                            smoothProgress = scrollProgress;
-                        }
-
-                        const targetTime = smoothProgress * duration;
-                        const now = performance.now();
-
-                        // Seek Throttling: Solo busca el frame si:
-                        // 1. El navegador no está ocupado buscando ("seeking").
-                        // 2. Ha pasado suficiente tiempo desde el último seek (seekThrottleMs).
-                        // 3. La diferencia entre el tiempo actual del video y el objetivo es significativa (> 0.02s).
-                        if (!video.seeking && (now - lastSeekTime >= seekThrottleMs) && Math.abs(video.currentTime - targetTime) > 0.02) {
-                            video.currentTime = targetTime;
-                            lastSeekTime = now;
-                        }
+                    if (Math.abs(scrollProgress - smoothProgress) < 0.0002) {
+                        smoothProgress = scrollProgress;
                     }
+
+                    renderFrame(smoothProgress);
                 }
                 requestAnimationFrame(updateVideoFrame);
             }
             requestAnimationFrame(updateVideoFrame);
 
-            // Evento de seguridad para catch-up inmediato al terminar cada seek
-            video.addEventListener('seeked', () => {
-                if (isInitialized) {
-                    const duration = video.duration;
-                    if (duration && isFinite(duration)) {
-                        const targetTime = smoothProgress * duration;
-                        if (Math.abs(video.currentTime - targetTime) > 0.01) {
-                            video.currentTime = targetTime;
-                            lastSeekTime = performance.now();
-                        }
-                    }
-                }
-            });
 
-            // --- VIDEO SCROLL TRIGGERS ---
+
+            // --- CANVAS SCROLL TRIGGERS ---
             function initVideoScroll() {
-                const duration = video.duration;
-                if (!duration || !isFinite(duration) || duration === 0) {
-                    video.addEventListener('loadedmetadata', initVideoScroll, { once: true });
-                    return;
-                }
-
-                console.log('GSAP/rAF: Video scroll init, duración:', duration, 's');
+                console.log('GSAP/rAF: Canvas scroll init');
 
                 const existing = ScrollTrigger.getById('video-main-trigger');
                 if (existing) existing.kill();
