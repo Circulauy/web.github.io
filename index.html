@@ -1110,10 +1110,10 @@
                     </div>
 
                     <div id="video-text-overlay"
-                        class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
-                        <h2 class="text-5xl md:text-6xl font-bold mb-1 text-white title-style drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">ASÍ SE VE TU PROYECTO CON
+                        class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 pointer-events-none">
+                        <h2 class="text-5xl md:text-6xl font-bold mb-1 text-white title-style drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] opacity-0 translate-y-8">ASÍ SE VE TU PROYECTO CON
                         </h2>
-                        <h2 class="text-5xl md:text-6xl font-extrabold text-rp-teal-dark title-style drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">NOSOTROS</h2>
+                        <h2 class="text-5xl md:text-6xl font-extrabold text-rp-teal-dark title-style drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] opacity-0 translate-y-8">NOSOTROS</h2>
                     </div>
                 </div>
             </div>
@@ -2172,17 +2172,33 @@
                             isInitialized = true;
                         }
 
-                        // Animación manual del overlay de texto para coincidir con la sincronización
+                        // Animación interactiva del texto atada al scroll
                         if (videoOverlay) {
-                            let opacity = 0;
-                            if (self.progress < 0.15) {
-                                opacity = 0;
-                            } else if (self.progress >= 0.15 && self.progress < 0.35) {
-                                opacity = (self.progress - 0.15) / 0.2; // Fade in
-                            } else {
-                                opacity = 1; // Mantener visible hasta el final del video
+                            const titles = videoOverlay.querySelectorAll('h2');
+                            if (titles.length >= 2) {
+                                // Primer título: "ASÍ SE VE TU PROYECTO CON"
+                                let p1 = 0;
+                                if (self.progress >= 0.10 && self.progress <= 0.20) {
+                                    p1 = (self.progress - 0.10) / 0.10;
+                                } else if (self.progress > 0.20) {
+                                    p1 = 1;
+                                }
+                                
+                                // Segundo título: "NOSOTROS" (aparece después y resalta más)
+                                let p2 = 0;
+                                if (self.progress >= 0.18 && self.progress <= 0.28) {
+                                    p2 = (self.progress - 0.18) / 0.10;
+                                } else if (self.progress > 0.28) {
+                                    p2 = 1;
+                                }
+                                
+                                // Suavizado
+                                const ease1 = p1 === 1 ? 1 : 1 - Math.pow(1 - p1, 3);
+                                const ease2 = p2 === 1 ? 1 : 1 - Math.pow(1 - p2, 3);
+
+                                gsap.set(titles[0], { opacity: ease1, y: (1 - ease1) * 30 });
+                                gsap.set(titles[1], { opacity: ease2, y: (1 - ease2) * 30, scale: 0.95 + (ease2 * 0.05) });
                             }
-                            videoOverlay.style.opacity = opacity;
                         }
 
                         // Animar la desaparición del logo y flecha inicial
