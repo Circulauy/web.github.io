@@ -963,6 +963,10 @@
                 } else {
                     scrollVid.addEventListener('canplaythrough', () => { videoHasLoaded = true; }, { once: true });
                     scrollVid.addEventListener('error', () => { videoHasLoaded = true; }, { once: true });
+                    // Safety timeout: force hide preloader after 15s regardless of video load
+                    setTimeout(() => {
+                        videoHasLoaded = true;
+                    }, 15000);
                 }
             } else {
                 videoHasLoaded = true;
@@ -1090,7 +1094,7 @@
                     <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
                         style="object-position: center top;"
                         autoplay preload="auto" muted playsinline webkit-playsinline>
-                        <source src="images/video.mp4" type="video/mp4">
+                        <source src="images/video_optimizado_8M.mp4" type="video/mp4">
                     </video>
 
                     <div id="initial-video-overlay" class="absolute inset-0 flex flex-col justify-end items-center z-20 pb-28 md:pb-12 pointer-events-none">
