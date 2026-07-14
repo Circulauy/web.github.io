@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Extractor de Alta Calidad</title>
+    <!-- Incluir JSZip para comprimir las fotos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+        h1 { color: #333; }
+        button { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #14b8a6; color: white; border: none; border-radius: 8px; font-weight: bold; }
+        #status { margin-top: 20px; font-size: 18px; font-weight: bold; color: #555; }
+        progress { width: 100%; max-width: 400px; height: 20px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Extractor de Secuencia (Full HD - Máxima Calidad)</h1>
+    <p>Haz clic en el botón para extraer internamente los fotogramas del video original con cero pérdida de calidad.</p>
+    <button id="startBtn">Comenzar Extracción</button>
+    
+    <div id="status"></div>
+    <progress id="progressBar" value="0" max="100"></progress>
+
+    <script>
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('startBtn');
+            const status = document.getElementById('status');
+            const progress = document.getElementById('progressBar');
+            
+            btn.style.display = 'none';
+            status.innerText = "Cargando video interno...";
+            progress.style.display = 'inline-block';
+
+            const video = document.createElement('video');
+            video.src = 'images/video_optimizado_8M.mp4';
+            video.muted = true;
+            video.preload = 'auto';
+
+            await new Promise((resolve) => {
+                video.onloadeddata = resolve;
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const zip = new JSZip();
+            const fps = 24; // fotogramas por segundo
+            const duration = video.duration;
+            const totalFrames = Math.floor(duration * fps);
+            
+            let currentFrame = 0;
+
+            const extractFrame = async () => {
+                const time = currentFrame / fps;
+                video.currentTime = time;
+
+                await new Promise((resolve) => {
+                    video.onseeked = resolve;
+                });
+
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Extraer a JPEG con calidad 100% ABSOLUTA (1.0) sin NINGUNA pérdida de compresión
+                const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+                const base64Data = dataUrl.split(',')[1];
+                
+                const frameNumber = (currentFrame + 1).toString().padStart(3, '0');
+                zip.file(`ezgif-frame-${frameNumber}.jpg`, base64Data, {base64: true});
+
+                currentFrame++;
+                
+                const percent = Math.floor((currentFrame / totalFrames) * 100);
+                progress.value = percent;
+                status.innerText = `Extrayendo foto ${currentFrame} de ${totalFrames} (${percent}%)...`;
+
+                if (currentFrame < totalFrames) {
+                    requestAnimationFrame(extractFrame);
+                } else {
+                    status.innerText = "¡Terminado! Comprimiendo archivo ZIP (esto puede demorar unos segundos)...";
+                    const content = await zip.generateAsync({type: "blob"});
+                    
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(content);
+                    a.download = "fotos_alta_calidad.zip";
+                    a.click();
+                    
+                    status.innerText = "¡Descarga iniciada! Avísame cuando la tengas.";
+                }
+            };
+
+            extractFrame();
+        });
+    </script>
+</body>
+</html>

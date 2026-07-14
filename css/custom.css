@@ -185,11 +185,8 @@ body.cursor-blend #custom-cursor-dot {
 }
 
 /* --- 5. TILT 3D EFECTO HOVER --- */
-/* Contraste Premium para Tipografía:
-   Se oscurece el celeste únicamente cuando se usa como texto (.text-rp-teal) 
-   para asegurar su legibilidad, sin afectar a los botones/fondos. */
 .text-rp-teal {
-  color: #3B7A7A !important;
+  color: #79C7C7 !important;
   text-shadow: none;
 }
 
