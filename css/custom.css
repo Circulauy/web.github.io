@@ -46,7 +46,7 @@
 }
 
 #custom-cursor-text {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 8px;
   font-weight: 800;
   color: white;
@@ -119,8 +119,7 @@ body.cursor-blend #custom-cursor-dot {
 
 /* --- 4. PRELOADER PREMIUM --- */
 #preloader {
-  background-color: #fafafa !important;
-  background-image: radial-gradient(circle at center, #ffffff 0%, #e0f7f7 100%) !important;
+  background-color: #ffffff !important;
 }
 
 .loader-container {
@@ -128,10 +127,16 @@ body.cursor-blend #custom-cursor-dot {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 100%;
+  max-width: 480px;
+}
+
+#preloader-animation {
+  filter: drop-shadow(0 8px 24px rgba(121, 199, 199, 0.25));
 }
 
 .loader-logo-wrap {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -144,7 +149,6 @@ body.cursor-blend #custom-cursor-dot {
   max-width: 150px !important;
   object-fit: contain !important;
   margin-bottom: 0 !important;
-  animation: pulse-smooth 2s infinite ease-in-out !important;
 }
 
 @keyframes pulse-smooth {
@@ -171,16 +175,13 @@ body.cursor-blend #custom-cursor-dot {
 }
 
 .loader-percentage {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: 2.5rem;
-  color: #333333;
-  letter-spacing: -0.03em;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #1e293b;
+  letter-spacing: -0.02em;
   line-height: 1;
   margin-top: 0.5rem;
-  background: linear-gradient(135deg, #79C7C7 0%, #333333 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* --- 5. TILT 3D EFECTO HOVER --- */

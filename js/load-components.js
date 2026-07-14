@@ -342,10 +342,46 @@ const PRODUCTS_DB = {
 // 1. LÓGICA DEL MENÚ MÓVIL
 // ==========================================
 window.toggleMobileMenu = function () {
+    const header = document.getElementById('main-header');
+    const lineTop = document.getElementById('line-top');
+    const lineMiddle = document.getElementById('line-middle');
+    const lineBottom = document.getElementById('line-bottom');
+
+    // Desktop overlay override (desplegar header original durante el video transparente)
+    if (window.innerWidth >= 768 && header && header.classList.contains('header-transparent')) {
+        header.classList.toggle('menu-open');
+        const isMenuOpen = header.classList.contains('menu-open');
+        
+        if (isMenuOpen) {
+            if (lineTop) {
+                lineTop.classList.add('rotate-45', 'translate-y-[9px]');
+                lineTop.style.transform = 'translateY(9px) rotate(45deg)'; 
+            }
+            if (lineMiddle) {
+                lineMiddle.style.opacity = '0';
+            }
+            if (lineBottom) {
+                lineBottom.classList.add('-rotate-45', '-translate-y-[9px]');
+                lineBottom.style.transform = 'translateY(-9px) rotate(-45deg)';
+            }
+        } else {
+            if (lineTop) {
+                lineTop.classList.remove('rotate-45', 'translate-y-[9px]');
+                lineTop.style.transform = 'none'; 
+            }
+            if (lineMiddle) {
+                lineMiddle.style.opacity = '1';
+            }
+            if (lineBottom) {
+                lineBottom.classList.remove('-rotate-45', '-translate-y-[9px]');
+                lineBottom.style.transform = 'none';
+            }
+        }
+        return; // Detenemos la ejecución para no abrir el menú móvil de pantalla completa
+    }
+
     const menu = document.getElementById('mobile-menu');
     const btn = document.getElementById('mobile-menu-button');
-    const lineTop = document.getElementById('line-top');
-    const lineBottom = document.getElementById('line-bottom');
     const body = document.body;
 
     if (!menu) return;
@@ -369,13 +405,16 @@ window.toggleMobileMenu = function () {
         body.style.overflow = 'hidden'; 
 
         if (lineTop) {
-            lineTop.classList.add('rotate-45', 'translate-y-[6px]');
-            lineTop.style.transform = 'translateY(6px) rotate(45deg)'; 
+            lineTop.classList.add('rotate-45', 'translate-y-[9px]');
+            lineTop.style.transform = 'translateY(9px) rotate(45deg)'; 
             lineTop.style.backgroundColor = '#333333'; 
         }
+        if (lineMiddle) {
+            lineMiddle.style.opacity = '0';
+        }
         if (lineBottom) {
-            lineBottom.classList.add('-rotate-45', '-translate-y-[6px]');
-            lineBottom.style.transform = 'translateY(-6px) rotate(-45deg)';
+            lineBottom.classList.add('-rotate-45', '-translate-y-[9px]');
+            lineBottom.style.transform = 'translateY(-9px) rotate(-45deg)';
             lineBottom.style.backgroundColor = '#333333'; 
         }
 
@@ -395,12 +434,15 @@ window.toggleMobileMenu = function () {
         body.style.overflow = ''; 
 
         if (lineTop) {
-            lineTop.classList.remove('rotate-45', 'translate-y-[6px]');
+            lineTop.classList.remove('rotate-45', 'translate-y-[9px]');
             lineTop.style.transform = '';
             lineTop.style.backgroundColor = ''; 
         }
+        if (lineMiddle) {
+            lineMiddle.style.opacity = '1';
+        }
         if (lineBottom) {
-            lineBottom.classList.remove('-rotate-45', '-translate-y-[6px]');
+            lineBottom.classList.remove('-rotate-45', '-translate-y-[9px]');
             lineBottom.style.transform = '';
             lineBottom.style.backgroundColor = ''; 
         }
@@ -1374,7 +1416,7 @@ function initializePremiumFeatures() {
             
             if (videoSection) {
                 // Estamos en la Home con video
-                const nextSection = document.getElementById('impact-stats');
+                const nextSection = document.getElementById('presentacion-triple-impacto');
                 const isVideoActive = nextSection 
                     ? (nextSection.getBoundingClientRect().top > headerHeight)
                     : (window.scrollY < (videoSection.offsetHeight - headerHeight));
@@ -1383,6 +1425,21 @@ function initializePremiumFeatures() {
                     header.classList.add('header-transparent');
                     header.classList.remove('scrolled');
                 } else {
+                    if (header.classList.contains('menu-open')) {
+                        header.classList.remove('menu-open');
+                        const lineTop = document.getElementById('line-top');
+                        const lineMiddle = document.getElementById('line-middle');
+                        const lineBottom = document.getElementById('line-bottom');
+                        if (lineTop) {
+                            lineTop.classList.remove('rotate-45', 'translate-y-[9px]');
+                            lineTop.style.transform = 'none'; 
+                        }
+                        if (lineMiddle) lineMiddle.style.opacity = '1';
+                        if (lineBottom) {
+                            lineBottom.classList.remove('-rotate-45', '-translate-y-[9px]');
+                            lineBottom.style.transform = 'none';
+                        }
+                    }
                     header.classList.remove('header-transparent');
                     header.classList.add('scrolled');
                 }
@@ -1463,20 +1520,43 @@ function initializePremiumFeatures() {
             const hoverItems = document.querySelectorAll('a, button, .card-hover, .btn-checkout, input, select, textarea, [onclick]');
             hoverItems.forEach(item => {
                 if (item.classList.contains('cursor-hover-processed')) return;
+                
+                // Excluir botones de la calculadora de impacto
+                if (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('updateImpactQty')) return;
+                
                 item.classList.add('cursor-hover-processed');
                 
                 item.addEventListener('mouseenter', () => {
                     document.body.classList.add('cursor-active');
+                    textEl.textContent = "";
+                    let hasText = false;
                     
-                    // Texto contextual
-                    if (item.classList.contains('card-hover') || item.closest('#featured-products')) {
-                        textEl.textContent = "VER";
-                    } else if (item.closest('#cart-dropdown-container') || item.classList.contains('btn-checkout') || item.textContent.includes('AGREGAR')) {
+                    // COMPRAR (Botones de compra / carrito)
+                    if (item.closest('#cart-dropdown-container') || item.classList.contains('btn-checkout') || item.textContent.toUpperCase().includes('AGREGAR') || item.textContent.toUpperCase().includes('COMPRAR')) {
                         textEl.textContent = "COMPRAR";
-                    } else if (item.closest('#featured-project-video')) {
+                        hasText = true;
+                    } 
+                    // ENVIAR (Botones submit de formularios)
+                    else if (item.tagName.toLowerCase() === 'button' && item.type === 'submit' && item.closest('form')) {
+                        textEl.textContent = "ENVIAR";
+                        hasText = true;
+                    }
+                    // PLAY (Videos)
+                    else if (item.closest('#featured-project-video')) {
                         textEl.textContent = "PLAY";
-                    } else {
-                        textEl.textContent = "";
+                        hasText = true;
+                    }
+                    // VER (Solo links que llevan a otro lugar, o tarjetas con redirección)
+                    else if (
+                        (item.tagName.toLowerCase() === 'a' && item.hasAttribute('href') && !item.getAttribute('href').startsWith('#')) || 
+                        (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('window.location.href')) ||
+                        item.closest('#featured-products')
+                    ) {
+                        textEl.textContent = "VER";
+                        hasText = true;
+                    }
+
+                    if (!hasText) {
                         document.body.classList.add('cursor-blend');
                     }
                 });
@@ -1639,13 +1719,16 @@ function initializePremiumFeatures() {
 
 // 8.1. SIMULACIÓN DE PRELOADER EDUCATIVO Y PREMIUM
 function initPremiumPreloader() {
+    if (window.preloaderInitialized) return;
+    window.preloaderInitialized = true;
+    
     const percentEl = document.getElementById('loader-percent');
     const barEl = document.getElementById('loader-bar');
     const textEl = document.getElementById('loading-text');
     const preloader = document.getElementById('preloader');
     
     if (!preloader) return;
-    if (!percentEl || !barEl) {
+    if (!percentEl) {
         // Fallback preloader anterior
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -1659,6 +1742,11 @@ function initPremiumPreloader() {
         return;
     }
     
+    // Dynamic elements for bottle loader
+    const fallingCapsContainer = document.getElementById('falling-caps-svg');
+    const piledCapsContainer = document.getElementById('piled-caps-svg');
+    const fillRect = document.getElementById('bottle-fill-rect');
+    
     const messages = [
         "Recolectando tapitas de plástico...",
         "Clasificando por color y densidad...",
@@ -1668,25 +1756,34 @@ function initPremiumPreloader() {
         "¡Experiencia lista para circular!"
     ];
     
+    const capColors = ['#79C7C7', '#A3E6BA', '#4da3d4', '#f6d854', '#f687b3', '#ed8936', '#48bb78'];
+    
     let currentPercent = 0;
     let targetPercent = 0;
     let messageIndex = 0;
     window.pageHasLoaded = false;
     
-    // Simular progreso de carga gradual
+    // Simular progreso de carga gradual y lento para que se aprecie la animación (mínimo 6 segundos)
     const interval = setInterval(() => {
-        const step = window.pageHasLoaded 
-            ? Math.floor(Math.random() * 15) + 5 
-            : Math.floor(Math.random() * 3) + 1;
-        targetPercent = Math.min(99, targetPercent + step);
-    }, 120);
+        if (targetPercent < 99) {
+            targetPercent += 1;
+        } else if (window.pageHasLoaded) {
+            targetPercent = 100;
+            clearInterval(interval);
+        }
+    }, 60);
+    
+    // Tracking falling caps
+    let fallingCaps = [];
+    let frameCount = 0;
     
     // Loop de renderizado para suavidad del preloader
     function tick() {
+        // Incrementar porcentaje
         if (currentPercent < targetPercent) {
             currentPercent += 1;
             percentEl.textContent = `${currentPercent}%`;
-            barEl.style.width = `${currentPercent}%`;
+            if (barEl) barEl.style.width = `${currentPercent}%`;
             
             // Cambiar textos según porcentaje
             const msgIdx = Math.min(messages.length - 1, Math.floor((currentPercent / 100) * messages.length));
@@ -1704,14 +1801,96 @@ function initPremiumPreloader() {
             }
         }
         
+        // Altura del relleno
+        // La botella va desde Y=195 (vacía) hasta Y=55 (llena en los hombros)
+        let fillY = 195 - (currentPercent / 100) * 140;
+        if (fillRect) {
+            fillRect.setAttribute('y', fillY);
+            fillRect.setAttribute('height', 195 - fillY);
+        }
+        
+        // Spawn falling caps (cada 8 frames si no estamos al 100%)
+        frameCount++;
+        if (fallingCapsContainer && currentPercent < 100 && frameCount % 8 === 0) {
+            // Crear círculo en SVG
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            const color = capColors[Math.floor(Math.random() * capColors.length)];
+            // Spawn en la boca de la botella
+            const cx = 45 + Math.random() * 10;
+            const cy = 10;
+            
+            circle.setAttribute("cx", cx);
+            circle.setAttribute("cy", cy);
+            circle.setAttribute("r", "3.5");
+            circle.setAttribute("fill", color);
+            
+            fallingCapsContainer.appendChild(circle);
+            
+            fallingCaps.push({
+                el: circle,
+                cx: cx,
+                cy: cy,
+                speed: 3 + Math.random() * 1.5,
+                color: color
+            });
+        }
+        
+        // Actualizar animación de tapitas cayendo
+        for (let i = fallingCaps.length - 1; i >= 0; i--) {
+            let cap = fallingCaps[i];
+            cap.cy += cap.speed;
+            cap.el.setAttribute("cy", cap.cy);
+            
+            // Si la tapita llega al nivel actual del relleno
+            if (cap.cy >= fillY) {
+                // Remover de tapitas cayendo
+                cap.el.remove();
+                fallingCaps.splice(i, 1);
+                
+                // Agregar a tapitas acumuladas
+                if (piledCapsContainer) {
+                    const piledCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    // Ajustar la posición X para que se esparzan
+                    let driftX = (Math.random() - 0.5) * 12;
+                    let finalX = cap.cx + driftX;
+                    
+                    // Limitar X según el nivel para no salirse de la botella
+                    if (fillY > 60) {
+                        finalX = Math.max(16, Math.min(84, finalX));
+                    } else {
+                        finalX = Math.max(38, Math.min(62, finalX));
+                    }
+                    
+                    // Añadir un pequeño offset Y para que se asienten de forma natural
+                    let finalY = fillY + Math.random() * 6;
+                    finalY = Math.min(194, finalY);
+                    
+                    piledCircle.setAttribute("cx", finalX);
+                    piledCircle.setAttribute("cy", finalY);
+                    piledCircle.setAttribute("r", "3.5");
+                    piledCircle.setAttribute("fill", cap.color);
+                    piledCircle.setAttribute("opacity", "0.9");
+                    
+                    piledCapsContainer.appendChild(piledCircle);
+                }
+            }
+        }
+        
         if (currentPercent < 100) {
             requestAnimationFrame(tick);
         } else {
-            // Carga completada
+            // Finalizado
             clearInterval(interval);
             percentEl.textContent = "100%";
-            barEl.style.width = "100%";
+            if (fillRect) {
+                fillRect.setAttribute('y', 55);
+                fillRect.setAttribute('height', 140);
+            }
             textEl.textContent = "¡BIENVENIDO A CIRCULA!";
+            
+            // Limpiar tapitas sobrantes que quedaron cayendo
+            fallingCaps.forEach(cap => cap.el.remove());
+            fallingCaps = [];
             
             setTimeout(() => {
                 gsap.to(preloader, {
@@ -1725,7 +1904,7 @@ function initPremiumPreloader() {
                         window.dispatchEvent(new Event('preloaderFinished'));
                     }
                 });
-            }, 600);
+            }, 750);
         }
     }
     requestAnimationFrame(tick);
@@ -1733,20 +1912,19 @@ function initPremiumPreloader() {
     // Al cargar toda la página de verdad
     window.addEventListener('load', () => {
         window.pageHasLoaded = true;
-        const completeInterval = setInterval(() => {
-            if (targetPercent < 100) {
-                targetPercent = Math.min(100, targetPercent + 8);
-            } else {
-                clearInterval(completeInterval);
-            }
-        }, 30);
+        // Si el progreso lento ya completó el 99%, disparamos el 100%
+        if (targetPercent >= 99) {
+            targetPercent = 100;
+            clearInterval(interval);
+        }
     });
     
-    // Respaldo de seguridad (máximo 8 segundos)
+    // Respaldo de seguridad (máximo 12 segundos para dar tiempo a ver la botella llenándose)
     setTimeout(() => {
         window.pageHasLoaded = true;
         targetPercent = 100;
-    }, 8000);
+        clearInterval(interval);
+    }, 12000);
 }
 
 // ==========================================

@@ -41,50 +41,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Patua+One&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#333333', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#e0f7f7', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Patua One', 'cursive'], brand: ['Montserrat', 'sans-serif'] } } } }</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         html.lenis,
         html.lenis body {
             height: auto;
         }
-
+ 
         .lenis-smooth {
             scroll-behavior: auto !important;
         }
-
+ 
         .lenis-smooth [data-lenis-prevent] {
             overscroll-behavior: contain;
         }
-
+ 
         .lenis-stopped {
             overflow: hidden;
         }
-
+ 
         .lenis-scrolling iframe {
             pointer-events: none;
         }
-
+ 
         html {
             scroll-behavior: auto;
             scrollbar-width: none
         }
-
+ 
         html::-webkit-scrollbar {
             display: none
         }
-
+ 
         .section-padding {
-            padding-top: 6rem;
-            padding-bottom: 6rem
+            padding-top: 7rem;
+            padding-bottom: 7rem
         }
-
+ 
         .title-style {
-            font-family: 'Patua One', cursive;
+            font-family: 'Outfit', sans-serif;
             font-weight: 700;
-            letter-spacing: -0.01em
+            letter-spacing: -0.03em;
+            line-height: 1.15;
         }
 
         .card-hover {
@@ -190,6 +189,12 @@
             animation: infinite-scroll 40s linear infinite
         }
 
+        /* --- REVEAL ON SCROLL --- */
+        .reveal-element {
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
         /* --- PRELOADER --- */
         #preloader {
             position: fixed;
@@ -242,7 +247,7 @@
 
         /* --- HEADER TRANSITION --- */
         #main-header {
-            transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
         }
 
         /* Estado transparente cuando el video está activo — clase controlada por JS */
@@ -255,48 +260,76 @@
             background-color: transparent !important;
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-bottom: none !important;
             box-shadow: none !important;
         }
 
-        /* Logo blanco */
+        /* Ocultar centro y derecha en header-transparent */
+        #main-header.header-transparent:not(.menu-open) #desktop-nav {
+            display: none !important;
+        }
+        
+        /* Hide all right-side icons EXCEPT the hamburger button */
+        #main-header.header-transparent:not(.menu-open) .flex.items-center.space-x-4 > a,
+        #main-header.header-transparent:not(.menu-open) .flex.items-center.space-x-4 > div {
+            display: none !important;
+        }
+        
+        /* Animación para desplegar el header original */
+        #main-header.header-transparent.menu-open #desktop-nav,
+        #main-header.header-transparent.menu-open .flex.items-center.space-x-4 > a,
+        #main-header.header-transparent.menu-open .flex.items-center.space-x-4 > div {
+            animation: fadeInHeaderNav 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInHeaderNav {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Fijar el diseño para que la cruz no mueva el carrito */
+        @media (min-width: 768px) {
+            /* Asegurar espacio permanente a la derecha del carrito para alojar la hamburguesa/cruz sin desplazarlo */
+            #right-icons-container {
+                position: relative;
+                padding-right: 44px !important; 
+            }
+
+            /* La hamburguesa flota en ese espacio y no afecta el layout flex */
+            #mobile-menu-button {
+                display: none; /* por defecto oculto en el header blanco */
+                position: absolute !important;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                margin-left: 0 !important;
+            }
+
+            /* Mostrar la hamburguesa/cruz solo en el header transparente */
+            #main-header.header-transparent #mobile-menu-button {
+                display: block !important;
+            }
+        }
+
+        /* Logo negro original */
         #main-header.header-transparent #header-logo,
         #main-header.header-transparent #header-logo-img {
-            filter: brightness(0) invert(1);
+            filter: none !important;
             transition: filter 0.4s ease;
         }
 
-        /* Links blancos */
-        #main-header.header-transparent .nav-link {
-            color: white !important;
-        }
-
-        #main-header.header-transparent .nav-link:hover {
-            color: #79C7C7 !important;
-        }
-
-        /* Iconos blancos */
+        /* Links e iconos generales - ocultos de todas formas, pero si aparecieran */
+        #main-header.header-transparent .nav-link,
         #main-header.header-transparent i,
         #main-header.header-transparent svg {
-            color: white !important;
+            color: black !important;
         }
 
-        #main-header.header-transparent a:hover i,
-        #main-header.header-transparent a:hover svg {
-            color: #79C7C7 !important;
-        }
-
-        /* Cart count */
-        #main-header.header-transparent #cart-count {
-            background-color: #79C7C7 !important;
-            color: white !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        /* Hamburguesa móvil */
+        /* Hamburguesa móvil (líneas en negro) */
         #main-header.header-transparent #line-top,
+        #main-header.header-transparent #line-middle,
         #main-header.header-transparent #line-bottom {
-            background-color: white !important;
+            background-color: black !important;
         }
 
         /* Cart Dropdown Buttons styling */
@@ -305,7 +338,7 @@
             width: 100%;
             padding: 0.75rem;
             color: white !important;
-            font-family: 'Patua One', cursive;
+            font-family: 'Outfit', sans-serif;
             font-size: 1rem;
             text-align: center;
             border-radius: 0.5rem;
@@ -333,21 +366,620 @@
         }
     </style>
     <link rel="stylesheet" href="css/custom.css">
-</head>
-
 <body class="font-sans bg-bg-light text-text-dark">
-    <div id="preloader">
-        <div class="loader-container">
-            <div class="loader-logo-wrap">
-                <img src="images/logo.png" alt="Circula" class="h-11 w-auto object-contain relative z-10">
+                        <div id="preloader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-700">
+        <!-- Giant Background Percentage -->
+        <div id="loader-bg-percent" class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.03]">
+            <span class="text-[35vw] font-black text-black leading-none font-brand tracking-tighter">0</span>
+        </div>
+
+        <div class="loader-container flex flex-col items-center w-full relative z-10">
+            <!-- Brand Logo -->
+            <div class="loader-logo-wrap mb-4 mt-8">
+                <img src="images/logo.png" alt="Circula" class="h-10 w-auto object-contain">
             </div>
-            <div class="loader-percentage" id="loader-percent">0%</div>
-            <div class="loader-bar-bg">
-                <div class="loader-bar-fill" id="loader-bar"></div>
+            
+            <!-- Original Process Animation (White Theme Colors) -->
+            <div class="relative mb-6">
+                <svg id="preloader-animation" class="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] mx-auto overflow-visible" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <clipPath id="bottle-clip-recolectar">
+                            <path d="M85 35 H115 V60 C115 70, 140 75, 140 85 V175 C140 183, 133 190, 125 190 H75 C67 190, 60 183, 60 175 V85 C60 75, 85 70, 85 60 Z" />
+                        </clipPath>
+                    </defs>
+                    
+                    <circle cx="100" cy="100" r="95" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 2" fill="none" />
+                    <path id="stepper-arc" d="M 100,5 A 95,95 0 1,1 99.9,5" stroke="#000000" stroke-width="1.2" stroke-dasharray="597" stroke-dashoffset="597" fill="none" stroke-linecap="round" />
+                    
+                    <g id="step-node-0">
+                        <circle cx="100" cy="5" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="100" cy="5" r="1.5" fill="none" id="step-dot-inner-0" />
+                        <text x="100" y="-3" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="middle" letter-spacing="0.5">RESIDUO</text>
+                    </g>
+                    <g id="step-node-1">
+                        <circle cx="182.3" cy="52.5" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="182.3" cy="52.5" r="1.5" fill="none" id="step-dot-inner-1" />
+                        <text x="190" y="54" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="start" letter-spacing="0.5">CLASIFICAR</text>
+                    </g>
+                    <g id="step-node-2">
+                        <circle cx="182.3" cy="147.5" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="182.3" cy="147.5" r="1.5" fill="none" id="step-dot-inner-2" />
+                        <text x="190" y="149" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="start" letter-spacing="0.5">TRITURAR</text>
+                    </g>
+                    <g id="step-node-3">
+                        <circle cx="100" cy="195" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="100" cy="195" r="1.5" fill="none" id="step-dot-inner-3" />
+                        <text x="100" y="204" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="middle" letter-spacing="0.5">MOLDEAR</text>
+                    </g>
+                    <g id="step-node-4">
+                        <circle cx="17.7" cy="147.5" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="17.7" cy="147.5" r="1.5" fill="none" id="step-dot-inner-4" />
+                        <text x="10" y="149" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="end" letter-spacing="0.5">CORTAR</text>
+                    </g>
+                    <g id="step-node-5">
+                        <circle cx="17.7" cy="52.5" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+                        <circle cx="17.7" cy="52.5" r="1.5" fill="none" id="step-dot-inner-5" />
+                        <text x="10" y="54" font-family="'Inter', sans-serif" font-size="5" font-weight="700" fill="#94a3b8" text-anchor="end" letter-spacing="0.5">PRODUCTO</text>
+                    </g>
+                    
+                    <!-- Phase 1: Recolectar -->
+                    <g id="phase-recolectar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <path d="M85 30 H115 V60 C115 70, 140 75, 140 85 V175 C140 183, 133 190, 125 190 H75 C67 190, 60 183, 60 175 V85 C60 75, 85 70, 85 60 Z" stroke="#000000" stroke-width="1.2" stroke-linejoin="round" fill="none" />
+                        <rect x="81" y="26" width="38" height="4" rx="2" fill="#000000" />
+                        <g clip-path="url(#bottle-clip-recolectar)">
+                            <rect x="50" y="25" width="100" height="170" fill="#ffffff" />
+                            <g id="piled-caps-recolectar"></g>
+                        </g>
+                        <g id="falling-caps-recolectar"></g>
+                    </g>
+                    
+                    <!-- Phase 2: Clasificar -->
+                    <g id="phase-clasificar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <rect x="42" y="90" width="32" height="90" rx="3" stroke="#000000" stroke-width="1" fill="#f8fafc" />
+                        <text x="58" y="193" font-family="monospace" font-size="7" font-weight="bold" fill="#000000" text-anchor="middle">01</text>
+                        <g id="piled-caps-green"></g>
+                        
+                        <rect x="84" y="90" width="32" height="90" rx="3" stroke="#000000" stroke-width="1" fill="#f8fafc" />
+                        <text x="100" y="193" font-family="monospace" font-size="7" font-weight="bold" fill="#000000" text-anchor="middle">02</text>
+                        <g id="piled-caps-blue"></g>
+                        
+                        <rect x="126" y="90" width="32" height="90" rx="3" stroke="#000000" stroke-width="1" fill="#f8fafc" />
+                        <text x="142" y="193" font-family="monospace" font-size="7" font-weight="bold" fill="#000000" text-anchor="middle">03</text>
+                        <g id="piled-caps-pink"></g>
+                        
+                        <g id="sorting-caps"></g>
+                    </g>
+                    
+                    <!-- Phase 3: Triturar -->
+                    <g id="phase-triturar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <path d="M40 30 H160 L120 90 H80 Z" stroke="#000000" stroke-width="1.2" fill="#f8fafc" stroke-linejoin="round" />
+                        
+                        <g id="gear-left" transform="translate(88, 100)">
+                            <circle cx="0" cy="0" r="10" stroke="#000000" stroke-width="1.2" fill="#e2e8f0" />
+                            <path d="M-12 0 H12 M0 -12 V12 M-8 -8 L8 8 M-8 8 L8 -8" stroke="#000000" stroke-width="1.2" />
+                        </g>
+                        <g id="gear-right" transform="translate(112, 100)">
+                            <circle cx="0" cy="0" r="10" stroke="#000000" stroke-width="1.2" fill="#e2e8f0" />
+                            <path d="M-12 0 H12 M0 -12 V12 M-8 -8 L8 8 M-8 8 L8 -8" stroke="#000000" stroke-width="1.2" />
+                        </g>
+                        
+                        <rect x="50" y="140" width="100" height="45" rx="3" stroke="#000000" stroke-width="1.2" fill="#f8fafc" />
+                        <g id="piled-flakes"></g>
+                        
+                        <g id="falling-caps-triturar"></g>
+                        <g id="falling-flakes"></g>
+                    </g>
+                    
+                    <!-- Phase 4: Prensar -->
+                    <g id="phase-prensar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <rect x="48" y="138" width="104" height="44" rx="2" stroke="#000000" stroke-width="1.2" fill="none" />
+                        <g id="loose-flakes-mold"></g>
+                        
+                        <g id="pressed-sheet-group" opacity="0">
+                            <rect x="50" y="140" width="100" height="40" rx="3" fill="#1e293b" stroke="#000000" stroke-width="1" />
+                            <rect x="58" y="146" width="3" height="3" transform="rotate(15 58 146)" fill="#79C7C7" />
+                            <rect x="74" y="162" width="2" height="4" transform="rotate(45 74 162)" fill="#a3e6ba" />
+                            <rect x="110" y="152" width="4" height="2" transform="rotate(-30 110 152)" fill="#79C7C7" />
+                            <rect x="132" y="166" width="3" height="3" transform="rotate(10 132 166)" fill="#cbd5e1" />
+                            <rect x="90" y="148" width="3" height="2" transform="rotate(75 90 148)" fill="#cbd5e1" />
+                            <rect x="122" y="144" width="2" height="3" transform="rotate(25 122 144)" fill="#a3e6ba" />
+                        </g>
+                        
+                        <line x1="100" y1="20" x2="100" y2="120" stroke="#000000" stroke-width="4" id="press-shaft" />
+                        <rect x="50" y="115" width="100" height="15" rx="1.5" fill="#000000" id="press-head" />
+                    </g>
+                    
+                    <!-- Phase 5: Cortar -->
+                    <g id="phase-cortar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <g id="cutting-sheet-group" opacity="0.6">
+                            <rect x="50" y="70" width="100" height="60" rx="4" fill="#1e293b" stroke="#000000" stroke-width="1" />
+                            <rect x="58" y="76" width="3" height="3" transform="rotate(15 58 76)" fill="#79C7C7" />
+                            <rect x="74" y="92" width="2" height="4" transform="rotate(45 74 92)" fill="#a3e6ba" />
+                            <rect x="110" y="82" width="4" height="2" transform="rotate(-30 110 82)" fill="#79C7C7" />
+                            <rect x="132" y="96" width="3" height="3" transform="rotate(10 132 96)" fill="#cbd5e1" />
+                            <rect x="90" y="78" width="3" height="2" transform="rotate(75 90 78)" fill="#cbd5e1" />
+                            <rect x="122" y="74" width="2" height="3" transform="rotate(25 122 74)" fill="#a3e6ba" />
+                        </g>
+                        
+                        <path id="cnc-cut-path" d="M70 125 V90 H130 V125 M85 125 V102 H115 V125" stroke="#79C7C7" stroke-width="1.5" stroke-dasharray="300" stroke-dashoffset="300" stroke-linecap="round" fill="none" />
+                        
+                        <g id="laser-head" transform="translate(70, 125)">
+                            <circle cx="0" cy="0" r="3" fill="#79C7C7" />
+                            <circle cx="0" cy="0" r="6" stroke="#79C7C7" stroke-width="1" opacity="0.4" class="animate-ping" />
+                        </g>
+                    </g>
+                    
+                    <!-- Phase 6: Ensamblar -->
+                    <g id="phase-ensamblar" opacity="0" transform="scale(0.60)" transform-origin="100 100">
+                        <path id="stool-legs" d="M75 130 L85 85 H115 L125 130 H110 L105 105 H95 L90 130 Z" fill="#1e293b" stroke="#000000" stroke-width="1.2" />
+                        
+                        <g id="stool-seat-group">
+                            <ellipse id="stool-seat" cx="100" cy="85" rx="30" ry="8" fill="#1e293b" stroke="#000000" stroke-width="1.2" />
+                            <ellipse id="stool-seat-fleck1" cx="85" cy="84" rx="1.5" ry="0.6" fill="#79C7C7" />
+                            <ellipse id="stool-seat-fleck2" cx="102" cy="86" rx="2" ry="0.8" fill="#a3e6ba" />
+                            <ellipse id="stool-seat-fleck3" cx="112" cy="83" rx="1.2" ry="0.5" fill="#cbd5e1" />
+                        </g>
+                        
+                        <path id="stool-logo" d="M97 85 C97 85, 100 82, 103 85 C103 88, 103 91, 100 93 C97 91, 97 88, 97 85 Z" fill="#79C7C7" opacity="0.8" />
+                        <ellipse id="stool-shine" cx="100" cy="85" rx="25" ry="4" fill="#ffffff" opacity="0.2" />
+                        
+                        <path id="circular-arrow" d="M100 45 C130 45, 155 70, 155 100 C155 130, 130 155, 100 155 C70 155, 45 130, 45 100 C45 80, 56 62, 72 53" stroke="#79C7C7" stroke-width="1.2" stroke-dasharray="3 3" fill="none" opacity="0" />
+                        <path id="circular-arrow-head" d="M68 57 L74 52 L78 59" stroke="#79C7C7" stroke-width="1.2" fill="none" opacity="0" />
+                        <text id="circular-badge" x="100" y="172" font-family="'Inter', sans-serif" font-size="6.5" font-weight="700" fill="#000000" text-anchor="middle" letter-spacing="1" opacity="0">DISEÑO 100% CIRCULAR</text>
+                    </g>
+                </svg>
             </div>
-            <p id="loading-text" class="text-xs uppercase tracking-widest text-gray-400 font-bold mt-4 animate-pulse">CARGANDO EXPERIENCIA...</p>
+
+            <!-- Dynamic Process Step (Main focal text) -->
+            <p id="loading-text" class="text-sm font-semibold text-gray-800 tracking-wide font-brand mt-3 h-6 flex items-center justify-center text-center">Iniciando...</p>
+            
+            <div class="loader-bar-bg hidden"><div class="loader-bar-fill" id="loader-bar"></div></div>
         </div>
     </div>
+
+    <script>
+        // --- PRELOADER ORIGINAL (RESTORED TO WHITE THEME) ---
+        (function() {
+            window.preloaderInitialized = true;
+            
+            const percentEl = document.getElementById('loader-bg-percent').querySelector('span');
+            const barEl = document.getElementById('loader-bar');
+            const textEl = document.getElementById('loading-text');
+            const preloader = document.getElementById('preloader');
+            const stepperLineEl = document.getElementById('stepper-arc');
+            
+            if (!preloader || !percentEl) return;
+            
+            const phaseElements = {
+                'phase-recolectar': document.getElementById('phase-recolectar'),
+                'phase-clasificar': document.getElementById('phase-clasificar'),
+                'phase-triturar': document.getElementById('phase-triturar'),
+                'phase-prensar': document.getElementById('phase-prensar'),
+                'phase-cortar': document.getElementById('phase-cortar'),
+                'phase-ensamblar': document.getElementById('phase-ensamblar')
+            };
+            
+            const messages = [
+                "Recolectando tapitas de plástico...",
+                "Clasificando por color y densidad...",
+                "Triturando plástico en partes pequeñas...",
+                "Moldeando placas de diseño a alta presión...",
+                "Diseñando productos de triple impacto...",
+                "¡Experiencia lista para circular!"
+            ];
+            
+            const capColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#79C7C7', '#ec4899'];
+            
+            let currentPercent = 0;
+            let messageIndex = -1;
+            let pageHasLoaded = false;
+            let videoHasLoaded = false;
+            let frameCount = 0;
+            let gearAngle = 0;
+            
+            let fallingCaps = [];
+            let fallingFlakes = [];
+            
+            const duration = 5000; 
+            let startTime = null;
+            
+            function tick(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                
+                let progress = (elapsed / duration) * 100;
+                
+                if (progress > 99 && !(pageHasLoaded && videoHasLoaded)) progress = 99;
+                
+                if (progress >= 100) currentPercent = 100;
+                else currentPercent = progress;
+                
+                percentEl.textContent = Math.floor(currentPercent);
+                if (barEl) barEl.style.width = `${currentPercent}%`;
+                
+                if (stepperLineEl) {
+                    const arcOffset = 597 - (currentPercent / 100) * 597;
+                    stepperLineEl.setAttribute('stroke-dashoffset', arcOffset.toFixed(2));
+                }
+                
+                for (let i = 0; i <= 5; i++) {
+                    const node = document.getElementById(`step-node-${i}`);
+                    if (node) {
+                        const circleOuter = node.getElementsByTagName('circle')[0];
+                        const circleInner = document.getElementById(`step-dot-inner-${i}`);
+                        const textLabel = node.getElementsByTagName('text')[0];
+                        
+                        if (currentPercent >= (i * 16.7)) {
+                            if (circleOuter) circleOuter.setAttribute('stroke', '#000000');
+                            if (circleInner) circleInner.setAttribute('fill', '#000000');
+                            if (textLabel) textLabel.setAttribute('fill', '#000000');
+                        } else {
+                            if (circleOuter) circleOuter.setAttribute('stroke', '#94a3b8');
+                            if (circleInner) circleInner.setAttribute('fill', 'none');
+                            if (textLabel) textLabel.setAttribute('fill', '#94a3b8');
+                        }
+                    }
+                }
+                
+                const msgIdx = Math.min(messages.length - 1, Math.floor((currentPercent / 100) * messages.length));
+                if (msgIdx !== messageIndex) {
+                    messageIndex = msgIdx;
+                    if (typeof gsap !== 'undefined') {
+                        gsap.to(textEl, {
+                            opacity: 0,
+                            y: -5,
+                            duration: 0.12,
+                            onComplete: () => {
+                                textEl.textContent = messages[messageIndex];
+                                gsap.to(textEl, { opacity: 1, y: 0, duration: 0.2 });
+                            }
+                        });
+                    } else {
+                        textEl.textContent = messages[messageIndex];
+                    }
+                }
+                
+                let activePhaseId = 'phase-recolectar';
+                if (currentPercent >= 19 && currentPercent <= 36) activePhaseId = 'phase-clasificar';
+                else if (currentPercent >= 37 && currentPercent <= 54) activePhaseId = 'phase-triturar';
+                else if (currentPercent >= 55 && currentPercent <= 72) activePhaseId = 'phase-prensar';
+                else if (currentPercent >= 73 && currentPercent <= 90) activePhaseId = 'phase-cortar';
+                else if (currentPercent >= 91) activePhaseId = 'phase-ensamblar';
+                
+                for (let key in phaseElements) {
+                    const el = phaseElements[key];
+                    if (el) {
+                        let currentOpacity = parseFloat(el.getAttribute('opacity') || '0');
+                        let targetOpacity = (key === activePhaseId) ? 1 : 0;
+                        let nextOpacity = currentOpacity + (targetOpacity - currentOpacity) * 0.15;
+                        if (Math.abs(nextOpacity - targetOpacity) < 0.01) nextOpacity = targetOpacity;
+                        el.setAttribute('opacity', nextOpacity.toFixed(2));
+                        
+                        if (nextOpacity === 0) {
+                            el.style.pointerEvents = 'none';
+                            el.style.display = 'none';
+                        } else {
+                            el.style.pointerEvents = 'auto';
+                            el.style.display = 'block';
+                        }
+                    }
+                }
+                
+                frameCount++;
+                
+                // --- PHASE 1: RECOLECTAR ---
+                if (activePhaseId === 'phase-recolectar') {
+                    let fillY = 185 - (currentPercent / 18) * 45;
+                    if (currentPercent < 100 && frameCount % 6 === 0) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        const color = capColors[Math.floor(Math.random() * capColors.length)];
+                        const cx = 95 + (Math.random() - 0.5) * 8;
+                        const cy = 25;
+                        circle.setAttribute("cx", cx);
+                        circle.setAttribute("cy", cy);
+                        circle.setAttribute("r", "2.8");
+                        circle.setAttribute("fill", color);
+                        document.getElementById('falling-caps-recolectar').appendChild(circle);
+                        fallingCaps.push({ el: circle, cx: cx, cy: cy, speed: 3.2 + Math.random() * 1.5, color: color, type: 'recolectar' });
+                    }
+                    
+                    for (let i = fallingCaps.length - 1; i >= 0; i--) {
+                        let cap = fallingCaps[i];
+                        if (cap.type === 'recolectar') {
+                            cap.cy += cap.speed;
+                            cap.el.setAttribute("cy", cap.cy);
+                            
+                            if (cap.cy >= fillY) {
+                                cap.el.remove();
+                                fallingCaps.splice(i, 1);
+                                
+                                const piledCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                                let finalX = cap.cx + (Math.random() - 0.5) * 10;
+                                finalX = Math.max(70, Math.min(130, finalX));
+                                let finalY = fillY + Math.random() * 4;
+                                
+                                piledCircle.setAttribute("cx", finalX);
+                                piledCircle.setAttribute("cy", finalY);
+                                piledCircle.setAttribute("r", "2.8");
+                                piledCircle.setAttribute("fill", cap.color);
+                                document.getElementById('piled-caps-recolectar').appendChild(piledCircle);
+                            }
+                        }
+                    }
+                }
+                
+                // --- PHASE 2: CLASIFICAR ---
+                if (activePhaseId === 'phase-clasificar') {
+                    let phaseProgress = (currentPercent - 19) / 17;
+                    if (currentPercent < 100 && frameCount % 7 === 0) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        const warm = ['#ef4444', '#f97316', '#eab308', '#ec4899'];
+                        const cool = ['#3b82f6', '#a855f7'];
+                        const greens = ['#22c55e', '#79C7C7'];
+
+                        let color, targetX, containerId;
+                        let rVal = Math.random();
+                        if (rVal < 0.33) {
+                            color = warm[Math.floor(Math.random() * warm.length)];
+                            targetX = 58;
+                            containerId = 'piled-caps-green';
+                        } else if (rVal < 0.66) {
+                            color = cool[Math.floor(Math.random() * cool.length)];
+                            targetX = 100;
+                            containerId = 'piled-caps-blue';
+                        } else {
+                            color = greens[Math.floor(Math.random() * greens.length)];
+                            targetX = 142;
+                            containerId = 'piled-caps-pink';
+                        }
+                        const cx = 100;
+                        const cy = 20;
+                        
+                        circle.setAttribute("cx", cx);
+                        circle.setAttribute("cy", cy);
+                        circle.setAttribute("r", "2.8");
+                        circle.setAttribute("fill", color);
+                        document.getElementById('sorting-caps').appendChild(circle);
+                        fallingCaps.push({ el: circle, cx: cx, cy: cy, targetX: targetX, containerId: containerId, speed: 4 + Math.random(), type: 'clasificar', color: color });
+                    }
+                    
+                    for (let i = fallingCaps.length - 1; i >= 0; i--) {
+                        let cap = fallingCaps[i];
+                        if (cap.type === 'clasificar') {
+                            if (cap.cy < 60) {
+                                cap.cy += cap.speed;
+                            } else if (Math.abs(cap.cx - cap.targetX) > cap.speed) {
+                                cap.cx += (cap.targetX > cap.cx ? cap.speed : -cap.speed);
+                            } else {
+                                cap.cx = cap.targetX;
+                                cap.cy += cap.speed;
+                            }
+                            cap.el.setAttribute("cx", cap.cx);
+                            cap.el.setAttribute("cy", cap.cy);
+                            
+                            if (cap.cy > 185) {
+                                cap.el.remove();
+                                fallingCaps.splice(i, 1);
+                                
+                                const piledCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                                piledCircle.setAttribute("cx", cap.targetX + (Math.random() - 0.5) * 20);
+                                piledCircle.setAttribute("cy", 185 - Math.random() * 80 * phaseProgress);
+                                piledCircle.setAttribute("r", "2.8");
+                                piledCircle.setAttribute("fill", cap.color);
+                                document.getElementById(cap.containerId).appendChild(piledCircle);
+                            }
+                        }
+                    }
+                }
+                
+                // --- PHASE 3: TRITURAR ---
+                if (activePhaseId === 'phase-triturar') {
+                    gearAngle += 3;
+                    const gearL = document.getElementById('gear-left');
+                    const gearR = document.getElementById('gear-right');
+                    if (gearL) gearL.setAttribute("transform", `translate(88, 100) rotate(${gearAngle})`);
+                    if (gearR) gearR.setAttribute("transform", `translate(112, 100) rotate(${-gearAngle})`);
+                    
+                    if (currentPercent < 100 && frameCount % 5 === 0) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        const color = capColors[Math.floor(Math.random() * capColors.length)];
+                        const cx = 100 + (Math.random() - 0.5) * 30;
+                        const cy = 20;
+                        circle.setAttribute("cx", cx);
+                        circle.setAttribute("cy", cy);
+                        circle.setAttribute("r", "2.8");
+                        circle.setAttribute("fill", color);
+                        document.getElementById('falling-caps-triturar').appendChild(circle);
+                        fallingCaps.push({ el: circle, cx: cx, cy: cy, speed: 3 + Math.random(), color: color, type: 'triturar' });
+                    }
+                    
+                    for (let i = fallingCaps.length - 1; i >= 0; i--) {
+                        let cap = fallingCaps[i];
+                        if (cap.type === 'triturar') {
+                            cap.cy += cap.speed;
+                            if (cap.cy > 40 && cap.cy < 90) {
+                                cap.cx += (100 - cap.cx) * 0.15;
+                            }
+                            cap.el.setAttribute("cx", cap.cx);
+                            cap.el.setAttribute("cy", cap.cy);
+                            
+                            if (cap.cy > 95) {
+                                cap.el.remove();
+                                fallingCaps.splice(i, 1);
+                                
+                                for (let f = 0; f < 3; f++) {
+                                    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                    const fx = 95 + Math.random() * 10;
+                                    const fy = 110;
+                                    rect.setAttribute("x", fx);
+                                    rect.setAttribute("y", fy);
+                                    rect.setAttribute("width", 2 + Math.random() * 2);
+                                    rect.setAttribute("height", 2 + Math.random() * 2);
+                                    rect.setAttribute("fill", cap.color);
+                                    const rot = Math.random()*360;
+                                    rect.setAttribute("transform", `rotate(${rot} ${fx} ${fy})`);
+                                    document.getElementById('falling-flakes').appendChild(rect);
+                                    fallingFlakes.push({ el: rect, x: fx, y: fy, speedY: 2 + Math.random()*2, speedX: (Math.random()-0.5)*0.5, color: cap.color, rot: rot });
+                                }
+                            }
+                        }
+                    }
+                    
+                    for (let i = fallingFlakes.length - 1; i >= 0; i--) {
+                        let flake = fallingFlakes[i];
+                        flake.y += flake.speedY;
+                        flake.x += flake.speedX;
+                        flake.el.setAttribute("x", flake.x);
+                        flake.el.setAttribute("y", flake.y);
+                        flake.el.setAttribute("transform", `rotate(${flake.rot} ${flake.x} ${flake.y})`);
+                        
+                        if (flake.y > 175) {
+                            flake.el.remove();
+                            fallingFlakes.splice(i, 1);
+                            
+                            const piledFlake = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                            piledFlake.setAttribute("x", 55 + Math.random() * 90);
+                            piledFlake.setAttribute("y", 145 + Math.random() * 35);
+                            piledFlake.setAttribute("width", 2 + Math.random() * 2);
+                            piledFlake.setAttribute("height", 2 + Math.random() * 2);
+                            piledFlake.setAttribute("fill", flake.color);
+                            piledFlake.setAttribute("transform", `rotate(${Math.random()*360} ${piledFlake.getAttribute('x')} ${piledFlake.getAttribute('y')})`);
+                            document.getElementById('piled-flakes').appendChild(piledFlake);
+                        }
+                    }
+                }
+                
+                // --- PHASE 4: PRENSAR ---
+                if (activePhaseId === 'phase-prensar') {
+                    let phaseProgress = (currentPercent - 55) / 17;
+                    const pressHead = document.getElementById('press-head');
+                    const pressShaft = document.getElementById('press-shaft');
+                    const solidSheet = document.getElementById('pressed-sheet-group');
+                    
+                    if (phaseProgress < 0.4) {
+                        let pressY = (phaseProgress / 0.4) * 10;
+                        if(pressHead) pressHead.setAttribute('y', 115 + pressY);
+                        if(pressShaft) pressShaft.setAttribute('y2', 115 + pressY);
+                    } else if (phaseProgress < 0.7) {
+                        if(solidSheet) solidSheet.setAttribute('opacity', ((phaseProgress - 0.4) / 0.3).toFixed(2));
+                    } else {
+                        let pressY = 10 - ((phaseProgress - 0.7) / 0.3) * 10;
+                        if(pressHead) pressHead.setAttribute('y', 115 + pressY);
+                        if(pressShaft) pressShaft.setAttribute('y2', 115 + pressY);
+                        if(solidSheet) solidSheet.setAttribute('opacity', '1');
+                    }
+                }
+                
+                // --- PHASE 5: CORTAR ---
+                if (activePhaseId === 'phase-cortar') {
+                    let phaseProgress = (currentPercent - 73) / 17;
+                    const laser = document.getElementById('laser-head');
+                    const cutPath = document.getElementById('cnc-cut-path');
+                    
+                    if (laser && cutPath) {
+                        let offset = 300 - (phaseProgress * 300);
+                        cutPath.setAttribute('stroke-dashoffset', offset);
+                        
+                        let lx, ly;
+                        if (phaseProgress < 0.25) { lx = 70; ly = 125 - phaseProgress*4*35; }
+                        else if (phaseProgress < 0.5) { lx = 70 + (phaseProgress-0.25)*4*60; ly = 90; }
+                        else if (phaseProgress < 0.75) { lx = 130; ly = 90 + (phaseProgress-0.5)*4*35; }
+                        else { lx = 130; ly = 125; }
+                        
+                        laser.setAttribute('transform', `translate(${lx}, ${ly})`);
+                    }
+                }
+                
+                // --- PHASE 6: ENSAMBLAR ---
+                if (activePhaseId === 'phase-ensamblar') {
+                    let phaseProgress = (currentPercent - 91) / 9;
+                    const seat = document.getElementById('stool-seat-group');
+                    const logo = document.getElementById('stool-logo');
+                    const arrow = document.getElementById('circular-arrow');
+                    const arrowHead = document.getElementById('circular-arrow-head');
+                    const badge = document.getElementById('circular-badge');
+                    
+                    if (seat) seat.setAttribute('transform', `translate(0, ${Math.max(0, -30 * (1 - phaseProgress))})`);
+                    if (logo) logo.setAttribute('transform', `translate(0, ${Math.max(0, -30 * (1 - phaseProgress))})`);
+                    
+                    if (phaseProgress > 0.5 && arrow && arrowHead && badge) {
+                        let aP = (phaseProgress - 0.5) * 2;
+                        arrow.setAttribute('opacity', aP.toFixed(2));
+                        arrowHead.setAttribute('opacity', aP.toFixed(2));
+                        badge.setAttribute('opacity', aP.toFixed(2));
+                    }
+                }
+
+                if (currentPercent < 100) {
+                    requestAnimationFrame(tick);
+                } else {
+                    finishLoading();
+                }
+            }
+            
+            requestAnimationFrame(tick);
+            
+            function finishLoading() {
+                percentEl.textContent = '100';
+                if (barEl) barEl.style.width = '100%';
+                if (stepperLineEl) stepperLineEl.setAttribute('stroke-dashoffset', '0');
+                
+                // Zoom-in effect for the final stool
+                if (typeof gsap !== 'undefined') {
+                    gsap.to('#step-node-0, #step-node-1, #step-node-2, #step-node-3, #step-node-4, #step-node-5', { opacity: 0, duration: 0.4 });
+                    gsap.to('#stepper-arc, #loader-bg-percent, #loading-text, .loader-logo-wrap', { opacity: 0, duration: 0.4 });
+                    // The rings
+                    gsap.to('#preloader-animation > circle', { opacity: 0, duration: 0.4 });
+                    
+                    // Zoom the entire SVG towards the screen
+                    gsap.to('#preloader-animation', { 
+                        scale: 3, 
+                        opacity: 0,
+                        duration: 1.0, 
+                        ease: "power2.in"
+                    });
+                }
+                
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        document.body.classList.add('loaded');
+                        if (typeof initializeGsapAnimations === 'function') {
+                            initializeGsapAnimations();
+                        }
+                    }, 500);
+                }, 900);
+            }
+            
+            window.addEventListener('load', () => {
+                pageHasLoaded = true;
+            });
+            
+            const scrollVid = document.getElementById('scroll-video');
+            if (scrollVid) {
+                if (scrollVid.readyState >= 3) {
+                    videoHasLoaded = true;
+                } else {
+                    scrollVid.addEventListener('canplaythrough', () => { videoHasLoaded = true; }, { once: true });
+                    scrollVid.addEventListener('error', () => { videoHasLoaded = true; }, { once: true });
+                }
+            } else {
+                videoHasLoaded = true;
+            }
+            
+            setTimeout(() => {
+                if (preloader.style.display !== 'none') {
+                    pageHasLoaded = true;
+                    if (currentPercent < 100) {
+                        currentPercent = 100;
+                        finishLoading();
+                    }
+                }
+            }, duration + 3000);
+        })();
+    </script>
+
 
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
@@ -376,7 +1008,7 @@
                     class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Contacto</a>
             </nav>
 
-            <div class="flex items-center space-x-4">
+            <div id="right-icons-container" class="flex items-center space-x-4 relative">
                 <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer"
                     class="max-md:hidden text-text-dark hover:text-rp-teal transition p-2 rounded-full hover:bg-rp-blue-light text-xl flex items-center justify-center w-10 h-10">
                     <i class="fab fa-instagram transition-colors duration-300"></i>
@@ -403,7 +1035,7 @@
                     <div id="cart-dropdown"
                         style="display: none; position: absolute; right: 0; top: 100%; margin-top: 10px; width: 320px; min-width: 300px; min-height: 150px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); z-index: 2147483647; padding: 20px; color: #1f2937;">
                         <h4 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2"
-                            style="font-family: 'Patua One', cursive; color: #111827; font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem;">
+                            style="font-family: 'Outfit', sans-serif; color: #111827; font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem;">
                             Resumen del Carrito</h4>
 
                         <div id="dropdown-items-list"
@@ -415,9 +1047,9 @@
                             style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: auto;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.25rem; margin-bottom: 1rem; color: #111827;">
-                                <span style="font-family: 'Patua One', cursive;">Total:</span>
+                                <span style="font-family: 'Outfit', sans-serif;">Total:</span>
                                 <span id="dropdown-total"
-                                    style="color: #009ee3; font-family: 'Patua One', cursive;">$0.00</span>
+                                    style="color: #009ee3; font-family: 'Outfit', sans-serif;">$0.00</span>
                             </div>
 
                             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -437,8 +1069,10 @@
                 <button id="mobile-menu-button"
                     class="md:hidden relative z-[70] p-2 text-text-dark focus:outline-none group"
                     onclick="toggleMobileMenu()">
-                    <div class="w-6 h-4 flex flex-col justify-between items-center transition-all duration-300">
+                    <div class="w-7 h-5 flex flex-col justify-between items-center transition-all duration-300">
                         <span id="line-top"
+                            class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
+                        <span id="line-middle"
                             class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
                         <span id="line-bottom"
                             class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
@@ -454,14 +1088,20 @@
                 <div id="video-grow-container" class="relative w-full h-full overflow-hidden bg-rp-blue-light">
 
                     <video id="scroll-video" class="absolute top-0 left-0 w-full h-full object-cover bg-rp-blue-light"
+                        style="object-position: center top;"
                         preload="auto" muted playsinline webkit-playsinline>
-                        <source src="images/salida_optimizada.mp4" type="video/mp4">
+                        <source src="images/video_optimizado_8M.mp4" type="video/mp4" media="(min-width: 768px)">
                         <source src="images/video_optimizado.mp4" type="video/mp4">
+                        <source src="images/salida_optimizada.mp4" type="video/mp4">
                         <source src="images/video.mp4" type="video/mp4">
-                        <source
-                            src="https://res.cloudinary.com/dbj43n6ih/video/upload/v1762922472/salida_optimizada_f1vtel.mp4"
-                            type="video/mp4">
                     </video>
+
+                    <div id="initial-video-overlay" class="absolute inset-0 flex flex-col justify-end items-center z-20 pb-12 pointer-events-none">
+                        <div class="flex flex-col items-center gap-2 text-black font-bold animate-bounce opacity-90 drop-shadow-md">
+                            <span class="text-sm tracking-widest uppercase title-style">Scroll</span>
+                            <i class="fas fa-chevron-down text-3xl"></i>
+                        </div>
+                    </div>
 
                     <div id="video-text-overlay"
                         class="absolute inset-0 flex flex-col justify-center items-center text-center z-10 p-8 opacity-0">
@@ -473,28 +1113,28 @@
             </div>
         </section>
 
-        <!-- PRESENTACIÓN CORPORATIVA / TRIPLE IMPACTO -->
         <section id="presentacion-triple-impacto"
-            class="bg-white py-16 text-text-dark border-b border-rp-gray-soft reveal-element">
+            class="bg-white py-24 text-text-dark border-b border-rp-gray-soft/40 reveal-element">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl text-center">
-                <h2 class="text-3xl md:text-5xl font-bold mb-6 title-style">
-                    UNA EMPRESA DE <span class="text-rp-teal">TRIPLE IMPACTO</span>
+                <span class="text-xs font-bold tracking-[0.25em] text-rp-teal uppercase mb-4 block font-brand">NUESTRO PROPÓSITO</span>
+                <h2 class="text-4xl md:text-6xl font-bold mb-8 title-style text-text-dark max-w-4xl mx-auto">
+                    Una empresa de <span class="font-light italic text-rp-teal lowercase">triple impacto</span>
                 </h2>
-                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                    En <strong>Circula</strong> no solo reciclamos: diseñamos soluciones de economía circular que
-                    integran el valor social, ambiental y económico. Colaboramos activamente con <strong>empresas
+                <p class="text-lg md:text-xl font-light text-slate-500 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    En <strong class="font-semibold text-text-dark">Circula</strong> no solo reciclamos: diseñamos soluciones de economía circular que
+                    integran el valor social, ambiental y económico. Colaboramos activamente con <strong class="font-semibold text-text-dark">empresas
                         sustentables</strong> mediante consultoría, capacitación y el desarrollo a medida de
-                    <strong>regalos empresariales sustentables</strong> que le dan una segunda vida al plástico.
+                    regalos empresariales sustentables que le dan una segunda vida al plástico.
                 </p>
                 <p class="sr-only">Circula es una de las empresas que reciclan plástico en Uruguay, ofreciendo
                     soluciones ambientales y productos sustentables.</p>
-                <div class="flex flex-wrap justify-center gap-4">
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                     <a href="nosotros.html"
-                        class="px-8 py-3 bg-rp-teal text-white font-bold rounded-full hover:bg-rp-teal/90 transition title-style text-sm">
+                        class="w-full sm:w-auto px-8 py-4 bg-text-dark text-white font-medium rounded-xl hover:bg-rp-teal hover:text-white transition-all duration-300 title-style text-xs tracking-wider uppercase shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
                         SOBRE NUESTRO PROPÓSITO
                     </a>
                     <a href="tienda.html"
-                        class="px-8 py-3 bg-rp-blue-light text-rp-teal border border-rp-teal/30 font-bold rounded-full hover:bg-rp-blue-light/80 transition title-style text-sm">
+                        class="w-full sm:w-auto px-8 py-4 bg-transparent text-text-dark border border-slate-200 font-medium rounded-xl hover:bg-slate-50 transition-all duration-300 title-style text-xs tracking-wider uppercase">
                         REGALOS SUSTENTABLES
                     </a>
                 </div>
@@ -502,435 +1142,435 @@
         </section>
 
         <section id="impact-stats"
-            class="bg-rp-blue-light section-padding text-text-dark border-b border-rp-gray-soft reveal-element">
+            class="bg-rp-blue-light py-24 text-text-dark border-b border-rp-gray-soft/40 reveal-element">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-4xl font-bold mb-12 title-style">NUESTRO <span class="text-rp-teal">IMPACTO</span>
-                    MEDIDO</h2>
+                <span class="text-xs font-bold tracking-[0.25em] text-rp-teal uppercase mb-4 block font-brand">MEDICIÓN DE LOGROS</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-16 title-style text-text-dark">Nuestro impacto <span class="font-light italic text-rp-teal lowercase">medido</span></h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <div
-                        class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-100">
-                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
-                            <span class="text-4xl ml-1">+</span>
+                        class="p-8 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover reveal-element reveal-delay-100">
+                        <div class="text-5xl md:text-6xl font-bold tracking-tight text-rp-teal mb-4 flex justify-center items-baseline">
                             <span id="counter-tapitas-global">550.000</span>
+                            <span class="text-3xl font-light ml-1 text-rp-teal/80">+</span>
                         </div>
-                        <p class="text-xl font-bold mb-1">tapitas plásticas</p>
-                        <p class="text-gray-500 text-sm">Recuperadas y transformadas en nuevos productos.</p>
+                        <p class="text-xs font-bold text-text-dark mb-2 font-brand uppercase tracking-wider">tapitas plásticas</p>
+                        <p class="text-slate-400 text-sm font-light">Recuperadas y transformadas en nuevos productos de diseño.</p>
                     </div>
                     <div
-                        class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-200">
-                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
-                            <span class="text-4xl ml-1">+</span>
+                        class="p-8 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover reveal-element reveal-delay-200">
+                        <div class="text-5xl md:text-6xl font-bold tracking-tight text-rp-teal mb-4 flex justify-center items-baseline">
                             <span id="counter-water-global">198.000</span>
+                            <span class="text-3xl font-light ml-1 text-rp-teal/80">+</span>
                         </div>
-                        <p class="text-xl font-bold mb-1">litros de agua</p>
-                        <p class="text-gray-500 text-sm">Ahorrados al evitar la producción de plástico virgen.</p>
+                        <p class="text-xs font-bold text-text-dark mb-2 font-brand uppercase tracking-wider">litros de agua</p>
+                        <p class="text-slate-400 text-sm font-light">Ahorrados al evitar la producción de plástico virgen.</p>
                     </div>
                     <div
-                        class="p-6 bg-white rounded-xl shadow-lg border-b-4 border-rp-teal reveal-element reveal-delay-300">
-                        <div class="text-5xl font-extrabold text-rp-teal mb-2 flex justify-center items-end">
-                            <span class="text-4xl ml-1">+</span>
+                        class="p-8 bg-white rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover reveal-element reveal-delay-300">
+                        <div class="text-5xl md:text-6xl font-bold tracking-tight text-rp-teal mb-4 flex justify-center items-baseline">
                             <span id="counter-space">1000</span>
+                            <span class="text-3xl font-light ml-1 text-rp-teal/80">+</span>
                         </div>
-                        <p class="text-xl font-bold mb-1">personas</p>
-                        <p class="text-gray-500 text-sm">Concientizadas sobre el impacto de los residuos plásticos.</p>
+                        <p class="text-xs font-bold text-text-dark mb-2 font-brand uppercase tracking-wider">personas</p>
+                        <p class="text-slate-400 text-sm font-light">Concientizadas en talleres sobre el reciclaje del plástico.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="featured-products"
-            class="bg-white section-padding text-text-dark border-b border-rp-gray-soft reveal-element">
+            class="bg-white py-24 text-text-dark border-b border-rp-gray-soft/40 reveal-element">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-5xl font-bold mb-3 title-style"><span class="text-rp-teal">DESTACADOS</span></h2>
-                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
-                        Diseño reciclado, perfecto para empezar a transformar tus espacios.
+                    <span class="text-xs font-bold tracking-[0.25em] text-rp-teal uppercase mb-4 block font-brand">CATÁLOGO EXCLUSIVO</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4 title-style text-text-dark">Productos <span class="font-light italic text-rp-teal lowercase">destacados</span></h2>
+                    <p class="text-lg text-slate-500 font-light max-w-3xl mx-auto">
+                        Diseño reciclado premium, perfecto para empezar a transformar tus espacios.
                     </p>
                 </div>
-
+ 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Soporte para Celular -->
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-100">
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover flex flex-col justify-between reveal-element reveal-delay-100">
                         <div>
                             <img src="images/Tienda/stand-celular.png" alt="Soporte para Celular Destacado"
-                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                class="w-full h-48 object-cover rounded-xl mb-6 border border-slate-100 cursor-pointer"
                                 onclick="window.location.href='detalle.html?product=stand-celular'">
                             <h3 class="text-xl font-bold text-text-dark mb-1">Soporte para Celular</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$379</p>
-                            <p class="text-gray-600 mb-4 text-sm">Soporte ergonómico de escritorio para celulares hecho
+                            <p class="text-rp-teal font-bold mb-3 text-lg">$379</p>
+                            <p class="text-slate-400 text-sm font-light leading-relaxed mb-6">Soporte ergonómico de escritorio para celulares hecho
                                 de plástico 100% reciclado.</p>
                         </div>
-                        <div class="mt-2">
+                        <div>
                             <button onclick="window.location.href='detalle.html?product=stand-celular'"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">
+                                class="w-full py-3.5 bg-text-dark text-white font-medium rounded-xl hover:bg-rp-teal transition-all duration-300 title-style text-xs tracking-wider uppercase shadow-[0_4px_12px_rgba(15,23,42,0.08)]">
                                 VER DETALLE
                             </button>
                         </div>
                     </div>
-
+ 
                     <!-- Soporte para Laptop -->
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-200">
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover flex flex-col justify-between reveal-element reveal-delay-200">
                         <div>
                             <img src="images/stand-laptop.jpeg" alt="Soporte para Laptop Destacado"
-                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                class="w-full h-48 object-cover rounded-xl mb-6 border border-slate-100 cursor-pointer"
                                 onclick="window.location.href='detalle.html?product=stand-laptop'">
                             <h3 class="text-xl font-bold text-text-dark mb-1">Soporte para Laptop</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$619</p>
-                            <p class="text-gray-600 mb-4 text-sm">Soporte ergonómico desmontable de dos piezas
+                            <p class="text-rp-teal font-bold mb-3 text-lg">$619</p>
+                            <p class="text-slate-400 text-sm font-light leading-relaxed mb-6">Soporte ergonómico desmontable de dos piezas
                                 encastrables en plástico 100% reciclado.</p>
                         </div>
-                        <div class="mt-2">
+                        <div>
                             <button onclick="window.location.href='detalle.html?product=stand-laptop'"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">
+                                class="w-full py-3.5 bg-text-dark text-white font-medium rounded-xl hover:bg-rp-teal transition-all duration-300 title-style text-xs tracking-wider uppercase shadow-[0_4px_12px_rgba(15,23,42,0.08)]">
                                 VER DETALLE
                             </button>
                         </div>
                     </div>
-
+ 
                     <!-- Relojes -->
                     <div
-                        class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between reveal-element reveal-delay-300">
+                        class="bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover flex flex-col justify-between reveal-element reveal-delay-300">
                         <div>
                             <img src="images/Tienda/reloj.png" alt="Reloj Destacado"
-                                class="w-full h-48 object-cover rounded-lg mb-4 border border-rp-gray-soft cursor-pointer"
+                                class="w-full h-48 object-cover rounded-xl mb-6 border border-slate-100 cursor-pointer"
                                 onclick="window.location.href='detalle.html?product=reloj'">
                             <h3 class="text-xl font-bold text-text-dark mb-1">Reloj de Pared</h3>
-                            <p class="text-rp-teal font-semibold mb-3 text-lg">$1.400</p>
-                            <p class="text-gray-600 mb-4 text-sm">Reloj de pared minimalista de funcionamiento
+                            <p class="text-rp-teal font-bold mb-3 text-lg">$1.400</p>
+                            <p class="text-slate-400 text-sm font-light leading-relaxed mb-6">Reloj de pared minimalista de funcionamiento
                                 silencioso hecho de plástico reciclado.</p>
                         </div>
-                        <div class="mt-2">
+                        <div>
                             <button onclick="window.location.href='detalle.html?product=reloj'"
-                                class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">
+                                class="w-full py-3.5 bg-text-dark text-white font-medium rounded-xl hover:bg-rp-teal transition-all duration-300 title-style text-xs tracking-wider uppercase shadow-[0_4px_12px_rgba(15,23,42,0.08)]">
                                 VER DETALLE
                             </button>
                         </div>
                     </div>
                 </div>
-
+ 
                 <div class="text-center mt-16">
                     <a href="tienda.html"
-                        class="inline-block px-10 py-4 bg-rp-mint text-text-dark text-lg font-bold rounded-full shadow-lg hover:bg-rp-teal transition title-style border border-rp-teal">
+                        class="inline-block px-10 py-4 bg-transparent text-text-dark border-2 border-text-dark text-xs font-bold tracking-widest rounded-xl hover:bg-text-dark hover:text-white transition-all duration-300 title-style uppercase">
                         VER TODA LA COLECCIÓN
                     </a>
                 </div>
             </div>
             <!-- CALCULADORA DE IMPACTO ECOLÓGICO -->
-            <section id="calculadora-impacto" class="bg-white section-padding border-b border-rp-gray-soft">
+            <section id="calculadora-impacto" class="bg-[#fafafa] py-24 border-b border-rp-gray-soft/40">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center mb-12">
-                        <h2 class="text-4xl font-bold mb-3 title-style">MEDÍ TU <span class="text-rp-teal">IMPACTO
-                                ECOLÓGICO</span></h2>
-                        <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
-                            Al elegir productos de plástico 100% reciclado, evitás que toneladas de plástico terminen en
-                            vertederos u océanos. ¡Calculá tu huella positiva!
+                    <div class="text-center mb-16">
+                        <span class="text-xs font-bold tracking-[0.25em] text-rp-teal uppercase mb-4 block font-brand">CALCULADORA INTERACTIVA</span>
+                        <h2 class="text-4xl md:text-5xl font-bold mb-4 title-style text-text-dark">Medí tu <span class="font-light italic text-rp-teal lowercase">impacto</span></h2>
+                        <p class="text-lg text-slate-500 font-light max-w-3xl mx-auto">
+                            Descubrí exactamente cuánto plástico, agua y emisiones evitás al elegir diseño reciclado.
                         </p>
                     </div>
-
+ 
                     <div
-                        class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-rp-gray-soft p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+                        class="max-w-5xl mx-auto bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-slate-100 p-2 md:p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <!-- Configuración de Productos -->
-                        <div>
-                            <h3 class="text-xl font-bold mb-6 text-text-dark title-style border-b border-gray-100 pb-3">
-                                Agregá productos a tu cálculo:</h3>
-
-                            <div class="space-y-5 max-h-[450px] overflow-y-auto pr-3"
-                                style="scrollbar-width: thin; scrollbar-color: #79C7C7 #f3f4f6;">
+                        <div class="p-6 md:p-8">
+                            <h3 class="text-lg font-bold mb-6 text-text-dark title-style pb-3">
+                                Seleccioná productos:</h3>
+ 
+                            <div class="space-y-4 max-h-[450px] overflow-y-auto pr-4"
+                                style="scrollbar-width: thin; scrollbar-color: #f1f5f9 transparent;">
                                 <!-- Estantería -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Estantería</h4>
-                                        <p class="text-xs text-gray-500">10 kg (~5.000 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Estantería</h4>
+                                        <p class="text-xs text-slate-400 font-light">10 kg (~5.000 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('estanteria', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-estanteria"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('estanteria', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Mesa -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Mesa Ratona</h4>
-                                        <p class="text-xs text-gray-500">8,5 kg (~4.250 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Mesa Ratona</h4>
+                                        <p class="text-xs text-slate-400 font-light">8,5 kg (~4.250 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('mesa', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-mesa"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('mesa', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Banco Alto -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Banco Alto</h4>
-                                        <p class="text-xs text-gray-500">5 kg (~2.500 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Banco Alto</h4>
+                                        <p class="text-xs text-slate-400 font-light">5 kg (~2.500 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('banco_alto', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-banco_alto"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('banco_alto', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Banco Bajo -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Banco Bajo</h4>
-                                        <p class="text-xs text-gray-500">4 kg (~2.000 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Banco Bajo</h4>
+                                        <p class="text-xs text-slate-400 font-light">4 kg (~2.000 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('banco_bajo', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-banco_bajo"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('banco_bajo', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Revistero -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Revistero</h4>
-                                        <p class="text-xs text-gray-500">4 kg (~2.000 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Revistero</h4>
+                                        <p class="text-xs text-slate-400 font-light">4 kg (~2.000 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('revistero', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-revistero"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('revistero', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Comedero -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Comedero de Mascotas</h4>
-                                        <p class="text-xs text-gray-500">3 kg (~1.500 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Comedero de Mascotas</h4>
+                                        <p class="text-xs text-slate-400 font-light">3 kg (~1.500 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('comedero', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-comedero"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('comedero', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Espejo -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Espejo Circular</h4>
-                                        <p class="text-xs text-gray-500">2 kg (~1.000 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Espejo Circular</h4>
+                                        <p class="text-xs text-slate-400 font-light">2 kg (~1.000 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('espejo', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-espejo"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('espejo', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Reloj -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Reloj de Pared</h4>
-                                        <p class="text-xs text-gray-500">0,8 kg (~400 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Reloj de Pared</h4>
+                                        <p class="text-xs text-slate-400 font-light">0,8 kg (~400 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('reloj', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-reloj"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('reloj', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Laptop Stand -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Soporte para Laptop</h4>
-                                        <p class="text-xs text-gray-500">0,4 kg (~200 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Soporte para Laptop</h4>
+                                        <p class="text-xs text-slate-400 font-light">0,4 kg (~200 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('laptop_stand', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-laptop_stand"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('laptop_stand', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Trofeo -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Trofeo Empresarial</h4>
-                                        <p class="text-xs text-gray-500">0,3 kg (~150 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Trofeo Empresarial</h4>
+                                        <p class="text-xs text-slate-400 font-light">0,3 kg (~150 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('trofeo', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-trofeo"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('trofeo', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Celular Stand -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Soporte para Celular</h4>
-                                        <p class="text-xs text-gray-500">0,2 kg (~100 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Soporte para Celular</h4>
+                                        <p class="text-xs text-slate-400 font-light">0,2 kg (~100 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('celular_stand', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-celular_stand"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('celular_stand', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
-
+ 
                                 <!-- Bowls -->
-                                <div class="flex items-center justify-between py-1 border-b border-gray-50">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-50">
                                     <div>
-                                        <h4 class="font-bold text-text-dark text-sm">Bowl Circular</h4>
-                                        <p class="text-xs text-gray-500">0,18 kg (~90 tapitas)</p>
+                                        <h4 class="font-medium text-text-dark text-sm">Bowl Circular</h4>
+                                        <p class="text-xs text-slate-400 font-light">0,18 kg (~90 tapitas)</p>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-4">
                                         <button onclick="updateImpactQty('bowl', -1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">-</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">-</button>
                                         <span id="qty-impact-bowl"
-                                            class="font-bold w-6 text-center text-text-dark text-base">0</span>
+                                            class="font-medium w-4 text-center text-text-dark text-sm">0</span>
                                         <button onclick="updateImpactQty('bowl', 1)"
-                                            class="w-8 h-8 rounded-full bg-gray-100 text-text-dark hover:bg-rp-teal hover:text-white transition font-bold flex items-center justify-center">+</button>
+                                            class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:border-text-dark hover:bg-text-dark hover:text-white transition-all font-light flex items-center justify-center">+</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Panel de Resultados de Impacto -->
+                          <!-- Panel de Resultados de Impacto -->
                         <div
-                            class="bg-gradient-to-br from-rp-blue-light to-white p-6 md:p-8 rounded-3xl border border-rp-teal/30 flex flex-col justify-between shadow-inner reveal-element relative overflow-hidden">
+                            class="bg-text-dark p-8 md:p-10 rounded-[1.5rem] flex flex-col justify-between relative overflow-hidden">
                             <!-- Canvas para explosión de partículas plásticas -->
-                            <canvas id="calculator-particles" class="absolute inset-0 pointer-events-none z-[15]"></canvas>
-                            <div>
-                                <h3 class="text-xl font-bold mb-6 text-text-dark title-style text-center md:text-left">
-                                    Tu Ahorro Ambiental:</h3>
-
+                            <canvas id="calculator-particles" class="absolute top-0 left-0 w-full h-full pointer-events-none z-[15]"></canvas>
+                            <div class="relative z-20">
+                                <h3 class="text-lg font-light mb-8 text-white/80 uppercase tracking-widest text-center lg:text-left">
+                                    Tu aporte</h3>
+ 
                                 <div class="space-y-6">
-                                    <div class="flex items-center space-x-4">
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-rp-teal/15 flex items-center justify-center text-rp-teal shadow-sm">
-                                            <i class="fas fa-recycle text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <span class="block text-2xl font-extrabold text-text-dark"
-                                                id="impact-val-tapitas">0</span>
-                                            <span
-                                                class="text-xs font-semibold uppercase text-gray-500 font-brand">Tapitas
-                                                recuperadas</span>
+                                    <div class="flex flex-col">
+                                        <span class="block text-4xl md:text-5xl font-light text-white tracking-tight"
+                                            id="impact-val-tapitas">0</span>
+                                        <div class="flex items-center text-rp-teal mt-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="9" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                            <span class="text-[10px] font-bold uppercase tracking-widest">Tapitas recuperadas</span>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center space-x-4">
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-rp-mint/15 flex items-center justify-center text-rp-teal shadow-sm">
-                                            <i class="fas fa-weight-hanging text-xl"></i>
+                                    <div class="h-px w-full bg-white/10"></div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-baseline">
+                                            <span class="block text-4xl md:text-5xl font-light text-white tracking-tight" id="impact-val-kg">0.00</span>
+                                            <span class="text-2xl text-white/50 font-normal ml-1.5">kg</span>
                                         </div>
-                                        <div>
-                                            <span class="block text-2xl font-extrabold text-text-dark"
-                                                id="impact-val-kg">0.00 kg</span>
-                                            <span
-                                                class="text-xs font-semibold uppercase text-gray-500 font-brand">Plástico
-                                                recuperado</span>
+                                        <div class="flex items-center text-rp-teal mt-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.27 6.96L12 12.01l8.73-5.05" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 22.08V12" />
+                                            </svg>
+                                            <span class="text-[10px] font-bold uppercase tracking-widest">Plástico recuperado</span>
                                         </div>
                                     </div>
+                                    
+                                    <div class="h-px w-full bg-white/10"></div>
 
-                                    <div class="flex items-center space-x-4">
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-500 shadow-sm">
-                                            <i class="fas fa-tint text-xl"></i>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="flex flex-col">
+                                            <div class="flex items-baseline">
+                                                <span class="block text-2xl font-light text-white tracking-tight" id="impact-val-water">0</span>
+                                                <span class="text-sm text-white/50 font-normal ml-1">L</span>
+                                            </div>
+                                            <div class="flex items-center text-white/50 mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a6 6 0 0 0 6-6c0-3.866-6-10-6-10s-6 6.134-6 10a6 6 0 0 0 6 6z" />
+                                                </svg>
+                                                <span class="text-[9px] font-bold uppercase tracking-widest">Agua ahorrada</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span class="block text-2xl font-extrabold text-text-dark"
-                                                id="impact-val-water">0 L</span>
-                                            <span
-                                                class="text-xs font-semibold uppercase text-gray-500 font-brand">Litros
-                                                de agua ahorrados</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center space-x-4">
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
-                                            <i class="fas fa-cloud text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <span class="block text-2xl font-extrabold text-text-dark"
-                                                id="impact-val-co2">0.00 kg</span>
-                                            <span
-                                                class="text-xs font-semibold uppercase text-gray-500 font-brand">Emisiones
-                                                de CO2 evitadas</span>
+                                        <div class="flex flex-col">
+                                            <div class="flex items-baseline">
+                                                <span class="block text-2xl font-light text-white tracking-tight" id="impact-val-co2">0.00</span>
+                                                <span class="text-sm text-white/50 font-normal ml-1">kg</span>
+                                            </div>
+                                            <div class="flex items-center text-white/50 mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 21S3 14 10 10c0 0 3-1 8 0 0 0-4 4-2 9-5-1-11 0-11 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 10l-4 4" />
+                                                </svg>
+                                                <span class="text-[9px] font-bold uppercase tracking-widest">CO2 evitado</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="mt-8 pt-6 border-t border-rp-teal/10">
+ 
+                            <div class="mt-8 pt-6 border-t border-white/10 relative z-20">
                                 <p
-                                    class="text-center text-xs text-gray-500 font-bold uppercase tracking-wider mb-3 font-brand">
+                                    class="text-left text-[10px] text-white/40 font-light uppercase tracking-widest mb-4">
                                     Equivalencia en volumen:</p>
-                                <div class="grid grid-cols-3 gap-2 text-center font-brand">
+                                <div class="grid grid-cols-3 gap-3 text-center">
                                     <div
-                                        class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                        class="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-center items-center">
                                         <span
-                                            class="block text-base md:text-lg font-extrabold text-rp-teal leading-none"
+                                            class="block text-lg font-light text-white leading-none mb-1"
                                             id="impact-equiv-futbol">0</span>
                                         <span
-                                            class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Pelotas
-                                            de fútbol</span>
+                                            class="text-[8px] text-white/60 font-bold tracking-wider uppercase leading-tight">Pelotas<br>fútbol</span>
                                     </div>
                                     <div
-                                        class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                        class="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-center items-center">
                                         <span
-                                            class="block text-base md:text-lg font-extrabold text-rp-teal leading-none"
+                                            class="block text-lg font-light text-white leading-none mb-1"
                                             id="impact-equiv-bidones">0</span>
                                         <span
-                                            class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Bidones
-                                            6L</span>
+                                            class="text-[8px] text-white/60 font-bold tracking-wider uppercase leading-tight">Bidones<br>6L</span>
                                     </div>
                                     <div
-                                        class="p-3 bg-white rounded-2xl border border-rp-teal/10 shadow-sm flex flex-col justify-center items-center">
+                                        class="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-center items-center">
                                         <span
-                                            class="block text-base md:text-lg font-extrabold text-rp-teal leading-none"
+                                            class="block text-lg font-light text-white leading-none mb-1"
                                             id="impact-equiv-garrafas">0</span>
                                         <span
-                                            class="text-[9px] text-gray-500 font-semibold block uppercase mt-1 leading-tight">Garrafas
-                                            13kg</span>
+                                            class="text-[8px] text-white/60 font-bold tracking-wider uppercase leading-tight">Garrafas<br>13kg</span>
                                     </div>
                                 </div>
                             </div>
@@ -999,7 +1639,7 @@
                         if (start !== end) {
                             gsap.fromTo(el, 
                                 { scale: 1.15, color: '#79C7C7' }, 
-                                { scale: 1, color: '#333333', duration: 0.45, ease: 'back.out(2.2)', overwrite: 'auto' }
+                                { scale: 1, color: '#ffffff', duration: 0.45, ease: 'back.out(2.2)', overwrite: 'auto' }
                             );
                         }
 
@@ -1062,9 +1702,9 @@
 
                         // Animar números
                         animateNumber('impact-val-tapitas', prevTapitas, totalTapitas, '', 0);
-                        animateNumber('impact-val-kg', prevPeso, totalPeso, ' kg', 2);
-                        animateNumber('impact-val-water', prevWater, totalWater, ' L', 1);
-                        animateNumber('impact-val-co2', prevCO2, totalCO2, ' kg', 2);
+                        animateNumber('impact-val-kg', prevPeso, totalPeso, '', 2);
+                        animateNumber('impact-val-water', prevWater, totalWater, '', 1);
+                        animateNumber('impact-val-co2', prevCO2, totalCO2, '', 2);
                         animateNumber('impact-equiv-futbol', prevFutbol, futbol, '', 1);
                         animateNumber('impact-equiv-bidones', prevBidones, bidones, '', 1);
                         animateNumber('impact-equiv-garrafas', prevGarrafas, garrafas, '', 1);
@@ -1103,13 +1743,13 @@
                                 this.y = y;
                                 this.size = Math.random() * 8 + 3;
                                 this.speedX = Math.random() * 8 - 4; // explosión horizontal
-                                this.speedY = Math.random() * -6 - 4; // explosión inicial vertical hacia arriba
+                                this.speedY = Math.random() * -6 - 2; // explosión vertical
                                 this.gravity = 0.22;
                                 this.color = flakeColors[Math.floor(Math.random() * flakeColors.length)];
                                 this.angle = Math.random() * 360;
                                 this.spin = Math.random() * 10 - 5;
                                 this.opacity = 1;
-                                this.decay = Math.random() * 0.02 + 0.015;
+                                this.decay = Math.random() * 0.002 + 0.002;
                             }
                             
                             update() {
@@ -1121,10 +1761,11 @@
                             }
                             
                             draw() {
+                                if (this.opacity <= 0) return;
                                 ctx.save();
                                 ctx.translate(this.x, this.y);
                                 ctx.rotate((this.angle * Math.PI) / 180);
-                                ctx.globalAlpha = this.opacity;
+                                ctx.globalAlpha = Math.max(0, this.opacity);
                                 ctx.fillStyle = this.color;
                                 // Dibujar partícula rectangular/irregular
                                 ctx.beginPath();
@@ -1137,11 +1778,11 @@
                         window.spawnFlakes = function() {
                             resizeCanvas();
                             const startX = canvas.width / 2;
-                            // Salida justo encima del bloque de resultados
-                            const startY = canvas.height * 0.25;
+                            // Salida desde un poco más arriba para que caigan por todo el modal
+                            const startY = 40; 
                             
-                            for (let i = 0; i < 35; i++) {
-                                particles.push(new Flake(startX + (Math.random() * 80 - 40), startY));
+                            for (let i = 0; i < 40; i++) {
+                                particles.push(new Flake(startX + (Math.random() * 100 - 50), startY));
                             }
                         };
                         
@@ -1150,7 +1791,8 @@
                             for (let i = particles.length - 1; i >= 0; i--) {
                                 particles[i].update();
                                 particles[i].draw();
-                                if (particles[i].opacity <= 0) {
+                                // Eliminar si la opacidad es 0 o si ya cayó por debajo del modal
+                                if (particles[i].opacity <= 0 || particles[i].y > canvas.height + 50) {
                                     particles.splice(i, 1);
                                 }
                             }
@@ -1335,7 +1977,7 @@
                             <div id="journey-content-card" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                                 <div>
                                     <span id="journey-step-badge" class="inline-block px-3 py-1 bg-rp-blue-light text-rp-teal text-[10px] font-extrabold tracking-widest rounded-full uppercase mb-3 font-brand">ETAPA 01 - CLASIFICACIÓN</span>
-                                    <h3 id="journey-step-title" class="text-2xl font-bold text-text-dark mb-3 font-heading" style="font-family: 'Patua One', cursive;">Recepción y Selección</h3>
+                                    <h3 id="journey-step-title" class="text-2xl font-bold text-text-dark mb-3 font-heading" style="font-family: 'Outfit', sans-serif;">Recepción y Selección</h3>
                                     <p id="journey-step-desc" class="text-sm text-gray-600 leading-relaxed mb-4">
                                         Recibimos las tapitas plásticas ya clasificadas por tipo de plástico y por color, lo que asegura una separación limpia y ordenada del material desde el inicio.
                                     </p>
@@ -1426,29 +2068,7 @@
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: 'page_view', page_title: 'Circula - Economía Circular', page_location: window.location.href });
 
-        // --- PRELOADER INTELIGENTE ---
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            const video = document.getElementById('scroll-video');
-
-            function hidePreloader() {
-                if (preloader && !preloader.classList.contains('hidden')) {
-                    preloader.classList.add('hidden');
-                }
-            }
-
-            if (video) {
-                video.load();
-                if (video.readyState >= 3) {
-                    setTimeout(hidePreloader, 500);
-                } else {
-                    video.addEventListener('canplaythrough', hidePreloader, { once: true });
-                    setTimeout(hidePreloader, 8000);
-                }
-            } else {
-                setTimeout(hidePreloader, 500);
-            }
-        });
+        // --- PRELOADER INTELIGENTE CON CONTROL EN load-components.js ---
     </script>
 
     <script>
@@ -1577,6 +2197,16 @@
                             videoOverlay.style.opacity = opacity;
                         }
 
+                        // Animar la desaparición del logo y flecha inicial
+                        const initialOverlay = document.getElementById('initial-video-overlay');
+                        if (initialOverlay) {
+                            if (self.progress < 0.05) {
+                                initialOverlay.style.opacity = 1 - (self.progress / 0.05);
+                            } else {
+                                initialOverlay.style.opacity = 0;
+                            }
+                        }
+
                         // Sincronizar el estado de transparencia del header
                         if (typeof window.handleHeaderScroll === 'function') {
                             window.handleHeaderScroll();
@@ -1667,6 +2297,31 @@
                 }
             });
         }
+
+        // GSAP ScrollTrigger Scroll Reveal Animations
+        const revealElements = document.querySelectorAll('.reveal-element');
+        revealElements.forEach((el) => {
+            let delay = 0;
+            if (el.classList.contains('reveal-delay-100')) delay = 0.1;
+            else if (el.classList.contains('reveal-delay-200')) delay = 0.2;
+            else if (el.classList.contains('reveal-delay-300')) delay = 0.3;
+            
+            gsap.fromTo(el, 
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: delay,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+        });
     </script>
 </body>
 
