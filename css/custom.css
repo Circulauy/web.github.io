@@ -185,13 +185,12 @@ body.cursor-blend #custom-cursor-dot {
 }
 
 /* --- 5. TILT 3D EFECTO HOVER --- */
-/* Contraste Premium para Tipografía sobre fondos complejos:
-   Mantenemos el celeste original (#79C7C7) para que no se pierda en fondos grises,
-   pero le agregamos una sombra paralela elegante y difuminada que despega
-   el texto de cualquier fondo (videos o imágenes) sin ensuciarlo. */
+/* Contraste Premium para Tipografía:
+   Se oscurece el celeste únicamente cuando se usa como texto (.text-rp-teal) 
+   para asegurar su legibilidad, sin afectar a los botones/fondos. */
 .text-rp-teal {
-  color: #79C7C7 !important;
-  text-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
+  color: #3B7A7A !important;
+  text-shadow: none;
 }
 
 .title-style {
