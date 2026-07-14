@@ -185,6 +185,22 @@ body.cursor-blend #custom-cursor-dot {
 }
 
 /* --- 5. TILT 3D EFECTO HOVER --- */
+/* Contraste Premium para Tipografía:
+   Mantiene el celeste original en botones/fondos (bg-rp-teal), pero oscurece
+   ligeramente el celeste cuando se usa como texto (text-rp-teal) para cumplir 
+   con los estándares de contraste y legibilidad (WCAG) en pantallas de baja calidad. */
+.text-rp-teal {
+  color: #4b8e8e !important;
+  /* Sombra ambiental imperceptible para "despegar" el texto del fondo */
+  text-shadow: 0 1px 1px rgba(75, 142, 142, 0.15);
+}
+
+.title-style {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+
 .tilt-card {
   transform-style: preserve-3d;
   perspective: 1000px;
