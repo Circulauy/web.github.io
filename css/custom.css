@@ -221,6 +221,11 @@ body.cursor-blend #custom-cursor-dot {
   color: #79C7C7 !important;
 }
 
+/* Forzar que el subtítulo gris se vuelva blanco legible al estar activo el botón */
+.journey-step-btn.active span.text-gray-400 {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
 /* --- 7. MEJORAS DE SCROLLBAR --- */
 ::-webkit-scrollbar {
   width: 6px;
