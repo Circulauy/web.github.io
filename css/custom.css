@@ -33,12 +33,14 @@
   width: 6px;
   height: 6px;
   background-color: #79C7C7;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.8), 0 2px 6px rgba(0,0,0,0.4);
 }
 
 #custom-cursor-ring {
   width: 32px;
   height: 32px;
-  border: 1.5px solid rgba(121, 199, 199, 0.5);
+  border: 1.5px solid rgba(121, 199, 199, 0.8);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,3 +243,52 @@ body.cursor-blend #custom-cursor-dot {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(121, 199, 199, 0.8);
 }
+/* Hide scrollbar for horizontal scroll containers */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* --- 8. UNIFICACIÓN ESTÉTICA GLOBAL (LEGACY OVERRIDES) --- */
+/* Forzar Inter en textos y Outfit en títulos para pisar plantillas viejas (Poppins/Dosis) */
+body, p, span, li, input, textarea, select {
+  font-family: 'Inter', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6, .title-style, .font-heading {
+  font-family: 'Outfit', sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+/* Corregir tamaños desproporcionados en tienda antigua */
+.shop-detail-box-main h2, .title-all h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.shop-detail-box-main h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Sobrescribir botones genéricos (.btn, .hvr-hover) al nuevo color brand (Teal) */
+.main-top .btn, .footer-main .btn, .shop-detail-box-main .btn, .btn.hvr-hover {
+  background-color: #79C7C7 !important;
+  color: #ffffff !important;
+  border-radius: 9999px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px 0 rgba(121, 199, 199, 0.39) !important;
+  transition: all 0.3s ease !important;
+}
+
+.main-top .btn:hover, .footer-main .btn:hover, .shop-detail-box-main .btn:hover, .btn.hvr-hover:hover {
+  background-color: #5BAEAE !important;
+  box-shadow: 0 6px 20px rgba(121, 199, 199, 0.23) !important;
+  transform: translateY(-2px);
+}
+
+/* Eliminar colores rojos/viejos de la plantilla en hovers de enlaces */
+.products-single:hover .why-text h4, .cart-box .cart-list h6 a:hover, .footer-link a:hover {
+  color: #79C7C7 !important;
+}
+

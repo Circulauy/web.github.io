@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,12 +12,14 @@
         #status { margin-top: 20px; font-size: 18px; font-weight: bold; color: #555; }
         progress { width: 100%; max-width: 400px; height: 20px; margin-top: 10px; display: none; }
     </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <h1>Extractor de Secuencia (Full HD - Máxima Calidad)</h1>
-    <p>Haz clic en el botón para extraer internamente los fotogramas del video original con cero pérdida de calidad.</p>
-    <button id="startBtn">Comenzar Extracción</button>
+    <h1>Extractor de Secuencia (Full HD - MÃ¡xima Calidad)</h1>
+    <p>Haz clic en el botÃ³n para extraer internamente los fotogramas del video original con cero pÃ©rdida de calidad.</p>
+    <button id="startBtn">Comenzar ExtracciÃ³n</button>
     
     <div id="status"></div>
     <progress id="progressBar" value="0" max="100"></progress>
@@ -63,7 +65,7 @@
 
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Extraer a JPEG con calidad 100% ABSOLUTA (1.0) sin NINGUNA pérdida de compresión
+                // Extraer a JPEG con calidad 100% ABSOLUTA (1.0) sin NINGUNA pÃ©rdida de compresiÃ³n
                 const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
                 const base64Data = dataUrl.split(',')[1];
                 
@@ -79,7 +81,7 @@
                 if (currentFrame < totalFrames) {
                     requestAnimationFrame(extractFrame);
                 } else {
-                    status.innerText = "¡Terminado! Comprimiendo archivo ZIP (esto puede demorar unos segundos)...";
+                    status.innerText = "Â¡Terminado! Comprimiendo archivo ZIP (esto puede demorar unos segundos)...";
                     const content = await zip.generateAsync({type: "blob"});
                     
                     const a = document.createElement("a");
@@ -87,7 +89,7 @@
                     a.download = "fotos_alta_calidad.zip";
                     a.click();
                     
-                    status.innerText = "¡Descarga iniciada! Avísame cuando la tengas.";
+                    status.innerText = "Â¡Descarga iniciada! AvÃ­same cuando la tengas.";
                 }
             };
 
@@ -96,3 +98,4 @@
     </script>
 </body>
 </html>
+

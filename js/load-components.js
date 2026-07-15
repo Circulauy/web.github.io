@@ -1407,19 +1407,51 @@ function updateCartDropdown() {
 // 8. INICIALIZACIÓN PREMIUM (HEADER SCROLL & SCROLL REVEAL & CURSOR & TILT)
 // ==========================================
 function initializePremiumFeatures() {
+    let lastScrollY = window.scrollY;
+    
     // 1. Controlar la clase .scrolled y .header-transparent del Header
     window.handleHeaderScroll = () => {
-        const header = document.getElementById('main-header');
+        const header = document.getElementById('main-header') || document.querySelector('header');
         if (header) {
+            // Asegurar que el header tiene las clases de transición (útil para las páginas secundarias)
+            if (!header.classList.contains('transition-transform')) {
+                header.classList.add('transition-transform', 'duration-300', 'ease-in-out');
+            }
+
+            const currentScrollY = window.scrollY;
+            const scrollDelta = currentScrollY - lastScrollY;
+
+            // Smart Header Logic: Ocultar al bajar, mostrar al subir
+            if (currentScrollY > 100 && scrollDelta > 8 && !header.classList.contains('menu-open')) {
+                header.classList.add('-translate-y-full'); // Tailwind class para ocultar hacia arriba
+            } else if (scrollDelta < -8 || currentScrollY <= 100) {
+                header.classList.remove('-translate-y-full');
+            }
+            lastScrollY = currentScrollY;
+
             const videoSection = document.getElementById('featured-project-video');
             const headerHeight = header.offsetHeight || 80;
             
             if (videoSection) {
                 // Estamos en la Home con video
-                const nextSection = document.getElementById('presentacion-triple-impacto');
-                const isVideoActive = nextSection 
-                    ? (nextSection.getBoundingClientRect().top > headerHeight)
-                    : (window.scrollY < (videoSection.offsetHeight - headerHeight));
+                let isVideoActive = true;
+                if (typeof ScrollTrigger !== 'undefined') {
+                    const st = ScrollTrigger.getById('video-main-trigger');
+                    if (st) {
+                        // Comprobación exacta usando la posición final del ScrollTrigger
+                        isVideoActive = window.scrollY < st.end;
+                    } else {
+                        const nextSection = document.getElementById('presentacion-triple-impacto');
+                        isVideoActive = nextSection 
+                            ? (nextSection.getBoundingClientRect().top > headerHeight)
+                            : (window.scrollY < (videoSection.offsetHeight - headerHeight));
+                    }
+                } else {
+                    const nextSection = document.getElementById('presentacion-triple-impacto');
+                    isVideoActive = nextSection 
+                        ? (nextSection.getBoundingClientRect().top > headerHeight)
+                        : (window.scrollY < (videoSection.offsetHeight - headerHeight));
+                }
                 
                 if (isVideoActive) {
                     header.classList.add('header-transparent');
@@ -1722,12 +1754,23 @@ function initPremiumPreloader() {
     if (window.preloaderInitialized) return;
     window.preloaderInitialized = true;
     
+    const preloader = document.getElementById('preloader');
+    if (!preloader) return;
+
+    // Check if preloader was already shown in this session
+    if (sessionStorage.getItem('preloaderShown')) {
+        preloader.style.display = 'none';
+        preloader.classList.add('hidden');
+        return;
+    }
+    
+    // Mark as shown for future navigations in the same session
+    sessionStorage.setItem('preloaderShown', 'true');
+    
     const percentEl = document.getElementById('loader-percent');
     const barEl = document.getElementById('loader-bar');
     const textEl = document.getElementById('loading-text');
-    const preloader = document.getElementById('preloader');
     
-    if (!preloader) return;
     if (!percentEl) {
         // Fallback preloader anterior
         window.addEventListener('load', () => {

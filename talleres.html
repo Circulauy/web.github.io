@@ -2,6 +2,8 @@
 <html lang="es">
 
 <head>
+    <!-- Global Preloader -->
+    <script src="js/global-preloader.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talleres de Economía Circular y Capacitación Ambiental | Circula</title>
@@ -23,6 +25,8 @@
         })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
     <!-- End Google Tag Manager -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +37,6 @@
 
     <style>
         html {
-            scroll-behavior: smooth;
             scrollbar-width: none;
         }
 
@@ -83,72 +86,140 @@
     <link rel="stylesheet" href="css/custom.css">
 </head>
 
-<body class="font-sans bg-bg-light text-text-dark">
+<body class="font-sans bg-bg-light text-text-dark overflow-x-hidden">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
         <!-- Header content loaded via js/load-components.js -->
     </header>
 
     <main>
-        <section
-            class="relative section-padding pt-40 pb-40 flex flex-col min-h-[50vh] border-b border-rp-gray-soft premium-hero-bg"
-            style="background-image:url('images/fondo.jpeg')">
-            <div class="absolute inset-0 bg-text-dark/50"></div>
-            <div
-                class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex-grow flex items-center justify-center h-full">
-                <div>
-                    <h1
-                        class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto reveal-element">
-                        Nuestros <span class="text-rp-teal-dark">Talleres</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto reveal-element reveal-delay-100">
-                        Proyectos a medida para impulsar el cambio real y sostenible en cualquier entorno educativo o
-                        corporativo.
-                    </p>
+        <!-- Hero Section con Video Background -->
+        <section class="relative section-padding pt-40 pb-40 flex flex-col min-h-[70vh] border-b border-rp-gray-soft overflow-hidden">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-80" style="object-position: center 30%;">
+                <source src="images/talleres/hero-video.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-gradient-to-b from-text-dark/80 via-text-dark/60 to-text-dark/90 z-10"></div>
+            
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-20 flex-grow flex flex-col items-center justify-center h-full">
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6 title-style max-w-5xl mx-auto reveal-element">
+                    Experiencias <span class="text-rp-teal">Circulares</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto reveal-element reveal-delay-100 font-light">
+                    Talleres y capacitaciones interactivas para impulsar el cambio real y sostenible en cualquier entorno educativo o corporativo.
+                </p>
+                <div class="reveal-element reveal-delay-200 mt-8 animate-bounce opacity-80">
+                    <span class="text-white text-xs uppercase tracking-[0.3em] block mb-3 font-brand font-bold">Deslizá para descubrir</span>
+                    <i class="fas fa-chevron-down text-white text-xl"></i>
                 </div>
             </div>
         </section>
 
-        <section class="bg-bg-light section-padding border-b border-rp-gray-soft reveal-element">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid md:grid-cols-2 gap-10">
-                    <div
-                        class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30 reveal-element reveal-delay-100">
-                        <h2 class="text-3xl font-bold text-rp-teal mb-4 title-style">Escuelas y Universidades</h2>
-                        <p class="mb-4 text-text-dark/90">
-                            Actividades interactivas y proyectos interdisciplinarios para integrar la sostenibilidad en
-                            la cotideanidad.
+        <!-- GSAP Horizontal Scroll Storytelling -->
+        <section id="talleres-scroll-container" class="bg-text-dark text-white overflow-hidden relative h-screen">
+            <div id="talleres-horizontal" class="flex flex-nowrap w-[300vw] h-screen items-center will-change-transform [transform:translateZ(0)]">
+                
+                <!-- Panel 1: El Problema -->
+                <div class="panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row items-center justify-center p-8 md:p-20 lg:p-32 relative border-r border-gray-800">
+                    <div class="md:w-1/2 z-10 pr-0 md:pr-16 mb-10 md:mb-0">
+                        <span class="text-rp-teal tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Paso 1: Conciencia</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style">El Problema y <br><span class="text-white">Nuestra Misión</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                            Miles de toneladas de plástico se descartan a diario. En Circula, no solo reciclamos: <strong class="text-white font-semibold">educamos</strong>. Creemos que la transformación real comienza cambiando la mentalidad de las personas y las organizaciones desde la base.
                         </p>
-                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
-                            <li>Proyectos de recuperación de plástico local.</li>
-                            <li>Modelado de flujos de residuos sólidos.</li>
-                        </ul>
-                        <a href="contacto.html"
-                            class="inline-block w-full py-3 bg-rp-teal-dark text-white font-bold rounded-lg text-center hover:bg-rp-teal-dark/90 transition">
-                            SOLICITAR INFO
-                        </a>
+                    </div>
+                    <div class="md:w-1/2 w-full h-[35vh] md:h-[60vh] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                        <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                            <source src="images/talleres/video2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Metodología -->
+                <div class="panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row-reverse items-center justify-center p-8 md:p-20 lg:p-32 relative border-r border-gray-800 bg-[#111827]">
+                    <div class="md:w-1/2 z-10 pl-0 md:pl-16 mb-10 md:mb-0">
+                        <span class="text-rp-mint tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Paso 2: Acción</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style">Metodología <br><span class="text-white">100% Práctica</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-light">
+                            Ofrecemos la posibilidad de vivir el proceso de reciclaje en vivo. Creemos en la importancia de experimentar la transformación de los materiales con las propias manos, porque para nosotros, <strong>la sustentabilidad real se puede tocar</strong>.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full h-[35vh] md:h-[60vh] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                        <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                            <source src="images/talleres/video3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Impacto -->
+                <div class="panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row items-center justify-center p-8 md:p-20 lg:p-32 relative border-r border-gray-800 bg-gradient-to-br from-text-dark to-[#0f1f2a]">
+                    <div class="md:w-1/2 z-10 pr-0 md:pr-16 mb-10 md:mb-0">
+                        <span class="text-rp-teal tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Paso 3: Resultado</span>
+                        <h2 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 title-style">Generamos <br><span class="text-rp-mint">Impacto Real</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-12 font-light">
+                            Al finalizar cada taller, los asistentes no solo se llevan conocimiento invaluable, sino objetos sustentables creados por ellos mismos. Un recordatorio tangible de que la economía circular es posible.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 w-full h-[35vh] md:h-[60vh] relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                        <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                            <source src="images/talleres/video4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- Audiences Section -->
+        <section class="py-32 bg-bg-light relative">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold title-style text-text-dark">Propuestas <span class="text-rp-teal-dark">A Medida</span></h2>
+                    <p class="text-lg md:text-xl text-text-dark/70 mt-6 max-w-3xl mx-auto font-light">Adaptamos nuestros contenidos, maquinaria y dinámicas de acuerdo a las necesidades y objetivos específicos de cada organización.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-10 md:gap-16 max-w-6xl mx-auto">
+                    
+                    <!-- Colegios -->
+                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-rp-gray-soft/50 flex flex-col card-hover group">
+                        <div class="h-72 relative overflow-hidden bg-rp-teal/10">
+                            <img src="images/talleres/colegios.png" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Talleres en Colegios">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <h3 class="absolute bottom-6 left-8 text-3xl font-bold text-white font-heading">Colegios y Universidades</h3>
+                        </div>
+                        <div class="p-8 md:p-10 flex-grow flex flex-col">
+                            <p class="text-text-dark/80 mb-8 text-lg leading-relaxed">Actividades interactivas y lúdicas diseñadas específicamente para integrar la sostenibilidad en la vida diaria de las nuevas generaciones.</p>
+                            <ul class="space-y-4 mb-10 text-text-dark/75 flex-grow font-medium">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-rp-teal text-xl mt-0.5 mr-4"></i><span>Proyectos de recuperación de plástico.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-rp-teal text-xl mt-0.5 mr-4"></i><span>Educación ambiental dinámica y práctica.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-rp-teal text-xl mt-0.5 mr-4"></i><span>Creación de objetos útiles para el colegio.</span></li>
+                            </ul>
+                            <a href="contacto.html?interest=Talleres%20para%20colegios" class="inline-block w-full py-4 bg-rp-teal text-white font-bold rounded-xl text-center hover:bg-rp-teal-dark transition-all duration-300 shadow-lg shadow-rp-teal/30 hover:shadow-xl hover:-translate-y-1">Agendar Taller Educativo</a>
+                        </div>
                     </div>
 
-                    <div
-                        class="bg-white p-8 rounded-xl shadow-xl card-hover border border-rp-teal/30 reveal-element reveal-delay-200">
-                        <h2 class="text-3xl font-bold text-rp-teal mb-4 title-style">Empresas e instituciones</h2>
-                        <p class="mb-4 text-text-dark/90">
-                            Capacitación especializada para equipos que implementen estrategias de Zero Waste y cumplan
-                            metas de sostenibilidad.
-                        </p>
-                        <ul class="list-disc list-inside text-text-dark/70 mb-6 space-y-1 ml-4">
-                            <li>Auditoría de Residuos.</li>
-                            <li>Talleres interactivos para transformar los hábitos de los colaboradores.</li>
-                        </ul>
-                        <a href="contacto.html"
-                            class="inline-block w-full py-3 bg-rp-teal-dark text-white font-bold rounded-lg text-center hover:bg-rp-teal-dark/90 transition">
-                            SOLICITAR INFO
-                        </a>
+                    <!-- Empresas -->
+                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-rp-gray-soft/50 flex flex-col card-hover group">
+                        <div class="h-72 relative overflow-hidden bg-gray-900">
+                            <!-- Imagen real para empresas -->
+                            <img src="images/talleres/empresas_new.jpg" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 opacity-90" alt="Talleres corporativos">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <h3 class="absolute bottom-6 left-8 text-3xl font-bold text-white font-heading">Empresas e Instituciones</h3>
+                        </div>
+                        <div class="p-8 md:p-10 flex-grow flex flex-col">
+                            <p class="text-text-dark/80 mb-8 text-lg leading-relaxed">Capacitación corporativa avanzada para equipos comprometidos con el cumplimiento de metas ESG y estrategias Zero Waste.</p>
+                            <ul class="space-y-4 mb-10 text-text-dark/75 flex-grow font-medium">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-gray-800 text-xl mt-0.5 mr-4"></i><span>Transformación de hábitos de colaboradores.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-gray-800 text-xl mt-0.5 mr-4"></i><span>Team building enfocado en sostenibilidad.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-gray-800 text-xl mt-0.5 mr-4"></i><span>Fabricación de regalos empresariales in-house.</span></li>
+                            </ul>
+                            <a href="contacto.html?interest=Talleres%20para%20empresas" class="inline-block w-full py-4 bg-text-dark text-white font-bold rounded-xl text-center hover:bg-gray-800 transition-all duration-300 shadow-lg shadow-gray-900/30 hover:shadow-xl hover:-translate-y-1">Solicitar Info Corporativa</a>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -160,9 +231,6 @@
 
     <script src="js/load-components.js?v=1.0.1"></script>
     <script>
-        // Removed redundant updateCartCount and Year logic as they are now in load-components.js
-
-
         // GA4 Event
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -170,6 +238,60 @@
             page_title: 'Talleres - Circula',
             page_location: window.location.href
         });
+
+        let isScrollInitialized = false;
+        // GSAP ScrollTrigger for Horizontal Storytelling
+        function initTalleresScroll() {
+            if (isScrollInitialized) return;
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                isScrollInitialized = true;
+                gsap.registerPlugin(ScrollTrigger);
+                
+                const container = document.getElementById("talleres-horizontal");
+                if (!container) return;
+                
+                const panels = gsap.utils.toArray(".panel");
+                
+                // Only apply horizontal scroll on desktop
+                if (window.innerWidth >= 768) {
+                    gsap.to(container, {
+                        x: () => -(container.scrollWidth - document.documentElement.clientWidth) + "px",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "#talleres-scroll-container",
+                            pin: true,
+                            scrub: true, // Lock directly to scrollbar to prevent physics conflicts
+                            end: () => "+=" + (container.offsetWidth * 1.5)
+                        }
+                    });
+                } else {
+                    // Mobile fallback: Interactive Sticky Cards
+                    const trigger = document.getElementById("talleres-scroll-container");
+                    if (trigger) trigger.classList.remove("h-screen", "overflow-hidden");
+                    
+                    container.classList.remove("flex-nowrap", "w-[300vw]", "h-screen");
+                    container.classList.add("flex-wrap", "w-full", "h-auto");
+                    panels.forEach((p, index) => {
+                        p.classList.remove("w-screen");
+                        // Add sticky positioning and a shadow so it looks like it slides over the previous one
+                        p.classList.add("w-full", "sticky", "top-0", "z-" + (index * 10));
+                        
+                        if (index > 0) {
+                            p.classList.add("shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
+                        }
+                    });
+                }
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTalleresScroll);
+        } else {
+            initTalleresScroll();
+        }
+        
+        // Timeout as fallback in case scripts load late
+        setTimeout(initTalleresScroll, 500);
     </script>
 </body>
 

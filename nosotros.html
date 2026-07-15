@@ -2,6 +2,8 @@
 <html lang="es">
 
 <head>
+    <!-- Global Preloader -->
+    <script src="js/global-preloader.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros | Circula: Empresa de Triple Impacto y Economía Circular</title>
@@ -14,6 +16,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -70,23 +76,23 @@
     <link rel="stylesheet" href="css/custom.css">
 </head>
 
-<body class="font-sans bg-bg-light text-text-dark">
+<body class="font-sans bg-bg-light text-text-dark overflow-x-hidden">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8WM8KW" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
 
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50">
     </header>
 
     <main>
         <section
-            class="relative section-padding pt-40 pb-40 flex flex-col min-h-[60vh] border-b border-rp-gray-soft premium-hero-bg"
+            class="relative section-padding pt-40 pb-40 flex flex-col min-h-[60vh] border-b border-rp-gray-soft premium-hero-bg bg-cover bg-center bg-no-repeat"
             style="background-image:url('images/FondoSobreNosotros.jpeg')">
             <div class="absolute inset-0 bg-text-dark/40"></div>
             <div
                 class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex-grow flex items-center justify-center h-full">
                 <div>
                     <h1
-                        class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
+                        class="text-5xl md:text-6xl font-bold text-white leading-tight mb-6 title-style max-w-4xl mx-auto">
                         Somos Circula</h1>
                     <p class="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto">
                         Circula es una <strong>empresa de triple impacto</strong> y economía circular que nace para atacar la problemática de la gestión de residuos plásticos en nuestro país. Diseñamos soluciones sustentables a medida, combinando el valor ambiental, social y económico.
@@ -95,118 +101,66 @@
             </div>
         </section>
 
-        <section class="bg-bg-light section-padding">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold mb-3 title-style">NUESTROS <span class="text-rp-teal-dark">SERVICIOS</span>
-                    </h2>
-                    <p class="text-lg text-text-dark/80 max-w-3xl mx-auto">
-                        Transformamos la gestión de residuos con soluciones prácticas y sostenibles para empresas y
-                        comunidades.
-                    </p>
-                </div>
-
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Asesoramiento</h3>
-                            <p class="text-gray-600">Creamos planes o programas según las necesidades del cliente.</p>
-                        </div>
+        <!-- GSAP Horizontal Scroll Storytelling - Nuestros Servicios -->
+        <section id="nosotros-scroll-container" class="bg-text-dark text-white overflow-hidden relative h-screen">
+            <div id="nosotros-horizontal" class="flex flex-nowrap w-[300vw] h-screen items-center will-change-transform [transform:translateZ(0)]">
+                
+                <!-- Panel 1: Consultoría -->
+                <div class="nosotros-panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row items-center justify-center p-8 md:p-20 lg:p-32 relative border-r border-gray-800 bg-[#111827]">
+                    <div class="absolute inset-0 z-0">
+                        <img src="images/talleres/empresas_new.jpg" class="w-full h-full object-cover opacity-30 object-center" alt="Consultoría">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#111827] via-[#111827]/80 to-transparent"></div>
                     </div>
-
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Consultorías Ambientales</h3>
-                            <p class="text-gray-600">Asesoramos a <strong>empresas sustentables</strong> e instituciones que buscan implementar una correcta <strong>gestión de residuos</strong> sólidos y planes eficientes de <strong>reciclaje</strong> corporativo.</p>
-                        </div>
+                    <div class="md:w-1/2 z-10 pr-0 md:pr-16 mb-10 md:mb-0 relative">
+                        <span class="text-rp-teal tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Asesoramiento & Consultoría</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style">Estrategia <span class="text-rp-teal">Ambiental</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-light mb-8">
+                            Creamos planes o programas según las necesidades del cliente. Asesoramos a <strong class="text-white font-semibold">empresas sustentables</strong> e instituciones que buscan implementar una correcta gestión de residuos sólidos y planes eficientes de reciclaje corporativo.
+                        </p>
                     </div>
-
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <path
-                                    d="M12 2a5 5 0 0 0-5 5c0 2.24 1.7 4.1 4 4.88V21h2v-9.12c2.3-.78 4-2.64 4-4.88a5 5 0 0 0-5-5z">
-                                </path>
-                                <path d="M12 2V.5"></path>
-                                <path d="M7 7h10"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Capacitaciones</h3>
-                            <p class="text-gray-600">Diseñamos e impartimos <strong>capacitaciones</strong> a medida para construir en las organizaciones una cultura de responsabilidad y separación de residuos.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 4V1h20v3"></path>
-                                <line x1="6" y1="7" x2="6" y2="23"></line>
-                                <line x1="10" y1="7" x2="10" y2="23"></line>
-                                <line x1="14" y1="7" x2="14" y2="23"></line>
-                                <line x1="18" y1="7" x2="18" y2="23"></line>
-                                <path d="M21 4H3v3h18z"></path>
-                                <path d="M10 23h4"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Talleres y Educación</h3>
-                            <p class="text-gray-600">Fomentamos una cultura de sustentabilidad mediante <strong>talleres</strong> prácticos y lúdicos sobre <strong>reciclaje</strong> y economía circular.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10 17l-3 3-3-3"></path>
-                                <path d="M7 17V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v13"></path>
-                                <path d="M16 10h4l2 3v5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-5l2-3z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Recolección y Gestión</h3>
-                            <p class="text-gray-600">Ofrecemos logística de recolección de plástico para facilitar la **gestión de residuos** en empresas y centros educativos.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-md border border-rp-gray-soft card-hover">
-                        <div class="flex-shrink-0 p-3 rounded-full bg-rp-blue-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rp-teal-dark" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-text-dark mb-1">Regalos Empresariales</h3>
-                            <p class="text-gray-600">Desarrollamos **regalos empresariales sustentables** y una amplia gama de **productos sustentables** a medida, fabricados 100% con plástico reciclado local.</p>
-                        </div>
+                    <div class="md:w-1/2 z-10 w-full hidden md:block">
+                         <!-- Spacer for layout -->
                     </div>
                 </div>
+
+                <!-- Panel 2: Educación -->
+                <div class="nosotros-panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row-reverse items-center justify-center p-8 md:p-20 lg:p-32 relative border-r border-gray-800 bg-[#0a111a]">
+                    <div class="absolute inset-0 z-0">
+                        <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-30 object-center">
+                            <source src="images/talleres/video2.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-l from-[#0a111a] via-[#0a111a]/80 to-transparent"></div>
+                    </div>
+                    <div class="md:w-1/2 z-10 pl-0 md:pl-16 mb-10 md:mb-0 relative">
+                        <span class="text-rp-teal tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Educación & Conciencia</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style">Capacitaciones y <br><span class="text-white">Talleres</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-light mb-8">
+                            Diseñamos e impartimos capacitaciones a medida. Fomentamos una cultura de sustentabilidad mediante <strong class="text-white font-semibold">talleres</strong> prácticos y lúdicos sobre reciclaje y economía circular.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 z-10 w-full hidden md:block">
+                         <!-- Spacer for layout -->
+                    </div>
+                </div>
+
+                <!-- Panel 3: Gestión & Productos -->
+                <div class="nosotros-panel w-screen h-screen flex-shrink-0 flex flex-col md:flex-row items-center justify-center p-8 md:p-20 lg:p-32 relative bg-gradient-to-br from-text-dark to-[#0f1f2a]">
+                    <div class="absolute inset-0 z-0">
+                        <img src="images/Posavasos.jpeg" class="w-full h-full object-cover opacity-20 object-center" alt="Productos Circulares">
+                        <div class="absolute inset-0 bg-gradient-to-r from-text-dark via-text-dark/80 to-transparent"></div>
+                    </div>
+                    <div class="md:w-1/2 z-10 pr-0 md:pr-16 mb-10 md:mb-0 relative">
+                        <span class="text-rp-teal tracking-[0.2em] uppercase text-sm font-bold mb-4 block">Logística & Economía Circular</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style">Gestión y <br><span class="text-white">Productos</span></h2>
+                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-light mb-8">
+                            Ofrecemos logística de recolección de plástico para facilitar la gestión de residuos en empresas y centros educativos. Además, desarrollamos <strong class="text-white font-semibold">regalos empresariales sustentables</strong> y productos a medida fabricados 100% con plástico reciclado local.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 z-10 w-full hidden md:block">
+                         <!-- Spacer for layout -->
+                    </div>
+                </div>
+                
             </div>
         </section>
 
@@ -222,7 +176,7 @@
 
                 <div class="flex flex-wrap justify-center gap-16 max-w-5xl mx-auto">
 
-                    <div class="flex flex-col items-center text-center group">
+                    <div class="flex flex-col items-center text-center group reveal-element card-hover tilt-card p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-rp-gray-soft/50 shadow-sm hover:shadow-xl transition-all duration-300">
                         <div class="relative mb-4">
                             <img src="images/Foto CV.jpg" alt="Antonio Robaina"
                                 class="w-48 h-48 object-cover rounded-full border-4 border-rp-teal-dark/50 shadow-lg transition-transform duration-300 group-hover:scale-105">
@@ -235,7 +189,7 @@
                         </a>
                     </div>
 
-                    <div class="flex flex-col items-center text-center group">
+                    <div class="flex flex-col items-center text-center group reveal-element reveal-delay-100 card-hover tilt-card p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-rp-gray-soft/50 shadow-sm hover:shadow-xl transition-all duration-300">
                         <div class="relative mb-4">
                             <img src="images/Emiliano CV.jpg" alt="Emiliano Robaina"
                                 class="w-48 h-48 object-cover rounded-full border-4 border-rp-teal-dark/50 shadow-lg transition-transform duration-300 group-hover:scale-105">
@@ -248,7 +202,7 @@
                         </a>
                     </div>
 
-                    <div class="flex flex-col items-center text-center group">
+                    <div class="flex flex-col items-center text-center group reveal-element reveal-delay-200 card-hover tilt-card p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-rp-gray-soft/50 shadow-sm hover:shadow-xl transition-all duration-300">
                         <div class="relative mb-4">
                             <img src="images/Paula Thut.png" alt="Paula Thut"
                                 onerror="this.src='https://ui-avatars.com/api/?name=Paula+Thut&size=192&background=a3e6d8&color=1e293b&bold=true&rounded=true'"
@@ -262,7 +216,7 @@
                         </a>
                     </div>
 
-                    <div class="flex flex-col items-center text-center group">
+                    <div class="flex flex-col items-center text-center group reveal-element reveal-delay-300 card-hover tilt-card p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-rp-gray-soft/50 shadow-sm hover:shadow-xl transition-all duration-300">
                         <div class="relative mb-4">
                             <img src="images/Agustina Rosso.jpeg" alt="Agustina Rosso"
                                 onerror="this.src='https://ui-avatars.com/api/?name=Agustina+Rosso&size=192&background=a3e6d8&color=1e293b&bold=true&rounded=true'"
@@ -277,7 +231,7 @@
                         </a>
                     </div>
 
-                    <div class="flex flex-col items-center text-center group">
+                    <div class="flex flex-col items-center text-center group reveal-element reveal-delay-400 card-hover tilt-card p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-rp-gray-soft/50 shadow-sm hover:shadow-xl transition-all duration-300">
                         <div class="relative mb-4">
                             <img src="images/Rodrigo Madeira.jpeg" alt="Rodrigo Madeira"
                                 onerror="this.src='https://ui-avatars.com/api/?name=Rodrigo+Madeira&size=192&background=a3e6d8&color=1e293b&bold=true&rounded=true'"
@@ -303,6 +257,60 @@
     <script src="js/load-components.js?v=1.0.1"></script>
     <script>
         window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'page_view', page_title: 'Sobre Nosotros - Circula', page_location: window.location.href });
+
+        let isNosotrosScrollInitialized = false;
+        // GSAP ScrollTrigger for Horizontal Storytelling - Servicios
+        function initNosotrosScroll() {
+            if (isNosotrosScrollInitialized) return;
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                isNosotrosScrollInitialized = true;
+                gsap.registerPlugin(ScrollTrigger);
+                
+                const container = document.getElementById("nosotros-horizontal");
+                if (!container) return;
+                
+                const panels = gsap.utils.toArray(".nosotros-panel");
+                
+                // Only apply horizontal scroll on desktop
+                if (window.innerWidth >= 768) {
+                    gsap.to(container, {
+                        x: () => -(container.scrollWidth - document.documentElement.clientWidth) + "px",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "#nosotros-scroll-container",
+                            pin: true,
+                            scrub: true, // Lock directly to scrollbar to prevent physics conflicts
+                            end: () => "+=" + (container.offsetWidth * 1.5)
+                        }
+                    });
+                } else {
+                    // Mobile fallback: Interactive Sticky Cards
+                    const trigger = document.getElementById("nosotros-scroll-container");
+                    if (trigger) trigger.classList.remove("h-screen", "overflow-hidden");
+                    
+                    container.classList.remove("flex-nowrap", "w-[300vw]", "h-screen");
+                    container.classList.add("flex-wrap", "w-full", "h-auto");
+                    panels.forEach((p, index) => {
+                        p.classList.remove("w-screen");
+                        // Add sticky positioning and a shadow so it looks like it slides over the previous one
+                        p.classList.add("w-full", "sticky", "top-[64px]", "z-" + (index * 10)); // top-[64px] clears the header
+                        
+                        if (index > 0) {
+                            p.classList.add("shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
+                        }
+                    });
+                }
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNosotrosScroll);
+        } else {
+            initNosotrosScroll();
+        }
+        
+        // Timeout as fallback in case scripts load late
+        setTimeout(initNosotrosScroll, 500);
     </script>
 </body>
 

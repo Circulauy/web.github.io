@@ -29,37 +29,44 @@
     }
 </style>
 
-<div class="container mx-auto px-6 sm:px-12 lg:px-24 py-4 flex justify-between items-center relative">
-    
-    <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition relative z-[100]">
-        <img src="images/logo.png" alt="Logo Circula" id="header-logo-img" class="h-8 sm:h-10 lg:h-11 object-contain">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+
+    <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+        <img id="header-logo" src="images/logo.png" alt="Logo Circula"
+            class="h-8 sm:h-10 lg:h-11 object-contain transition-all duration-300">
     </a>
 
     <nav class="flex max-md:hidden space-x-8 items-center" id="desktop-nav">
-        <a href="index.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Inicio</a>
-        <a href="talleres.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Talleres</a>
-        <a href="nosotros.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Nosotros</a>
-        <a href="galeria.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Galería</a>
-        <a href="tienda.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Tienda</a>
-        <a href="contacto.html" class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Contacto</a>
+        <a href="index.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Inicio</a>
+        <a href="talleres.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Talleres</a>
+        <a href="nosotros.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Nosotros</a>
+        <a href="galeria.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Galería</a>
+        <a href="tienda.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Tienda</a>
+        <a href="contacto.html"
+            class="nav-link font-brand font-normal text-sm text-text-dark hover:text-rp-teal transition uppercase tracking-widest">Contacto</a>
     </nav>
 
-    <div class="flex items-center space-x-4 relative z-[100]">
-        
-        <a href="https://www.instagram.com/circula.uy/" target="_blank" 
-           class="max-md:hidden text-text-dark hover:text-rp-teal transition text-xl">
-             <i class="fab fa-instagram"></i>
+    <div id="right-icons-container" class="flex items-center space-x-4 relative">
+        <a href="https://www.instagram.com/circula.uy/" target="_blank" rel="noopener noreferrer"
+            class="max-md:hidden text-text-dark hover:text-rp-teal transition p-2 rounded-full hover:bg-rp-blue-light text-xl flex items-center justify-center w-10 h-10">
+            <i class="fab fa-instagram transition-colors duration-300"></i>
         </a>
 
-        <a href="https://www.linkedin.com/company/circulauy" target="_blank" 
-           class="max-md:hidden text-text-dark hover:text-rp-teal transition text-xl">
-             <i class="fab fa-linkedin"></i>
+        <a href="https://www.linkedin.com/company/circulauy" target="_blank" rel="noopener noreferrer"
+            class="max-md:hidden text-text-dark hover:text-rp-teal transition p-2 rounded-full hover:bg-rp-blue-light text-xl flex items-center justify-center w-10 h-10">
+            <i class="fab fa-linkedin transition-colors duration-300"></i>
         </a>
 
         <div id="cart-dropdown-container" class="relative group">
             <a href="carrito.html" class="relative p-2 rounded-full hover:bg-rp-blue-light transition block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" class="w-6 h-6 text-rp-teal">
+                    stroke="currentColor" stroke-width="2"
+                    class="w-6 h-6 text-rp-teal-dark transition-colors duration-300">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 12.38a2 2 0 0 0 2 1.62h9.72a2 2 0 0 0 2-1.62L23 6H6"></path>
@@ -67,16 +74,33 @@
                 <span id="cart-count"
                     class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rp-teal rounded-full">0</span>
             </a>
-            <div id="cart-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 10px; width: 320px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); z-index: 2147483647; padding: 20px; color: #1f2937;">
-                <h4 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2">Resumen del Carrito</h4>
-                <div id="dropdown-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;"><p style="text-align: center; color: #6b7280;">Cargando...</p></div>
-                <div id="dropdown-summary" style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: auto;">
-                    <!-- El bloque de totales (subtotal + descuento + total) se inyecta dinámicamente por updateCartDropdown() -->
+
+            <div id="cart-dropdown"
+                style="display: none; position: absolute; right: 0; top: 100%; margin-top: 10px; width: 320px; min-width: 300px; min-height: 150px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); z-index: 2147483647; padding: 20px; color: #1f2937;">
+                <h4 class="text-lg font-bold mb-3 border-b border-gray-100 pb-2"
+                    style="font-family: 'Outfit', sans-serif; color: #111827; font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.5rem;">
+                    Resumen del Carrito</h4>
+
+                <div id="dropdown-items-list"
+                    style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem; min-height: 50px;">
+                    <p style="text-align: center; color: #6b7280; padding: 1rem;">Cargando...</p>
+                </div>
+
+                <div id="dropdown-summary"
+                    style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: auto;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.25rem; margin-bottom: 1rem; color: #111827;">
+                        <span style="font-family: 'Outfit', sans-serif;">Total:</span>
+                        <span id="dropdown-total"
+                            style="color: #009ee3; font-family: 'Outfit', sans-serif;">$0.00</span>
+                    </div>
 
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <button onclick="window.location.href='datos.html'" class="btn-checkout btn-checkout-blue">
+                        <button onclick="window.location.href='datos.html'"
+                            class="btn-checkout btn-checkout-blue">
                             Finalizar Compra
                         </button>
+
                         <a href="carrito.html" class="btn-checkout btn-checkout-teal">
                             Ver Carrito
                         </a>
@@ -85,12 +109,16 @@
             </div>
         </div>
 
-        <button id="mobile-menu-button" 
-            class="md:hidden relative z-[100] p-2 text-text-dark focus:outline-none group"
+        <button id="mobile-menu-button"
+            class="md:hidden relative z-[70] p-2 text-text-dark focus:outline-none group"
             onclick="toggleMobileMenu()">
-            <div class="w-6 h-5 flex flex-col justify-between items-center overflow-hidden">
-                <span id="line-top" class="w-full h-[2px] bg-current transform transition-all duration-300 origin-center rounded-full"></span>
-                <span id="line-bottom" class="w-full h-[2px] bg-current transform transition-all duration-300 origin-center rounded-full"></span>
+            <div class="w-7 h-5 flex flex-col justify-between items-center transition-all duration-300">
+                <span id="line-top"
+                    class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
+                <span id="line-middle"
+                    class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
+                <span id="line-bottom"
+                    class="w-full h-[2px] bg-gray-900 transform transition-all duration-300 origin-center rounded-full"></span>
             </div>
         </button>
     </div>
