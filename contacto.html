@@ -52,107 +52,154 @@
         </div>
     </div>
 
-    <div id="header-placeholder"></div>
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300 ease-in-out">
+        <!-- Header content loaded via js/load-components.js -->
+    </header>
 
     <main>
-        <section class="bg-rp-teal section-padding pt-32">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-                <div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border-t-4 border-rp-mint">
-                    <div class="text-center mb-10">
-                        <h1 class="text-4xl font-bold text-text-dark mb-3 title-style">
-                            CONTACTA CON <span class="text-rp-teal">CIRCULA</span>
-                        </h1>
-                        <p class="text-lg text-text-dark/80">
-                            Déjanos tu consulta y te responderemos por correo electrónico.
+        <section class="bg-[#fafafa] pt-32 pb-24 border-b border-rp-gray-soft/40 relative overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                    
+                    <!-- Left Column: Information -->
+                    <div class="lg:col-span-5 reveal-element">
+                        <span class="text-xs font-bold tracking-[0.25em] text-rp-teal-dark uppercase mb-4 block font-brand">COMUNICACIÓN DIRECTA</span>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 title-style text-text-dark leading-tight">
+                            Hablemos de <br class="hidden lg:block"><span class="font-light italic text-rp-teal-dark lowercase">impacto</span>
+                        </h2>
+                        <p class="text-lg text-slate-500 font-light mb-12 max-w-md">
+                            Estamos aquí para ayudarte a transformar tus ideas en proyectos sustentables. Escríbenos y nuestro equipo se pondrá en contacto contigo a la brevedad.
                         </p>
-                    </div>
-
-                    <form action="https://formsubmit.co/contacto@circula.uy" method="POST" enctype="multipart/form-data" class="space-y-6" onsubmit="activarCarga()">
                         
-                        <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
-                        <input type="hidden" name="_captcha" value="false"> 
-                        <input type="hidden" name="_template" value="table">
-                        
-                        <input type="hidden" name="_next" id="redirect-url" value="">
-
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-text-dark mb-2">Correo Electrónico *</label>
-                            <input type="email" name="email" id="email" required placeholder="tu.correo@ejemplo.com"
-                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
-                        </div>
-
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-text-dark mb-2">Nombre Completo *</label>
-                            <input type="text" name="name" id="name" required placeholder="Tu Nombre"
-                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition">
-                        </div>
-
-                        <div>
-                            <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés Principal *</label>
-                            <select id="interest" name="interest" required onchange="handleInterestChange(this)"
-                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition appearance-none"
-                                style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right .75rem center">
-                                <option value="" disabled selected>Selecciona una opción</option>
-                                <option value="Talleres para colegios">Talleres para colegios</option>
-                                <option value="Talleres para empresas">Talleres para empresas</option>
-                                <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
-                                <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje</option>
-                                <option value="Solicitud de trabajo">Solicitud de trabajo</option>
-                                <option value="Proyecto personalizado">Proyecto personalizado</option>
-                                <option value="Otros">Otros</option>
-                            </select>
-
-                            <div id="vacancy-alert" class="hidden mt-3 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg transition-all duration-300">
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-info-circle text-yellow-500 mt-0.5"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-sm font-bold text-yellow-800">Aviso sobre vacantes</h3>
-                                        <div class="mt-1 text-sm text-yellow-700">
-                                            <p>Actualmente <strong>no contamos con vacantes disponibles</strong> en el equipo. De todas formas, podés enviarnos tu CV y lo guardaremos en nuestra base de datos para futuras oportunidades.</p>
-                                        </div>
-                                    </div>
+                        <div class="space-y-8">
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-rp-teal shrink-0">
+                                    <i class="fas fa-envelope text-lg"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h4 class="text-sm font-bold text-text-dark mb-1 uppercase tracking-wider">Email</h4>
+                                    <a href="mailto:contacto@circula.uy" class="text-slate-500 hover:text-rp-teal transition-colors font-light text-lg break-all">contacto@circula.uy</a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-rp-teal shrink-0">
+                                    <i class="fab fa-instagram text-lg"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h4 class="text-sm font-bold text-text-dark mb-1 uppercase tracking-wider">Instagram</h4>
+                                    <a href="https://instagram.com/circula.uy" target="_blank" class="text-slate-500 hover:text-rp-teal transition-colors font-light text-lg break-all">@circula.uy</a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-rp-teal shrink-0">
+                                    <i class="fas fa-map-marker-alt text-lg"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h4 class="text-sm font-bold text-text-dark mb-1 uppercase tracking-wider">Ubicación</h4>
+                                    <p class="text-slate-500 font-light text-lg">Montevideo, Uruguay<br><span class="text-sm text-slate-400 mt-1 block">(Visitas solo con agenda previa)</span></p>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <label for="attachment" class="block text-sm font-medium text-text-dark mb-2">Adjuntar Archivo (Opcional)</label>
-                            <input type="file" name="attachment" id="attachment" accept="image/png, image/jpeg, application/pdf"
-                                onchange="handleFileSelect(event)"
-                                class="block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2.5 file:px-4
-                                    file:rounded-lg file:border-0
-                                    file:text-sm file:font-bold
-                                    file:bg-rp-teal file:text-white
-                                    hover:file:bg-rp-teal/90
-                                    cursor-pointer border border-rp-border-default rounded-lg bg-white transition
-                                ">
-                            <p class="mt-1 text-xs text-gray-500 transition-colors duration-300" id="file-info">
-                                <i class="fas fa-info-circle mr-1"></i> Imágenes se comprimirán automáticamente. PDFs máx 10MB.
-                            </p>
+                    <!-- Right Column: Form -->
+                    <div class="lg:col-span-7">
+                        <div class="bg-white p-5 sm:p-8 md:p-12 rounded-3xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover reveal-element reveal-delay-100">
+                            <form action="https://formsubmit.co/contacto@circula.uy" method="POST" enctype="multipart/form-data" class="space-y-6" onsubmit="activarCarga()">
+                                
+                                <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
+                                <input type="hidden" name="_captcha" value="false"> 
+                                <input type="hidden" name="_template" value="table">
+                                <input type="hidden" name="auto_response" id="auto-response-input" value="Gracias por tu mensaje.">
+                                <input type="hidden" name="_next" id="redirect-url" value="">
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-text-dark mb-2">Nombre Completo *</label>
+                                        <input type="text" name="name" id="name" required placeholder="Tu Nombre"
+                                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition-all duration-300 outline-none text-text-dark">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-text-dark mb-2">Correo Electrónico *</label>
+                                        <input type="email" name="email" id="email" required placeholder="tu.correo@ejemplo.com"
+                                            class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition-all duration-300 outline-none text-text-dark">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="interest" class="block text-sm font-medium text-text-dark mb-2">Interés Principal *</label>
+                                    <select id="interest" name="interest" required onchange="handleInterestChange(this)"
+                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition-all duration-300 outline-none text-text-dark appearance-none bg-white cursor-pointer"
+                                        style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5z%22%20fill%3D%22%2379C7C7%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right 1rem center">
+                                        <option value="" disabled selected>Selecciona una opción</option>
+                                        <option value="Talleres para colegios">Talleres para colegios</option>
+                                        <option value="Talleres para empresas">Talleres para empresas</option>
+                                        <option value="Consulta de Producto/Tienda">Consulta de Producto/Tienda</option>
+                                        <option value="Servicios Generales de Reciclaje">Servicios Generales de Reciclaje</option>
+                                        <option value="Solicitud de trabajo">Solicitud de trabajo</option>
+                                        <option value="Proyecto personalizado">Proyecto personalizado</option>
+                                        <option value="Otros">Otros</option>
+                                    </select>
+
+                                    <div id="vacancy-alert" class="hidden mt-4 p-5 bg-yellow-50 border border-yellow-200/60 rounded-xl transition-all duration-500">
+                                        <div class="flex items-start">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-info-circle text-yellow-500 mt-0.5"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <h3 class="text-sm font-bold text-yellow-800">Aviso sobre vacantes</h3>
+                                                <div class="mt-1 text-sm text-yellow-700 leading-relaxed">
+                                                    <p>Actualmente <strong>no contamos con vacantes disponibles</strong> en el equipo. De todas formas, podés enviarnos tu CV y lo guardaremos en nuestra base de datos para futuras oportunidades.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="attachment" class="block text-sm font-medium text-text-dark mb-2">Adjuntar Archivo (Opcional)</label>
+                                    <div class="w-full overflow-hidden">
+                                        <input type="file" name="attachment" id="attachment" accept="image/png, image/jpeg, application/pdf"
+                                            onchange="handleFileSelect(event)"
+                                            class="block w-full text-sm text-slate-500
+                                                file:mr-4 file:py-2.5 file:px-4
+                                                file:rounded-xl file:border-0
+                                                file:text-sm file:font-medium
+                                                file:bg-slate-100 file:text-text-dark
+                                                hover:file:bg-slate-200
+                                                cursor-pointer border border-slate-200 rounded-xl bg-white transition-all duration-300
+                                            ">
+                                    </div>
+                                    <p class="mt-2 ml-1 text-xs text-slate-400" id="file-info">
+                                        <i class="fas fa-info-circle mr-1"></i> Imágenes se comprimirán automáticamente. PDFs máx 10MB.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="message" class="block text-sm font-medium text-text-dark mb-2">Mensaje *</label>
+                                    <textarea name="message" id="message" rows="4" required
+                                        placeholder="Escribí aquí tu mensaje..."
+                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition-all duration-300 outline-none text-text-dark resize-none"></textarea>
+                                </div>
+
+                                <div class="pt-2">
+                                    <button type="submit" id="submitBtn"
+                                        class="w-full py-4 bg-text-dark text-white font-medium rounded-xl hover:bg-rp-teal transition-all duration-300 title-style text-xs tracking-wider uppercase shadow-[0_10px_30px_rgba(15,23,42,0.08)] flex justify-center items-center gap-2">
+                                        <span id="btnText"><i class="fas fa-paper-plane mr-2"></i> ENVIAR CONSULTA</span>
+                                        <span id="btnLoader" class="hidden flex items-center">
+                                            <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            ENVIANDO...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-text-dark mb-2">Mensaje *</label>
-                            <textarea name="message" id="message" rows="5" required
-                                placeholder="Escribí aquí tu mensaje..."
-                                class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition resize-y"></textarea>
-                        </div>
-
-                        <button type="submit" id="submitBtn"
-                            class="w-full py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition shadow-md title-style text-lg flex justify-center items-center gap-2">
-                            <span id="btnText"><i class="fas fa-paper-plane mr-2"></i> ENVIAR CONSULTA</span>
-                            <span id="btnLoader" class="hidden flex items-center">
-                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                ENVIANDO...
-                            </span>
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>

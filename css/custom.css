@@ -292,3 +292,10 @@ h1, h2, h3, h4, h5, h6, .title-style, .font-heading {
   color: #79C7C7 !important;
 }
 
+
+/* Prevenir scroll horizontal global en moviles causado por animaciones GSAP */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}

@@ -393,7 +393,7 @@ window.toggleMobileMenu = function () {
         const header = document.getElementById('main-header');
         if(header) {
             header.style.zIndex = '10000';
-            header.style.position = 'relative';
+            header.classList.add('menu-open');
         }
 
         menu.classList.remove('invisible', 'opacity-0', 'translate-y-4');
@@ -423,7 +423,10 @@ window.toggleMobileMenu = function () {
     } else {
         // CERRAR
         const header = document.getElementById('main-header');
-        if(header) header.style.zIndex = ''; 
+        if(header) {
+            header.style.zIndex = '';
+            header.classList.remove('menu-open');
+        }
 
         menu.classList.remove('opacity-100', 'translate-y-0', 'visible');
         menu.style.visibility = 'hidden';
@@ -484,22 +487,22 @@ function initializeHeader() {
 
     const mobileMenuHTML = `
             <nav id="mobile-menu"
-                class="fixed inset-0 w-screen h-[100dvh] z-[9999] bg-white flex flex-col items-center justify-center space-y-6 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] opacity-0 invisible translate-y-4 md:hidden overflow-hidden">
+                class="fixed inset-0 w-screen h-[100dvh] z-[9999] bg-bg-light/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] opacity-0 invisible translate-y-4 md:hidden overflow-hidden">
                 
-                <div class="flex flex-col items-center space-y-5 text-center w-full px-4">
-                    <a href="index.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Inicio</a>
-                    <a href="talleres.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Talleres</a>
-                    <a href="nosotros.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Nosotros</a>
-                    <a href="galeria.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Galería</a>
-                    <a href="tienda.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Tienda</a>
-                    <a href="contacto.html" class="block w-32 pb-2 border-b border-gray-300 text-sm font-bold font-brand uppercase tracking-[0.2em] text-text-dark hover:text-rp-teal hover:border-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Contacto</a>
+                <div class="flex flex-col items-center space-y-8 text-center w-full px-4">
+                    <a href="index.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Inicio</a>
+                    <a href="talleres.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Talleres</a>
+                    <a href="nosotros.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Nosotros</a>
+                    <a href="galeria.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Galería</a>
+                    <a href="tienda.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Tienda</a>
+                    <a href="contacto.html" class="block text-xl font-normal font-brand uppercase tracking-widest text-text-dark hover:text-rp-teal transition-all duration-300" onclick="toggleMobileMenu()">Contacto</a>
                 </div>
 
-                <div class="mt-10 flex gap-8 opacity-70">
-                    <a href="https://www.instagram.com/circula.uy/" target="_blank" class="hover:text-rp-teal text-text-dark transition text-3xl">
+                <div class="mt-12 flex gap-8">
+                    <a href="https://www.instagram.com/circula.uy/" target="_blank" class="text-text-dark hover:text-rp-teal transition text-3xl">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://www.linkedin.com/company/circulauy" target="_blank" class="hover:text-rp-teal text-text-dark transition text-3xl">
+                    <a href="https://www.linkedin.com/company/circulauy" target="_blank" class="text-text-dark hover:text-rp-teal transition text-3xl">
                         <i class="fab fa-linkedin"></i>
                     </a>
                 </div>
@@ -1413,6 +1416,13 @@ function initializePremiumFeatures() {
     window.handleHeaderScroll = () => {
         const header = document.getElementById('main-header') || document.querySelector('header');
         if (header) {
+            // Early return si el menú móvil está abierto para no interferir
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && mobileMenu.classList.contains('opacity-100')) {
+                header.classList.remove('-translate-y-full');
+                return;
+            }
+
             // Asegurar que el header tiene las clases de transición (útil para las páginas secundarias)
             if (!header.classList.contains('transition-transform')) {
                 header.classList.add('transition-transform', 'duration-300', 'ease-in-out');
