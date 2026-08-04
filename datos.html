@@ -111,6 +111,62 @@
                                     </div>
                                 </div>
 
+                                <!-- Tipo de Facturación (Consumidor Final vs RUT) -->
+                                <div class="pt-4 border-t border-rp-gray-soft/50">
+                                    <label class="block text-sm font-bold text-text-dark mb-2">Tipo de Factura *</label>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <label id="label-invoice-final" class="flex items-center gap-3 p-3.5 border-2 border-rp-teal bg-rp-teal/5 rounded-xl cursor-pointer transition select-none">
+                                            <input type="radio" name="invoice-type" id="invoice-type-final" value="final" checked onchange="toggleInvoiceFields()" class="w-4 h-4 text-rp-teal focus:ring-rp-teal accent-rp-teal">
+                                            <div>
+                                                <span class="block text-sm font-bold text-text-dark">Consumidor Final</span>
+                                                <span class="block text-xs text-text-dark/60">e-Ticket estándar</span>
+                                            </div>
+                                        </label>
+                                        <label id="label-invoice-rut" class="flex items-center gap-3 p-3.5 border-2 border-rp-border-default hover:border-rp-teal/50 bg-white rounded-xl cursor-pointer transition select-none">
+                                            <input type="radio" name="invoice-type" id="invoice-type-rut" value="rut" onchange="toggleInvoiceFields()" class="w-4 h-4 text-rp-teal focus:ring-rp-teal accent-rp-teal">
+                                            <div>
+                                                <span class="block text-sm font-bold text-text-dark">Factura con RUT</span>
+                                                <span class="block text-xs text-text-dark/60">e-Factura (Empresas)</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Campos condicionales para Factura con RUT -->
+                                <div id="rut-fields-container" class="hidden space-y-4 bg-slate-50 p-5 rounded-xl border border-rp-teal/30 animate-fade-in">
+                                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rp-teal border-b border-rp-teal/20 pb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <span>Datos Fiscales para e-Factura</span>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="buyer-rut" class="block text-sm font-medium text-text-dark mb-1">RUT (12 dígitos) *</label>
+                                            <input type="text" id="buyer-rut" maxlength="12" inputmode="numeric" placeholder="Ej: 211234560012"
+                                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none font-mono text-sm tracking-wider"
+                                                oninput="formatRutInput(this)">
+                                            <p id="rut-helper-text" class="text-[11px] text-gray-500 mt-1">Ingresá los 12 dígitos de tu empresa sin puntos ni guiones.</p>
+                                        </div>
+                                        <div>
+                                            <label for="buyer-razon-social" class="block text-sm font-medium text-text-dark mb-1">Razón Social *</label>
+                                            <input type="text" id="buyer-razon-social" placeholder="Ej: Mi Empresa S.A. / S.R.L."
+                                                class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none text-sm">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="buyer-fiscal-address" class="block text-sm font-medium text-text-dark mb-1">Dirección Fiscal <span class="text-xs text-gray-400 font-normal">(Opcional si coincide con el envío)</span></label>
+                                        <input type="text" id="buyer-fiscal-address" placeholder="Ej: Rincón 456, Montevideo"
+                                            class="w-full px-4 py-3 border border-rp-border-default bg-white rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none text-sm">
+                                    </div>
+                                    <p class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rp-teal flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Tu e-Factura oficial será emitida y enviada en formato PDF a tu correo electrónico luego de confirmar el pago.</span>
+                                    </p>
+                                </div>
+
                                 <div class="pt-4 border-t border-rp-gray-soft/50">
                                     <label for="delivery-option"
                                         class="block text-sm font-bold text-text-dark mb-2">Método de Entrega *</label>
@@ -498,6 +554,58 @@
         }
 
         /**
+         * Muestra/Oculta campos de Facturación con RUT
+         */
+        function toggleInvoiceFields() {
+            const isRut = document.getElementById('invoice-type-rut').checked;
+            const rutContainer = document.getElementById('rut-fields-container');
+            const labelFinal = document.getElementById('label-invoice-final');
+            const labelRut = document.getElementById('label-invoice-rut');
+            const rutInput = document.getElementById('buyer-rut');
+            const razonSocialInput = document.getElementById('buyer-razon-social');
+
+            if (isRut) {
+                rutContainer.classList.remove('hidden');
+                labelRut.classList.add('border-rp-teal', 'bg-rp-teal/5');
+                labelRut.classList.remove('border-rp-border-default', 'bg-white');
+                labelFinal.classList.remove('border-rp-teal', 'bg-rp-teal/5');
+                labelFinal.classList.add('border-rp-border-default', 'bg-white');
+
+                rutInput.setAttribute('required', 'required');
+                razonSocialInput.setAttribute('required', 'required');
+            } else {
+                rutContainer.classList.add('hidden');
+                labelFinal.classList.add('border-rp-teal', 'bg-rp-teal/5');
+                labelFinal.classList.remove('border-rp-border-default', 'bg-white');
+                labelRut.classList.remove('border-rp-teal', 'bg-rp-teal/5');
+                labelRut.classList.add('border-rp-border-default', 'bg-white');
+
+                rutInput.removeAttribute('required');
+                razonSocialInput.removeAttribute('required');
+            }
+        }
+
+        /**
+         * Formatea y restringe el RUT a 12 dígitos numéricos
+         */
+        function formatRutInput(el) {
+            el.value = el.value.replace(/\D/g, '').slice(0, 12);
+            const helper = document.getElementById('rut-helper-text');
+            if (helper) {
+                if (el.value.length === 0) {
+                    helper.textContent = "Ingresá los 12 dígitos de tu empresa sin puntos ni guiones.";
+                    helper.className = "text-[11px] text-gray-500 mt-1";
+                } else if (el.value.length === 12) {
+                    helper.textContent = "✓ RUT válido (12 dígitos)";
+                    helper.className = "text-[11px] text-green-600 font-semibold mt-1";
+                } else {
+                    helper.textContent = `Faltan ${12 - el.value.length} dígitos (el RUT debe tener 12 dígitos)`;
+                    helper.className = "text-[11px] text-amber-600 mt-1";
+                }
+            }
+        }
+
+        /**
          * Rellena el resumen lateral
          */
         function updateCheckoutDisplay() {
@@ -613,6 +721,35 @@
             const deliveryOption = deliverySelect.value;
             const address = addressEl ? addressEl.value : 'Retiro en local';
 
+            // Datos de facturación
+            const isRut = document.getElementById('invoice-type-rut') ? document.getElementById('invoice-type-rut').checked : false;
+            const invoiceType = isRut ? 'rut' : 'final';
+            let rut = '';
+            let razonSocial = '';
+            let fiscalAddress = '';
+
+            if (isRut) {
+                const rutEl = document.getElementById('buyer-rut');
+                const razonEl = document.getElementById('buyer-razon-social');
+                const fiscalAddressEl = document.getElementById('buyer-fiscal-address');
+
+                rut = rutEl ? rutEl.value.trim() : '';
+                razonSocial = razonEl ? razonEl.value.trim() : '';
+                fiscalAddress = fiscalAddressEl ? fiscalAddressEl.value.trim() : '';
+
+                if (rut.length !== 12) {
+                    alert("Por favor ingresa un RUT válido de 12 dígitos numéricos.");
+                    if (rutEl) rutEl.focus();
+                    return;
+                }
+
+                if (!razonSocial) {
+                    alert("Por favor ingresa la Razón Social de tu empresa.");
+                    if (razEl) razonEl.focus();
+                    return;
+                }
+            }
+
             let district = '';
             try {
                 if (deliveryOption === 'montevideo') {
@@ -638,13 +775,13 @@
                 return;
             }
 
-            checkoutCartMP(name, email, deliveryOption, district, address, cartItems);
+            checkoutCartMP(name, email, deliveryOption, district, address, cartItems, invoiceType, rut, razonSocial, fiscalAddress);
         }
 
         /**
          * Backend Call
          */
-        async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, address, cartItems) {
+        async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, address, cartItems, invoiceType = 'final', rut = '', razonSocial = '', fiscalAddress = '') {
             const btn = document.querySelector('button[onclick*="submitCheckoutForm"]');
             const originalText = btn ? btn.innerHTML : "FINALIZAR COMPRA";
 
@@ -689,10 +826,12 @@
                 let data;
                 if (isLocal) {
                     // MOCK RESPONSE FOR LOCAL TESTING
-                    console.warn("Modo Local Detectado: Simulando llamada al backend...");
+                    console.warn("Modo Local Detectado: Simulando llamada al backend...", {
+                        buyerName, buyerEmail, deliveryOption, district, address, invoiceType, rut, razonSocial, fiscalAddress
+                    });
                     await new Promise(resolve => setTimeout(resolve, 2000)); // Fake delay
                     data = { preferenceId: "MOCK_PREFERENCE_ID_FOR_TESTING" };
-                    alert("¡Estás en entorno local!\n\nEl sistema ha simulado una respuesta exitosa del servidor.\nEn producción, esto te redirigiría a Mercado Pago.");
+                    alert(`¡Estás en entorno local!\n\nEl sistema ha simulado una respuesta exitosa del servidor.\nTipo de Factura: ${invoiceType === 'rut' ? 'Factura con RUT (' + rut + ' - ' + razonSocial + ')' : 'Consumidor Final'}\nEn producción, esto te redirigiría a Mercado Pago.`);
                 } else {
                     // REAL BACKEND CALL
                     const response = await fetch(NETLIFY_FUNCTION_ENDPOINT, {
@@ -705,7 +844,11 @@
                             deliveryOption: deliveryOption,
                             district: district,
                             address: address,
-                            discountCode: appliedDiscountCode
+                            discountCode: appliedDiscountCode,
+                            invoiceType: invoiceType,
+                            rut: rut,
+                            razonSocial: razonSocial,
+                            fiscalAddress: fiscalAddress
                         }),
                     });
 

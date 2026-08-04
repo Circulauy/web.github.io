@@ -133,12 +133,12 @@
                 </div>
 
                 <!-- Filtros Avanzados por Categorías -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 pt-3 border-t border-slate-800/80">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-3 border-t border-slate-800/80">
                     <!-- Buscar Cliente/Email -->
                     <div class="flex flex-col gap-1">
-                        <label for="sales-search" class="text-[10px] text-slate-400 font-semibold uppercase">Buscar Cliente / ID:</label>
+                        <label for="sales-search" class="text-[10px] text-slate-400 font-semibold uppercase">Buscar Cliente / ID / RUT:</label>
                         <div class="relative">
-                            <input type="text" id="sales-search" placeholder="Nombre, email, id..." onkeyup="filterSalesHistory()"
+                            <input type="text" id="sales-search" placeholder="Nombre, email, id, rut..." onkeyup="filterSalesHistory()"
                                 class="w-full pl-8 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
                             <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-slate-500 text-[10px]"></i>
                         </div>
@@ -188,6 +188,19 @@
                         <select id="filter-product" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Productos</option>
+                        </select>
+                    </div>
+
+                    <!-- Facturación / RUT -->
+                    <div class="flex flex-col gap-1">
+                        <label for="filter-invoice" class="text-[10px] text-slate-400 font-semibold uppercase">Facturación / RUT:</label>
+                        <select id="filter-invoice" onchange="filterSalesHistory()"
+                            class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
+                            <option value="all">Todos los Comprobantes</option>
+                            <option value="final">Consumidor Final</option>
+                            <option value="rut">Factura con RUT (Todas)</option>
+                            <option value="rut_pending">RUT - Factura Pendiente ⏳</option>
+                            <option value="rut_sent">RUT - Factura Enviada ✓</option>
                         </select>
                     </div>
                 </div>
@@ -384,6 +397,39 @@
                                         <option value="mercadopago">Mercado Pago</option>
                                         <option value="otro">Otro</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <!-- Facturación con RUT (e-Factura) -->
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="manual-invoice-rut-toggle" onchange="toggleManualRutFields()"
+                                            class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
+                                        <label for="manual-invoice-rut-toggle" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                            Emitir con Factura RUT (e-Factura)
+                                        </label>
+                                    </div>
+                                    <span class="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">RUT</span>
+                                </div>
+                                <div id="manual-rut-fields-container" class="hidden space-y-3 pt-3 border-t border-slate-800">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">RUT (12 dígitos)</label>
+                                            <input type="text" id="manual-rut" placeholder="Ej: 211234560019" maxlength="12"
+                                                class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                                        </div>
+                                        <div>
+                                            <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Razón Social</label>
+                                            <input type="text" id="manual-razon-social" placeholder="Ej: Empresa S.A."
+                                                class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Dirección Fiscal</label>
+                                        <input type="text" id="manual-fiscal-address" placeholder="Ej: 18 de Julio 1234, Montevideo"
+                                            class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                                    </div>
                                 </div>
                             </div>
 
@@ -609,6 +655,107 @@
         </div>
     </div>
 
+    <!-- INVOICE UPLOAD & SEND MODAL -->
+    <div id="invoice-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
+        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white font-brand flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice-dollar text-rp-mint"></i>Emitir / Subir Factura con RUT
+                </h3>
+                <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-white transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Datos de Facturación del Cliente -->
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-building text-rp-teal"></i> Datos Fiscales del Comprador
+                    </h4>
+                    <button type="button" onclick="copyFiscalData()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rp-mint px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
+                        <i class="fa-solid fa-copy"></i> Copiar Datos
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Razón Social</span>
+                        <span id="inv-modal-razon" class="font-semibold text-white truncate block">-</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">RUT (12 dígitos)</span>
+                        <span id="inv-modal-rut" class="font-mono font-bold text-rp-teal block">-</span>
+                    </div>
+                    <div class="col-span-2">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Dirección Fiscal</span>
+                        <span id="inv-modal-address" class="text-slate-300 block">-</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Email de Envío</span>
+                        <span id="inv-modal-email" class="text-slate-300 block truncate">-</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Monto Total</span>
+                        <span id="inv-modal-total" class="text-white font-bold block">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado Actual de la Factura -->
+            <div id="inv-modal-status-badge" class="p-3 rounded-lg flex items-center justify-between text-xs bg-slate-900/60 border border-slate-800">
+                <!-- Rellenado dinámicamente -->
+            </div>
+
+            <!-- Formulario de Envío de Factura PDF -->
+            <form id="invoice-upload-form" onsubmit="submitInvoiceEmail(event)" class="space-y-4">
+                <input type="hidden" id="inv-sale-id">
+                
+                <!-- Área de Carga Drag & Drop / Input File -->
+                <div>
+                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">
+                        Seleccionar Archivo PDF de la Factura
+                    </label>
+                    <div id="pdf-drop-zone" class="border-2 border-dashed border-slate-700 hover:border-rp-teal/60 bg-slate-900/40 rounded-xl p-5 text-center cursor-pointer transition">
+                        <input type="file" id="invoice-file-input" accept="application/pdf" class="hidden" onchange="handleInvoiceFileSelected(event)">
+                        <div id="pdf-upload-prompt" class="space-y-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-500"></i>
+                            <p class="text-xs text-slate-300 font-medium">Arrastra el archivo PDF aquí o <span class="text-rp-teal underline font-bold">haz clic para examinar</span></p>
+                            <p class="text-[10px] text-slate-500">Máximo 10 MB. Formato PDF oficial únicamente.</p>
+                        </div>
+                        <div id="pdf-file-preview" class="hidden flex items-center justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <i class="fa-solid fa-file-pdf text-red-400 text-xl"></i>
+                                <div class="text-left min-w-0">
+                                    <p id="pdf-filename-display" class="text-xs font-semibold text-white truncate"></p>
+                                    <p id="pdf-filesize-display" class="text-[10px] text-slate-500"></p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeSelectedPdf(event)" class="text-slate-400 hover:text-red-400 p-1 text-sm transition">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas Opcionales -->
+                <div>
+                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Nota Adicional para el Cliente (Opcional)</label>
+                    <input type="text" id="invoice-custom-notes" placeholder="Ej: Factura e-Factura correspondiente a su orden..."
+                        class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                </div>
+
+                <!-- Botones Acción -->
+                <div class="pt-3 border-t border-slate-700 flex justify-end gap-3 text-xs">
+                    <button type="button" onclick="closeInvoiceModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-5 rounded-lg transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="send-invoice-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg transition shadow-lg shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar Factura por Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- SALE SUCCESS MODAL -->
     <div id="sale-success-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -831,6 +978,7 @@
                 source: "web",
                 customer_name: "Juan Pérez",
                 customer_email: "juan@gmail.com",
+                invoice_type: "final",
                 items: [{ id: "bowl-azul", name: "Bowl Azul", price: 450, quantity: 2 }],
                 delivery_option: "montevideo",
                 district: "Montevideo - Pocitos",
@@ -844,11 +992,38 @@
                 mp_payment_id: "1234567890"
             },
             {
+                id: "MOCK-RUT-1",
+                created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString(),
+                source: "web",
+                customer_name: "Tech Solutions S.A.",
+                customer_email: "facturacion@techsolutions.uy",
+                invoice_type: "rut",
+                rut: "219876540012",
+                razon_social: "Tech Solutions S.A.",
+                direccion_fiscal: "Plaza Independencia 848, Of. 301, Montevideo",
+                invoice_status: "pending",
+                items: [
+                    { id: "banco-alto", name: "Banco Alto", price: 5659, quantity: 2 },
+                    { id: "stand-laptop", name: "Soporte para Laptop", price: 619, quantity: 2 }
+                ],
+                delivery_option: "montevideo",
+                district: "Montevideo - Centro",
+                address: "Plaza Independencia 848, Of. 301",
+                subtotal: 12556,
+                shipping_cost: 270,
+                discount_applied: 0,
+                total: 12826,
+                payment_method: "mercadopago",
+                status: "approved",
+                mp_payment_id: "9876543210"
+            },
+            {
                 id: "MOCK-2",
                 created_at: new Date(Date.now() - 3*24*60*60*1000).toISOString(),
                 source: "manual",
                 customer_name: "María Rodríguez",
                 customer_email: "maria@yahoo.com",
+                invoice_type: "final",
                 items: [{ id: "posavasos-gris", name: "Posavasos Gris", price: 400, quantity: 1 }],
                 delivery_option: "pickup",
                 district: "Pick Up",
@@ -1039,6 +1214,11 @@
                     source: 'manual',
                     customer_name: body.customer_name,
                     customer_email: body.customer_email || 'sin-email@manual.com',
+                    invoice_type: body.invoice_type || (body.rut ? 'rut' : 'final'),
+                    rut: body.rut || null,
+                    razon_social: body.razon_social || null,
+                    direccion_fiscal: body.direccion_fiscal || null,
+                    invoice_status: (body.invoice_type === 'rut' || body.rut) ? 'pending' : null,
                     items: body.items,
                     delivery_option: body.delivery_option,
                     district: body.district || '',
@@ -1056,6 +1236,23 @@
                     sale: newSale, 
                     email_sent: !!body.customer_email,
                     coupon_code: autoCouponCode
+                };
+            }
+
+            if (action === 'send_invoice_email') {
+                const body = JSON.parse(options.body);
+                const found = localMockSales.find(s => String(s.id) === String(body.sale_id));
+                if (found) {
+                    found.invoice_status = 'sent';
+                    found.invoice_sent_at = new Date().toISOString();
+                    return {
+                        message: "Factura PDF enviada exitosamente al cliente (Simulado).",
+                        invoice_sent_at: found.invoice_sent_at
+                    };
+                }
+                return {
+                    message: "Factura PDF enviada exitosamente al cliente (Simulado).",
+                    invoice_sent_at: new Date().toISOString()
                 };
             }
 
@@ -1469,6 +1666,18 @@
             }
         }
 
+        function toggleManualRutFields() {
+            const checkbox = document.getElementById('manual-invoice-rut-toggle');
+            const container = document.getElementById('manual-rut-fields-container');
+            if (checkbox && container) {
+                if (checkbox.checked) {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
+                }
+            }
+        }
+
         function handleProductSelectChange() {
             // Placeholder por si necesitamos previsualizar o validar
         }
@@ -1583,6 +1792,23 @@
             const address = document.getElementById('manual-address').value;
             const paymentMethod = document.getElementById('manual-payment-method').value;
 
+            // RUT fields
+            const isRut = document.getElementById('manual-invoice-rut-toggle') ? document.getElementById('manual-invoice-rut-toggle').checked : false;
+            const rut = isRut ? (document.getElementById('manual-rut').value || '').trim() : null;
+            const razonSocial = isRut ? (document.getElementById('manual-razon-social').value || '').trim() : null;
+            const direccionFiscal = isRut ? (document.getElementById('manual-fiscal-address').value || '').trim() : null;
+
+            if (isRut) {
+                if (!rut || rut.length !== 12 || !/^\d+$/.test(rut)) {
+                    showToast("Por favor ingresa un RUT válido de 12 dígitos numéricos.", "error");
+                    return;
+                }
+                if (!razonSocial) {
+                    showToast("Por favor ingresa la Razón Social de la empresa.", "error");
+                    return;
+                }
+            }
+
             const subtotal = manualSaleItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
             const total = Math.max(0, subtotal + shippingCost - discountApplied);
 
@@ -1609,7 +1835,11 @@
                         total: total,
                         payment_method: paymentMethod,
                         generate_coupon: generateCoupon,
-                        coupon_discount_percent: couponDiscountPercent
+                        coupon_discount_percent: couponDiscountPercent,
+                        invoice_type: isRut ? 'rut' : 'final',
+                        rut: rut,
+                        razon_social: razonSocial,
+                        direccion_fiscal: direccionFiscal
                     })
                 });
 
@@ -1619,6 +1849,9 @@
                 document.getElementById('manual-sale-form').reset();
                 document.getElementById('manual-shipping-cost').disabled = true; // reset to pickup ($0)
                 document.getElementById('gift-coupon-percent-wrapper').classList.add('hidden'); // reset wrapper visibility
+                if (document.getElementById('manual-rut-fields-container')) {
+                    document.getElementById('manual-rut-fields-container').classList.add('hidden');
+                }
                 manualSaleItems = [];
                 renderManualItemsTable();
                 recalcManualSale();
@@ -1782,16 +2015,48 @@
                 else if (sale.delivery_option === 'interior') delLabel = "Interior";
                 else if (sale.delivery_option === 'hand') delLabel = "Mano";
 
+                const isRutSale = sale.invoice_type === 'rut' || !!sale.rut;
+                const isInvoiceSent = sale.invoice_status === 'sent';
+
+                let rutBadge = '';
+                let invoiceActionBtn = '';
+
+                if (isRutSale) {
+                    rutBadge = `
+                        <div class="mt-1 flex items-center gap-1.5 flex-wrap">
+                            <span class="inline-flex items-center gap-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold" title="RUT: ${sale.rut || 'N/A'}">
+                                <i class="fa-solid fa-file-invoice text-[8px]"></i>RUT: ${sale.rut || 'S/D'}
+                            </span>
+                            ${isInvoiceSent 
+                                ? `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded" title="Factura enviada el ${sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleDateString('es-UY') : ''}">✓ Enviada</span>` 
+                                : `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-500/20 border border-amber-500/30 px-1.5 py-0.5 rounded animate-pulse" title="Factura pendiente de emitir y enviar">⏳ Factura Pendiente</span>`
+                            }
+                        </div>
+                    `;
+
+                    invoiceActionBtn = `
+                        <button onclick="openInvoiceModal('${sale.id}')" class="${isInvoiceSent ? 'text-emerald-400 hover:text-emerald-300' : 'text-amber-400 hover:text-amber-300 animate-pulse'} transition p-1 text-sm" title="${isInvoiceSent ? 'Factura Enviada - Ver / Reenviar' : 'Factura Pendiente - Emitir y Enviar por Email'}">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </button>
+                    `;
+                }
+
+                const displayName = sale.razon_social && isRutSale ? `${sale.razon_social} <span class="text-slate-400 text-xs font-normal">(${sale.customer_name})</span>` : sale.customer_name;
+
                 return `
                     <tr class="hover:bg-slate-800/30 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">${date}</td>
                         <td class="px-6 py-4 whitespace-nowrap">${sourceBadge}</td>
-                        <td class="px-6 py-4 whitespace-nowrap font-semibold text-white">${sale.customer_name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-semibold text-white">${displayName}</div>
+                            ${rutBadge}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400"><i class="fa-solid fa-truck-ramp-box mr-1"></i>${delLabel}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-rp-teal">$${sale.total.toFixed(2)}</td>
                         <td class="px-6 py-4 whitespace-nowrap">${payBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-center font-sans">
                             <div class="flex items-center justify-center gap-1.5">
+                                ${invoiceActionBtn}
                                 <button onclick="openDetailsModal('${sale.id}')" class="text-slate-400 hover:text-white transition p-1 text-sm" title="Ver Detalle">
                                     <i class="fa-solid fa-circle-info"></i>
                                 </button>
@@ -1820,6 +2085,7 @@
             const payment = document.getElementById('filter-payment').value;
             const delivery = document.getElementById('filter-delivery').value;
             const product = document.getElementById('filter-product').value;
+            const invoiceFilter = document.getElementById('filter-invoice') ? document.getElementById('filter-invoice').value : 'all';
 
             let dateFrom = dateFromStr ? new Date(dateFromStr) : null;
             let dateTo = dateToStr ? new Date(dateToStr) : null;
@@ -1832,11 +2098,13 @@
             }
 
             filteredSalesList = globalSalesList.filter(sale => {
-                // 1. Filtro por query (Nombre, Email, ID o Dirección)
+                // 1. Filtro por query (Nombre, Email, ID, Dirección, RUT o Razón Social)
                 const matchesQuery = sale.customer_name.toLowerCase().includes(query) || 
                                      (sale.customer_email && sale.customer_email.toLowerCase().includes(query)) ||
                                      sale.id.toLowerCase().includes(query) ||
-                                     (sale.address && sale.address.toLowerCase().includes(query));
+                                     (sale.address && sale.address.toLowerCase().includes(query)) ||
+                                     (sale.rut && sale.rut.toLowerCase().includes(query)) ||
+                                     (sale.razon_social && sale.razon_social.toLowerCase().includes(query));
                 if (!matchesQuery) return false;
 
                 // 2. Filtro por rango de fecha
@@ -1864,6 +2132,13 @@
                     if (!hasProduct) return false;
                 }
 
+                // 7. Filtro por Facturación / RUT
+                const isRut = sale.invoice_type === 'rut' || !!sale.rut;
+                if (invoiceFilter === 'final' && isRut) return false;
+                if (invoiceFilter === 'rut' && !isRut) return false;
+                if (invoiceFilter === 'rut_pending' && (!isRut || sale.invoice_status === 'sent')) return false;
+                if (invoiceFilter === 'rut_sent' && (!isRut || sale.invoice_status !== 'sent')) return false;
+
                 return true;
             });
 
@@ -1879,6 +2154,7 @@
             document.getElementById('filter-payment').value = 'all';
             document.getElementById('filter-delivery').value = 'all';
             document.getElementById('filter-product').value = 'all';
+            if (document.getElementById('filter-invoice')) document.getElementById('filter-invoice').value = 'all';
             filterSalesHistory();
         }
 
@@ -1928,6 +2204,45 @@
                 </div>
             `).join('');
 
+            const isRutSale = sale.invoice_type === 'rut' || !!sale.rut;
+            let fiscalBlock = '';
+
+            if (isRutSale) {
+                const isSent = sale.invoice_status === 'sent';
+                const sentDate = sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleDateString('es-UY') : '';
+                fiscalBlock = `
+                    <div class="bg-amber-950/20 border border-amber-500/30 rounded-xl p-3.5 space-y-2.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-file-invoice"></i> Datos de Factura con RUT (e-Factura)
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded font-bold ${isSent ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">
+                                ${isSent ? `✓ Enviada ${sentDate ? '(' + sentDate + ')' : ''}` : '⏳ Pendiente de Envío'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <span class="text-slate-500 block text-[9px] uppercase font-bold">RUT (12 dígitos)</span>
+                                <span class="font-mono font-bold text-white">${sale.rut || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 block text-[9px] uppercase font-bold">Razón Social</span>
+                                <span class="font-bold text-white truncate block">${sale.razon_social || 'N/A'}</span>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="text-slate-500 block text-[9px] uppercase font-bold">Dirección Fiscal</span>
+                                <span class="text-slate-300">${sale.direccion_fiscal || sale.address || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-amber-500/20 flex justify-end">
+                            <button onclick="closeDetailsModal(); openInvoiceModal('${sale.id}');" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold px-3 py-1.5 rounded-lg border border-amber-500/40 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-invoice-dollar"></i> ${isSent ? 'Ver / Reenviar Factura PDF' : 'Emitir y Enviar Factura PDF'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
             content.innerHTML = `
                 <div class="grid grid-cols-2 gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
                     <div>
@@ -1941,6 +2256,8 @@
                         <p class="text-slate-500 font-mono text-[9px]">${sale.id}</p>
                     </div>
                 </div>
+
+                ${fiscalBlock}
 
                 <div class="space-y-1">
                     <p class="text-[10px] text-slate-500 uppercase font-bold">Dirección / Envío</p>
@@ -1990,6 +2307,221 @@
 
         function closeDetailsModal() {
             document.getElementById('details-modal').classList.add('hidden');
+        }
+
+        // INVOICE MODAL CONTROLLER & PDF UPLOAD
+        let currentInvoiceSale = null;
+        let selectedInvoicePdfBase64 = null;
+        let selectedInvoiceFilename = null;
+
+        function openInvoiceModal(saleId) {
+            const sale = globalSalesList.find(s => String(s.id) === String(saleId));
+            if (!sale) {
+                showToast("Venta no encontrada.", "error");
+                return;
+            }
+
+            currentInvoiceSale = sale;
+            document.getElementById('inv-sale-id').value = sale.id;
+
+            // Datos fiscales
+            document.getElementById('inv-modal-razon').textContent = sale.razon_social || sale.customer_name || 'No especificada';
+            document.getElementById('inv-modal-rut').textContent = sale.rut || 'No especificado';
+            document.getElementById('inv-modal-address').textContent = sale.direccion_fiscal || sale.address || 'No especificada';
+            document.getElementById('inv-modal-email').textContent = sale.customer_email || 'Sin email registrado';
+            document.getElementById('inv-modal-total').textContent = `$${Number(sale.total).toFixed(2)} UYU`;
+
+            // Estado de Factura Badge
+            const statusBadgeEl = document.getElementById('inv-modal-status-badge');
+            if (sale.invoice_status === 'sent') {
+                const sentDate = sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleString('es-UY') : 'Fecha no registrada';
+                statusBadgeEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <span class="text-emerald-300 font-bold">Factura ya enviada</span>
+                        <span class="text-slate-500 text-[11px]">(${sentDate})</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 italic">Puedes volver a subir y enviar una nueva copia si es necesario.</span>
+                `;
+            } else {
+                statusBadgeEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span class="text-amber-300 font-bold">Pendiente de Emisión y Envío</span>
+                    </div>
+                    <span class="text-[10px] text-amber-400/80 font-semibold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Requiere e-Factura</span>
+                `;
+            }
+
+            // Reset File state
+            resetInvoiceFileInput();
+            document.getElementById('invoice-custom-notes').value = '';
+
+            // Setup drag & drop on dropzone
+            setupPdfDropZone();
+
+            document.getElementById('invoice-modal').classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
+            currentInvoiceSale = null;
+            resetInvoiceFileInput();
+        }
+
+        function resetInvoiceFileInput() {
+            selectedInvoicePdfBase64 = null;
+            selectedInvoiceFilename = null;
+            const fileInput = document.getElementById('invoice-file-input');
+            if (fileInput) fileInput.value = '';
+            const prompt = document.getElementById('pdf-upload-prompt');
+            const preview = document.getElementById('pdf-file-preview');
+            if (prompt) prompt.classList.remove('hidden');
+            if (preview) preview.classList.add('hidden');
+        }
+
+        function setupPdfDropZone() {
+            const dropZone = document.getElementById('pdf-drop-zone');
+            const fileInput = document.getElementById('invoice-file-input');
+            if (!dropZone || !fileInput) return;
+
+            dropZone.onclick = (e) => {
+                if (e.target.closest('button')) return;
+                fileInput.click();
+            };
+
+            dropZone.ondragover = (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-rp-teal', 'bg-slate-900/80');
+            };
+
+            dropZone.ondragleave = (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-rp-teal', 'bg-slate-900/80');
+            };
+
+            dropZone.ondrop = (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-rp-teal', 'bg-slate-900/80');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    processInvoicePdfFile(e.dataTransfer.files[0]);
+                }
+            };
+        }
+
+        function handleInvoiceFileSelected(e) {
+            if (e.target.files && e.target.files.length > 0) {
+                processInvoicePdfFile(e.target.files[0]);
+            }
+        }
+
+        function processInvoicePdfFile(file) {
+            if (!file) return;
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                showToast("Solo se permiten archivos en formato PDF.", "error");
+                resetInvoiceFileInput();
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                showToast("El archivo no debe superar los 10 MB.", "error");
+                resetInvoiceFileInput();
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                selectedInvoicePdfBase64 = event.target.result; // Data URL format
+                selectedInvoiceFilename = file.name;
+                
+                document.getElementById('pdf-filename-display').textContent = file.name;
+                document.getElementById('pdf-filesize-display').textContent = `${(file.size / 1024).toFixed(1)} KB`;
+                
+                document.getElementById('pdf-upload-prompt').classList.add('hidden');
+                document.getElementById('pdf-file-preview').classList.remove('hidden');
+            };
+            reader.onerror = () => {
+                showToast("Error al leer el archivo PDF.", "error");
+                resetInvoiceFileInput();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSelectedPdf(e) {
+            if (e) e.stopPropagation();
+            resetInvoiceFileInput();
+        }
+
+        function copyFiscalData() {
+            if (!currentInvoiceSale) return;
+            const textToCopy = `Razón Social: ${currentInvoiceSale.razon_social || currentInvoiceSale.customer_name || 'N/A'}\nRUT: ${currentInvoiceSale.rut || 'N/A'}\nDirección Fiscal: ${currentInvoiceSale.direccion_fiscal || currentInvoiceSale.address || 'N/A'}\nTotal: $${Number(currentInvoiceSale.total).toFixed(2)} UYU\nEmail: ${currentInvoiceSale.customer_email || 'N/A'}\nOrden ID: ${currentInvoiceSale.id}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Datos fiscales copiados al portapapeles", "success");
+            }).catch(err => {
+                console.error("Error al copiar portapapeles:", err);
+                showToast("No se pudo copiar automáticamente.", "error");
+            });
+        }
+
+        async function submitInvoiceEmail(e) {
+            e.preventDefault();
+            if (!currentInvoiceSale) {
+                showToast("No hay una venta seleccionada.", "error");
+                return;
+            }
+            if (!selectedInvoicePdfBase64) {
+                showToast("Por favor adjunta el archivo PDF de la factura antes de enviar.", "error");
+                return;
+            }
+            if (!currentInvoiceSale.customer_email || !currentInvoiceSale.customer_email.includes('@')) {
+                showToast("El cliente no tiene una dirección de email válida.", "error");
+                return;
+            }
+
+            const sendBtn = document.getElementById('send-invoice-btn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Enviando factura...`;
+
+            const password = localStorage.getItem('circula_admin_pass');
+            const customNotes = document.getElementById('invoice-custom-notes').value.trim();
+
+            try {
+                const response = await fetchAPI('send_invoice_email', password, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        sale_id: currentInvoiceSale.id,
+                        buyer_email: currentInvoiceSale.customer_email,
+                        buyer_name: currentInvoiceSale.customer_name,
+                        rut: currentInvoiceSale.rut,
+                        razon_social: currentInvoiceSale.razon_social,
+                        invoice_pdf_base64: selectedInvoicePdfBase64,
+                        invoice_filename: selectedInvoiceFilename || `Factura-RUT-${currentInvoiceSale.id}.pdf`,
+                        invoice_notes: customNotes,
+                        order_id: currentInvoiceSale.id
+                    })
+                });
+
+                showToast(response.message || "Factura enviada exitosamente por email", "success");
+                
+                // Actualizar estado en memoria
+                currentInvoiceSale.invoice_status = 'sent';
+                currentInvoiceSale.invoice_sent_at = response.invoice_sent_at || new Date().toISOString();
+                
+                const found = globalSalesList.find(s => String(s.id) === String(currentInvoiceSale.id));
+                if (found) {
+                    found.invoice_status = 'sent';
+                    found.invoice_sent_at = currentInvoiceSale.invoice_sent_at;
+                }
+
+                closeInvoiceModal();
+                filterSalesHistory();
+
+            } catch (err) {
+                console.error("Error sending invoice email:", err);
+                showToast("Error al enviar la factura: " + err.message, "error");
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Factura por Email`;
+            }
         }
 
         // CUSTOM MODALS & TOASTS LOGIC
@@ -2210,17 +2742,27 @@
                 return;
             }
 
-            const headers = ["ID", "Fecha", "Canal", "Cliente Nombre", "Cliente Email", "Productos", "Metodo Entrega", "Direccion/Notas", "Subtotal", "Costo Envio", "Descuento Aplicado", "Codigo Descuento", "Total", "Metodo Pago", "Estado"];
+            const headers = ["ID", "Fecha", "Canal", "Tipo Comprobante", "RUT", "Razon Social", "Direccion Fiscal", "Estado Factura", "Fecha Envio Factura", "Cliente Nombre", "Cliente Email", "Productos", "Metodo Entrega", "Direccion/Notas", "Subtotal", "Costo Envio", "Descuento Aplicado", "Codigo Descuento", "Total", "Metodo Pago", "Estado"];
             
             const rows = filteredSalesList.map(sale => {
                 const date = new Date(sale.created_at).toLocaleString('es-ES');
                 const source = sale.source === 'web' ? 'Web' : 'Presencial';
                 const itemsStr = sale.items.map(item => `${item.name} (x${item.quantity})`).join(' | ');
+                const isRut = sale.invoice_type === 'rut' || !!sale.rut;
+                const invoiceType = isRut ? 'Factura con RUT' : 'Consumidor Final';
+                const invoiceStatus = isRut ? (sale.invoice_status === 'sent' ? 'Enviada' : 'Pendiente') : 'N/A';
+                const invoiceSentDate = sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleString('es-ES') : '';
                 
                 return [
                     sale.id,
                     date,
                     source,
+                    invoiceType,
+                    sale.rut || '',
+                    sale.razon_social || '',
+                    sale.direccion_fiscal || '',
+                    invoiceStatus,
+                    invoiceSentDate,
                     sale.customer_name,
                     sale.customer_email || '',
                     itemsStr,

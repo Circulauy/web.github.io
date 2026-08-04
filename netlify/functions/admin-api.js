@@ -346,6 +346,130 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
     return true;
 }
 
+// Función para enviar email con Factura PDF adjunta al cliente
+async function sendInvoicePdfEmailToBuyer(buyerEmail, buyerName, rut, razonSocial, pdfBase64, filename, customNotes, orderId) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn("⚠️ EMAIL: No están configurados EMAIL_USER o EMAIL_PASS. Omitiendo correo.");
+        return false;
+    }
+
+    if (!buyerEmail || !buyerEmail.includes('@')) {
+        throw new Error("Email del destinatario vacío o inválido.");
+    }
+
+    if (!pdfBase64) {
+        throw new Error("No se ha proporcionado el archivo PDF de la factura.");
+    }
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    const safeFilename = filename || `e-Factura-Circula-${rut || 'RUT'}.pdf`;
+    const cleanBase64 = pdfBase64.replace(/^data:application\/pdf;base64,/, '');
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: buyerEmail,
+        cc: process.env.EMAIL_USER, // Copia de respaldo al vendedor
+        subject: `📄 Factura con RUT adjunta - Compra en Circula ${orderId ? `(#${orderId})` : ''}`,
+        html: `
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; margin: 0; padding: 40px 0; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <tr>
+                    <td align="center">
+                        <div style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid #e2e8f0; text-align: left;">
+                            
+                            <!-- Header con Logo -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff; border-bottom: 1px solid #f1f5f9;" bgcolor="#ffffff">
+                                <tr>
+                                    <td align="center" style="padding: 20px 30px; background: linear-gradient(#ffffff, #ffffff); background-color: #ffffff;" bgcolor="#ffffff">
+                                        <img src="https://circula.uy/images/logo.png" alt="Circula" width="220" height="65" style="display: block; width: 220px; height: 65px; border: 0;" />
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Contenido Principal -->
+                            <div style="padding: 32px 30px;">
+                                <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 14px 18px; border-radius: 6px; margin-bottom: 24px;">
+                                    <h3 style="margin: 0 0 4px 0; color: #166534; font-size: 16px;">¡Adjuntamos tu e-Factura oficial!</h3>
+                                    <p style="margin: 0; font-size: 13px; color: #15803d;">Tu comprobante fiscal correspondiente a tu compra ya se encuentra emitido y adjunto a este correo.</p>
+                                </div>
+
+                                <p style="margin: 0 0 16px 0; font-size: 15px; color: #334155; line-height: 1.6;">
+                                    Estimado/a <strong>${buyerName || razonSocial || 'Cliente'}</strong>:
+                                </p>
+                                <p style="margin: 0 0 20px 0; font-size: 14px; color: #64748b; line-height: 1.6;">
+                                    Muchas gracias por confiar en Circula. Te hacemos llegar la <strong>Factura con RUT (e-Factura)</strong> emitida con los datos fiscales indicados en tu compra.
+                                </p>
+
+                                <!-- Cuadro de Datos Fiscales -->
+                                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 24px;">
+                                    <h4 style="margin: 0 0 10px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700;">Datos del Comprobante Fiscal</h4>
+                                    <table width="100%" style="font-size: 13px; color: #1e293b; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 4px 0; color: #64748b; width: 120px;">Razón Social:</td>
+                                            <td style="padding: 4px 0; font-weight: 600;">${razonSocial || 'No especificada'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px 0; color: #64748b;">RUT:</td>
+                                            <td style="padding: 4px 0; font-weight: 600; font-family: monospace;">${rut || 'No especificado'}</td>
+                                        </tr>
+                                        ${orderId ? `
+                                        <tr>
+                                            <td style="padding: 4px 0; color: #64748b;">Referencia:</td>
+                                            <td style="padding: 4px 0; font-weight: 600;">${orderId}</td>
+                                        </tr>` : ''}
+                                        <tr>
+                                            <td style="padding: 4px 0; color: #64748b;">Archivo Adjunto:</td>
+                                            <td style="padding: 4px 0; font-weight: 600; color: #0284c7;">📎 ${safeFilename}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                ${customNotes ? `
+                                <div style="background-color: #f1f5f9; padding: 14px 18px; border-radius: 8px; margin-bottom: 24px; font-size: 13px; color: #475569;">
+                                    <strong>Nota adicional:</strong> ${customNotes}
+                                </div>` : ''}
+
+                                <p style="margin: 0 0 10px 0; font-size: 13px; color: #64748b; line-height: 1.5;">
+                                    Encontrarás el archivo PDF adjunto al final de este correo electrónico para tu archivo contable o fiscal.
+                                </p>
+                                <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;">
+                                    Ante cualquier consulta, no dudes en responder directamente a este mensaje o escribirnos por WhatsApp.
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div style="background-color: #f1f5f9; padding: 20px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+                                <p style="margin: 0 0 6px 0; font-size: 13px; font-weight: 600; color: #1e293b;">Circula Uruguay</p>
+                                <p style="margin: 0; font-size: 12px; color: #64748b;">
+                                    Moda circular consciente y sustentable · <a href="https://circula.uy" style="color: #0d9488; text-decoration: none;">circula.uy</a>
+                                </p>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        `,
+        attachments: [
+            {
+                filename: safeFilename,
+                content: cleanBase64,
+                encoding: 'base64',
+                contentType: 'application/pdf'
+            }
+        ]
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return !!info.messageId;
+}
+
 // Función auxiliar para generar códigos aleatorios únicos
 function generateRandomCode(percent = 10) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -462,7 +586,7 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'add_manual_sale') {
-                const { customer_name, customer_email, items, delivery_option, district, address, subtotal, shipping_cost, discount_applied, total, payment_method, notes, generate_coupon, coupon_discount_percent } = body;
+                const { customer_name, customer_email, items, delivery_option, district, address, subtotal, shipping_cost, discount_applied, total, payment_method, notes, generate_coupon, coupon_discount_percent, invoice_type, rut, razon_social, direccion_fiscal } = body;
                 
                 if (!customer_name || !items || !Array.isArray(items) || items.length === 0 || !total) {
                     return { 
@@ -473,6 +597,7 @@ exports.handler = async (event, context) => {
                 }
 
                 // Guardar en la base de datos
+                const isRut = invoice_type === 'rut' || (rut && rut.trim() !== '');
                 const saleData = {
                     source: 'manual',
                     customer_name,
@@ -487,6 +612,12 @@ exports.handler = async (event, context) => {
                     total: Number(total),
                     payment_method: payment_method || 'efectivo',
                     status: 'approved',
+                    invoice_type: isRut ? 'rut' : 'final',
+                    rut: isRut ? String(rut || '').trim() : null,
+                    razon_social: isRut ? String(razon_social || '').trim() : null,
+                    direccion_fiscal: isRut ? String(direccion_fiscal || '').trim() : null,
+                    invoice_status: isRut ? 'pending' : null,
+                    invoice_sent_at: null,
                     created_at: new Date().toISOString()
                 };
 
@@ -697,6 +828,58 @@ exports.handler = async (event, context) => {
                         message: "Correo de recuperación enviado con éxito.", 
                         email_sent: emailSent,
                         discount_code: coupon.code
+                    })
+                };
+            }
+
+            if (action === 'send_invoice_email') {
+                const { sale_id, buyer_email, buyer_name, rut, razon_social, invoice_pdf_base64, invoice_filename, invoice_notes, order_id } = body || {};
+
+                if (!sale_id || !buyer_email || !invoice_pdf_base64) {
+                    return {
+                        statusCode: 400,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "Faltan datos obligatorios (ID de venta, email del comprador o archivo PDF)." })
+                    };
+                }
+
+                let emailSent = false;
+                try {
+                    emailSent = await sendInvoicePdfEmailToBuyer(
+                        buyer_email,
+                        buyer_name,
+                        rut,
+                        razon_social,
+                        invoice_pdf_base64,
+                        invoice_filename,
+                        invoice_notes,
+                        order_id || sale_id
+                    );
+                } catch (emailErr) {
+                    console.error("❌ Error al enviar email con factura PDF:", emailErr);
+                    return {
+                        statusCode: 500,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: `Error al enviar correo: ${emailErr.message}` })
+                    };
+                }
+
+                const nowIso = new Date().toISOString();
+                // Actualizar la venta en la base de datos
+                const updatedSale = await db.updateSale(sale_id, {
+                    invoice_status: 'sent',
+                    invoice_sent_at: nowIso
+                });
+
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({
+                        message: "Factura enviada con éxito al cliente.",
+                        email_sent: emailSent,
+                        invoice_status: 'sent',
+                        invoice_sent_at: nowIso,
+                        sale: updatedSale
                     })
                 };
             }

@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
     }
 
     // 1. EXTRAEMOS LOS NUEVOS DATOS DEL FRONTEND
-    const { items, buyerName, buyerEmail, deliveryOption, district, address, discountCode } = data;
+    const { items, buyerName, buyerEmail, deliveryOption, district, address, discountCode, invoiceType, rut, razonSocial, fiscalAddress } = data;
     
     // Validación básica
     if (!items || !Array.isArray(items) || items.length === 0 || !buyerName || !buyerEmail) {
@@ -121,7 +121,7 @@ exports.handler = async (event, context) => {
             email: buyerEmail
         },
 
-        // 4. METADATA (AQUÍ GUARDAMOS LA DIRECCIÓN Y DESCUENTOS DE FORMA SEGURA)
+        // 4. METADATA (AQUÍ GUARDAMOS LA DIRECCIÓN, DESCUENTOS Y FACTURACIÓN DE FORMA SEGURA)
         // Mercado Pago guarda esto y te lo muestra en el detalle de la venta.
         metadata: {
             order_id: uniqueOrderId,
@@ -131,7 +131,11 @@ exports.handler = async (event, context) => {
             direccion_completa: address || 'No aplica (Pick Up)',
             discount_code: isValidDiscount ? discountCode.trim().toUpperCase() : null,
             discount_applied: discountApplied,
-            original_subtotal: originalSubtotal
+            original_subtotal: originalSubtotal,
+            invoice_type: invoiceType === 'rut' ? 'rut' : 'final',
+            rut: invoiceType === 'rut' ? String(rut || '').trim() : null,
+            razon_social: invoiceType === 'rut' ? String(razonSocial || '').trim() : null,
+            direccion_fiscal: invoiceType === 'rut' ? String(fiscalAddress || '').trim() : null
         },
 
         // 5. EXTERNAL REFERENCE (Para conciliación interna)
@@ -139,7 +143,9 @@ exports.handler = async (event, context) => {
         external_reference: JSON.stringify({
             order_ref: uniqueOrderId,
             envio: deliveryOption,
-            zona: district
+            zona: district,
+            tipo_factura: invoiceType === 'rut' ? 'rut' : 'final',
+            rut: invoiceType === 'rut' ? String(rut || '').trim() : null
         }),
         
         // Configuración para evitar envíos automáticos de MP si no los usas

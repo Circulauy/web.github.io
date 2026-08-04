@@ -248,6 +248,12 @@ async function saveSale(saleData) {
         payment_method: saleData.payment_method || 'efectivo',
         status: saleData.status || 'approved',
         mp_payment_id: saleData.mp_payment_id || null,
+        invoice_type: saleData.invoice_type || 'final',
+        rut: saleData.rut || null,
+        razon_social: saleData.razon_social || null,
+        direccion_fiscal: saleData.direccion_fiscal || null,
+        invoice_status: saleData.invoice_status || (saleData.invoice_type === 'rut' ? 'pending' : null),
+        invoice_sent_at: saleData.invoice_sent_at || null,
         created_at: saleData.created_at || new Date().toISOString()
     };
 
@@ -382,7 +388,13 @@ async function updateSale(id, saleData) {
                 discount_applied: saleData.discount_applied !== undefined ? Number(saleData.discount_applied) : found.discount_applied,
                 total: saleData.total !== undefined ? Number(saleData.total) : found.total,
                 payment_method: saleData.payment_method || found.payment_method,
-                status: saleData.status || found.status
+                status: saleData.status || found.status,
+                invoice_type: saleData.invoice_type !== undefined ? saleData.invoice_type : found.invoice_type,
+                rut: saleData.rut !== undefined ? saleData.rut : found.rut,
+                razon_social: saleData.razon_social !== undefined ? saleData.razon_social : found.razon_social,
+                direccion_fiscal: saleData.direccion_fiscal !== undefined ? saleData.direccion_fiscal : found.direccion_fiscal,
+                invoice_status: saleData.invoice_status !== undefined ? saleData.invoice_status : found.invoice_status,
+                invoice_sent_at: saleData.invoice_sent_at !== undefined ? saleData.invoice_sent_at : found.invoice_sent_at
             });
             writeMockDb(dbData);
             return found;
@@ -396,6 +408,25 @@ async function updateSale(id, saleData) {
         body: JSON.stringify(saleData)
     });
     return result ? result[0] : null;
+}
+
+/**
+ * Obtiene una venta por su ID
+ */
+async function getSaleById(id) {
+    if (!id) return null;
+    const idStr = String(id).trim();
+    if (isMockMode) {
+        const dbData = readMockDb();
+        return dbData.sales.find(s => String(s.id).trim() === idStr) || null;
+    }
+    try {
+        const data = await supabaseRequest(`sales?id=eq.${idStr}&select=*`);
+        return data && data.length > 0 ? data[0] : null;
+    } catch (err) {
+        console.error(`Error al buscar venta por id (${idStr}):`, err);
+        return null;
+    }
 }
 
 async function deleteDiscountCode(id) {
@@ -585,6 +616,7 @@ module.exports = {
     getDiscountCodes,
     saveSale,
     getSaleByMpPaymentId,
+    getSaleById,
     getSales,
     getStats,
     deleteSale,

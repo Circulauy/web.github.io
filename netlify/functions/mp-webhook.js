@@ -27,29 +27,55 @@ function getTransporter() {
 // FUNCIONES EMAIL
 // ===========================================
 
-// 1. Email comprador (Confirmación simple)
-async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName, items, orderRef) {
+// 1. Email comprador (Confirmación con aviso de Factura RUT si aplica)
+async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName, items, orderRef, invoiceInfo = {}) {
     const total = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0).toFixed(2);
 
     const itemList = items
         .map(item => `<li style="margin-bottom: 5px;">${item.title} <br><small>(${item.quantity} x $${item.unit_price})</small></li>`)
         .join('');
 
+    const isRut = invoiceInfo.type === 'rut' && invoiceInfo.rut;
+    const subject = isRut 
+        ? `✅ ¡Pago Confirmado! Pedido #${orderRef} - Tu Factura con RUT está en preparación`
+        : `✅ ¡Pago Confirmado! Pedido #${orderRef}`;
+
+    let invoiceNoticeHtml = '';
+    if (isRut) {
+        invoiceNoticeHtml = `
+            <div style="background-color: #f0fdf4; border: 1px solid #86efac; border-left: 5px solid #16a34a; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 15px;">📄 Facturación con RUT (e-Factura)</h4>
+                <p style="margin: 0 0 6px 0; font-size: 13px; color: #166534;">Registramos tus datos fiscales para la emisión de la e-Factura oficial:</p>
+                <ul style="margin: 0 0 8px 0; padding-left: 20px; font-size: 13px; color: #1e293b;">
+                    <li><strong>RUT:</strong> ${invoiceInfo.rut}</li>
+                    <li><strong>Razón Social:</strong> ${invoiceInfo.razonSocial || 'No especificada'}</li>
+                    ${invoiceInfo.fiscalAddress ? `<li><strong>Dirección Fiscal:</strong> ${invoiceInfo.fiscalAddress}</li>` : ''}
+                </ul>
+                <p style="margin: 0; font-size: 12px; color: #15803d; font-style: italic;">
+                    A la brevedad emitiremos tu factura oficial y te la enviaremos en formato PDF a este correo electrónico.
+                </p>
+            </div>
+        `;
+    }
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: buyerEmail,
-        subject: `✅ ¡Pago Confirmado! Pedido #${orderRef}`,
+        subject: subject,
         html: `
-            <div style="font-family: Arial, sans-serif; color: #333;">
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #79C7C7;">¡Hola ${buyerName}!</h2>
                 <p>Hemos recibido la confirmación de tu pago (ID: <strong>${paymentId}</strong>).</p>
                 <p>Referencia de pedido: <strong>${orderRef}</strong></p>
+                
+                ${invoiceNoticeHtml}
+
                 <hr style="border: 1px solid #eee; margin: 20px 0;"/>
-                <h3>Tu Resumen:</h3>
+                <h3>Tu Resumen de Compra:</h3>
                 <ul>${itemList}</ul>
                 <p style="font-size: 18px;"><strong>Total Abonado: $${total} UYU</strong></p>
                 <p>Pronto nos pondremos en contacto contigo para coordinar la entrega.</p>
-                <p><em>Equipo Circula</em></p>
+                <p style="margin-top: 25px;"><em>Equipo Circula</em></p>
             </div>
         `
     };
@@ -57,8 +83,8 @@ async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName,
     return getTransporter().sendMail(mailOptions);
 }
 
-// 2. Email vendedor (DETALLADO CON DATOS DE ENVÍO)
-async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, items, orderRef, shippingInfo) {
+// 2. Email vendedor (DETALLADO CON DATOS DE ENVÍO Y FACTURA RUT)
+async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, items, orderRef, shippingInfo, invoiceInfo = {}) {
     const total = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0).toFixed(2);
 
     const itemList = items
@@ -71,17 +97,42 @@ async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, ite
     else if (shippingInfo.type === 'interior') deliveryLabel = "🚚 Envío Interior";
     else if (shippingInfo.type === 'pickup') deliveryLabel = "🏪 Retiro en Local (Pick Up)";
 
+    const isRut = invoiceInfo.type === 'rut' && invoiceInfo.rut;
+    const subject = isRut 
+        ? `🚨 NUEVA VENTA CON RUT (Emitir Factura) - Ref: ${orderRef}`
+        : `🚨 NUEVA VENTA (${deliveryLabel}) - Ref: ${orderRef}`;
+
+    let rutAlertHtml = '';
+    if (isRut) {
+        rutAlertHtml = `
+            <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-left: 6px solid #d97706; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 6px 0; color: #92400e; font-size: 16px;">⚠️ ¡ATENCIÓN! ESTA VENTA REQUIERE FACTURA CON RUT</h3>
+                <p style="margin: 0 0 10px 0; font-size: 13px; color: #78350f;">
+                    El cliente solicitó <strong>Factura con RUT (e-Factura)</strong>. Por favor genera la e-Factura en tu software contable y súbela desde el Panel de Administración para enviársela automáticamente.
+                </p>
+                <div style="background: #ffffff; padding: 12px 14px; border-radius: 4px; border: 1px solid #fde68a; font-size: 13px; color: #1e293b;">
+                    <p style="margin: 3px 0;"><strong>🏢 Razón Social:</strong> ${invoiceInfo.razonSocial || 'No especificada'}</p>
+                    <p style="margin: 3px 0;"><strong>🔢 RUT:</strong> ${invoiceInfo.rut}</p>
+                    ${invoiceInfo.fiscalAddress ? `<p style="margin: 3px 0;"><strong>📍 Dirección Fiscal:</strong> ${invoiceInfo.fiscalAddress}</p>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER, // Se envía al dueño de la tienda
-        subject: `🚨 NUEVA VENTA (${deliveryLabel}) - Ref: ${orderRef}`,
+        subject: subject,
         html: `
             <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px;">
                 <h2 style="background-color: #79C7C7; color: white; padding: 10px; border-radius: 5px;">¡Nueva Venta Aprobada! 🎉</h2>
                 
+                ${rutAlertHtml}
+
                 <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                     <p style="margin: 5px 0;"><strong>ID Transacción MP:</strong> ${paymentId}</p>
                     <p style="margin: 5px 0;"><strong>Referencia Interna:</strong> ${orderRef}</p>
+                    <p style="margin: 5px 0;"><strong>Tipo de Comprobante:</strong> <span style="font-weight: bold; color: ${isRut ? '#d97706' : '#166534'};">${isRut ? 'Factura con RUT' : 'Consumidor Final (e-Ticket)'}</span></p>
                     <p style="margin: 5px 0;"><strong>Total Cobrado:</strong> <span style="color: #009ee3; font-weight: bold; font-size: 16px;">$${total} UYU</span></p>
                 </div>
  
@@ -139,18 +190,25 @@ exports.handler = async (event) => {
         // Intentamos obtener el email de metadata, si no, del pagador de MP
         const buyerEmail = payment.payer?.email || "sin-email@ejemplo.com";
 
-        // 3. Recuperar Datos de ENVÍO (NUEVO)
-        // Estos nombres de propiedades deben coincidir con create-preference.js
+        // 3. Recuperar Datos de ENVÍO
         const shippingInfo = {
             type: metadata.tipo_entrega || "No especificado",
             district: metadata.zona_barrio || "No especificado",
             address: metadata.direccion_completa || "No especificado"
         };
 
-        // 4. Recuperar items
+        // 4. Recuperar Datos de Facturación
+        const invoiceInfo = {
+            type: metadata.invoice_type || (metadata.rut ? 'rut' : 'final'),
+            rut: metadata.rut || null,
+            razonSocial: metadata.razon_social || null,
+            fiscalAddress: metadata.direccion_fiscal || null
+        };
+
+        // 5. Recuperar items
         const items = payment.additional_info?.items || [];
 
-        // 5. Si el pago está APROBADO, guardamos en base de datos y enviamos los correos
+        // 6. Si el pago está APROBADO, guardamos en base de datos y enviamos los correos
         if (payment.status === "approved") {
             // Evitar procesamiento duplicado (idempotencia)
             const paymentIdStr = String(payment.id);
@@ -212,7 +270,13 @@ exports.handler = async (event) => {
                     total: total,
                     payment_method: 'mercadopago',
                     status: 'approved',
-                    mp_payment_id: String(payment.id)
+                    mp_payment_id: String(payment.id),
+                    invoice_type: invoiceInfo.type,
+                    rut: invoiceInfo.rut,
+                    razon_social: invoiceInfo.razonSocial,
+                    direccion_fiscal: invoiceInfo.fiscalAddress,
+                    invoice_status: invoiceInfo.type === 'rut' ? 'pending' : null,
+                    invoice_sent_at: null
                 });
                 console.log("✅ Venta web guardada exitosamente en la base de datos.");
             } catch (dbErr) {
@@ -237,17 +301,17 @@ exports.handler = async (event) => {
                 console.error(`❌ Error al marcar carrito como completado para ${buyerEmail}:`, cartErr);
             }
 
-            // Enviar correo al COMPRADOR (Resumen simple)
+            // Enviar correo al COMPRADOR (Resumen simple + aviso RUT si aplica)
             try {
-                await sendPaymentApprovedEmailToBuyer(payment.id, buyerEmail, buyerName, items, orderRef);
+                await sendPaymentApprovedEmailToBuyer(payment.id, buyerEmail, buyerName, items, orderRef, invoiceInfo);
                 console.log("📧 Email enviado al comprador.");
             } catch (err) {
                 console.error("❌ Error enviando email al comprador:", err);
             }
 
-            // Enviar correo al VENDEDOR (Completo con dirección)
+            // Enviar correo al VENDEDOR (Completo con dirección y alerta RUT si aplica)
             try {
-                await sendSellerConfirmationEmail(payment.id, buyerEmail, buyerName, items, orderRef, shippingInfo);
+                await sendSellerConfirmationEmail(payment.id, buyerEmail, buyerName, items, orderRef, shippingInfo, invoiceInfo);
                 console.log("📧 Email enviado al vendedor.");
             } catch (err) {
                 console.error("❌ Error enviando email al vendedor:", err);
