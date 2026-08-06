@@ -179,10 +179,11 @@ async function cronHandler(event, context) {
                 .map(s => s.customer_email.toLowerCase().trim())
         );
 
-        let processedCount = 0;
+        let evaluatedCount = 0;
         let emailedCount = 0;
         let completedCount = 0;
         let skippedCount = 0;
+        const details = [];
 
         for (const cart of allCarts) {
             const email = (cart.customer_email || '').toLowerCase().trim();
@@ -198,6 +199,7 @@ async function cronHandler(event, context) {
                     try {
                         await db.markAbandonedCartAsCompleted(email);
                         completedCount++;
+                        details.push(`${email}: marcado como completado (ya compró)`);
                     } catch (e) {
                         console.error("Error auto-completing cart:", e);
                     }
@@ -212,19 +214,20 @@ async function cronHandler(event, context) {
             if (cartDate < thirtyDaysAgo) {
                 await db.updateAbandonedCartStatus(cart.id, 'skipped');
                 skippedCount++;
+                details.push(`${email}: omitido (más de 30 días)`);
                 continue;
             }
 
             // Debe tener al menos 1 hora de antigüedad y menos de 30 días
             if (cartDate > oneHourAgo) {
-                continue; // Todavía está dentro de la ventana de espera de 1 hora
+                continue; // Todavía dentro de la ventana de espera de 1 hora
             }
 
-            processedCount++;
+            evaluatedCount++;
 
             // 2. Verificar si el cliente ya recibió un cupón en los últimos 3 meses (90 días)
             const alreadyEmailedRecently = allCarts.some(c =>
-                c.id !== cart.id &&
+                String(c.id) !== String(cart.id) &&
                 c.customer_email &&
                 c.customer_email.toLowerCase().trim() === email &&
                 c.status === 'emailed' &&
@@ -235,6 +238,7 @@ async function cronHandler(event, context) {
                 console.log(`⚠️ [CRON] Se omite el envío a ${email}: ya recibió un cupón en los últimos 3 meses.`);
                 await db.updateAbandonedCartStatus(cart.id, 'skipped');
                 skippedCount++;
+                details.push(`${email}: omitido (ya recibió cupón en últimos 3 meses)`);
                 continue;
             }
 
@@ -266,10 +270,19 @@ async function cronHandler(event, context) {
                     cart.discount_code = coupon.code;
                     await db.updateAbandonedCartStatus(cart.id, 'emailed', coupon.code);
                     console.log(`✅ [CRON] Carrito de ${cart.customer_name} (${cart.customer_email}) recuperado con éxito.`);
+                    details.push(`${email}: email enviado con cupón ${coupon.code}`);
+                } else {
+                    details.push(`${email}: no se pudo enviar correo (revisa EMAIL_USER/EMAIL_PASS)`);
                 }
             } catch (err) {
                 console.error(`❌ [CRON] Error procesando recuperación para carrito ${cart.id}:`, err);
+                details.push(`${email}: error ${err.message}`);
             }
+        }
+
+        let summaryMsg = `Evaluados: ${evaluatedCount}. Enviados: ${emailedCount}. Omitidos: ${skippedCount}. Completados: ${completedCount}.`;
+        if (details.length > 0) {
+            summaryMsg += ` (${details.join(' | ')})`;
         }
 
         return {
@@ -280,7 +293,12 @@ async function cronHandler(event, context) {
             },
             body: JSON.stringify({
                 success: true,
-                message: `Procesados: ${processedCount}. Enviados: ${emailedCount}. Completados: ${completedCount}. Omitidos: ${skippedCount}.`
+                message: summaryMsg,
+                evaluated: evaluatedCount,
+                emailed: emailedCount,
+                skipped: skippedCount,
+                completed: completedCount,
+                details: details
             })
         };
     } catch (err) {
