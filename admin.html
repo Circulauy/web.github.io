@@ -433,19 +433,28 @@
                                 </div>
                             </div>
 
-                            <!-- Opciones de Cupón de Regalo -->
-                            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                            <!-- Opciones de Envío de Email y Cupón -->
+                            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800 space-y-3">
                                 <div class="flex items-center gap-2">
-                                    <input type="checkbox" id="manual-gift-coupon" onchange="toggleGiftCouponFields()"
-                                        class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal focus:ring-opacity-25 focus:ring-offset-slate-900 cursor-pointer">
-                                    <label for="manual-gift-coupon" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
-                                        Generar cupón de regalo para próxima compra web
+                                    <input type="checkbox" id="manual-send-email-toggle" checked
+                                        class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
+                                    <label for="manual-send-email-toggle" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                        Enviar email de confirmación de compra al cliente <span class="text-slate-500 font-normal">(desmarcar si ya se le envió por Mercado Pago)</span>
                                     </label>
                                 </div>
-                                <div id="gift-coupon-percent-wrapper" class="hidden flex items-center gap-2">
-                                    <label for="manual-coupon-percent" class="text-slate-400 text-xs font-semibold whitespace-nowrap">Descuento (%):</label>
-                                    <input type="number" id="manual-coupon-percent" value="10" min="1" max="100"
-                                        class="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-700 text-white text-xs font-bold text-center focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                                <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2 border-t border-slate-800/80">
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="manual-gift-coupon" onchange="toggleGiftCouponFields()"
+                                            class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
+                                        <label for="manual-gift-coupon" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                            Generar cupón de regalo para próxima compra web
+                                        </label>
+                                    </div>
+                                    <div id="gift-coupon-percent-wrapper" class="hidden flex items-center gap-2">
+                                        <label for="manual-coupon-percent" class="text-slate-400 text-xs font-semibold whitespace-nowrap">Descuento (%):</label>
+                                        <input type="number" id="manual-coupon-percent" value="10" min="1" max="100"
+                                            class="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-700 text-white text-xs font-bold text-center focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                                    </div>
                                 </div>
                             </div>
 
@@ -546,10 +555,36 @@
 
             <!-- HISTORIAL DE VENTAS CARD -->
             <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
                     <h3 class="text-xl font-bold text-white font-brand flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-rp-teal"></i>Historial de Ventas
                     </h3>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="syncMercadopagoSales(false)" id="sync-mp-btn"
+                            class="px-3.5 py-2 rounded-xl bg-slate-900 border border-sky-500/30 hover:border-sky-400 text-sky-400 hover:text-sky-300 font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-sky-950/20">
+                            <i class="fa-solid fa-arrows-rotate" id="sync-mp-icon"></i>
+                            <span>Sincronizar Mercado Pago</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alerta de Facturas RUT Pendientes -->
+                <div id="pending-invoices-alert" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg shadow-amber-950/20">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 rounded-lg bg-amber-500/20 text-amber-300 text-lg flex items-center justify-center">
+                            <i class="fa-solid fa-file-invoice-dollar animate-bounce"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-amber-300 flex items-center gap-2">
+                                <span>Facturas con RUT Pendientes</span>
+                                <span id="pending-invoices-count-badge" class="bg-amber-500/30 text-amber-200 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
+                            </h4>
+                            <p class="text-xs text-amber-200/80">Hay compras que solicitaron factura con RUT pendientes de emitir y enviar el PDF al cliente.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="filterOnlyPendingInvoices()" class="whitespace-nowrap px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-filter"></i> Ver Facturas Pendientes
+                    </button>
                 </div>
 
                 <!-- Removido el filtro de fechas de aquí, ahora es global en la parte superior -->
@@ -1525,6 +1560,48 @@
             }
         }
 
+        // AUTO-VERIFICACIÓN Y RECUPERACIÓN DE VENTAS DE MERCADO PAGO
+        let isSyncingMP = false;
+        async function syncMercadopagoSales(isSilent = false) {
+            const password = localStorage.getItem('circula_admin_pass');
+            if (!password || isSyncingMP) return;
+
+            const btn = document.getElementById('sync-mp-btn');
+            const icon = document.getElementById('sync-mp-icon');
+
+            isSyncingMP = true;
+            if (btn && !isSilent) {
+                btn.disabled = true;
+                if (icon) icon.classList.add('animate-spin');
+            }
+
+            try {
+                const res = await fetchAPI('sync_mercadopago', password);
+                if (res.recovered_count > 0) {
+                    const names = res.recovered_sales.map(s => s.customer_name).join(', ');
+                    showToast(`✨ ¡Auto-recuperadas ${res.recovered_count} venta(s) de Mercado Pago: ${names}!`, "success");
+                    // Recargar datos para mostrar las ventas recuperadas
+                    const sales = await fetchAPI('get_sales', password);
+                    globalSalesList = sales;
+                    filteredSalesList = sales;
+                    filterSalesHistory();
+                } else if (!isSilent) {
+                    showToast("✓ Todas las compras de Mercado Pago ya están al día.", "success");
+                }
+            } catch (err) {
+                console.error("Error al sincronizar con Mercado Pago:", err);
+                if (!isSilent) {
+                    showToast("Error al verificar Mercado Pago: " + err.message, "error");
+                }
+            } finally {
+                isSyncingMP = false;
+                if (btn && !isSilent) {
+                    btn.disabled = false;
+                    if (icon) icon.classList.remove('animate-spin');
+                }
+            }
+        }
+
         // CLIENTE API REST NETLIFY FUNCTIONS
         async function fetchAPI(action, password, options = {}) {
             const isLocal = window.location.protocol === 'file:' || 
@@ -1818,6 +1895,7 @@
 
             const generateCoupon = document.getElementById('manual-gift-coupon').checked;
             const couponDiscountPercent = parseInt(document.getElementById('manual-coupon-percent').value) || 10;
+            const sendEmail = document.getElementById('manual-send-email-toggle') ? document.getElementById('manual-send-email-toggle').checked : true;
 
             try {
                 const response = await fetchAPI('add_manual_sale', password, {
@@ -1836,6 +1914,7 @@
                         payment_method: paymentMethod,
                         generate_coupon: generateCoupon,
                         coupon_discount_percent: couponDiscountPercent,
+                        send_email: sendEmail,
                         invoice_type: isRut ? 'rut' : 'final',
                         rut: rut,
                         razon_social: razonSocial,
@@ -2144,6 +2223,31 @@
 
             renderSalesHistory(filteredSalesList);
             updateDashboardMetrics(filteredSalesList); // Actualiza los KPIs, Gráfico y Top Productos en tiempo real
+            checkPendingInvoicesAlert();
+        }
+
+        function checkPendingInvoicesAlert() {
+            const alertBox = document.getElementById('pending-invoices-alert');
+            const countBadge = document.getElementById('pending-invoices-count-badge');
+            if (!alertBox || !countBadge) return;
+
+            const pendingCount = globalSalesList.filter(s => (s.invoice_type === 'rut' || !!s.rut) && s.invoice_status !== 'sent').length;
+            if (pendingCount > 0) {
+                countBadge.textContent = pendingCount;
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
+        function filterOnlyPendingInvoices() {
+            const filterInvoiceSelect = document.getElementById('filter-invoice');
+            if (filterInvoiceSelect) {
+                filterInvoiceSelect.value = 'rut_pending';
+            }
+            filterSalesHistory();
+            const table = document.getElementById('sales-summary-bar');
+            if (table) table.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function clearAllFilters() {

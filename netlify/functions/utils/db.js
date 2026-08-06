@@ -265,12 +265,48 @@ async function saveSale(saleData) {
         return formattedSale;
     }
 
-    const result = await supabaseRequest('sales', {
-        method: 'POST',
-        headers: { 'Prefer': 'return=representation' },
-        body: JSON.stringify(formattedSale)
-    });
-    return result ? result[0] : formattedSale;
+    try {
+        const result = await supabaseRequest('sales', {
+            method: 'POST',
+            headers: { 'Prefer': 'return=representation' },
+            body: JSON.stringify(formattedSale)
+        });
+        return result ? result[0] : formattedSale;
+    } catch (err) {
+        console.error("❌ Error al guardar venta con datos completos en Supabase:", err.message);
+        
+        // Si el fallo es porque no existen columnas opcionales de facturación en Supabase, reintentar con campos base
+        try {
+            const baseSale = {
+                source: formattedSale.source,
+                customer_name: formattedSale.customer_name,
+                customer_email: formattedSale.customer_email,
+                items: formattedSale.items,
+                delivery_option: formattedSale.delivery_option,
+                district: formattedSale.district,
+                address: formattedSale.address,
+                subtotal: formattedSale.subtotal,
+                shipping_cost: formattedSale.shipping_cost,
+                discount_applied: formattedSale.discount_applied,
+                discount_code: formattedSale.discount_code,
+                total: formattedSale.total,
+                payment_method: formattedSale.payment_method,
+                status: formattedSale.status,
+                mp_payment_id: formattedSale.mp_payment_id,
+                created_at: formattedSale.created_at
+            };
+            const fallbackResult = await supabaseRequest('sales', {
+                method: 'POST',
+                headers: { 'Prefer': 'return=representation' },
+                body: JSON.stringify(baseSale)
+            });
+            console.warn("⚠️ Venta guardada con campos base. Recuerda ejecutar la migración SQL de columnas de facturación en Supabase.");
+            return fallbackResult ? fallbackResult[0] : baseSale;
+        } catch (fallbackErr) {
+            console.error("❌ Error crítico: No se pudo guardar la venta en Supabase ni siquiera con campos base:", fallbackErr.message);
+            throw err;
+        }
+    }
 }
 
 

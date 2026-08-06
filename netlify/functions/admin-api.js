@@ -1,7 +1,14 @@
 // netlify/functions/admin-api.js
 
 const nodemailer = require('nodemailer');
+const mercadopago = require('mercadopago');
 const db = require('./utils/db');
+
+if (process.env.MP_ACCESS_TOKEN) {
+    mercadopago.configure({
+        access_token: process.env.MP_ACCESS_TOKEN
+    });
+}
 
 // Función para enviar email al comprador de venta manual
 async function sendManualSaleEmailToBuyer(buyerEmail, buyerName, items, subtotal, shippingCost, discountApplied, total, deliveryOption, district, address, couponCode) {
@@ -480,6 +487,126 @@ function generateRandomCode(percent = 10) {
     return `CIRCULA${percent}-${code}`;
 }
 
+// Función de Auto-Verificación y Sincronización con Mercado Pago
+async function syncMercadopagoPayments(db) {
+    if (!process.env.MP_ACCESS_TOKEN) {
+        throw new Error("MP_ACCESS_TOKEN no está configurado en las variables de entorno de Netlify.");
+    }
+
+    mercadopago.configure({
+        access_token: process.env.MP_ACCESS_TOKEN
+    });
+
+    // 1. Obtener todas las ventas guardadas en Supabase
+    const existingSales = await db.getSales();
+    const existingMpIds = new Set(
+        existingSales.map(s => String(s.mp_payment_id)).filter(id => id && id !== 'undefined' && id !== 'null')
+    );
+
+    console.log(`🔍 [MP-SYNC] Comparando con ${existingSales.length} ventas locales (${existingMpIds.size} con MP ID)...`);
+
+    // 2. Consultar las últimas ventas aprobadas en Mercado Pago
+    const searchRes = await mercadopago.payment.search({
+        qs: {
+            sort: 'date_created',
+            criteria: 'desc',
+            limit: 50,
+            status: 'approved'
+        }
+    });
+
+    const mpPayments = (searchRes && searchRes.body && searchRes.body.results) ? searchRes.body.results : [];
+    console.log(`🔍 [MP-SYNC] Encontrados ${mpPayments.length} pagos aprobados en Mercado Pago.`);
+
+    const recoveredSales = [];
+
+    for (const payment of mpPayments) {
+        const paymentIdStr = String(payment.id);
+        if (!existingMpIds.has(paymentIdStr)) {
+            console.log(`✨ [MP-SYNC] Pago no registrado encontrado: MP ID ${paymentIdStr}`);
+            
+            const metadata = payment.metadata || {};
+            const buyerName = metadata.cliente_nombre || 
+                              (payment.payer ? `${payment.payer.first_name || ''} ${payment.payer.last_name || ''}`.trim() : '') || 
+                              'Cliente Web';
+            const buyerEmail = (payment.payer && payment.payer.email) ? payment.payer.email : (metadata.cliente_email || 'sin-email@web.com');
+
+            const rawItems = (payment.additional_info && payment.additional_info.items) ? payment.additional_info.items : [];
+            let shippingCost = 0;
+            const productItems = [];
+
+            rawItems.forEach(item => {
+                const price = Number(item.unit_price || 0);
+                const quantity = Number(item.quantity || 1);
+                if (item.title && item.title.startsWith("Costo de Envío")) {
+                    shippingCost = price;
+                } else {
+                    productItems.push({
+                        id: item.id || (item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : 'prod'),
+                        name: item.title || 'Producto',
+                        price: price,
+                        quantity: quantity
+                    });
+                }
+            });
+
+            if (productItems.length === 0) {
+                productItems.push({
+                    id: 'compra-mp',
+                    name: payment.description || 'Compra Online',
+                    price: Number(payment.transaction_amount || 0),
+                    quantity: 1
+                });
+            }
+
+            const discountCode = metadata.discount_code || null;
+            const discountApplied = Number(metadata.discount_applied || 0);
+            const total = Number(payment.transaction_amount || 0);
+            const subtotal = Number(metadata.original_subtotal || (total - shippingCost + discountApplied));
+
+            const isRut = metadata.invoice_type === 'rut' || Boolean(metadata.rut);
+            const saleToSave = {
+                source: 'web',
+                customer_name: buyerName,
+                customer_email: buyerEmail,
+                items: productItems,
+                delivery_option: metadata.tipo_entrega || 'pickup',
+                district: metadata.zona_barrio || '',
+                address: metadata.direccion_completa || '',
+                subtotal: subtotal,
+                shipping_cost: shippingCost,
+                discount_applied: discountApplied,
+                discount_code: discountCode,
+                total: total,
+                payment_method: 'mercadopago',
+                status: 'approved',
+                mp_payment_id: paymentIdStr,
+                invoice_type: isRut ? 'rut' : 'final',
+                rut: isRut ? String(metadata.rut || '').trim() : null,
+                razon_social: isRut ? String(metadata.razon_social || '').trim() : null,
+                direccion_fiscal: isRut ? String(metadata.direccion_fiscal || '').trim() : null,
+                invoice_status: isRut ? 'pending' : null,
+                invoice_sent_at: null,
+                created_at: payment.date_approved || payment.date_created || new Date().toISOString()
+            };
+
+            const saved = await db.saveSale(saleToSave);
+            existingMpIds.add(paymentIdStr);
+            recoveredSales.push({
+                id: saved.id || paymentIdStr,
+                customer_name: buyerName,
+                total: total,
+                is_rut: isRut,
+                rut: metadata.rut,
+                mp_payment_id: paymentIdStr
+            });
+            console.log(`✅ [MP-SYNC] Venta recuperada y registrada con éxito para ${buyerName} ($${total})`);
+        }
+    }
+
+    return recoveredSales;
+}
+
 exports.handler = async (event, context) => {
     // Manejo de CORS
     if (event.httpMethod === "OPTIONS") {
@@ -574,6 +701,31 @@ exports.handler = async (event, context) => {
                 };
             }
 
+            if (action === 'sync_mercadopago') {
+                try {
+                    const recovered = await syncMercadopagoPayments(db);
+                    return {
+                        statusCode: 200,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({
+                            success: true,
+                            recovered_count: recovered.length,
+                            recovered_sales: recovered,
+                            message: recovered.length > 0 
+                                ? `¡Se detectaron e ingresaron automáticamente ${recovered.length} venta(s) de Mercado Pago faltante(s)!`
+                                : "Todas las compras de Mercado Pago ya están sincronizadas."
+                        })
+                    };
+                } catch (mpErr) {
+                    console.error("❌ Error en sync_mercadopago:", mpErr);
+                    return {
+                        statusCode: 500,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "Error al sincronizar con Mercado Pago: " + mpErr.message })
+                    };
+                }
+            }
+
             return { statusCode: 400, body: JSON.stringify({ error: "Acción GET no soportada." }) };
         } 
         
@@ -586,7 +738,7 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'add_manual_sale') {
-                const { customer_name, customer_email, items, delivery_option, district, address, subtotal, shipping_cost, discount_applied, total, payment_method, notes, generate_coupon, coupon_discount_percent, invoice_type, rut, razon_social, direccion_fiscal } = body;
+                const { customer_name, customer_email, items, delivery_option, district, address, subtotal, shipping_cost, discount_applied, total, payment_method, notes, generate_coupon, coupon_discount_percent, invoice_type, rut, razon_social, direccion_fiscal, send_email } = body;
                 
                 if (!customer_name || !items || !Array.isArray(items) || items.length === 0 || !total) {
                     return { 
@@ -640,9 +792,10 @@ exports.handler = async (event, context) => {
                     }
                 }
 
-                // Enviar email automático si se especificó email
+                // Enviar email automático si se especificó email y no fue deshabilitado explícitamente
                 let emailSent = false;
-                if (customer_email && customer_email.trim() !== '' && customer_email.includes('@')) {
+                const shouldSendEmail = send_email !== false;
+                if (shouldSendEmail && customer_email && customer_email.trim() !== '' && customer_email.includes('@')) {
                     try {
                         console.log(`✉️ Intentando enviar correo manual a: ${customer_email}`);
                         emailSent = await sendManualSaleEmailToBuyer(
