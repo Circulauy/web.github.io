@@ -145,49 +145,89 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
 }
 
 async function cronHandler(event, context) {
-    console.log("⏰ [CRON] Iniciando tarea programada de recuperación de carritos...");
+    console.log("⏰ [CRON] Iniciando tarea de recuperación de carritos (últimos 30 días)...");
 
     try {
-        // 1. Obtener todos los carritos abandonados
-        const carts = await db.getAbandonedCarts();
+        const [carts, sales] = await Promise.all([
+            db.getAbandonedCarts(),
+            db.getSales()
+        ]);
 
-        // 2. Filtrar los carritos 'pending' de hace más de 1 hora
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        const pendingCarts = (carts || []).filter(c =>
-            c.status === 'pending' &&
-            c.customer_email &&
-            c.customer_email.includes('@') &&
-            new Date(c.created_at) < oneHourAgo
+        const allCarts = Array.isArray(carts) ? carts : [];
+        const allSales = Array.isArray(sales) ? sales : [];
+
+        const now = Date.now();
+        const oneHourAgo = new Date(now - 60 * 60 * 1000);
+        const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+        const threeMonthsAgo = new Date(now - 90 * 24 * 60 * 60 * 1000);
+
+        // Conjunto de emails con ventas completadas
+        const completedBuyerEmails = new Set(
+            allSales
+                .filter(s => s.customer_email && !s.customer_email.includes('sin-email') && !s.customer_email.includes('web.com'))
+                .map(s => s.customer_email.toLowerCase().trim())
         );
-
-        console.log(`⏰ [CRON] Encontrados ${pendingCarts.length} carritos pendientes hace más de 1 hora.`);
 
         let processedCount = 0;
         let emailedCount = 0;
+        let completedCount = 0;
         let skippedCount = 0;
 
-        const sixMonthsAgo = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000); // 180 días
+        for (const cart of allCarts) {
+            const email = (cart.customer_email || '').toLowerCase().trim();
+            if (!email || !email.includes('@')) continue;
 
-        for (const cart of pendingCarts) {
-            processedCount++;
+            const cartDate = new Date(cart.created_at || 0);
 
-            // Verificar si el cliente ya recibió un correo de recuperación en los últimos 6 meses
-            const alreadyEmailedRecently = (carts || []).some(c =>
-                c.customer_email &&
-                c.customer_email.toLowerCase() === cart.customer_email.toLowerCase() &&
-                c.status === 'emailed' &&
-                new Date(c.created_at) > sixMonthsAgo
-            );
+            // 1. Si el cliente ya completó una compra, marcar como 'completed'
+            if (completedBuyerEmails.has(email)) {
+                if (cart.status !== 'completed') {
+                    cart.status = 'completed';
+                    cart.recovered_at = cart.recovered_at || new Date().toISOString();
+                    try {
+                        await db.markAbandonedCartAsCompleted(email);
+                        completedCount++;
+                    } catch (e) {
+                        console.error("Error auto-completing cart:", e);
+                    }
+                }
+                continue;
+            }
 
-            if (alreadyEmailedRecently) {
-                console.log(`⚠️ [CRON] Se omite el envío a ${cart.customer_email}: ya recibió un correo de recuperación en los últimos 6 meses.`);
-                // Marcar el carrito como 'skipped' para que no siga evaluándose como pendiente
+            // Solo procesamos carritos en estado 'pending'
+            if (cart.status !== 'pending') continue;
+
+            // Si el carrito tiene más de 30 días, marcarlo como 'skipped' para no enviar emails tan viejos
+            if (cartDate < thirtyDaysAgo) {
                 await db.updateAbandonedCartStatus(cart.id, 'skipped');
                 skippedCount++;
                 continue;
             }
 
-            // Generar cupón de 10% de descuento válido por 7 días
+            // Debe tener al menos 1 hora de antigüedad y menos de 30 días
+            if (cartDate > oneHourAgo) {
+                continue; // Todavía está dentro de la ventana de espera de 1 hora
+            }
+
+            processedCount++;
+
+            // 2. Verificar si el cliente ya recibió un cupón en los últimos 3 meses (90 días)
+            const alreadyEmailedRecently = allCarts.some(c =>
+                c.id !== cart.id &&
+                c.customer_email &&
+                c.customer_email.toLowerCase().trim() === email &&
+                c.status === 'emailed' &&
+                new Date(c.created_at || 0) > threeMonthsAgo
+            );
+
+            if (alreadyEmailedRecently) {
+                console.log(`⚠️ [CRON] Se omite el envío a ${email}: ya recibió un cupón en los últimos 3 meses.`);
+                await db.updateAbandonedCartStatus(cart.id, 'skipped');
+                skippedCount++;
+                continue;
+            }
+
+            // 3. Generar cupón de 10% de descuento válido por 7 días
             const couponCode = generateRandomCode(10);
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 7 + 1);
@@ -195,10 +235,10 @@ async function cronHandler(event, context) {
             const expiryDateStr = expiryDate.toLocaleDateString('es-UY', { timeZone: 'America/Montevideo' });
 
             try {
-                // Registrar el cupón en la DB
+                // Registrar cupón en DB
                 const coupon = await db.createDiscountCode(couponCode, 10, expiryDate.toISOString());
 
-                // Enviar el correo
+                // Enviar correo de recuperación
                 console.log(`✉️ [CRON] Enviando correo de recuperación a: ${cart.customer_email}`);
                 const emailSent = await sendCartRecoveryEmail(
                     cart.customer_email,
@@ -211,11 +251,11 @@ async function cronHandler(event, context) {
 
                 if (emailSent) {
                     emailedCount++;
+                    cart.status = 'emailed';
+                    cart.discount_code = coupon.code;
+                    await db.updateAbandonedCartStatus(cart.id, 'emailed', coupon.code);
+                    console.log(`✅ [CRON] Carrito de ${cart.customer_name} (${cart.customer_email}) recuperado con éxito.`);
                 }
-
-                // Cambiar estado a 'emailed' y guardar cupón asociado en la DB
-                await db.updateAbandonedCartStatus(cart.id, 'emailed', coupon.code);
-                console.log(`✅ [CRON] Carrito de ${cart.customer_name} (${cart.customer_email}) recuperado con éxito.`);
             } catch (err) {
                 console.error(`❌ [CRON] Error procesando recuperación para carrito ${cart.id}:`, err);
             }
@@ -229,8 +269,7 @@ async function cronHandler(event, context) {
             },
             body: JSON.stringify({
                 success: true,
-                message: `Cron ejecutado. Procesados: ${processedCount}. Enviados: ${emailedCount}. Omitidos: ${skippedCount}.`,
-                processed_carts: pendingCarts.map(c => ({ id: c.id, email: c.customer_email }))
+                message: `Procesados: ${processedCount}. Enviados: ${emailedCount}. Completados: ${completedCount}. Omitidos: ${skippedCount}.`
             })
         };
     } catch (err) {

@@ -741,35 +741,19 @@ exports.handler = async (event, context) => {
             }
 
             if (action === 'get_abandoned_carts') {
-                const [carts, sales] = await Promise.all([
-                    db.getAbandonedCarts(),
-                    db.getSales()
-                ]);
-
-                // Auto-sincronizar: Si un carrito con status 'pending' o 'emailed' tiene una venta completada en sales con el mismo email, marcarlo como 'completed'
-                const completedEmails = new Set(
-                    (sales || [])
-                        .filter(s => s.customer_email && !s.customer_email.includes('sin-email') && !s.customer_email.includes('web.com'))
-                        .map(s => s.customer_email.toLowerCase().trim())
-                );
-
-                for (const cart of (carts || [])) {
-                    const email = (cart.customer_email || '').toLowerCase().trim();
-                    if (email && completedEmails.has(email) && cart.status !== 'completed') {
-                        cart.status = 'completed';
-                        cart.recovered_at = cart.recovered_at || new Date().toISOString();
-                        try {
-                            await db.markAbandonedCartAsCompleted(email);
-                        } catch (e) {
-                            console.error("Error auto-completing cart:", e);
-                        }
-                    }
+                try {
+                    const cronModule = require('./recover-carts-cron');
+                    await cronModule.runRecovery();
+                } catch (recErr) {
+                    console.error("Error auto-running cart recovery:", recErr);
                 }
+
+                const carts = await db.getAbandonedCarts();
 
                 return {
                     statusCode: 200,
                     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-                    body: JSON.stringify(carts)
+                    body: JSON.stringify(carts || [])
                 };
             }
 
