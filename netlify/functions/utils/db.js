@@ -645,52 +645,134 @@ async function makeCouponMultiUse(code) {
 }
 
 /**
- * Deduplica automáticamente las ventas duplicadas o triplicadas en Supabase
+ * Deduplica inteligentemente las ventas en Supabase sin depender de la fecha
+ * (detecta duplicados por email + monto, nombre + monto, RUT o items idénticos)
  */
 async function deduplicateSales() {
     const allSales = await getSales();
-    if (!allSales || allSales.length === 0) return { deletedCount: 0, keptCount: 0 };
+    if (!allSales || !Array.isArray(allSales) || allSales.length === 0) {
+        return { deletedCount: 0, keptCount: 0 };
+    }
 
-    const seenMpIds = new Set();
-    const seenFingerprints = new Set();
+    console.log(`🔍 [DEDUP] Analizando ${allSales.length} ventas para detectar duplicados sin importar la fecha...`);
+
     const duplicatesToDelete = [];
+    const keptSales = [];
 
-    // Ordenar de más antiguo a más nuevo para conservar el registro original
-    const sorted = [...allSales].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+    function normalizeStr(str) {
+        return (str || '').toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
 
-    for (const sale of sorted) {
-        let isDuplicate = false;
-
-        // 1. Validar por mp_payment_id exacto si existe
-        if (sale.mp_payment_id && String(sale.mp_payment_id).trim() !== '' && String(sale.mp_payment_id) !== 'null' && String(sale.mp_payment_id) !== 'undefined') {
-            const mpId = String(sale.mp_payment_id).trim();
-            if (seenMpIds.has(mpId)) {
-                isDuplicate = true;
-            } else {
-                seenMpIds.add(mpId);
+    function isSameSale(s1, s2) {
+        // 1. Mismo mp_payment_id
+        if (s1.mp_payment_id && s2.mp_payment_id) {
+            const id1 = String(s1.mp_payment_id).trim();
+            const id2 = String(s2.mp_payment_id).trim();
+            if (id1 && id2 && id1 !== 'null' && id2 !== 'null' && id1 !== 'undefined' && id2 !== 'undefined' && id1 === id2) {
+                return true;
             }
         }
 
-        // 2. Validar por huella digital (Email + Total + Fecha de día)
-        const email = (sale.customer_email || '').toLowerCase().trim();
-        const total = Number(sale.total || 0).toFixed(2);
-        const dateDay = (sale.created_at || '').substring(0, 10);
-        const name = (sale.customer_name || '').toLowerCase().trim();
+        const total1 = Number(s1.total || 0);
+        const total2 = Number(s2.total || 0);
+        const totalsMatch = Math.abs(total1 - total2) < 2; // Margen de $1 por redondeos
 
-        const fingerprint = `${email}|${name}|${total}|${dateDay}`;
+        if (!totalsMatch) return false;
 
-        if (seenFingerprints.has(fingerprint)) {
-            isDuplicate = true;
-        } else {
-            seenFingerprints.add(fingerprint);
+        // 2. Mismo RUT o Razón Social
+        const rut1 = (s1.rut || '').trim();
+        const rut2 = (s2.rut || '').trim();
+        if (rut1 && rut2 && rut1 === rut2) {
+            return true;
         }
 
-        if (isDuplicate) {
-            duplicatesToDelete.push(sale.id);
+        const email1 = normalizeStr(s1.customer_email);
+        const email2 = normalizeStr(s2.customer_email);
+        const isGenericEmail1 = !email1 || email1.includes('sin-email') || email1.includes('manual.com') || email1.includes('ejemplo.com') || email1.includes('web.com');
+        const isGenericEmail2 = !email2 || email2.includes('sin-email') || email2.includes('manual.com') || email2.includes('ejemplo.com') || email2.includes('web.com');
+
+        // 3. Mismo email real y mismo monto (sin importar la fecha)
+        if (!isGenericEmail1 && !isGenericEmail2 && email1 === email2) {
+            return true;
+        }
+
+        const name1 = normalizeStr(s1.customer_name);
+        const name2 = normalizeStr(s2.customer_name);
+        const isGenericName1 = !name1 || name1.includes('cliente web') || name1 === 'cliente' || name1 === 'anonimo';
+        const isGenericName2 = !name2 || name2.includes('cliente web') || name2 === 'cliente' || name2 === 'anonimo';
+
+        // 4. Mismo nombre real y mismo monto
+        if (!isGenericName1 && !isGenericName2 && name1 === name2) {
+            return true;
+        }
+
+        // 5. Mismos productos/items exactos y mismo monto
+        const getItemsSignature = (sale) => {
+            if (!Array.isArray(sale.items) || sale.items.length === 0) return '';
+            return sale.items.map(i => `${normalizeStr(i.name || i.title || i.id)}x${i.quantity || 1}`).sort().join('|');
+        };
+        const itemsSig1 = getItemsSignature(s1);
+        const itemsSig2 = getItemsSignature(s2);
+        if (itemsSig1 && itemsSig2 && itemsSig1 === itemsSig2 && itemsSig1 !== 'compra onlinex1' && itemsSig1 !== 'prodx1') {
+            return true;
+        }
+
+        // 6. Si uno tiene nombre real y el otro es 'Cliente Web' pero comparten email o dirección idéntica
+        if ((!isGenericEmail1 && !isGenericEmail2 && email1 === email2) || 
+            (s1.address && s2.address && normalizeStr(s1.address) === normalizeStr(s2.address) && normalizeStr(s1.address).length > 5)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    for (const currentSale of allSales) {
+        const existingIndex = keptSales.findIndex(k => isSameSale(k, currentSale));
+
+        if (existingIndex > -1) {
+            const master = keptSales[existingIndex];
+            const updatedFields = {};
+
+            // Enriquecer el registro master con los mejores datos
+            if ((!master.rut || master.rut === '') && currentSale.rut) {
+                updatedFields.rut = currentSale.rut;
+                updatedFields.invoice_type = currentSale.invoice_type || 'rut';
+                updatedFields.razon_social = currentSale.razon_social;
+                updatedFields.direccion_fiscal = currentSale.direccion_fiscal;
+                updatedFields.invoice_status = currentSale.invoice_status || 'pending';
+            }
+            if ((!master.customer_name || normalizeStr(master.customer_name).includes('cliente web')) && 
+                currentSale.customer_name && !normalizeStr(currentSale.customer_name).includes('cliente web')) {
+                updatedFields.customer_name = currentSale.customer_name;
+            }
+            if ((!master.customer_email || master.customer_email.includes('sin-email') || master.customer_email.includes('web.com')) && 
+                currentSale.customer_email && !currentSale.customer_email.includes('sin-email') && !currentSale.customer_email.includes('web.com')) {
+                updatedFields.customer_email = currentSale.customer_email;
+            }
+            if (!master.mp_payment_id && currentSale.mp_payment_id) {
+                updatedFields.mp_payment_id = currentSale.mp_payment_id;
+            }
+            if ((!master.address || master.address === '') && currentSale.address) {
+                updatedFields.address = currentSale.address;
+                updatedFields.district = currentSale.district;
+            }
+
+            if (Object.keys(updatedFields).length > 0) {
+                Object.assign(master, updatedFields);
+                try {
+                    await updateSale(master.id, updatedFields);
+                } catch (upErr) {
+                    console.error(`Error actualizando master sale ${master.id}:`, upErr);
+                }
+            }
+
+            duplicatesToDelete.push(currentSale.id);
+        } else {
+            keptSales.push(currentSale);
         }
     }
 
-    console.log(`🧹 [DEDUP] Encontradas ${duplicatesToDelete.length} ventas duplicadas para eliminar de ${allSales.length} totales.`);
+    console.log(`🧹 [DEDUP] Se detectaron ${duplicatesToDelete.length} ventas duplicadas para eliminar.`);
 
     let deletedCount = 0;
     for (const id of duplicatesToDelete) {
@@ -698,13 +780,13 @@ async function deduplicateSales() {
             await deleteSale(id);
             deletedCount++;
         } catch (delErr) {
-            console.error(`Error eliminando venta duplicada ${id}:`, delErr);
+            console.error(`Error al eliminar venta duplicada ID ${id}:`, delErr);
         }
     }
 
     return {
         deletedCount,
-        keptCount: allSales.length - deletedCount
+        keptCount: keptSales.length
     };
 }
 
@@ -713,9 +795,11 @@ async function deduplicateSales() {
  */
 async function deduplicateAbandonedCarts() {
     const carts = await getAbandonedCarts();
-    if (!carts || carts.length === 0) return { deletedCount: 0, keptCount: 0 };
+    if (!carts || !Array.isArray(carts) || carts.length === 0) {
+        return { deletedCount: 0, keptCount: 0 };
+    }
 
-    const seenPendingEmails = new Set();
+    const seenEmails = new Set();
     const toDelete = [];
 
     // Ordenar de más reciente a más antiguo para mantener el carrito más actual
@@ -723,14 +807,16 @@ async function deduplicateAbandonedCarts() {
 
     for (const cart of sorted) {
         const email = (cart.customer_email || '').toLowerCase().trim();
-        if (!email) continue;
+        if (!email) {
+            toDelete.push(cart.id);
+            continue;
+        }
 
-        if (cart.status === 'pending') {
-            if (seenPendingEmails.has(email)) {
-                toDelete.push(cart.id);
-            } else {
-                seenPendingEmails.add(email);
-            }
+        const key = `${email}|${cart.status}`;
+        if (seenEmails.has(key)) {
+            toDelete.push(cart.id);
+        } else {
+            seenEmails.add(key);
         }
     }
 

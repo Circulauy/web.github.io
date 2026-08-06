@@ -1565,25 +1565,93 @@
                     if (mockBadge) mockBadge.classList.remove('hidden');
                 }
 
-                // 1. Cargar historial de ventas
-                const sales = await fetchAPI('get_sales', password);
-                globalSalesList = sales;
-                filteredSalesList = sales;
+                // 1. Cargar historial de ventas con deduplicación visual inmediata
+                const rawSales = await fetchAPI('get_sales', password);
+                globalSalesList = deduplicateSalesInClient(rawSales);
+                filteredSalesList = globalSalesList;
                 filterSalesHistory(); // Aplica filtros y renderiza (calcula KPIs y gráfico dinámicamente)
 
                 // 2. Cargar Cupones
                 const discounts = await fetchAPI('get_discounts', password);
                 renderCouponsList(discounts);
 
-                // 3. Cargar Carritos Abandonados
-                const carts = await fetchAPI('get_abandoned_carts', password);
-                globalCartsList = carts;
+                // 3. Cargar Carritos Abandonados con deduplicación visual
+                const rawCarts = await fetchAPI('get_abandoned_carts', password);
+                globalCartsList = deduplicateCartsInClient(rawCarts);
                 filterCarts(currentCartFilter || 'all');
 
             } catch (error) {
                 console.error("Error al cargar datos del panel:", error);
                 alert("Ocurrió un error al sincronizar datos con el servidor.");
             }
+        }
+
+        // Deduplicación defensiva en el cliente (garantiza que la interfaz siempre se vea limpia)
+        function deduplicateSalesInClient(salesList) {
+            if (!Array.isArray(salesList)) return [];
+            const result = [];
+            const normalize = (s) => (s || '').toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            for (const s of salesList) {
+                const total = Number(s.total || 0);
+                const email = normalize(s.customer_email);
+                const name = normalize(s.customer_name);
+                const rut = (s.rut || '').trim();
+                const mpId = s.mp_payment_id ? String(s.mp_payment_id).trim() : null;
+
+                const isGenericEmail = !email || email.includes('sin-email') || email.includes('web.com') || email.includes('manual.com');
+                const isGenericName = !name || name.includes('cliente web') || name === 'cliente';
+
+                const matchIdx = result.findIndex(existing => {
+                    if (mpId && existing.mp_payment_id && String(existing.mp_payment_id).trim() === mpId) return true;
+                    if (rut && existing.rut && String(existing.rut).trim() === rut && Math.abs(Number(existing.total || 0) - total) < 2) return true;
+                    if (!isGenericEmail && normalize(existing.customer_email) === email && Math.abs(Number(existing.total || 0) - total) < 2) return true;
+                    if (!isGenericName && normalize(existing.customer_name) === name && Math.abs(Number(existing.total || 0) - total) < 2) return true;
+                    return false;
+                });
+
+                if (matchIdx > -1) {
+                    const master = result[matchIdx];
+                    // Combinar datos para conservar la mejor info
+                    if (!master.rut && s.rut) {
+                        master.rut = s.rut;
+                        master.invoice_type = s.invoice_type || 'rut';
+                        master.razon_social = s.razon_social;
+                        master.direccion_fiscal = s.direccion_fiscal;
+                        master.invoice_status = s.invoice_status || 'pending';
+                    }
+                    if ((!master.customer_name || normalize(master.customer_name).includes('cliente web')) && !isGenericName) {
+                        master.customer_name = s.customer_name;
+                    }
+                    if ((!master.customer_email || master.customer_email.includes('sin-email')) && !isGenericEmail) {
+                        master.customer_email = s.customer_email;
+                    }
+                    if (!master.mp_payment_id && s.mp_payment_id) {
+                        master.mp_payment_id = s.mp_payment_id;
+                    }
+                    if (!master.address && s.address) {
+                        master.address = s.address;
+                        master.district = s.district;
+                    }
+                } else {
+                    result.push({ ...s });
+                }
+            }
+            return result;
+        }
+
+        function deduplicateCartsInClient(cartsList) {
+            if (!Array.isArray(cartsList)) return [];
+            const result = [];
+            const seen = new Set();
+            for (const c of cartsList) {
+                const key = `${(c.customer_email || '').toLowerCase().trim()}|${c.status}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    result.push(c);
+                }
+            }
+            return result;
         }
 
         // AUTO-VERIFICACIÓN Y RECUPERACIÓN DE VENTAS DE MERCADO PAGO
@@ -1607,10 +1675,7 @@
                     const names = res.recovered_sales.map(s => s.customer_name).join(', ');
                     showToast(`✨ ¡Auto-recuperadas ${res.recovered_count} venta(s) de Mercado Pago: ${names}!`, "success");
                     // Recargar datos para mostrar las ventas recuperadas
-                    const sales = await fetchAPI('get_sales', password);
-                    globalSalesList = sales;
-                    filteredSalesList = sales;
-                    filterSalesHistory();
+                    await loadDashboardData(null, password);
                 } else if (!isSilent) {
                     showToast("✓ Todas las compras de Mercado Pago ya están al día.", "success");
                 }
@@ -1652,11 +1717,11 @@
                 const res = await fetchAPI('clean_duplicates', password);
                 if (res.deleted_sales > 0 || res.deleted_carts > 0) {
                     showToast(`✅ ${res.message}`, "success");
-                    // Recargar los datos del panel
-                    await loadAdminData(password);
                 } else {
-                    showToast("✓ No se encontraron registros duplicados para eliminar.", "success");
+                    showToast("✓ Limpieza completada en base de datos.", "success");
                 }
+                // Recargar los datos del panel
+                await loadDashboardData(null, password);
             } catch (err) {
                 console.error("Error al limpiar duplicados:", err);
                 showToast("Error al depurar duplicados: " + err.message, "error");
