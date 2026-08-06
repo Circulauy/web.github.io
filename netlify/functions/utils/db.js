@@ -88,8 +88,7 @@ async function validateDiscountCode(code) {
     }
     
     const coupon = data[0];
-    // Forzar multiuso para LABASURAESUNCONCEPTO
-    const isSingleUse = cleanCode === 'LABASURAESUNCONCEPTO' ? false : (coupon.is_single_use !== false);
+    const isSingleUse = cleanCode !== 'LABASURAESUNCONCEPTO';
     if (isSingleUse && coupon.is_used) {
         return { valid: false, error: "El código de descuento ya ha sido usado." };
     }
@@ -116,34 +115,30 @@ async function markDiscountCodeAsUsed(code) {
         const dbData = readMockDb();
         const found = dbData.discountCodes.find(d => d.code.toUpperCase() === cleanCode);
         if (found) {
-            if (found.is_single_use !== false) {
-                found.is_used = true;
-                found.used_at = new Date().toISOString();
-                writeMockDb(dbData);
-            }
+            found.is_used = true;
+            found.used_at = new Date().toISOString();
+            writeMockDb(dbData);
         }
         return;
     }
 
-    const data = await supabaseRequest(`discount_codes?code=ilike.${cleanCode}&select=is_single_use`);
-    if (data && data.length > 0) {
-        const coupon = data[0];
-        if (coupon.is_single_use !== false) {
-            await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
-                method: 'PATCH',
-                body: JSON.stringify({
-                    is_used: true,
-                    used_at: new Date().toISOString()
-                })
-            });
-        }
+    try {
+        await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                is_used: true,
+                used_at: new Date().toISOString()
+            })
+        });
+    } catch (err) {
+        console.error(`Error marking coupon ${cleanCode} as used:`, err);
     }
 }
 
 /**
  * Crea un nuevo código de descuento
  */
-async function createDiscountCode(code, percent = 10, expiresAt, isSingleUse = true) {
+async function createDiscountCode(code, percent = 10, expiresAt) {
     const cleanCode = code.trim().toUpperCase();
     const expiry = expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 días
 
@@ -155,7 +150,6 @@ async function createDiscountCode(code, percent = 10, expiresAt, isSingleUse = t
             discount_percent: percent,
             expires_at: expiry,
             is_used: false,
-            is_single_use: isSingleUse,
             created_at: new Date().toISOString()
         };
         dbData.discountCodes.push(newCode);
@@ -169,11 +163,10 @@ async function createDiscountCode(code, percent = 10, expiresAt, isSingleUse = t
         body: JSON.stringify({
             code: cleanCode,
             discount_percent: percent,
-            expires_at: expiry,
-            is_single_use: isSingleUse
+            expires_at: expiry
         })
     });
-    return result ? result[0] : { code: cleanCode, discount_percent: percent, expires_at: expiry, is_single_use: isSingleUse };
+    return result ? result[0] : { code: cleanCode, discount_percent: percent, expires_at: expiry };
 }
 
 /**
@@ -631,16 +624,6 @@ async function makeCouponMultiUse(code) {
             writeMockDb(dbData);
         }
         return;
-    }
-    try {
-        await supabaseRequest(`discount_codes?code=ilike.${cleanCode}`, {
-            method: 'PATCH',
-            body: JSON.stringify({
-                is_single_use: false
-            })
-        });
-    } catch (err) {
-        console.error(`Error updating coupon ${code} to multi-use:`, err);
     }
 }
 
