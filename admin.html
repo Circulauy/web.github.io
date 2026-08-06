@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,14 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         body {
@@ -21,55 +24,72 @@
             background-color: #0f172a;
             color: #f8fafc;
         }
+
         .glass-panel {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .animate-fade-in {
             animation: fadeIn 0.4s ease-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: #1e293b;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #475569;
             border-radius: 3px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #79C7C7;
         }
     </style>
 </head>
+
 <body class="min-h-screen pb-12">
 
     <!-- LOGIN SCREEN -->
     <div id="login-container" class="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark px-4">
-        <div class="w-full max-w-md p-8 rounded-2xl glass-panel shadow-2xl border border-slate-800 text-center animate-fade-in">
+        <div
+            class="w-full max-w-md p-8 rounded-2xl glass-panel shadow-2xl border border-slate-800 text-center animate-fade-in">
             <div class="mb-6 flex justify-center">
-                <img src="images/logo.png" class="h-14 w-auto" style="filter: brightness(0) invert(1);" alt="Circula - Alternativa Sustentable">
+                <img src="images/logo.png" class="h-14 w-auto" style="filter: brightness(0) invert(1);"
+                    alt="Circula - Alternativa Sustentable">
             </div>
             <div class="mb-4 inline-flex p-3 rounded-full bg-slate-800/80 text-rp-teal text-xl">
                 <i class="fa-solid fa-lock"></i>
             </div>
             <p class="text-slate-400 mb-6 text-sm">Ingresá la contraseña de administrador para continuar.</p>
-            
+
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <input type="password" id="admin-password" placeholder="Contraseña de administrador" required
                         class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rp-teal focus:border-transparent transition text-center">
                 </div>
-                <button type="submit" 
+                <button type="submit"
                     class="w-full bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-rp-teal/10">
                     Iniciar Sesión
                 </button>
@@ -81,16 +101,22 @@
     <!-- MAIN DASHBOARD -->
     <div id="dashboard-container" class="hidden">
         <!-- HEADER -->
-        <header class="fixed top-0 w-full z-30 glass-panel shadow-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+        <header
+            class="fixed top-0 w-full z-30 glass-panel shadow-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="images/logo.png" class="h-10 w-auto" style="filter: brightness(0) invert(1);" alt="Logo Circula">
-                <span class="text-rp-teal text-xs font-semibold ml-2 bg-rp-teal/10 px-2.5 py-1 rounded-full border border-rp-teal/20 tracking-wider uppercase font-sans">Panel Admin</span>
+                <img src="images/logo.png" class="h-10 w-auto" style="filter: brightness(0) invert(1);"
+                    alt="Logo Circula">
+                <span
+                    class="text-rp-teal text-xs font-semibold ml-2 bg-rp-teal/10 px-2.5 py-1 rounded-full border border-rp-teal/20 tracking-wider uppercase font-sans">Panel
+                    Admin</span>
             </div>
             <div class="flex items-center gap-4">
-                <span id="mock-badge" class="hidden text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-bold">
+                <span id="mock-badge"
+                    class="hidden text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-bold">
                     <i class="fa-solid fa-triangle-exclamation mr-1.5 animate-pulse"></i>Modo Simulado
                 </span>
-                <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400 transition-colors text-sm font-semibold flex items-center gap-1.5">
+                <button onclick="handleLogout()"
+                    class="text-slate-400 hover:text-red-400 transition-colors text-sm font-semibold flex items-center gap-1.5">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Salir</span>
                 </button>
@@ -104,41 +130,53 @@
             <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800 space-y-4 animate-fade-in">
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <label for="filter-date-from" class="text-xs text-slate-400 font-semibold uppercase">Desde:</label>
+                        <label for="filter-date-from"
+                            class="text-xs text-slate-400 font-semibold uppercase">Desde:</label>
                         <input type="date" id="filter-date-from" onchange="filterSalesHistory()"
                             class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                     </div>
                     <div class="flex items-center gap-2">
-                        <label for="filter-date-to" class="text-xs text-slate-400 font-semibold uppercase">Hasta:</label>
+                        <label for="filter-date-to"
+                            class="text-xs text-slate-400 font-semibold uppercase">Hasta:</label>
                         <input type="date" id="filter-date-to" onchange="filterSalesHistory()"
                             class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                     </div>
-                    
+
                     <!-- Atajos Rápidos -->
                     <div class="flex items-center gap-1.5 ml-2">
-                        <button onclick="setDatePreset('today')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Hoy</button>
-                        <button onclick="setDatePreset('7days')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Últimos 7d</button>
-                        <button onclick="setDatePreset('month')" class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Este Mes</button>
+                        <button onclick="setDatePreset('today')"
+                            class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Hoy</button>
+                        <button onclick="setDatePreset('7days')"
+                            class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Últimos
+                            7d</button>
+                        <button onclick="setDatePreset('month')"
+                            class="px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-semibold transition">Este
+                            Mes</button>
                     </div>
 
-                    <button onclick="clearAllFilters()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                    <button onclick="clearAllFilters()"
+                        class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
                         <i class="fa-solid fa-rotate-left"></i> Restablecer Filtros
                     </button>
-                    
+
                     <div class="flex-grow text-right">
-                        <button onclick="exportSalesToCSV()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-2 inline-flex">
+                        <button onclick="exportSalesToCSV()"
+                            class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-bold py-2 px-4 rounded-lg text-xs transition flex items-center gap-2 inline-flex">
                             <i class="fa-solid fa-file-csv text-base"></i> Exportar CSV de Ventas
                         </button>
                     </div>
                 </div>
 
                 <!-- Filtros Avanzados por Categorías -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-3 border-t border-slate-800/80">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-3 border-t border-slate-800/80">
                     <!-- Buscar Cliente/Email -->
                     <div class="flex flex-col gap-1">
-                        <label for="sales-search" class="text-[10px] text-slate-400 font-semibold uppercase">Buscar Cliente / ID / RUT:</label>
+                        <label for="sales-search" class="text-[10px] text-slate-400 font-semibold uppercase">Buscar
+                            Cliente / ID / RUT:</label>
                         <div class="relative">
-                            <input type="text" id="sales-search" placeholder="Nombre, email, id, rut..." onkeyup="filterSalesHistory()"
+                            <input type="text" id="sales-search" placeholder="Nombre, email, id, rut..."
+                                onkeyup="filterSalesHistory()"
                                 class="w-full pl-8 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
                             <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-slate-500 text-[10px]"></i>
                         </div>
@@ -146,7 +184,8 @@
 
                     <!-- Canal de Venta -->
                     <div class="flex flex-col gap-1">
-                        <label for="filter-channel" class="text-[10px] text-slate-400 font-semibold uppercase">Canal de Venta:</label>
+                        <label for="filter-channel" class="text-[10px] text-slate-400 font-semibold uppercase">Canal de
+                            Venta:</label>
                         <select id="filter-channel" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Canales</option>
@@ -157,7 +196,8 @@
 
                     <!-- Método de Pago -->
                     <div class="flex flex-col gap-1">
-                        <label for="filter-payment" class="text-[10px] text-slate-400 font-semibold uppercase">Método de Pago:</label>
+                        <label for="filter-payment" class="text-[10px] text-slate-400 font-semibold uppercase">Método de
+                            Pago:</label>
                         <select id="filter-payment" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Métodos</option>
@@ -170,7 +210,8 @@
 
                     <!-- Método de Envío -->
                     <div class="flex flex-col gap-1">
-                        <label for="filter-delivery" class="text-[10px] text-slate-400 font-semibold uppercase">Método de Envío:</label>
+                        <label for="filter-delivery" class="text-[10px] text-slate-400 font-semibold uppercase">Método
+                            de Envío:</label>
                         <select id="filter-delivery" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Envíos</option>
@@ -184,7 +225,8 @@
 
                     <!-- Producto -->
                     <div class="flex flex-col gap-1">
-                        <label for="filter-product" class="text-[10px] text-slate-400 font-semibold uppercase">Producto:</label>
+                        <label for="filter-product"
+                            class="text-[10px] text-slate-400 font-semibold uppercase">Producto:</label>
                         <select id="filter-product" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Productos</option>
@@ -193,7 +235,8 @@
 
                     <!-- Facturación / RUT -->
                     <div class="flex flex-col gap-1">
-                        <label for="filter-invoice" class="text-[10px] text-slate-400 font-semibold uppercase">Facturación / RUT:</label>
+                        <label for="filter-invoice"
+                            class="text-[10px] text-slate-400 font-semibold uppercase">Facturación / RUT:</label>
                         <select id="filter-invoice" onchange="filterSalesHistory()"
                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                             <option value="all">Todos los Comprobantes</option>
@@ -205,7 +248,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- KEY METRICS CARDS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- KPI 1 -->
@@ -217,7 +260,8 @@
                         <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Ingresos Totales</p>
                         <h3 id="stat-revenue" class="text-2xl font-bold text-white mt-1">$0.00</h3>
                     </div>
-                    <div class="absolute -right-4 -bottom-4 text-rp-teal/5 text-7xl"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div class="absolute -right-4 -bottom-4 text-rp-teal/5 text-7xl"><i
+                            class="fa-solid fa-sack-dollar"></i></div>
                 </div>
                 <!-- KPI 2 -->
                 <div class="p-6 rounded-2xl glass-panel shadow-lg flex items-center gap-4 relative overflow-hidden">
@@ -228,7 +272,8 @@
                         <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Ventas Web</p>
                         <h3 id="stat-web-revenue" class="text-2xl font-bold text-white mt-1">$0.00</h3>
                     </div>
-                    <div class="absolute -right-4 -bottom-4 text-indigo-500/5 text-7xl"><i class="fa-solid fa-globe"></i></div>
+                    <div class="absolute -right-4 -bottom-4 text-indigo-500/5 text-7xl"><i
+                            class="fa-solid fa-globe"></i></div>
                 </div>
                 <!-- KPI 3 -->
                 <div class="p-6 rounded-2xl glass-panel shadow-lg flex items-center gap-4 relative overflow-hidden">
@@ -239,7 +284,8 @@
                         <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Ventas Manuales</p>
                         <h3 id="stat-manual-revenue" class="text-2xl font-bold text-white mt-1">$0.00</h3>
                     </div>
-                    <div class="absolute -right-4 -bottom-4 text-purple-500/5 text-7xl"><i class="fa-solid fa-user-tag"></i></div>
+                    <div class="absolute -right-4 -bottom-4 text-purple-500/5 text-7xl"><i
+                            class="fa-solid fa-user-tag"></i></div>
                 </div>
                 <!-- KPI 4 -->
                 <div class="p-6 rounded-2xl glass-panel shadow-lg flex items-center gap-4 relative overflow-hidden">
@@ -250,7 +296,8 @@
                         <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Pedidos</p>
                         <h3 id="stat-sales-count" class="text-2xl font-bold text-white mt-1">0</h3>
                     </div>
-                    <div class="absolute -right-4 -bottom-4 text-emerald-500/5 text-7xl"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <div class="absolute -right-4 -bottom-4 text-emerald-500/5 text-7xl"><i
+                            class="fa-solid fa-cart-shopping"></i></div>
                 </div>
             </div>
 
@@ -263,10 +310,12 @@
                             <i class="fa-solid fa-chart-line text-rp-teal"></i>Evolución de Ventas ($)
                         </h3>
                         <div class="flex items-center gap-2">
-                            <button onclick="exportChartCSV()" class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
+                            <button onclick="exportChartCSV()"
+                                class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
                                 <i class="fa-solid fa-file-csv text-rp-mint"></i> Exportar CSV de Gráfico
                             </button>
-                            <button onclick="downloadChartImage()" class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
+                            <button onclick="downloadChartImage()"
+                                class="bg-slate-900 border border-slate-800 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition">
                                 <i class="fa-solid fa-image text-rp-teal"></i> Descargar Imagen
                             </button>
                         </div>
@@ -301,28 +350,33 @@
                 <div class="lg:col-span-3 space-y-6">
                     <!-- REGISTRAR VENTA MANUAL CARD -->
                     <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
-                        <h3 class="text-xl font-bold text-white font-brand mb-6 border-b border-slate-700 pb-3 flex items-center gap-2">
+                        <h3
+                            class="text-xl font-bold text-white font-brand mb-6 border-b border-slate-700 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-plus-minus text-rp-teal"></i>Ingresar Venta Manual (En persona)
                         </h3>
                         <form id="manual-sale-form" onsubmit="submitManualSale(event)" class="space-y-6">
                             <!-- Datos del Cliente -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Nombre del Cliente *</label>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Nombre del
+                                        Cliente *</label>
                                     <input type="text" id="manual-client-name" required placeholder="Ej: Sofía Pérez"
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                 </div>
                                 <div>
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Email del Cliente (Envío automático)</label>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Email del
+                                        Cliente (Envío automático)</label>
                                     <input type="email" id="manual-client-email" placeholder="Ej: cliente@ejemplo.com"
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal">
-                                    <p class="text-[10px] text-slate-500 mt-1">Se enviará el comprobante digital al completarse.</p>
+                                    <p class="text-[10px] text-slate-500 mt-1">Se enviará el comprobante digital al
+                                        completarse.</p>
                                 </div>
                             </div>
 
                             <!-- Selector de Productos -->
                             <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-4">
-                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Añadir Productos</h4>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Añadir Productos
+                                </h4>
                                 <div class="flex flex-col sm:flex-row gap-3">
                                     <div class="flex-1">
                                         <select id="product-selector" onchange="handleProductSelectChange()"
@@ -339,7 +393,7 @@
                                         Agregar
                                     </button>
                                 </div>
-                                
+
                                 <!-- Lista de Productos Seleccionados -->
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left text-xs border-collapse">
@@ -354,7 +408,8 @@
                                         </thead>
                                         <tbody id="manual-items-tbody">
                                             <tr id="empty-items-row">
-                                                <td colspan="5" class="py-4 text-center text-slate-500 italic">No hay productos seleccionados.</td>
+                                                <td colspan="5" class="py-4 text-center text-slate-500 italic">No hay
+                                                    productos seleccionados.</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -364,7 +419,8 @@
                             <!-- Opciones de Entrega y Envío -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Método de Entrega</label>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Método de
+                                        Entrega</label>
                                     <select id="manual-delivery" onchange="handleManualDeliveryChange()"
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                                         <option value="pickup">Retiro en Local (Pick Up - $0)</option>
@@ -375,8 +431,10 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Costo de Envío ($)</label>
-                                    <input type="number" id="manual-shipping-cost" value="0" min="0" onchange="recalcManualSale()"
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Costo de
+                                        Envío ($)</label>
+                                    <input type="number" id="manual-shipping-cost" value="0" min="0"
+                                        onchange="recalcManualSale()"
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                 </div>
                             </div>
@@ -384,12 +442,15 @@
                             <!-- Campos Adicionales -->
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="sm:col-span-2">
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Dirección / Notas</label>
-                                    <input type="text" id="manual-address" placeholder="Ej: Maldonado 1450 o notas del pedido..."
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Dirección /
+                                        Notas</label>
+                                    <input type="text" id="manual-address"
+                                        placeholder="Ej: Maldonado 1450 o notas del pedido..."
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                 </div>
                                 <div>
-                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Método de Pago</label>
+                                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Método de
+                                        Pago</label>
                                     <select id="manual-payment-method"
                                         class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-1 focus:ring-rp-teal cursor-pointer">
                                         <option value="efectivo">Efectivo</option>
@@ -404,30 +465,41 @@
                             <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-3">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
-                                        <input type="checkbox" id="manual-invoice-rut-toggle" onchange="toggleManualRutFields()"
+                                        <input type="checkbox" id="manual-invoice-rut-toggle"
+                                            onchange="toggleManualRutFields()"
                                             class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
-                                        <label for="manual-invoice-rut-toggle" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                        <label for="manual-invoice-rut-toggle"
+                                            class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
                                             Emitir con Factura RUT (e-Factura)
                                         </label>
                                     </div>
-                                    <span class="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">RUT</span>
+                                    <span
+                                        class="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">RUT</span>
                                 </div>
-                                <div id="manual-rut-fields-container" class="hidden space-y-3 pt-3 border-t border-slate-800">
+                                <div id="manual-rut-fields-container"
+                                    class="hidden space-y-3 pt-3 border-t border-slate-800">
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">RUT (12 dígitos)</label>
-                                            <input type="text" id="manual-rut" placeholder="Ej: 211234560019" maxlength="12"
+                                            <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">RUT
+                                                (12 dígitos)</label>
+                                            <input type="text" id="manual-rut" placeholder="Ej: 211234560019"
+                                                maxlength="12"
                                                 class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                         </div>
                                         <div>
-                                            <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Razón Social</label>
+                                            <label
+                                                class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Razón
+                                                Social</label>
                                             <input type="text" id="manual-razon-social" placeholder="Ej: Empresa S.A."
                                                 class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Dirección Fiscal</label>
-                                        <input type="text" id="manual-fiscal-address" placeholder="Ej: 18 de Julio 1234, Montevideo"
+                                        <label
+                                            class="block text-slate-400 text-[10px] font-bold uppercase mb-1">Dirección
+                                            Fiscal</label>
+                                        <input type="text" id="manual-fiscal-address"
+                                            placeholder="Ej: 18 de Julio 1234, Montevideo"
                                             class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                     </div>
                                 </div>
@@ -438,20 +510,28 @@
                                 <div class="flex items-center gap-2">
                                     <input type="checkbox" id="manual-send-email-toggle" checked
                                         class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
-                                    <label for="manual-send-email-toggle" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
-                                        Enviar email de confirmación de compra al cliente <span class="text-slate-500 font-normal">(desmarcar si ya se le envió por Mercado Pago)</span>
+                                    <label for="manual-send-email-toggle"
+                                        class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                        Enviar email de confirmación de compra al cliente <span
+                                            class="text-slate-500 font-normal">(desmarcar si ya se le envió por Mercado
+                                            Pago)</span>
                                     </label>
                                 </div>
-                                <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2 border-t border-slate-800/80">
+                                <div
+                                    class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2 border-t border-slate-800/80">
                                     <div class="flex items-center gap-2">
-                                        <input type="checkbox" id="manual-gift-coupon" onchange="toggleGiftCouponFields()"
+                                        <input type="checkbox" id="manual-gift-coupon"
+                                            onchange="toggleGiftCouponFields()"
                                             class="w-4 h-4 rounded text-rp-teal bg-slate-950 border-slate-700 focus:ring-rp-teal cursor-pointer">
-                                        <label for="manual-gift-coupon" class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
+                                        <label for="manual-gift-coupon"
+                                            class="text-xs text-slate-300 font-semibold cursor-pointer select-none">
                                             Generar cupón de regalo para próxima compra web
                                         </label>
                                     </div>
                                     <div id="gift-coupon-percent-wrapper" class="hidden flex items-center gap-2">
-                                        <label for="manual-coupon-percent" class="text-slate-400 text-xs font-semibold whitespace-nowrap">Descuento (%):</label>
+                                        <label for="manual-coupon-percent"
+                                            class="text-slate-400 text-xs font-semibold whitespace-nowrap">Descuento
+                                            (%):</label>
                                         <input type="number" id="manual-coupon-percent" value="10" min="1" max="100"
                                             class="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-700 text-white text-xs font-bold text-center focus:outline-none focus:ring-1 focus:ring-rp-teal">
                                     </div>
@@ -459,19 +539,26 @@
                             </div>
 
                             <!-- Totales & Descuentos -->
-                            <div class="pt-4 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div
+                                class="pt-4 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div class="flex items-center gap-2">
                                     <div class="w-32">
-                                        <label class="block text-slate-500 text-[10px] font-bold uppercase mb-0.5">Descuento Manual ($)</label>
-                                        <input type="number" id="manual-discount-applied" value="0" min="0" onchange="recalcManualSale()"
+                                        <label
+                                            class="block text-slate-500 text-[10px] font-bold uppercase mb-0.5">Descuento
+                                            Manual ($)</label>
+                                        <input type="number" id="manual-discount-applied" value="0" min="0"
+                                            onchange="recalcManualSale()"
                                             class="w-full px-2 py-1.5 rounded bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal text-center">
                                     </div>
                                 </div>
-                                
+
                                 <div class="text-right space-y-1 w-full sm:w-auto">
-                                    <p class="text-slate-400 text-xs">Subtotal: <span id="manual-subtotal-display" class="font-bold text-white">$0.00</span></p>
-                                    <p class="text-slate-400 text-xs">Envío: <span id="manual-shipping-display" class="font-bold text-white">$0.00</span></p>
-                                    <p class="text-green-400 text-xs">Descuento: <span id="manual-discount-display" class="font-bold">-$0.00</span></p>
+                                    <p class="text-slate-400 text-xs">Subtotal: <span id="manual-subtotal-display"
+                                            class="font-bold text-white">$0.00</span></p>
+                                    <p class="text-slate-400 text-xs">Envío: <span id="manual-shipping-display"
+                                            class="font-bold text-white">$0.00</span></p>
+                                    <p class="text-green-400 text-xs">Descuento: <span id="manual-discount-display"
+                                            class="font-bold">-$0.00</span></p>
                                     <p class="text-white text-xl font-bold border-t border-slate-700 pt-1.5 mt-1">
                                         TOTAL: <span id="manual-total-display" class="text-rp-teal">$0.00</span>
                                     </p>
@@ -491,32 +578,41 @@
                 <div class="lg:col-span-2 space-y-6">
                     <!-- GENERAR CUPÓN CARD -->
                     <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
-                        <h3 class="text-xl font-bold text-white font-brand mb-6 border-b border-slate-700 pb-3 flex items-center gap-2">
+                        <h3
+                            class="text-xl font-bold text-white font-brand mb-6 border-b border-slate-700 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-ticket text-rp-mint"></i>Generar Cupón de Descuento
                         </h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Código Personalizado (Opcional)</label>
+                                <label
+                                    class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Código
+                                    Personalizado (Opcional)</label>
                                 <input type="text" id="coupon-custom-code" placeholder="Ej: LABASURAESUNCONCEPTO"
                                     class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white text-sm focus:ring-rp-mint focus:border-rp-mint outline-none placeholder-slate-600 uppercase">
                             </div>
-                            
+
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Descuento (%)</label>
+                                    <label
+                                        class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Descuento
+                                        (%)</label>
                                     <input type="number" id="coupon-percent" value="10" min="1" max="100"
                                         class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white text-sm focus:ring-rp-mint focus:border-rp-mint outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Validez (Días)</label>
+                                    <label
+                                        class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Validez
+                                        (Días)</label>
                                     <input type="number" id="coupon-days" value="30" min="1"
                                         class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white text-sm focus:ring-rp-mint focus:border-rp-mint outline-none">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipo de Uso</label>
-                                <select id="coupon-single-use" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white text-sm focus:ring-rp-mint focus:border-rp-mint outline-none">
+                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipo
+                                    de Uso</label>
+                                <select id="coupon-single-use"
+                                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white text-sm focus:ring-rp-mint focus:border-rp-mint outline-none">
                                     <option value="true" selected>Único uso (Se consume al comprar)</option>
                                     <option value="false">Uso múltiple (Válido para todos hasta expirar)</option>
                                 </select>
@@ -528,22 +624,29 @@
                             </button>
 
                             <!-- Resultado Cupón -->
-                            <div id="coupon-result-container" class="hidden p-4 bg-slate-900/90 rounded-xl border border-slate-700 text-center animate-fade-in space-y-3">
+                            <div id="coupon-result-container"
+                                class="hidden p-4 bg-slate-900/90 rounded-xl border border-slate-700 text-center animate-fade-in space-y-3">
                                 <p class="text-xs text-slate-400 font-semibold uppercase">Código Generado</p>
                                 <div class="flex items-center justify-center gap-2">
-                                    <span id="coupon-code-span" class="text-2xl font-bold font-brand tracking-widest text-rp-mint select-all">CIRCULA10-XXXX</span>
-                                    <button onclick="copyGeneratedCoupon()" class="text-slate-400 hover:text-white transition p-2 text-lg" title="Copiar código">
+                                    <span id="coupon-code-span"
+                                        class="text-2xl font-bold font-brand tracking-widest text-rp-mint select-all">CIRCULA10-XXXX</span>
+                                    <button onclick="copyGeneratedCoupon()"
+                                        class="text-slate-400 hover:text-white transition p-2 text-lg"
+                                        title="Copiar código">
                                         <i class="fa-solid fa-copy"></i>
                                     </button>
                                 </div>
-                                <p id="coupon-desc-p" class="text-[10px] text-slate-500 font-medium">10% de descuento. Válido por 30 días.</p>
+                                <p id="coupon-desc-p" class="text-[10px] text-slate-500 font-medium">10% de descuento.
+                                    Válido por 30 días.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- LISTADO DE CUPONES CARD -->
-                    <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800 flex flex-col max-h-[350px]">
-                        <h3 class="text-sm font-bold text-slate-400 font-brand uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <div
+                        class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800 flex flex-col max-h-[350px]">
+                        <h3
+                            class="text-sm font-bold text-slate-400 font-brand uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
                             <i class="fa-solid fa-clock-rotate-left"></i>Cupones Generados Recientes
                         </h3>
                         <div id="coupons-list-container" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
@@ -555,7 +658,8 @@
 
             <!-- HISTORIAL DE VENTAS CARD -->
             <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
                     <h3 class="text-xl font-bold text-white font-brand flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-rp-teal"></i>Historial de Ventas
                     </h3>
@@ -575,20 +679,25 @@
                 </div>
 
                 <!-- Alerta de Facturas RUT Pendientes -->
-                <div id="pending-invoices-alert" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg shadow-amber-950/20">
+                <div id="pending-invoices-alert"
+                    class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg shadow-amber-950/20">
                     <div class="flex items-center gap-3">
-                        <div class="p-2.5 rounded-lg bg-amber-500/20 text-amber-300 text-lg flex items-center justify-center">
+                        <div
+                            class="p-2.5 rounded-lg bg-amber-500/20 text-amber-300 text-lg flex items-center justify-center">
                             <i class="fa-solid fa-file-invoice-dollar animate-bounce"></i>
                         </div>
                         <div>
                             <h4 class="text-sm font-bold text-amber-300 flex items-center gap-2">
                                 <span>Facturas con RUT Pendientes</span>
-                                <span id="pending-invoices-count-badge" class="bg-amber-500/30 text-amber-200 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
+                                <span id="pending-invoices-count-badge"
+                                    class="bg-amber-500/30 text-amber-200 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
                             </h4>
-                            <p class="text-xs text-amber-200/80">Hay compras que solicitaron factura con RUT pendientes de emitir y enviar el PDF al cliente.</p>
+                            <p class="text-xs text-amber-200/80">Hay compras que solicitaron factura con RUT pendientes
+                                de emitir y enviar el PDF al cliente.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="filterOnlyPendingInvoices()" class="whitespace-nowrap px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow">
+                    <button type="button" onclick="filterOnlyPendingInvoices()"
+                        class="whitespace-nowrap px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow">
                         <i class="fa-solid fa-filter"></i> Ver Facturas Pendientes
                     </button>
                 </div>
@@ -596,13 +705,15 @@
                 <!-- Removido el filtro de fechas de aquí, ahora es global en la parte superior -->
 
                 <!-- Resumen de datos filtrados -->
-                <div id="sales-summary-bar" class="mb-6 px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-400 flex flex-wrap justify-between items-center gap-2 animate-fade-in">
+                <div id="sales-summary-bar"
+                    class="mb-6 px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-400 flex flex-wrap justify-between items-center gap-2 animate-fade-in">
                     <div>
                         <i class="fa-solid fa-calculator text-rp-teal mr-1.5"></i>
                         <span>Ventas filtradas: <strong id="summary-count" class="text-white">0</strong></span>
                     </div>
                     <div>
-                        <span>Monto total: <strong id="summary-total" class="text-rp-teal font-bold">$0.00</strong></span>
+                        <span>Monto total: <strong id="summary-total"
+                                class="text-rp-teal font-bold">$0.00</strong></span>
                     </div>
                     <div>
                         <span>Ticket promedio: <strong id="summary-avg" class="text-white">$0.00</strong></span>
@@ -612,7 +723,8 @@
                 <div class="overflow-x-auto -mx-6 sm:mx-0">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 font-semibold text-xs uppercase tracking-wider">
+                            <tr
+                                class="border-b border-slate-800 text-slate-400 font-semibold text-xs uppercase tracking-wider">
                                 <th class="px-6 py-3">Fecha</th>
                                 <th class="px-6 py-3">Canal</th>
                                 <th class="px-6 py-3">Cliente</th>
@@ -624,7 +736,8 @@
                         </thead>
                         <tbody id="sales-tbody" class="divide-y divide-slate-800 text-slate-300">
                             <tr>
-                                <td colspan="7" class="py-12 text-center text-slate-500 italic">Cargando historial de ventas...</td>
+                                <td colspan="7" class="py-12 text-center text-slate-500 italic">Cargando historial de
+                                    ventas...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -633,24 +746,30 @@
 
             <!-- CARRITOS ABANDONADOS CARD -->
             <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
                     <h3 class="text-xl font-bold text-white font-brand flex items-center gap-2">
                         <i class="fa-solid fa-cart-shopping text-rp-mint"></i>Carritos Abandonados
                     </h3>
-                    
+
                     <!-- Filtros por Estado -->
                     <div class="flex flex-wrap items-center gap-2 text-xs">
-                        <button onclick="filterCarts('all')" id="btn-cart-all" class="px-3 py-1.5 rounded-lg bg-rp-teal text-brand-dark font-bold transition">Todos</button>
-                        <button onclick="filterCarts('pending')" id="btn-cart-pending" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Pendientes</button>
-                        <button onclick="filterCarts('emailed')" id="btn-cart-emailed" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Contactados</button>
-                        <button onclick="filterCarts('completed')" id="btn-cart-completed" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Recuperados</button>
+                        <button onclick="filterCarts('all')" id="btn-cart-all"
+                            class="px-3 py-1.5 rounded-lg bg-rp-teal text-brand-dark font-bold transition">Todos</button>
+                        <button onclick="filterCarts('pending')" id="btn-cart-pending"
+                            class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Pendientes</button>
+                        <button onclick="filterCarts('emailed')" id="btn-cart-emailed"
+                            class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Contactados</button>
+                        <button onclick="filterCarts('completed')" id="btn-cart-completed"
+                            class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Recuperados</button>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto -mx-6 sm:mx-0">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 font-semibold text-xs uppercase tracking-wider">
+                            <tr
+                                class="border-b border-slate-800 text-slate-400 font-semibold text-xs uppercase tracking-wider">
                                 <th class="px-6 py-3">Fecha</th>
                                 <th class="px-6 py-3">Cliente</th>
                                 <th class="px-6 py-3">Detalle</th>
@@ -661,7 +780,8 @@
                         </thead>
                         <tbody id="carts-tbody" class="divide-y divide-slate-800 text-slate-300">
                             <tr>
-                                <td colspan="6" class="py-12 text-center text-slate-500 italic">Cargando carritos abandonados...</td>
+                                <td colspan="6" class="py-12 text-center text-slate-500 italic">Cargando carritos
+                                    abandonados...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -673,7 +793,8 @@
 
     <!-- SALES DETAILS MODAL -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
-        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6">
+        <div
+            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <h3 class="text-lg font-bold text-white font-brand flex items-center gap-1.5">
                     <i class="fa-solid fa-file-invoice text-rp-teal"></i>Detalle de Venta
@@ -689,7 +810,8 @@
             </div>
 
             <div class="pt-3 border-t border-slate-700 flex justify-end">
-                <button onclick="closeDetailsModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition text-xs">
+                <button onclick="closeDetailsModal()"
+                    class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition text-xs">
                     Cerrar
                 </button>
             </div>
@@ -698,7 +820,8 @@
 
     <!-- INVOICE UPLOAD & SEND MODAL -->
     <div id="invoice-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
-        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-5">
+        <div
+            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-5">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <h3 class="text-lg font-bold text-white font-brand flex items-center gap-2">
                     <i class="fa-solid fa-file-invoice-dollar text-rp-mint"></i>Emitir / Subir Factura con RUT
@@ -714,7 +837,8 @@
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                         <i class="fa-solid fa-building text-rp-teal"></i> Datos Fiscales del Comprador
                     </h4>
-                    <button type="button" onclick="copyFiscalData()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rp-mint px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
+                    <button type="button" onclick="copyFiscalData()"
+                        class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rp-mint px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
                         <i class="fa-solid fa-copy"></i> Copiar Datos
                     </button>
                 </div>
@@ -743,27 +867,32 @@
             </div>
 
             <!-- Estado Actual de la Factura -->
-            <div id="inv-modal-status-badge" class="p-3 rounded-lg flex items-center justify-between text-xs bg-slate-900/60 border border-slate-800">
+            <div id="inv-modal-status-badge"
+                class="p-3 rounded-lg flex items-center justify-between text-xs bg-slate-900/60 border border-slate-800">
                 <!-- Rellenado dinámicamente -->
             </div>
 
             <!-- Formulario de Envío de Factura PDF -->
             <form id="invoice-upload-form" onsubmit="submitInvoiceEmail(event)" class="space-y-4">
                 <input type="hidden" id="inv-sale-id">
-                
+
                 <!-- Área de Carga Drag & Drop / Input File -->
                 <div>
                     <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">
                         Seleccionar Archivo PDF de la Factura
                     </label>
-                    <div id="pdf-drop-zone" class="border-2 border-dashed border-slate-700 hover:border-rp-teal/60 bg-slate-900/40 rounded-xl p-5 text-center cursor-pointer transition">
-                        <input type="file" id="invoice-file-input" accept="application/pdf" class="hidden" onchange="handleInvoiceFileSelected(event)">
+                    <div id="pdf-drop-zone"
+                        class="border-2 border-dashed border-slate-700 hover:border-rp-teal/60 bg-slate-900/40 rounded-xl p-5 text-center cursor-pointer transition">
+                        <input type="file" id="invoice-file-input" accept="application/pdf" class="hidden"
+                            onchange="handleInvoiceFileSelected(event)">
                         <div id="pdf-upload-prompt" class="space-y-2">
                             <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-500"></i>
-                            <p class="text-xs text-slate-300 font-medium">Arrastra el archivo PDF aquí o <span class="text-rp-teal underline font-bold">haz clic para examinar</span></p>
+                            <p class="text-xs text-slate-300 font-medium">Arrastra el archivo PDF aquí o <span
+                                    class="text-rp-teal underline font-bold">haz clic para examinar</span></p>
                             <p class="text-[10px] text-slate-500">Máximo 10 MB. Formato PDF oficial únicamente.</p>
                         </div>
-                        <div id="pdf-file-preview" class="hidden flex items-center justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                        <div id="pdf-file-preview"
+                            class="hidden flex items-center justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                             <div class="flex items-center gap-2 min-w-0">
                                 <i class="fa-solid fa-file-pdf text-red-400 text-xl"></i>
                                 <div class="text-left min-w-0">
@@ -771,7 +900,8 @@
                                     <p id="pdf-filesize-display" class="text-[10px] text-slate-500"></p>
                                 </div>
                             </div>
-                            <button type="button" onclick="removeSelectedPdf(event)" class="text-slate-400 hover:text-red-400 p-1 text-sm transition">
+                            <button type="button" onclick="removeSelectedPdf(event)"
+                                class="text-slate-400 hover:text-red-400 p-1 text-sm transition">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
@@ -780,17 +910,21 @@
 
                 <!-- Notas Opcionales -->
                 <div>
-                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Nota Adicional para el Cliente (Opcional)</label>
-                    <input type="text" id="invoice-custom-notes" placeholder="Ej: Factura e-Factura correspondiente a su orden..."
+                    <label class="block text-slate-400 text-xs font-semibold mb-1 uppercase">Nota Adicional para el
+                        Cliente (Opcional)</label>
+                    <input type="text" id="invoice-custom-notes"
+                        placeholder="Ej: Factura e-Factura correspondiente a su orden..."
                         class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rp-teal">
                 </div>
 
                 <!-- Botones Acción -->
                 <div class="pt-3 border-t border-slate-700 flex justify-end gap-3 text-xs">
-                    <button type="button" onclick="closeInvoiceModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-5 rounded-lg transition">
+                    <button type="button" onclick="closeInvoiceModal()"
+                        class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-5 rounded-lg transition">
                         Cancelar
                     </button>
-                    <button type="submit" id="send-invoice-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg transition shadow-lg shadow-emerald-600/20 flex items-center gap-1.5">
+                    <button type="submit" id="send-invoice-btn"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg transition shadow-lg shadow-emerald-600/20 flex items-center gap-1.5">
                         <i class="fa-solid fa-paper-plane"></i> Enviar Factura por Email
                     </button>
                 </div>
@@ -799,10 +933,13 @@
     </div>
 
     <!-- SALE SUCCESS MODAL -->
-    <div id="sale-success-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+    <div id="sale-success-modal"
+        class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
             <div class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-emerald-500/20">
+                <div
+                    class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-emerald-500/20">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
                 <h3 class="text-xl font-bold text-white font-brand" id="success-modal-title">¡Venta Registrada!</h3>
@@ -810,15 +947,18 @@
 
             <div class="space-y-3 text-sm text-slate-300">
                 <p id="success-modal-msg-main" class="font-medium text-slate-200"></p>
-                <div id="success-modal-coupon-box" class="hidden p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 font-mono text-center">
+                <div id="success-modal-coupon-box"
+                    class="hidden p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 font-mono text-center">
                     <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider mb-1">Cupón Generado</p>
-                    <span id="success-modal-coupon-code" class="text-lg font-extrabold tracking-widest bg-slate-900/50 px-3 py-1.5 rounded border border-emerald-500/10"></span>
+                    <span id="success-modal-coupon-code"
+                        class="text-lg font-extrabold tracking-widest bg-slate-900/50 px-3 py-1.5 rounded border border-emerald-500/10"></span>
                 </div>
                 <p id="success-modal-msg-email" class="text-xs text-slate-400 italic"></p>
             </div>
 
             <div class="pt-3 border-t border-slate-800 flex justify-center">
-                <button onclick="closeSuccessModal()" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2.5 px-8 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-rp-teal/10 text-xs">
+                <button onclick="closeSuccessModal()"
+                    class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2.5 px-8 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-rp-teal/10 text-xs">
                     Entendido
                 </button>
             </div>
@@ -826,20 +966,26 @@
     </div>
 
     <!-- CONFIRMATION MODAL -->
-    <div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+    <div id="confirm-modal"
+        class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
             <div class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-red-500/20">
+                <div
+                    class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-red-500/20">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
                 <h3 class="text-xl font-bold text-white font-brand" id="confirm-modal-title">¿Confirmar Acción?</h3>
             </div>
-            <p id="confirm-modal-message" class="text-sm text-slate-300">¿Estás seguro de que querés realizar esta acción? Esta operación no se puede deshacer.</p>
+            <p id="confirm-modal-message" class="text-sm text-slate-300">¿Estás seguro de que querés realizar esta
+                acción? Esta operación no se puede deshacer.</p>
             <div class="pt-3 border-t border-slate-800 flex justify-center gap-4">
-                <button onclick="closeConfirmModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded-lg transition text-xs">
+                <button onclick="closeConfirmModal()"
+                    class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded-lg transition text-xs">
                     Cancelar
                 </button>
-                <button id="confirm-modal-ok-btn" class="bg-red-500 hover:bg-red-600 text-white font-extrabold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-red-500/10 text-xs">
+                <button id="confirm-modal-ok-btn"
+                    class="bg-red-500 hover:bg-red-600 text-white font-extrabold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-red-500/10 text-xs">
                     Confirmar
                 </button>
             </div>
@@ -848,7 +994,8 @@
 
     <!-- EDIT SALE MODAL -->
     <div id="edit-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
-        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
+        <div
+            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <h3 class="text-lg font-bold text-white font-brand flex items-center gap-1.5">
                     <i class="fa-solid fa-pen-to-square text-rp-teal"></i>Editar Venta
@@ -860,7 +1007,7 @@
 
             <form id="edit-sale-form" onsubmit="submitEditSale(event)" class="space-y-4 text-xs">
                 <input type="hidden" id="edit-sale-id">
-                
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-slate-400 font-semibold mb-1 uppercase">Nombre del Cliente *</label>
@@ -945,10 +1092,12 @@
                 </div>
 
                 <div class="pt-4 border-t border-slate-800 flex justify-end gap-3 text-xs">
-                    <button type="button" onclick="closeEditModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                    <button type="button" onclick="closeEditModal()"
+                        class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition">
                         Cancelar
                     </button>
-                    <button type="submit" id="submit-edit-btn" class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2 px-6 rounded-lg transition shadow-lg shadow-rp-teal/10">
+                    <button type="submit" id="submit-edit-btn"
+                        class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2 px-6 rounded-lg transition shadow-lg shadow-rp-teal/10">
                         Guardar Cambios
                     </button>
                 </div>
@@ -1006,7 +1155,7 @@
         let manualSaleItems = [];
         let globalSalesList = [];
         let salesChartInstance = null;
-        
+
         // State de Carritos Abandonados
         let globalCartsList = [];
         let currentCartFilter = 'all';
@@ -1015,7 +1164,7 @@
         let localMockSales = [
             {
                 id: "MOCK-1",
-                created_at: new Date(Date.now() - 5*24*60*60*1000).toISOString(),
+                created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
                 source: "web",
                 customer_name: "Juan Pérez",
                 customer_email: "juan@gmail.com",
@@ -1034,7 +1183,7 @@
             },
             {
                 id: "MOCK-RUT-1",
-                created_at: new Date(Date.now() - 1*24*60*60*1000).toISOString(),
+                created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
                 source: "web",
                 customer_name: "Tech Solutions S.A.",
                 customer_email: "facturacion@techsolutions.uy",
@@ -1060,7 +1209,7 @@
             },
             {
                 id: "MOCK-2",
-                created_at: new Date(Date.now() - 3*24*60*60*1000).toISOString(),
+                created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
                 source: "manual",
                 customer_name: "María Rodríguez",
                 customer_email: "maria@yahoo.com",
@@ -1084,7 +1233,7 @@
                 id: "d1",
                 code: "MOCK10",
                 discount_percent: 10,
-                expires_at: new Date(Date.now() + 15*24*60*60*1000).toISOString(),
+                expires_at: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
                 is_used: false,
                 created_at: new Date().toISOString()
             },
@@ -1092,7 +1241,7 @@
                 id: "d-basura",
                 code: "LABASURAESUNCONCEPTO",
                 discount_percent: 10,
-                expires_at: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
+                expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                 is_used: false,
                 is_single_use: false,
                 created_at: new Date().toISOString()
@@ -1102,7 +1251,7 @@
         let localMockCarts = [
             {
                 id: "MOCK-CART-1",
-                created_at: new Date(Date.now() - 2*60*60*1000).toISOString(),
+                created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
                 customer_name: "Andrés Gómez",
                 customer_email: "andres@gmail.com",
                 items: [{ id: "bowl-negro", name: "Bowl Negro", price: 450, quantity: 1 }],
@@ -1111,7 +1260,7 @@
             },
             {
                 id: "MOCK-CART-RODRIGO",
-                created_at: new Date(Date.now() - 58*60*1000).toISOString(), // hace 58 minutos
+                created_at: new Date(Date.now() - 58 * 60 * 1000).toISOString(), // hace 58 minutos
                 customer_name: "Rodrigo Madeira",
                 customer_email: "madeirarodrigo21@gmail.com",
                 items: [
@@ -1123,7 +1272,7 @@
             },
             {
                 id: "MOCK-CART-2",
-                created_at: new Date(Date.now() - 12*60*60*1000).toISOString(),
+                created_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
                 customer_name: "Camila Ortiz",
                 customer_email: "camila@hotmail.com",
                 items: [
@@ -1154,7 +1303,7 @@
 
         function handleLocalMockRequest(action, options = {}) {
             console.log(`[Mock Client API] Action: ${action}`, options);
-            
+
             if (action === 'get_stats') {
                 let totalRevenue = 0;
                 let webRevenue = 0;
@@ -1162,14 +1311,14 @@
                 let totalSalesCount = localMockSales.length;
                 let webSalesCount = 0;
                 let manualSalesCount = 0;
-                
+
                 const productQuantities = {};
                 const salesOverTime = {};
 
                 localMockSales.forEach(sale => {
                     const amt = Number(sale.total) || 0;
                     totalRevenue += amt;
-                    
+
                     if (sale.source === 'web') {
                         webRevenue += amt;
                         webSalesCount++;
@@ -1224,7 +1373,7 @@
 
             if (action === 'add_manual_sale') {
                 const body = JSON.parse(options.body);
-                
+
                 let autoCouponCode = null;
                 if (body.generate_coupon && body.customer_email && body.customer_email.trim() !== '' && body.customer_email.includes('@')) {
                     const percent = body.coupon_discount_percent || 10;
@@ -1272,9 +1421,9 @@
                     status: 'approved'
                 };
                 localMockSales.push(newSale);
-                return { 
-                    message: "Venta registrada con éxito (Simulado)", 
-                    sale: newSale, 
+                return {
+                    message: "Venta registrada con éxito (Simulado)",
+                    sale: newSale,
                     email_sent: !!body.customer_email,
                     coupon_code: autoCouponCode
                 };
@@ -1300,7 +1449,7 @@
             if (action === 'generate_discount') {
                 const body = options.body ? JSON.parse(options.body) : {};
                 const { code: customCode, percent: customPercent, expires_days: customDays } = body;
-                
+
                 let code = customCode ? customCode.trim().toUpperCase() : '';
                 const percent = Number(customPercent) || 10;
                 const days = Number(customDays) || 30;
@@ -1400,7 +1549,7 @@
                         code += chars.charAt(Math.floor(Math.random() * chars.length));
                     }
                     const generatedCode = `CIRCULA10-${code}`;
-                    
+
                     localMockCoupons.push({
                         id: `MOCK-CODE-${Date.now()}`,
                         code: generatedCode,
@@ -1414,11 +1563,11 @@
                         is_used: false,
                         created_at: new Date().toISOString()
                     });
-                    
+
                     found.status = 'emailed';
                     found.discount_code = generatedCode;
                     localStorage.setItem('localMockCarts', JSON.stringify(localMockCarts));
-                    
+
                     return {
                         message: "Correo de recuperación enviado con éxito (Simulado)",
                         email_sent: true,
@@ -1463,7 +1612,7 @@
         function populateProductDropdown() {
             const selector = document.getElementById('product-selector');
             if (!selector) return;
-            
+
             Object.entries(ADMIN_PRODUCTS_DB).forEach(([id, p]) => {
                 const opt = document.createElement('option');
                 opt.value = id;
@@ -1476,9 +1625,9 @@
         function populateFilterProductDropdown() {
             const selector = document.getElementById('filter-product');
             if (!selector) return;
-            
+
             selector.innerHTML = '<option value="all">Todos los Productos</option>';
-            
+
             Object.entries(ADMIN_PRODUCTS_DB).forEach(([id, p]) => {
                 const opt = document.createElement('option');
                 opt.value = id;
@@ -1498,16 +1647,16 @@
             const errorEl = document.getElementById('login-error');
             errorEl.classList.add('hidden');
 
-            const isLocal = window.location.protocol === 'file:' || 
-                            (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
-                            (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
+            const isLocal = window.location.protocol === 'file:' ||
+                (window.location.hostname === 'localhost' && window.location.port !== '8888') ||
+                (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
 
             if (isLocal) {
                 // En modo local simulado, aceptamos cualquier contraseña
                 localStorage.setItem('circula_admin_pass', password);
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
-                
+
                 // Cargar datos
                 loadDashboardData(null, password);
                 return;
@@ -1528,15 +1677,15 @@
                 }
 
                 const data = await response.json();
-                
+
                 // Guardamos contraseña y mostramos Dashboard
                 localStorage.setItem('circula_admin_pass', password);
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
-                
+
                 // Cargar datos
                 loadDashboardData(data, password);
-                
+
             } catch (err) {
                 console.error("Login Error:", err);
                 errorEl.textContent = err.message || "No se pudo conectar con el servidor.";
@@ -1558,9 +1707,9 @@
             try {
                 // Chequear modo simulado
                 const mockBadge = document.getElementById('mock-badge');
-                const isLocal = window.location.protocol === 'file:' || 
-                                (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
-                                (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
+                const isLocal = window.location.protocol === 'file:' ||
+                    (window.location.hostname === 'localhost' && window.location.port !== '8888') ||
+                    (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
                 if (isLocal) {
                     if (mockBadge) mockBadge.classList.remove('hidden');
                 }
@@ -1742,10 +1891,10 @@
 
         // CLIENTE API REST NETLIFY FUNCTIONS
         async function fetchAPI(action, password, options = {}) {
-            const isLocal = window.location.protocol === 'file:' || 
-                            (window.location.hostname === 'localhost' && window.location.port !== '8888') || 
-                            (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
-            
+            const isLocal = window.location.protocol === 'file:' ||
+                (window.location.hostname === 'localhost' && window.location.port !== '8888') ||
+                (window.location.hostname === '127.0.0.1' && window.location.port !== '8888');
+
             if (isLocal) {
                 return handleLocalMockRequest(action, options);
             }
@@ -1856,7 +2005,7 @@
             const select = document.getElementById('manual-delivery');
             const costInput = document.getElementById('manual-shipping-cost');
             const selectedVal = select.value;
-            
+
             const cost = DELIVERY_COSTS[selectedVal];
             if (cost !== null) {
                 costInput.value = cost;
@@ -1900,7 +2049,7 @@
         function addProductToManualSale() {
             const selector = document.getElementById('product-selector');
             const qtyInput = document.getElementById('product-qty');
-            
+
             const productId = selector.value;
             const quantity = parseInt(qtyInput.value) || 0;
 
@@ -1914,7 +2063,7 @@
             }
 
             const productInfo = ADMIN_PRODUCTS_DB[productId];
-            
+
             // Verificar si el producto ya existe en la lista
             const existing = manualSaleItems.find(item => item.id === productId);
             if (existing) {
@@ -1980,7 +2129,7 @@
             const discountApplied = parseFloat(document.getElementById('manual-discount-applied').value) || 0;
 
             const subtotal = manualSaleItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            
+
             // Total no puede ser menor que 0
             const total = Math.max(0, subtotal + shippingCost - discountApplied);
 
@@ -1993,7 +2142,7 @@
         async function submitManualSale(e) {
             e.preventDefault();
             const password = localStorage.getItem('circula_admin_pass');
-            
+
             if (manualSaleItems.length === 0) {
                 showToast("Debes agregar al menos un producto a la venta.", "error");
                 return;
@@ -2061,7 +2210,7 @@
                 });
 
                 showSuccessModal(response.message, response.coupon_code, response.email_sent);
-                
+
                 // Resetear Formulario
                 document.getElementById('manual-sale-form').reset();
                 document.getElementById('manual-shipping-cost').disabled = true; // reset to pickup ($0)
@@ -2072,7 +2221,7 @@
                 manualSaleItems = [];
                 renderManualItemsTable();
                 recalcManualSale();
-                
+
                 // Recargar Dashboard
                 loadDashboardData();
 
@@ -2089,17 +2238,17 @@
         async function generateDiscountCode() {
             const password = localStorage.getItem('circula_admin_pass');
             const btn = document.getElementById('gen-coupon-btn');
-            
+
             const customCode = document.getElementById('coupon-custom-code').value.trim();
             const percent = parseInt(document.getElementById('coupon-percent').value) || 10;
             const days = parseInt(document.getElementById('coupon-days').value) || 30;
             const isSingleUse = document.getElementById('coupon-single-use').value === 'true';
-            
+
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Creando cupón...`;
 
             try {
-                const response = await fetchAPI('generate_discount', password, { 
+                const response = await fetchAPI('generate_discount', password, {
                     method: 'POST',
                     body: JSON.stringify({
                         code: customCode,
@@ -2108,17 +2257,17 @@
                         is_single_use: isSingleUse
                     })
                 });
-                
+
                 const resultCard = document.getElementById('coupon-result-container');
                 const codeSpan = document.getElementById('coupon-code-span');
                 const descP = document.getElementById('coupon-desc-p');
-                
+
                 codeSpan.textContent = response.discount.code;
                 if (descP) {
                     descP.textContent = `${response.discount.discount_percent}% de descuento. Válido por ${days} días. (${isSingleUse ? 'Único uso' : 'Múltiple uso'})`;
                 }
                 resultCard.classList.remove('hidden');
-                
+
                 // Limpiar código personalizado después de generar
                 document.getElementById('coupon-custom-code').value = '';
 
@@ -2156,7 +2305,7 @@
 
                 const expiry = new Date(c.expires_at);
                 const isExpired = expiry < new Date();
-                
+
                 let badgeClass = "bg-green-500/20 text-green-400 border border-green-500/20";
                 let badgeText = "Activo";
 
@@ -2220,12 +2369,12 @@
                     minute: '2-digit'
                 });
 
-                const sourceBadge = sale.source === 'web' 
+                const sourceBadge = sale.source === 'web'
                     ? `<span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-globe mr-1"></i>Web</span>`
                     : `<span class="bg-purple-500/20 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-user-tag mr-1"></i>Presencial</span>`;
 
                 const payBadge = `<span class="text-xs uppercase text-slate-400 font-semibold">${sale.payment_method}</span>`;
-                
+
                 // Formatear método de envío para lectura
                 let delLabel = "Retiro";
                 if (sale.delivery_option === 'montevideo') delLabel = "MVD";
@@ -2244,10 +2393,10 @@
                             <span class="inline-flex items-center gap-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold" title="RUT: ${sale.rut || 'N/A'}">
                                 <i class="fa-solid fa-file-invoice text-[8px]"></i>RUT: ${sale.rut || 'S/D'}
                             </span>
-                            ${isInvoiceSent 
-                                ? `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded" title="Factura enviada el ${sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleDateString('es-UY') : ''}">✓ Enviada</span>` 
-                                : `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-500/20 border border-amber-500/30 px-1.5 py-0.5 rounded animate-pulse" title="Factura pendiente de emitir y enviar">⏳ Factura Pendiente</span>`
-                            }
+                            ${isInvoiceSent
+                            ? `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded" title="Factura enviada el ${sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleDateString('es-UY') : ''}">✓ Enviada</span>`
+                            : `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-amber-500/20 border border-amber-500/30 px-1.5 py-0.5 rounded animate-pulse" title="Factura pendiente de emitir y enviar">⏳ Factura Pendiente</span>`
+                        }
                         </div>
                     `;
 
@@ -2316,12 +2465,12 @@
 
             filteredSalesList = globalSalesList.filter(sale => {
                 // 1. Filtro por query (Nombre, Email, ID, Dirección, RUT o Razón Social)
-                const matchesQuery = sale.customer_name.toLowerCase().includes(query) || 
-                                     (sale.customer_email && sale.customer_email.toLowerCase().includes(query)) ||
-                                     sale.id.toLowerCase().includes(query) ||
-                                     (sale.address && sale.address.toLowerCase().includes(query)) ||
-                                     (sale.rut && sale.rut.toLowerCase().includes(query)) ||
-                                     (sale.razon_social && sale.razon_social.toLowerCase().includes(query));
+                const matchesQuery = sale.customer_name.toLowerCase().includes(query) ||
+                    (sale.customer_email && sale.customer_email.toLowerCase().includes(query)) ||
+                    sale.id.toLowerCase().includes(query) ||
+                    (sale.address && sale.address.toLowerCase().includes(query)) ||
+                    (sale.rut && sale.rut.toLowerCase().includes(query)) ||
+                    (sale.razon_social && sale.razon_social.toLowerCase().includes(query));
                 if (!matchesQuery) return false;
 
                 // 2. Filtro por rango de fecha
@@ -2344,8 +2493,8 @@
 
                 // 6. Filtro por producto específico
                 if (product !== 'all') {
-                    const hasProduct = sale.items && Array.isArray(sale.items) && 
-                                       sale.items.some(item => String(item.id) === String(product));
+                    const hasProduct = sale.items && Array.isArray(sale.items) &&
+                        sale.items.some(item => String(item.id) === String(product));
                     if (!hasProduct) return false;
                 }
 
@@ -2408,7 +2557,7 @@
             const today = new Date();
             const fromInput = document.getElementById('filter-date-from');
             const toInput = document.getElementById('filter-date-to');
-            
+
             const formatDate = (date) => {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -2438,7 +2587,7 @@
             const sale = globalSalesList.find(s => s.id === id);
             if (!sale) return;
             const content = document.getElementById('modal-details-content');
-            
+
             const itemList = sale.items.map(item => `
                 <div class="flex justify-between items-center py-2 border-b border-slate-800">
                     <span>${item.name} <span class="text-slate-500 font-bold ml-1">x${item.quantity}</span></span>
@@ -2674,10 +2823,10 @@
             reader.onload = (event) => {
                 selectedInvoicePdfBase64 = event.target.result; // Data URL format
                 selectedInvoiceFilename = file.name;
-                
+
                 document.getElementById('pdf-filename-display').textContent = file.name;
                 document.getElementById('pdf-filesize-display').textContent = `${(file.size / 1024).toFixed(1)} KB`;
-                
+
                 document.getElementById('pdf-upload-prompt').classList.add('hidden');
                 document.getElementById('pdf-file-preview').classList.remove('hidden');
             };
@@ -2743,11 +2892,11 @@
                 });
 
                 showToast(response.message || "Factura enviada exitosamente por email", "success");
-                
+
                 // Actualizar estado en memoria
                 currentInvoiceSale.invoice_status = 'sent';
                 currentInvoiceSale.invoice_sent_at = response.invoice_sent_at || new Date().toISOString();
-                
+
                 const found = globalSalesList.find(s => String(s.id) === String(currentInvoiceSale.id));
                 if (found) {
                     found.invoice_status = 'sent';
@@ -2802,7 +2951,7 @@
 
             const toast = document.createElement('div');
             toast.className = `px-4 py-3 rounded-xl glass-panel shadow-lg border border-slate-700/60 pointer-events-auto flex items-center gap-2 text-xs font-semibold text-white animate-fade-in transition-all duration-300 transform translate-x-12 opacity-0`;
-            
+
             let icon = '<i class="fa-solid fa-circle-info text-rp-teal"></i>';
             if (type === 'error') {
                 icon = '<i class="fa-solid fa-circle-exclamation text-red-400"></i>';
@@ -2916,7 +3065,7 @@
             document.getElementById('edit-discount-applied').value = sale.discount_applied || 0;
             document.getElementById('edit-payment-method').value = sale.payment_method || 'efectivo';
             document.getElementById('edit-status').value = sale.status || 'approved';
-            
+
             recalcEditTotal();
 
             document.getElementById('edit-modal').classList.remove('hidden');
@@ -2938,7 +3087,7 @@
             e.preventDefault();
             const password = localStorage.getItem('circula_admin_pass');
             const id = document.getElementById('edit-sale-id').value;
-            
+
             const btn = document.getElementById('submit-edit-btn');
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Guardando...`;
@@ -2985,7 +3134,7 @@
             }
 
             const headers = ["ID", "Fecha", "Canal", "Tipo Comprobante", "RUT", "Razon Social", "Direccion Fiscal", "Estado Factura", "Fecha Envio Factura", "Cliente Nombre", "Cliente Email", "Productos", "Metodo Entrega", "Direccion/Notas", "Subtotal", "Costo Envio", "Descuento Aplicado", "Codigo Descuento", "Total", "Metodo Pago", "Estado"];
-            
+
             const rows = filteredSalesList.map(sale => {
                 const date = new Date(sale.created_at).toLocaleString('es-ES');
                 const source = sale.source === 'web' ? 'Web' : 'Presencial';
@@ -2994,7 +3143,7 @@
                 const invoiceType = isRut ? 'Factura con RUT' : 'Consumidor Final';
                 const invoiceStatus = isRut ? (sale.invoice_status === 'sent' ? 'Enviada' : 'Pendiente') : 'N/A';
                 const invoiceSentDate = sale.invoice_sent_at ? new Date(sale.invoice_sent_at).toLocaleString('es-ES') : '';
-                
+
                 return [
                     sale.id,
                     date,
@@ -3033,7 +3182,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            
+
             const fromDate = document.getElementById('filter-date-from').value || 'inicio';
             const toDate = document.getElementById('filter-date-to').value || 'fin';
             link.setAttribute("download", `ventas_circula_${fromDate}_a_${toDate}.csv`);
@@ -3041,7 +3190,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showToast("CSV descargado con éxito.", "success");
         }
 
@@ -3053,7 +3202,7 @@
             let webRevenue = 0;
             let manualRevenue = 0;
             let totalSalesCount = sales.length;
-            
+
             const productQuantities = {};
             const salesOverTime = {};
             const paymentCounts = {};
@@ -3061,7 +3210,7 @@
             sales.forEach(sale => {
                 const amt = Number(sale.total) || 0;
                 totalRevenue += amt;
-                
+
                 if (sale.source === 'web') {
                     webRevenue += amt;
                 } else {
@@ -3118,7 +3267,7 @@
                             const percent = (count / totalSalesCount) * 100;
                             let label = method.charAt(0).toUpperCase() + method.slice(1);
                             if (method === 'mercadopago') label = 'Mercado Pago';
-                            
+
                             let icon = '<i class="fa-solid fa-money-bill-wave text-emerald-400"></i>';
                             if (method === 'mercadopago') icon = '<i class="fa-solid fa-wallet text-mp-blue"></i>';
                             else if (method === 'transferencia') icon = '<i class="fa-solid fa-building-columns text-indigo-400"></i>';
@@ -3170,7 +3319,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            
+
             const fromDate = document.getElementById('filter-date-from').value || 'inicio';
             const toDate = document.getElementById('filter-date-to').value || 'fin';
             link.setAttribute("download", `datos_grafico_${fromDate}_a_${toDate}.csv`);
@@ -3178,7 +3327,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showToast("CSV de gráfico descargado.", "success");
         }
 
@@ -3204,21 +3353,21 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showToast("Imagen del gráfico descargada.", "success");
         }
 
         // --- GESTIÓN DE CARRITOS ABANDONADOS ---
         function filterCarts(filter) {
             currentCartFilter = filter;
-            
+
             const buttons = {
                 'all': document.getElementById('btn-cart-all'),
                 'pending': document.getElementById('btn-cart-pending'),
                 'emailed': document.getElementById('btn-cart-emailed'),
                 'completed': document.getElementById('btn-cart-completed')
             };
-            
+
             Object.entries(buttons).forEach(([key, btn]) => {
                 if (!btn) return;
                 if (key === filter) {
@@ -3314,7 +3463,7 @@
                             method: 'POST',
                             body: JSON.stringify({ id })
                         });
-                        
+
                         showToast(`Email enviado con éxito. Cupón: ${response.discount_code}`, "success");
                         loadDashboardData();
                     } catch (err) {
@@ -3347,4 +3496,5 @@
         }
     </script>
 </body>
+
 </html>

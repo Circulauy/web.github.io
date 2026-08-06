@@ -1,4 +1,10 @@
 // netlify/functions/recover-carts-cron.js
+let schedule;
+try {
+    schedule = require('@netlify/functions').schedule;
+} catch (e) {
+    console.warn("⚠️ @netlify/functions schedule module not available, running standalone.");
+}
 const nodemailer = require('nodemailer');
 const db = require('./utils/db');
 
@@ -138,7 +144,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
     return true;
 }
 
-exports.handler = async (event, context) => {
+async function cronHandler(event, context) {
     console.log("⏰ [CRON] Iniciando tarea programada de recuperación de carritos...");
 
     try {
@@ -146,9 +152,8 @@ exports.handler = async (event, context) => {
         const carts = await db.getAbandonedCarts();
 
         // 2. Filtrar los carritos 'pending' de hace más de 1 hora
-        // (En local, 1 hora son 60 minutos. Rodrigo estará en 58 min, por lo que en 2 min califica, pero para pruebas podemos forzar que se envíe).
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        const pendingCarts = carts.filter(c =>
+        const pendingCarts = (carts || []).filter(c =>
             c.status === 'pending' &&
             c.customer_email &&
             c.customer_email.includes('@') &&
@@ -167,7 +172,8 @@ exports.handler = async (event, context) => {
             processedCount++;
 
             // Verificar si el cliente ya recibió un correo de recuperación en los últimos 6 meses
-            const alreadyEmailedRecently = carts.some(c =>
+            const alreadyEmailedRecently = (carts || []).some(c =>
+                c.customer_email &&
                 c.customer_email.toLowerCase() === cart.customer_email.toLowerCase() &&
                 c.status === 'emailed' &&
                 new Date(c.created_at) > sixMonthsAgo
@@ -238,4 +244,7 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ error: "Error interno procesando el cron.", details: err.message })
         };
     }
-};
+}
+
+exports.runRecovery = cronHandler;
+exports.handler = typeof schedule === 'function' ? schedule("*/15 * * * *", cronHandler) : cronHandler;
