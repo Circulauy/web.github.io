@@ -245,15 +245,25 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
         }
     });
 
-    const itemsTableRows = items
-        .map(item => {
+    let parsedItems = items;
+    if (typeof parsedItems === 'string') {
+        try { parsedItems = JSON.parse(parsedItems); } catch (e) { parsedItems = []; }
+    }
+    if (!Array.isArray(parsedItems)) {
+        parsedItems = [];
+    }
+
+    const displayBuyerName = buyerName && buyerName.trim() ? buyerName.trim() : 'Amigo/a';
+
+    const itemsTableRows = parsedItems.length > 0
+        ? parsedItems.map(item => {
             const itemPrice = Number(item.price || 0);
             const itemQty = Number(item.quantity || 1);
             const itemTotal = itemPrice * itemQty;
             return `
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                     <td style="padding: 12px 8px; font-size: 14px; color: #334155; text-align: left; vertical-align: middle;">
-                        <span style="font-weight: 600; color: #1e293b; display: block;">${item.name}</span>
+                        <span style="font-weight: 600; color: #1e293b; display: block;">${item.name || item.title || 'Producto'}</span>
                     </td>
                     <td style="padding: 12px 8px; font-size: 14px; color: #64748b; text-align: center; vertical-align: middle;">
                         x${itemQty}
@@ -263,8 +273,8 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                     </td>
                 </tr>
             `;
-        })
-        .join('');
+        }).join('')
+        : `<tr><td colspan="3" style="padding: 12px 8px; font-size: 14px; color: #64748b;">Tu selección de productos Circula</td></tr>`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -293,7 +303,7 @@ async function sendCartRecoveryEmail(buyerEmail, buyerName, items, total, coupon
                             <!-- Contenedor con padding -->
                             <div style="padding: 30px;">
                                 <p style="font-size: 16px; line-height: 1.6; color: #1e293b; margin-top: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                                    ¡Hola <strong>${buyerName}</strong>!
+                                    ¡Hola <strong>${displayBuyerName}</strong>!
                                 </p>
                                 <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                                     Notamos que dejaste algunos productos increíbles en tu carrito de compras. Para ayudarte a dar el paso hacia una alternativa más sustentable, ¡tenemos una sorpresa especial para vos!
