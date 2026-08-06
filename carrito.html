@@ -11,8 +11,7 @@
     <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd', 'mp-blue': '#009ee3' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         html {
             scroll-behavior: smooth;
@@ -295,10 +294,11 @@
                             <div
                                 class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
                                 <span class="text-text-dark">TOTAL</span>
-                                <span id="cart-total-page" class="text-mp-blue">$0.00</span>
+                                <span id="cart-total-page" class="text-mp-blue font-bold" style="color: #009ee3;">$0.00</span>
                             </div>
                             <button onclick="window.location.href='datos.html'"
-                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1">
+                                style="background-color: #009ee3 !important;"
+                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:brightness-95 transition mb-4 shadow-lg text-lg tracking-wide hover:-translate-y-1 cursor-pointer">
                                 FINALIZAR COMPRA
                             </button>
                             <button onclick="window.location.href='tienda.html'"

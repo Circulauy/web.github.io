@@ -12,8 +12,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd', 'mp-blue': '#009ee3', 'rp-border-default': '#cbd5e1' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="css/custom.css">
     <style>
         html {
             scroll-behavior: smooth;
@@ -316,7 +316,8 @@
                                     <!-- Botón accesible en móviles al pie del formulario -->
                                     <div class="block lg:hidden pt-4 border-t border-rp-gray-soft/60">
                                         <button type="button" onclick="submitCheckoutForm()"
-                                            class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition shadow-lg text-base tracking-wide flex justify-center items-center gap-2">
+                                            style="background-color: #009ee3 !important;"
+                                            class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:brightness-95 transition shadow-lg text-base tracking-wide flex justify-center items-center gap-2 cursor-pointer">
                                             CONTINUAR AL PAGO
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -370,11 +371,12 @@
                             <div
                                 class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
                                 <span class="text-text-dark">TOTAL</span>
-                                <span id="checkout-total" class="text-mp-blue">$0.00</span>
+                                <span id="checkout-total" class="text-mp-blue font-bold" style="color: #009ee3;">$0.00</span>
                             </div>
 
                             <button onclick="submitCheckoutForm()"
-                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:bg-mp-blue/90 transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2 mb-4">
+                                style="background-color: #009ee3 !important;"
+                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:brightness-95 transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2 mb-4 cursor-pointer">
                                 FINALIZAR COMPRA
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">

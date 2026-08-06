@@ -23,7 +23,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="css/custom.css">
+    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd', 'mp-blue': '#009ee3' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         html { scroll-behavior: smooth; scrollbar-width: none; overflow-x: hidden; }
         html::-webkit-scrollbar { display: none; }
@@ -161,7 +162,7 @@
                         <button type="button" onclick="incrementDetailQty()" class="px-4 h-full bg-gray-50 hover:bg-gray-100 font-bold transition text-lg flex items-center justify-center select-none">+</button>
                     </div>
                     
-                    <button id="detail-add-btn" class="flex-1 h-[56px] bg-mp-blue text-white font-bold rounded-lg hover:bg-mp-blue/90 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95">
+                    <button id="detail-add-btn" style="background-color: #009ee3 !important;" class="flex-1 h-[56px] bg-mp-blue text-white font-bold rounded-lg hover:brightness-95 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95 cursor-pointer">
                         <i class="fas fa-shopping-cart mr-2"></i> AGREGAR AL CARRITO
                     </button>
                 </div>

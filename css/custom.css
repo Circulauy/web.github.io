@@ -299,3 +299,15 @@ html, body {
   width: 100%;
   position: relative;
 }
+
+/* --- 9. MERCADO PAGO BOTONES Y COLORES (VITAL FIX) --- */
+.bg-mp-blue, [class*="bg-mp-blue"] {
+  background-color: #009ee3 !important;
+  color: #ffffff !important;
+}
+.bg-mp-blue:hover, [class*="bg-mp-blue"]:hover {
+  background-color: #0081ba !important;
+}
+.text-mp-blue {
+  color: #009ee3 !important;
+}
