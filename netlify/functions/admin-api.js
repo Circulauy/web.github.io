@@ -487,7 +487,7 @@ function generateRandomCode(percent = 10) {
     return `CIRCULA${percent}-${code}`;
 }
 
-// Función de Auto-Verificación y Sincronización con Mercado Pago
+// Función de Auto-Verificación y Sincronización Segura con Mercado Pago (Previene Duplicados)
 async function syncMercadopagoPayments(db) {
     if (!process.env.MP_ACCESS_TOKEN) {
         throw new Error("MP_ACCESS_TOKEN no está configurado en las variables de entorno de Netlify.");
@@ -503,105 +503,136 @@ async function syncMercadopagoPayments(db) {
         existingSales.map(s => String(s.mp_payment_id)).filter(id => id && id !== 'undefined' && id !== 'null')
     );
 
+    // Mapeo de huellas existentes para evitar duplicar ventas históricas ya cargadas
+    const existingFingerprints = new Set(
+        existingSales.map(s => {
+            const email = (s.customer_email || '').toLowerCase().trim();
+            const total = Number(s.total || 0).toFixed(2);
+            const dateDay = (s.created_at || '').substring(0, 10);
+            return `${email}|${total}|${dateDay}`;
+        })
+    );
+
     console.log(`🔍 [MP-SYNC] Comparando con ${existingSales.length} ventas locales (${existingMpIds.size} con MP ID)...`);
 
-    // 2. Consultar las últimas ventas aprobadas en Mercado Pago
+    // 2. Consultar solo las compras recientes (últimos 15 pagos aprobados)
     const searchRes = await mercadopago.payment.search({
         qs: {
             sort: 'date_created',
             criteria: 'desc',
-            limit: 50,
+            limit: 15,
             status: 'approved'
         }
     });
 
     const mpPayments = (searchRes && searchRes.body && searchRes.body.results) ? searchRes.body.results : [];
-    console.log(`🔍 [MP-SYNC] Encontrados ${mpPayments.length} pagos aprobados en Mercado Pago.`);
+    console.log(`🔍 [MP-SYNC] Encontrados ${mpPayments.length} pagos aprobados recientes en Mercado Pago.`);
 
     const recoveredSales = [];
 
     for (const payment of mpPayments) {
         const paymentIdStr = String(payment.id);
-        if (!existingMpIds.has(paymentIdStr)) {
-            console.log(`✨ [MP-SYNC] Pago no registrado encontrado: MP ID ${paymentIdStr}`);
-            
-            const metadata = payment.metadata || {};
-            const buyerName = metadata.cliente_nombre || 
-                              (payment.payer ? `${payment.payer.first_name || ''} ${payment.payer.last_name || ''}`.trim() : '') || 
-                              'Cliente Web';
-            const buyerEmail = (payment.payer && payment.payer.email) ? payment.payer.email : (metadata.cliente_email || 'sin-email@web.com');
+        const metadata = payment.metadata || {};
+        const buyerName = metadata.cliente_nombre || 
+                          (payment.payer ? `${payment.payer.first_name || ''} ${payment.payer.last_name || ''}`.trim() : '') || 
+                          'Cliente Web';
+        const buyerEmail = (payment.payer && payment.payer.email) ? payment.payer.email : (metadata.cliente_email || 'sin-email@web.com');
+        const total = Number(payment.transaction_amount || 0);
+        const paymentDate = (payment.date_approved || payment.date_created || new Date().toISOString()).substring(0, 10);
+        const fingerprint = `${buyerEmail.toLowerCase().trim()}|${total.toFixed(2)}|${paymentDate}`;
 
-            const rawItems = (payment.additional_info && payment.additional_info.items) ? payment.additional_info.items : [];
-            let shippingCost = 0;
-            const productItems = [];
-
-            rawItems.forEach(item => {
-                const price = Number(item.unit_price || 0);
-                const quantity = Number(item.quantity || 1);
-                if (item.title && item.title.startsWith("Costo de Envío")) {
-                    shippingCost = price;
-                } else {
-                    productItems.push({
-                        id: item.id || (item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : 'prod'),
-                        name: item.title || 'Producto',
-                        price: price,
-                        quantity: quantity
-                    });
+        // Si ya está registrado por ID de MP o por datos idénticos de compra en el mismo día
+        if (existingMpIds.has(paymentIdStr) || existingFingerprints.has(fingerprint)) {
+            // Si la venta existía pero no tenía asignado el mp_payment_id, actualizarlo silenciosamente
+            const matchWithoutMpId = existingSales.find(s => 
+                (!s.mp_payment_id || s.mp_payment_id === 'null') && 
+                (s.customer_email || '').toLowerCase().trim() === buyerEmail.toLowerCase().trim() &&
+                Math.abs(Number(s.total || 0) - total) < 1
+            );
+            if (matchWithoutMpId && matchWithoutMpId.id) {
+                try {
+                    await db.updateSale(matchWithoutMpId.id, { mp_payment_id: paymentIdStr });
+                    existingMpIds.add(paymentIdStr);
+                    console.log(`🔗 [MP-SYNC] Vinculado mp_payment_id ${paymentIdStr} a venta existente ID ${matchWithoutMpId.id}`);
+                } catch (e) {
+                    console.error("Error al actualizar mp_payment_id:", e);
                 }
-            });
+            }
+            continue;
+        }
 
-            if (productItems.length === 0) {
+        console.log(`✨ [MP-SYNC] Venta no registrada encontrada: MP ID ${paymentIdStr} ($${total} de ${buyerName})`);
+        
+        const rawItems = (payment.additional_info && payment.additional_info.items) ? payment.additional_info.items : [];
+        let shippingCost = 0;
+        const productItems = [];
+
+        rawItems.forEach(item => {
+            const price = Number(item.unit_price || 0);
+            const quantity = Number(item.quantity || 1);
+            if (item.title && item.title.startsWith("Costo de Envío")) {
+                shippingCost = price;
+            } else {
                 productItems.push({
-                    id: 'compra-mp',
-                    name: payment.description || 'Compra Online',
-                    price: Number(payment.transaction_amount || 0),
-                    quantity: 1
+                    id: item.id || (item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : 'prod'),
+                    name: item.title || 'Producto',
+                    price: price,
+                    quantity: quantity
                 });
             }
+        });
 
-            const discountCode = metadata.discount_code || null;
-            const discountApplied = Number(metadata.discount_applied || 0);
-            const total = Number(payment.transaction_amount || 0);
-            const subtotal = Number(metadata.original_subtotal || (total - shippingCost + discountApplied));
-
-            const isRut = metadata.invoice_type === 'rut' || Boolean(metadata.rut);
-            const saleToSave = {
-                source: 'web',
-                customer_name: buyerName,
-                customer_email: buyerEmail,
-                items: productItems,
-                delivery_option: metadata.tipo_entrega || 'pickup',
-                district: metadata.zona_barrio || '',
-                address: metadata.direccion_completa || '',
-                subtotal: subtotal,
-                shipping_cost: shippingCost,
-                discount_applied: discountApplied,
-                discount_code: discountCode,
-                total: total,
-                payment_method: 'mercadopago',
-                status: 'approved',
-                mp_payment_id: paymentIdStr,
-                invoice_type: isRut ? 'rut' : 'final',
-                rut: isRut ? String(metadata.rut || '').trim() : null,
-                razon_social: isRut ? String(metadata.razon_social || '').trim() : null,
-                direccion_fiscal: isRut ? String(metadata.direccion_fiscal || '').trim() : null,
-                invoice_status: isRut ? 'pending' : null,
-                invoice_sent_at: null,
-                created_at: payment.date_approved || payment.date_created || new Date().toISOString()
-            };
-
-            const saved = await db.saveSale(saleToSave);
-            existingMpIds.add(paymentIdStr);
-            recoveredSales.push({
-                id: saved.id || paymentIdStr,
-                customer_name: buyerName,
-                total: total,
-                is_rut: isRut,
-                rut: metadata.rut,
-                mp_payment_id: paymentIdStr
+        if (productItems.length === 0) {
+            productItems.push({
+                id: 'compra-mp',
+                name: payment.description || 'Compra Online',
+                price: total,
+                quantity: 1
             });
-            console.log(`✅ [MP-SYNC] Venta recuperada y registrada con éxito para ${buyerName} ($${total})`);
         }
+
+        const discountCode = metadata.discount_code || null;
+        const discountApplied = Number(metadata.discount_applied || 0);
+        const subtotal = Number(metadata.original_subtotal || (total - shippingCost + discountApplied));
+
+        const isRut = metadata.invoice_type === 'rut' || Boolean(metadata.rut);
+        const saleToSave = {
+            source: 'web',
+            customer_name: buyerName,
+            customer_email: buyerEmail,
+            items: productItems,
+            delivery_option: metadata.tipo_entrega || 'pickup',
+            district: metadata.zona_barrio || '',
+            address: metadata.direccion_completa || '',
+            subtotal: subtotal,
+            shipping_cost: shippingCost,
+            discount_applied: discountApplied,
+            discount_code: discountCode,
+            total: total,
+            payment_method: 'mercadopago',
+            status: 'approved',
+            mp_payment_id: paymentIdStr,
+            invoice_type: isRut ? 'rut' : 'final',
+            rut: isRut ? String(metadata.rut || '').trim() : null,
+            razon_social: isRut ? String(metadata.razon_social || '').trim() : null,
+            direccion_fiscal: isRut ? String(metadata.direccion_fiscal || '').trim() : null,
+            invoice_status: isRut ? 'pending' : null,
+            invoice_sent_at: null,
+            created_at: payment.date_approved || payment.date_created || new Date().toISOString()
+        };
+
+        const saved = await db.saveSale(saleToSave);
+        existingMpIds.add(paymentIdStr);
+        existingFingerprints.add(fingerprint);
+        recoveredSales.push({
+            id: saved.id || paymentIdStr,
+            customer_name: buyerName,
+            total: total,
+            is_rut: isRut,
+            rut: metadata.rut,
+            mp_payment_id: paymentIdStr
+        });
+        console.log(`✅ [MP-SYNC] Venta recuperada y registrada con éxito para ${buyerName} ($${total})`);
     }
 
     return recoveredSales;
@@ -722,6 +753,32 @@ exports.handler = async (event, context) => {
                         statusCode: 500,
                         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
                         body: JSON.stringify({ error: "Error al sincronizar con Mercado Pago: " + mpErr.message })
+                    };
+                }
+            }
+
+            if (action === 'clean_duplicates') {
+                try {
+                    const salesResult = await db.deduplicateSales();
+                    const cartsResult = await db.deduplicateAbandonedCarts();
+                    return {
+                        statusCode: 200,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({
+                            success: true,
+                            deleted_sales: salesResult.deletedCount,
+                            kept_sales: salesResult.keptCount,
+                            deleted_carts: cartsResult.deletedCount,
+                            kept_carts: cartsResult.keptCount,
+                            message: `Limpieza completada: Se eliminaron ${salesResult.deletedCount} venta(s) duplicada(s) y ${cartsResult.deletedCount} carrito(s) duplicado(s).`
+                        })
+                    };
+                } catch (cleanErr) {
+                    console.error("❌ Error en clean_duplicates:", cleanErr);
+                    return {
+                        statusCode: 500,
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ error: "Error al limpiar duplicados: " + cleanErr.message })
                     };
                 }
             }

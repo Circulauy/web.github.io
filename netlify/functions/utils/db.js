@@ -644,6 +644,112 @@ async function makeCouponMultiUse(code) {
     }
 }
 
+/**
+ * Deduplica automáticamente las ventas duplicadas o triplicadas en Supabase
+ */
+async function deduplicateSales() {
+    const allSales = await getSales();
+    if (!allSales || allSales.length === 0) return { deletedCount: 0, keptCount: 0 };
+
+    const seenMpIds = new Set();
+    const seenFingerprints = new Set();
+    const duplicatesToDelete = [];
+
+    // Ordenar de más antiguo a más nuevo para conservar el registro original
+    const sorted = [...allSales].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+    for (const sale of sorted) {
+        let isDuplicate = false;
+
+        // 1. Validar por mp_payment_id exacto si existe
+        if (sale.mp_payment_id && String(sale.mp_payment_id).trim() !== '' && String(sale.mp_payment_id) !== 'null' && String(sale.mp_payment_id) !== 'undefined') {
+            const mpId = String(sale.mp_payment_id).trim();
+            if (seenMpIds.has(mpId)) {
+                isDuplicate = true;
+            } else {
+                seenMpIds.add(mpId);
+            }
+        }
+
+        // 2. Validar por huella digital (Email + Total + Fecha de día)
+        const email = (sale.customer_email || '').toLowerCase().trim();
+        const total = Number(sale.total || 0).toFixed(2);
+        const dateDay = (sale.created_at || '').substring(0, 10);
+        const name = (sale.customer_name || '').toLowerCase().trim();
+
+        const fingerprint = `${email}|${name}|${total}|${dateDay}`;
+
+        if (seenFingerprints.has(fingerprint)) {
+            isDuplicate = true;
+        } else {
+            seenFingerprints.add(fingerprint);
+        }
+
+        if (isDuplicate) {
+            duplicatesToDelete.push(sale.id);
+        }
+    }
+
+    console.log(`🧹 [DEDUP] Encontradas ${duplicatesToDelete.length} ventas duplicadas para eliminar de ${allSales.length} totales.`);
+
+    let deletedCount = 0;
+    for (const id of duplicatesToDelete) {
+        try {
+            await deleteSale(id);
+            deletedCount++;
+        } catch (delErr) {
+            console.error(`Error eliminando venta duplicada ${id}:`, delErr);
+        }
+    }
+
+    return {
+        deletedCount,
+        keptCount: allSales.length - deletedCount
+    };
+}
+
+/**
+ * Deduplica carritos abandonados repetidos para un mismo cliente
+ */
+async function deduplicateAbandonedCarts() {
+    const carts = await getAbandonedCarts();
+    if (!carts || carts.length === 0) return { deletedCount: 0, keptCount: 0 };
+
+    const seenPendingEmails = new Set();
+    const toDelete = [];
+
+    // Ordenar de más reciente a más antiguo para mantener el carrito más actual
+    const sorted = [...carts].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+    for (const cart of sorted) {
+        const email = (cart.customer_email || '').toLowerCase().trim();
+        if (!email) continue;
+
+        if (cart.status === 'pending') {
+            if (seenPendingEmails.has(email)) {
+                toDelete.push(cart.id);
+            } else {
+                seenPendingEmails.add(email);
+            }
+        }
+    }
+
+    let deletedCount = 0;
+    for (const id of toDelete) {
+        try {
+            await deleteAbandonedCart(id);
+            deletedCount++;
+        } catch (err) {
+            console.error(`Error eliminando carrito duplicado ${id}:`, err);
+        }
+    }
+
+    return {
+        deletedCount,
+        keptCount: carts.length - deletedCount
+    };
+}
+
 module.exports = {
     isMockMode,
     validateDiscountCode,
@@ -664,6 +770,8 @@ module.exports = {
     updateAbandonedCartStatus,
     markAbandonedCartAsCompleted,
     deleteAbandonedCart,
-    makeCouponMultiUse
+    makeCouponMultiUse,
+    deduplicateSales,
+    deduplicateAbandonedCarts
 };
 

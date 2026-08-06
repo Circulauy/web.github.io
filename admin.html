@@ -559,7 +559,13 @@
                     <h3 class="text-xl font-bold text-white font-brand flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-rp-teal"></i>Historial de Ventas
                     </h3>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="cleanDatabaseDuplicates()" id="clean-dup-btn"
+                            class="px-3.5 py-2 rounded-xl bg-slate-900 border border-purple-500/30 hover:border-purple-400 text-purple-400 hover:text-purple-300 font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-purple-950/20"
+                            title="Elimina ventas y carritos repetidos conservando solo la transacción original">
+                            <i class="fa-solid fa-broom" id="clean-dup-icon"></i>
+                            <span>Limpiar Duplicados</span>
+                        </button>
                         <button type="button" onclick="syncMercadopagoSales(false)" id="sync-mp-btn"
                             class="px-3.5 py-2 rounded-xl bg-slate-900 border border-sky-500/30 hover:border-sky-400 text-sky-400 hover:text-sky-300 font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-sky-950/20">
                             <i class="fa-solid fa-arrows-rotate" id="sync-mp-icon"></i>
@@ -1421,6 +1427,26 @@
                 }
                 throw new Error("Carrito no encontrado en modo simulado.");
             }
+
+            if (action === 'sync_mercadopago') {
+                return {
+                    success: true,
+                    recovered_count: 0,
+                    recovered_sales: [],
+                    message: "Modo de prueba local: no hay compras pendientes de sincronizar."
+                };
+            }
+
+            if (action === 'clean_duplicates') {
+                return {
+                    success: true,
+                    deleted_sales: 0,
+                    kept_sales: localMockSales.length,
+                    deleted_carts: 0,
+                    kept_carts: localMockCarts.length,
+                    message: "Modo local: no se detectaron duplicados."
+                };
+            }
         }
 
         // Carga Inicial / Autenticación
@@ -1596,6 +1622,47 @@
             } finally {
                 isSyncingMP = false;
                 if (btn && !isSilent) {
+                    btn.disabled = false;
+                    if (icon) icon.classList.remove('animate-spin');
+                }
+            }
+        }
+
+        // LIMPIEZA DE VENTAS Y CARRITOS DUPLICADOS
+        let isCleaningDuplicates = false;
+        async function cleanDatabaseDuplicates() {
+            const password = localStorage.getItem('circula_admin_pass');
+            if (!password || isCleaningDuplicates) return;
+
+            const btn = document.getElementById('clean-dup-btn');
+            const icon = document.getElementById('clean-dup-icon');
+
+            if (!confirm("¿Deseas buscar y eliminar automáticamente todas las ventas y carritos duplicados? Se conservará solo 1 copia de cada compra real.")) {
+                return;
+            }
+
+            isCleaningDuplicates = true;
+            if (btn) {
+                btn.disabled = true;
+                if (icon) icon.classList.add('animate-spin');
+            }
+
+            try {
+                showToast("🧹 Analizando y depurando duplicados...", "info");
+                const res = await fetchAPI('clean_duplicates', password);
+                if (res.deleted_sales > 0 || res.deleted_carts > 0) {
+                    showToast(`✅ ${res.message}`, "success");
+                    // Recargar los datos del panel
+                    await loadAdminData(password);
+                } else {
+                    showToast("✓ No se encontraron registros duplicados para eliminar.", "success");
+                }
+            } catch (err) {
+                console.error("Error al limpiar duplicados:", err);
+                showToast("Error al depurar duplicados: " + err.message, "error");
+            } finally {
+                isCleaningDuplicates = false;
+                if (btn) {
                     btn.disabled = false;
                     if (icon) icon.classList.remove('animate-spin');
                 }
