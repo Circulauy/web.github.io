@@ -727,6 +727,19 @@ async function deduplicateSales() {
     }
 
     for (const currentSale of allSales) {
+        const nameNorm = normalizeStr(currentSale.customer_name);
+        const emailNorm = normalizeStr(currentSale.customer_email);
+        const isGenericName = !nameNorm || nameNorm.includes('cliente web') || nameNorm.includes('cliente desconocido') || nameNorm === 'cliente';
+        const isGenericEmail = !emailNorm || emailNorm.includes('sin-email') || emailNorm.includes('web.com') || emailNorm.includes('manual.com');
+        const hasNoRut = !currentSale.rut || String(currentSale.rut).trim() === '';
+        const hasNoAddress = !currentSale.address || currentSale.address === 'Retiro en local' || currentSale.address === 'No aplica (Pick Up)' || currentSale.address === '';
+
+        // Si es una transacción importada que no tiene datos de cliente ni RUT (pago personal/externo de MP)
+        if (currentSale.source === 'web' && isGenericName && isGenericEmail && hasNoRut && hasNoAddress) {
+            duplicatesToDelete.push(currentSale.id);
+            continue;
+        }
+
         const existingIndex = keptSales.findIndex(k => isSameSale(k, currentSale));
 
         if (existingIndex > -1) {

@@ -1600,7 +1600,13 @@
                 const mpId = s.mp_payment_id ? String(s.mp_payment_id).trim() : null;
 
                 const isGenericEmail = !email || email.includes('sin-email') || email.includes('web.com') || email.includes('manual.com');
-                const isGenericName = !name || name.includes('cliente web') || name === 'cliente';
+                const isGenericName = !name || name.includes('cliente web') || name.includes('cliente desconocido') || name === 'cliente';
+                const hasNoAddress = !s.address || s.address === 'Retiro en local' || s.address === 'No aplica (Pick Up)' || s.address === '';
+
+                // Omitir transacciones fantasma importadas que no pertenecen a ventas reales de Circula
+                if (s.source === 'web' && isGenericName && isGenericEmail && !rut && hasNoAddress) {
+                    continue;
+                }
 
                 const matchIdx = result.findIndex(existing => {
                     if (mpId && existing.mp_payment_id && String(existing.mp_payment_id).trim() === mpId) return true;

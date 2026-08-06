@@ -533,6 +533,23 @@ async function syncMercadopagoPayments(db) {
     for (const payment of mpPayments) {
         const paymentIdStr = String(payment.id);
         const metadata = payment.metadata || {};
+        const extRef = String(payment.external_reference || '');
+
+        // FILTRO DE SEGURIDAD CRÍTICO:
+        // Asegurarse de que el pago corresponda REALMENTE a una compra de Circula
+        // (y NO a gastos personales, compras propias u otras transacciones hechas con la cuenta de MP)
+        const isCirculaOrder = (extRef && extRef.includes('CIRCULA')) ||
+                               (metadata.order_id && String(metadata.order_id).startsWith('CIRCULA')) ||
+                               Boolean(metadata.cliente_nombre) ||
+                               Boolean(metadata.tipo_entrega) ||
+                               Boolean(metadata.invoice_type) ||
+                               Boolean(metadata.rut);
+
+        if (!isCirculaOrder) {
+            console.log(`⏩ [MP-SYNC] Omitiendo pago MP ID ${paymentIdStr} ($${payment.transaction_amount}) - No es una venta de Circula.`);
+            continue;
+        }
+
         const buyerName = metadata.cliente_nombre || 
                           (payment.payer ? `${payment.payer.first_name || ''} ${payment.payer.last_name || ''}`.trim() : '') || 
                           'Cliente Web';
@@ -561,7 +578,7 @@ async function syncMercadopagoPayments(db) {
             continue;
         }
 
-        console.log(`✨ [MP-SYNC] Venta no registrada encontrada: MP ID ${paymentIdStr} ($${total} de ${buyerName})`);
+        console.log(`✨ [MP-SYNC] Venta legítima de Circula recuperada: MP ID ${paymentIdStr} ($${total} de ${buyerName})`);
         
         const rawItems = (payment.additional_info && payment.additional_info.items) ? payment.additional_info.items : [];
         let shippingCost = 0;
