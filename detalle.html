@@ -84,7 +84,11 @@
                 <!-- Sección de Texturas Disponibles -->
                 <div id="texturas-disponibles" class="mb-6 border-t border-gray-100 pt-6">
                     <h3 class="text-xs font-bold text-text-dark mb-3 uppercase tracking-wide">Nuestras Placas de Plástico Reciclado</h3>
-                    <p class="text-xs text-gray-500 mb-4">Fabricamos nuestros productos usando placas de plástico 100% reciclado local. Seleccioná un color/textura para tu producto (hacé clic en la lupa 🔍 para ampliar):</p>
+                    <p class="text-xs text-gray-500 mb-2">Fabricamos nuestros productos usando placas de plástico 100% reciclado local. Seleccioná un color/textura para tu producto (hacé clic en la lupa 🔍 para ampliar):</p>
+                    <div class="bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-lg mb-4 flex items-start">
+                        <i class="fas fa-exclamation-circle text-amber-500 mt-0.5 mr-2 text-sm"></i>
+                        <p><strong>Atención:</strong> Los colores/texturas están <strong>sujetos a stock</strong>. Es posible que la opción seleccionada no se encuentre disponible al momento de armar tu pedido.</p>
+                    </div>
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                         <!-- Noche de Rocha -->
                         <div id="swatch-noche-de-rocha" onclick="selectTexture('Noche de Rocha')" class="relative flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50/30 hover:border-rp-teal-dark hover:bg-white transition duration-300 cursor-pointer text-center group texture-swatch">
@@ -151,6 +155,26 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Recomendación de stock por WhatsApp -->
+                    <div id="texture-stock-recommendation" class="hidden mt-4 p-3 bg-blue-50/50 border border-blue-200 rounded-lg items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2 text-sm"></i>
+                        <p class="text-xs text-blue-800 flex-1">
+                            Has seleccionado <strong id="selected-texture-name"></strong>. Te recomendamos verificar disponibilidad:
+                        </p>
+                        <button onclick="window.enviarConsultaStock()" class="ml-2 bg-green-500 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-green-600 transition shadow-sm flex items-center whitespace-nowrap">
+                            <i class="fab fa-whatsapp mr-1"></i> Consultar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aviso de demoras de envío -->
+                <div class="mb-5 bg-amber-50/70 border border-amber-200 rounded-lg p-3 flex items-start shadow-sm">
+                    <i class="fas fa-truck-fast text-amber-500 mt-0.5 mr-3 text-sm"></i>
+                    <p class="text-xs text-amber-800 leading-relaxed">
+                        <strong class="font-bold">📦 Información de Envíos:</strong>
+                        Los productos demoran entre <strong>3 y 5 días hábiles</strong> en enviarse en caso de haber stock. Si se fabrica a pedido, la demora puede variar.
+                    </p>
                 </div>
 
                 <!-- Contenedor de cantidad y botón de agregar -->
@@ -302,6 +326,22 @@
                 selectedSwatch.classList.remove('border-gray-200', 'bg-gray-50/30');
                 selectedSwatch.classList.add('border-rp-teal-dark', 'ring-2', 'ring-rp-teal-dark/20', 'bg-white');
             }
+
+            // Mostrar la recomendación de stock
+            const recDiv = document.getElementById('texture-stock-recommendation');
+            const recName = document.getElementById('selected-texture-name');
+            if(recDiv && recName) {
+                recName.textContent = name;
+                recDiv.classList.remove('hidden');
+                recDiv.classList.add('flex');
+            }
+        };
+
+        window.enviarConsultaStock = function() {
+            if (!window.selectedTexture) return;
+            const productTitle = document.getElementById('detail-title')?.innerText || "un producto";
+            const msg = `¡Hola! Me gustaría saber si tienen stock disponible de "${productTitle}" en la textura "${window.selectedTexture}".`;
+            window.open(`https://wa.me/59899395724?text=${encodeURIComponent(msg)}`, '_blank');
         };
     </script>
 </body>

@@ -93,7 +93,7 @@
                                 Envío</h2>
                             <form id="checkout-form" class="space-y-5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <div>
+                                    <div class="md:col-span-2 lg:col-span-1">
                                         <label for="buyer-name"
                                             class="block text-sm font-medium text-text-dark mb-1">Nombre Completo
                                             *</label>
@@ -101,13 +101,32 @@
                                             class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
                                             placeholder="Tu Nombre">
                                     </div>
-                                    <div>
+                                    <div class="md:col-span-2 lg:col-span-1">
                                         <label for="buyer-email"
                                             class="block text-sm font-medium text-text-dark mb-1">Correo Electrónico
                                             *</label>
                                         <input type="email" id="buyer-email" required
                                             class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
                                             placeholder="tu@email.com">
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="flex items-start gap-3 p-3.5 border border-rp-border-default bg-white rounded-xl cursor-pointer hover:border-rp-teal/50 transition">
+                                            <input type="checkbox" id="wants-whatsapp" onchange="toggleWhatsappField()" class="w-4 h-4 mt-0.5 text-rp-teal focus:ring-rp-teal accent-rp-teal rounded">
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-bold text-text-dark">Quiero recibir notificaciones de mi pedido por WhatsApp</span>
+                                                <span class="text-xs text-text-dark/60">Te avisaremos cuando tu pedido esté listo o en camino.</span>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div id="whatsapp-field-container" class="md:col-span-2 hidden animate-fade-in">
+                                        <label for="buyer-phone"
+                                            class="block text-sm font-medium text-text-dark mb-1">Celular / WhatsApp
+                                            *</label>
+                                        <input type="tel" id="buyer-phone"
+                                            class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none"
+                                            placeholder="Ej: 099123456">
                                     </div>
                                 </div>
 
@@ -599,6 +618,23 @@
         }
 
         /**
+         * Muestra/Oculta el campo de celular para WhatsApp
+         */
+        function toggleWhatsappField() {
+            const wantsWhatsapp = document.getElementById('wants-whatsapp').checked;
+            const phoneContainer = document.getElementById('whatsapp-field-container');
+            const phoneInput = document.getElementById('buyer-phone');
+
+            if (wantsWhatsapp) {
+                phoneContainer.classList.remove('hidden');
+                phoneInput.setAttribute('required', 'required');
+            } else {
+                phoneContainer.classList.add('hidden');
+                phoneInput.removeAttribute('required');
+            }
+        }
+
+        /**
          * Formatea y restringe el RUT a 12 dígitos numéricos
          */
         function formatRutInput(el) {
@@ -728,16 +764,18 @@
             // Recopilación de datos
             const nameEl = document.getElementById('buyer-name');
             const emailEl = document.getElementById('buyer-email');
+            const phoneEl = document.getElementById('buyer-phone');
             const deliverySelect = document.getElementById('delivery-option');
             const addressEl = document.getElementById('buyer-address-text');
 
-            if (!nameEl || !emailEl || !deliverySelect) {
+            if (!nameEl || !emailEl || !phoneEl || !deliverySelect) {
                 alert("Error interno: Faltan campos del formulario.");
                 return;
             }
 
             const name = nameEl.value;
             const email = emailEl.value;
+            const phone = phoneEl.value;
             const deliveryOption = deliverySelect.value;
             const address = addressEl ? addressEl.value : 'Retiro en local';
 
@@ -801,13 +839,13 @@
                 return;
             }
 
-            checkoutCartMP(name, email, deliveryOption, district, address, cartItems, invoiceType, rut, razonSocial, fiscalAddress);
+            checkoutCartMP(name, email, phone, deliveryOption, district, address, cartItems, invoiceType, rut, razonSocial, fiscalAddress);
         }
 
         /**
          * Backend Call
          */
-        async function checkoutCartMP(buyerName, buyerEmail, deliveryOption, district, address, cartItems, invoiceType = 'final', rut = '', razonSocial = '', fiscalAddress = '') {
+        async function checkoutCartMP(buyerName, buyerEmail, buyerPhone, deliveryOption, district, address, cartItems, invoiceType = 'final', rut = '', razonSocial = '', fiscalAddress = '') {
             const btn = document.querySelector('button[onclick*="submitCheckoutForm"]');
             const originalText = btn ? btn.innerHTML : "FINALIZAR COMPRA";
 
@@ -867,6 +905,7 @@
                             items: itemsForMP,
                             buyerName: buyerName,
                             buyerEmail: buyerEmail,
+                            buyerPhone: buyerPhone,
                             deliveryOption: deliveryOption,
                             district: district,
                             address: address,

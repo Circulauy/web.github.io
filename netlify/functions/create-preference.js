@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
     }
 
     // 1. EXTRAEMOS LOS NUEVOS DATOS DEL FRONTEND
-    const { items, buyerName, buyerEmail, deliveryOption, district, address, discountCode, invoiceType, rut, razonSocial, fiscalAddress } = data;
+    const { items, buyerName, buyerEmail, buyerPhone, deliveryOption, district, address, discountCode, invoiceType, rut, razonSocial, fiscalAddress } = data;
     
     // Validación básica
     if (!items || !Array.isArray(items) || items.length === 0 || !buyerName || !buyerEmail) {
@@ -126,6 +126,7 @@ exports.handler = async (event, context) => {
         metadata: {
             order_id: uniqueOrderId,
             cliente_nombre: buyerName,
+            cliente_telefono: buyerPhone || '',
             tipo_entrega: deliveryOption, // 'pickup', 'montevideo', 'interior'
             zona_barrio: district || 'No especificado',
             direccion_completa: address || 'No aplica (Pick Up)',

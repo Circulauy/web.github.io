@@ -17,7 +17,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { 'brand-dark': '#0f172a', 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -793,13 +793,45 @@
                 </div>
             </div>
 
+            <!-- MENSAJES DE CONTACTO CARD -->
+            <div class="p-6 rounded-2xl glass-panel shadow-lg border border-slate-800">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-700 pb-4">
+                    <h3 class="text-xl font-bold text-white font-brand flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-rp-teal"></i>Mensajes Recibidos
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <button onclick="loadMessages()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto -mx-6 sm:mx-0">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 font-semibold text-xs uppercase tracking-wider">
+                                <th class="px-6 py-3">Fecha</th>
+                                <th class="px-6 py-3">Remitente</th>
+                                <th class="px-6 py-3">Interés</th>
+                                <th class="px-6 py-3 text-center">Adjunto</th>
+                                <th class="px-6 py-3 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messages-tbody" class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td colspan="5" class="py-12 text-center text-slate-500 italic">Cargando mensajes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </main>
-    </div>
 
     <!-- SALES DETAILS MODAL -->
-    <div id="details-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
+    <div id="details-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div
-            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6">
+            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <h3 class="text-lg font-bold text-white font-brand flex items-center gap-1.5">
                     <i class="fa-solid fa-file-invoice text-rp-teal"></i>Detalle de Venta
@@ -823,10 +855,34 @@
         </div>
     </div>
 
+    <!-- MESSAGE DETAILS MODAL -->
+    <div id="message-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white font-brand flex items-center gap-1.5">
+                    <i class="fa-solid fa-envelope-open-text text-rp-teal"></i>Leer Mensaje
+                </h3>
+                <button onclick="closeMessageModal()" class="text-slate-400 hover:text-white transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-sm text-slate-300" id="message-modal-content">
+                <!-- Rellenado por Javascript -->
+            </div>
+
+            <div class="pt-3 border-t border-slate-700 flex justify-end gap-3" id="message-modal-actions">
+                <button onclick="closeMessageModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition text-xs">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- INVOICE UPLOAD & SEND MODAL -->
-    <div id="invoice-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
+    <div id="invoice-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div
-            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-5">
+            class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-5 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <h3 class="text-lg font-bold text-white font-brand flex items-center gap-2">
                     <i class="fa-solid fa-file-invoice-dollar text-rp-mint"></i>Emitir / Subir Factura con RUT
@@ -941,7 +997,7 @@
     <div id="sale-success-modal"
         class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div
-            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6 overflow-y-auto max-h-[90vh]">
             <div class="flex flex-col items-center">
                 <div
                     class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-emerald-500/20">
@@ -961,6 +1017,12 @@
                 <p id="success-modal-msg-email" class="text-xs text-slate-400 italic"></p>
             </div>
 
+            <div id="success-modal-whatsapp-container" class="hidden flex justify-center pb-2">
+                <a id="success-modal-whatsapp-btn" href="#" target="_blank" class="bg-green-500 hover:bg-green-400 text-green-950 font-bold py-2.5 px-6 rounded-lg transition shadow-lg shadow-green-500/20 text-sm flex items-center gap-2 w-full justify-center">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Notificar por WhatsApp
+                </a>
+            </div>
+
             <div class="pt-3 border-t border-slate-800 flex justify-center">
                 <button onclick="closeSuccessModal()"
                     class="bg-rp-teal hover:bg-opacity-90 text-brand-dark font-extrabold py-2.5 px-8 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-rp-teal/10 text-xs">
@@ -974,7 +1036,7 @@
     <div id="confirm-modal"
         class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div
-            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6">
+            class="w-full max-w-md p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in text-center space-y-6 overflow-y-auto max-h-[90vh]">
             <div class="flex flex-col items-center">
                 <div
                     class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center text-4xl mb-4 border border-red-500/20">
@@ -998,7 +1060,7 @@
     </div>
 
     <!-- EDIT SALE MODAL -->
-    <div id="edit-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 flex items-center justify-center p-4">
+    <div id="edit-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div
             class="w-full max-w-lg p-6 rounded-2xl glass-panel border border-slate-700 shadow-2xl animate-fade-in space-y-6 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
@@ -1110,8 +1172,70 @@
         </div>
     </div>
 
+    <!-- MODAL ACEPTAR PEDIDO (ESTIMAR DEMORA) -->
+    <div id="accept-order-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto">
+        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm" onclick="closeAcceptOrderModal()"></div>
+        <div class="bg-brand-dark border border-slate-700/60 p-6 rounded-2xl shadow-2xl w-full max-w-md relative z-10 animate-scale-in text-sm">
+            <h3 class="text-xl font-bold text-white mb-2 font-display flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-check text-amber-400"></i> Aceptar Pedido
+            </h3>
+            <p class="text-slate-400 text-xs mb-4">Se notificará al cliente que su pedido fue revisado y está en preparación.</p>
+            <form onsubmit="submitAcceptOrder(event)" class="space-y-4">
+                <input type="hidden" id="accept-sale-id">
+                <div>
+                    <label class="block text-slate-400 font-semibold mb-1 uppercase text-xs">Demora Estimada</label>
+                    <select id="accept-delay" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-rp-teal">
+                        <option value="En stock (1 a 3 días hábiles)">En stock (1 a 3 días hábiles)</option>
+                        <option value="3 a 5 días hábiles" selected>3 a 5 días hábiles</option>
+                        <option value="7 a 10 días hábiles">7 a 10 días hábiles</option>
+                        <option value="15 días hábiles">15 días hábiles</option>
+                    </select>
+                </div>
+                <!-- Opcional: Subir factura -->
+                <div class="mt-4 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase mb-2">Opcional: Adjuntar Factura</p>
+                    <input type="file" id="accept-invoice-file" accept="application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-rp-teal file:text-brand-dark hover:file:bg-opacity-90">
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex justify-end gap-3">
+                    <button type="button" onclick="closeAcceptOrderModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg transition">Cancelar</button>
+                    <button type="submit" id="btn-submit-accept" class="bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold py-2 px-4 rounded-lg transition">Confirmar y Avisar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ENVIAR PEDIDO -->
+    <div id="ship-order-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto">
+        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm" onclick="closeShipOrderModal()"></div>
+        <div class="bg-brand-dark border border-slate-700/60 p-6 rounded-2xl shadow-2xl w-full max-w-md relative z-10 animate-scale-in text-sm">
+            <h3 class="text-xl font-bold text-white mb-2 font-display flex items-center gap-2">
+                <i class="fa-solid fa-truck-fast text-blue-400"></i> Marcar como Enviado
+            </h3>
+            <p class="text-slate-400 text-xs mb-4">Ingresa los datos de envío para notificar al cliente.</p>
+            <form onsubmit="submitShipOrder(event)" class="space-y-4">
+                <input type="hidden" id="ship-sale-id">
+                <div>
+                    <label class="block text-slate-400 font-semibold mb-1 uppercase text-xs">Empresa / Método</label>
+                    <select id="ship-company" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="PedidosYa">PedidosYa (Montevideo)</option>
+                        <option value="DAC">DAC (Interior)</option>
+                        <option value="De Punta">De Punta</option>
+                        <option value="Retiro en Local">Retiro en Local (Avisar que está listo)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 font-semibold mb-1 uppercase text-xs">N° Tracking o Link de seguimiento</label>
+                    <input type="text" id="ship-tracking" placeholder="Ej: https://pedidosya... o N° DAC" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex justify-end gap-3">
+                    <button type="button" onclick="closeShipOrderModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg transition">Cancelar</button>
+                    <button type="submit" id="btn-submit-ship" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-lg transition">Confirmar Envío</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
 
     <!-- JAVASCRIPT SYSTEM CONTROLLER -->
@@ -1173,6 +1297,7 @@
                 source: "web",
                 customer_name: "Juan Pérez",
                 customer_email: "juan@gmail.com",
+                customer_phone: "099123456",
                 invoice_type: "final",
                 items: [{ id: "bowl-azul", name: "Bowl Azul", price: 450, quantity: 2 }],
                 delivery_option: "montevideo",
@@ -1192,14 +1317,15 @@
                 source: "web",
                 customer_name: "Tech Solutions S.A.",
                 customer_email: "facturacion@techsolutions.uy",
+                customer_phone: "098765432",
                 invoice_type: "rut",
                 rut: "219876540012",
                 razon_social: "Tech Solutions S.A.",
                 direccion_fiscal: "Plaza Independencia 848, Of. 301, Montevideo",
                 invoice_status: "pending",
                 items: [
-                    { id: "banco-alto", name: "Banco Alto", price: 5659, quantity: 2 },
-                    { id: "stand-laptop", name: "Soporte para Laptop", price: 619, quantity: 2 }
+                    { id: "banco-alto-noche-de-rocha", name: "Banco Alto (Noche de Rocha)", price: 5659, quantity: 2 },
+                    { id: "stand-laptop-cuarzo-de-artigas", name: "Soporte para Laptop (Cuarzo de Artigas)", price: 619, quantity: 2 }
                 ],
                 delivery_option: "montevideo",
                 district: "Montevideo - Centro",
@@ -1218,6 +1344,7 @@
                 source: "manual",
                 customer_name: "María Rodríguez",
                 customer_email: "maria@yahoo.com",
+                customer_phone: "091234567",
                 invoice_type: "final",
                 items: [{ id: "posavasos-gris", name: "Posavasos Gris", price: 400, quantity: 1 }],
                 delivery_option: "pickup",
@@ -1529,6 +1656,33 @@
                 throw new Error("Venta no encontrada en modo simulado.");
             }
 
+            if (action === 'accept_order') {
+                const body = JSON.parse(options.body);
+                const found = localMockSales.find(s => String(s.id) === String(body.id));
+                if (found) {
+                    found.status = 'accepted';
+                    found.delay_info = body.estimated_delay;
+                    if (body.invoice_pdf) {
+                        found.invoice_status = 'sent';
+                        found.invoice_sent_at = new Date().toISOString();
+                    }
+                    return { message: "Pedido aceptado y correo de simulación enviado.", email_sent: true };
+                }
+                throw new Error("Venta no encontrada en modo simulado.");
+            }
+
+            if (action === 'ship_order') {
+                const body = JSON.parse(options.body);
+                const found = localMockSales.find(s => String(s.id) === String(body.id));
+                if (found) {
+                    found.status = 'shipped';
+                    found.shipping_company = body.shipping_company;
+                    found.tracking_info = body.tracking_info;
+                    return { message: "Pedido enviado y correo de simulación enviado.", email_sent: true };
+                }
+                throw new Error("Venta no encontrada en modo simulado.");
+            }
+
             if (action === 'get_abandoned_carts') {
                 return [...localMockCarts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             }
@@ -1724,6 +1878,9 @@
                 globalSalesList = deduplicateSalesInClient(rawSales);
                 filteredSalesList = globalSalesList;
                 filterSalesHistory(); // Aplica filtros y renderiza (calcula KPIs y gráfico dinámicamente)
+                
+                // 2. Cargar mensajes
+                loadMessages();
 
                 // 2. Cargar Cupones
                 const discounts = await fetchAPI('get_discounts', password);
@@ -2380,6 +2537,18 @@
 
                 const payBadge = `<span class="text-xs uppercase text-slate-400 font-semibold">${sale.payment_method}</span>`;
 
+                let statusBadge = '';
+                let flowActionBtn = '';
+                if (!sale.status || sale.status === 'approved' || sale.status === 'pending') {
+                    statusBadge = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase animate-pulse" title="Nuevo pedido pendiente de revisión">Nuevo</span>`;
+                    flowActionBtn = `<button onclick="openAcceptOrderModal('${sale.id}')" class="text-amber-400 hover:text-amber-300 transition p-1 text-sm bg-amber-500/10 rounded" title="Aceptar Pedido (Estimar Demora)"><i class="fa-solid fa-check"></i></button>`;
+                } else if (sale.status === 'accepted') {
+                    statusBadge = `<span class="bg-blue-500/20 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase" title="Pedido en preparación">Aceptado</span>`;
+                    flowActionBtn = `<button onclick="openShipOrderModal('${sale.id}')" class="text-blue-400 hover:text-blue-300 transition p-1 text-sm bg-blue-500/10 rounded" title="Marcar como Enviado (Tracking)"><i class="fa-solid fa-truck-fast"></i></button>`;
+                } else if (sale.status === 'shipped') {
+                    statusBadge = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase" title="Enviado: ${sale.tracking_info || ''}">Enviado</span>`;
+                }
+
                 // Formatear método de envío para lectura
                 let delLabel = "Retiro";
                 if (sale.delivery_option === 'montevideo') delLabel = "MVD";
@@ -2424,9 +2593,15 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400"><i class="fa-solid fa-truck-ramp-box mr-1"></i>${delLabel}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right font-bold text-rp-teal">$${sale.total.toFixed(2)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${payBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex flex-col gap-1 items-start">
+                                ${payBadge}
+                                ${statusBadge}
+                            </div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center font-sans">
                             <div class="flex items-center justify-center gap-1.5">
+                                ${flowActionBtn}
                                 ${invoiceActionBtn}
                                 <button onclick="openDetailsModal('${sale.id}')" class="text-slate-400 hover:text-white transition p-1 text-sm" title="Ver Detalle">
                                     <i class="fa-solid fa-circle-info"></i>
@@ -2645,6 +2820,11 @@
                         <p class="text-[10px] text-slate-500 uppercase font-bold">Cliente</p>
                         <p class="font-bold text-white text-sm">${sale.customer_name}</p>
                         <p class="text-slate-400">${sale.customer_email || 'Sin email registrado'}</p>
+                        ${sale.customer_phone ? `
+                        <a href="https://wa.me/${sale.customer_phone.replace(/\D/g, '')}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/30 transition text-xs font-semibold">
+                            <i class="fa-brands fa-whatsapp"></i> ${sale.customer_phone}
+                        </a>
+                        ` : '<p class="text-slate-500 text-xs mt-1 italic">Sin teléfono</p>'}
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold">Canal e ID</p>
@@ -2920,13 +3100,137 @@
             }
         }
 
+        // ORDER STATUS FLOW LOGIC (Accept & Ship)
+        function openAcceptOrderModal(saleId) {
+            document.getElementById('accept-sale-id').value = saleId;
+            document.getElementById('accept-invoice-file').value = '';
+            document.getElementById('accept-order-modal').classList.remove('hidden');
+        }
+
+        function closeAcceptOrderModal() {
+            document.getElementById('accept-order-modal').classList.add('hidden');
+        }
+
+        async function submitAcceptOrder(e) {
+            e.preventDefault();
+            const saleId = document.getElementById('accept-sale-id').value;
+            const delay = document.getElementById('accept-delay').value;
+            const btn = document.getElementById('btn-submit-accept');
+            const fileInput = document.getElementById('accept-invoice-file');
+            
+            let pdfBase64 = null;
+            let filename = null;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Aceptando...`;
+
+            try {
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    filename = file.name;
+                    pdfBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                const password = localStorage.getItem('circula_admin_pass');
+                const response = await fetchAPI('accept_order', password, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: saleId, estimated_delay: delay, invoice_pdf: pdfBase64, invoice_filename: filename })
+                });
+
+                // Show success modal with WhatsApp option
+                const sale = globalSalesList.find(s => s.id === saleId);
+                if (sale && sale.customer_phone) {
+                    const waMsg = encodeURIComponent(`Hola ${sale.customer_name},\n\nTu pedido de Circula fue aceptado y ya está en preparación.\nLa demora estimada es: ${delay}.\n\n¡Muchas gracias por tu compra!`);
+                    const waLink = `https://wa.me/${sale.customer_phone.replace(/\D/g, '')}?text=${waMsg}`;
+                    showSuccessModal(response.message, null, true, waLink);
+                } else {
+                    showSuccessModal(response.message, null, true);
+                }
+                closeAcceptOrderModal();
+                
+                // Actualizar UI local
+                if (sale) {
+                    sale.status = 'accepted';
+                    if (pdfBase64) {
+                        sale.invoice_status = 'sent';
+                        sale.invoice_sent_at = new Date().toISOString();
+                    }
+                }
+                filterSalesHistory();
+            } catch (err) {
+                console.error(err);
+                showToast("Error al aceptar pedido: " + err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Confirmar y Avisar";
+            }
+        }
+
+        function openShipOrderModal(saleId) {
+            document.getElementById('ship-sale-id').value = saleId;
+            document.getElementById('ship-tracking').value = '';
+            document.getElementById('ship-order-modal').classList.remove('hidden');
+        }
+
+        function closeShipOrderModal() {
+            document.getElementById('ship-order-modal').classList.add('hidden');
+        }
+
+        async function submitShipOrder(e) {
+            e.preventDefault();
+            const saleId = document.getElementById('ship-sale-id').value;
+            const company = document.getElementById('ship-company').value;
+            const tracking = document.getElementById('ship-tracking').value;
+            const btn = document.getElementById('btn-submit-ship');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Enviando...`;
+
+            try {
+                const password = localStorage.getItem('circula_admin_pass');
+                const response = await fetchAPI('ship_order', password, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: saleId, shipping_company: company, tracking_info: tracking })
+                });
+
+                const sale = globalSalesList.find(s => s.id === saleId);
+                if (sale && sale.customer_phone) {
+                    const waMsg = encodeURIComponent(`Hola ${sale.customer_name},\n\n¡Tu pedido de Circula ya fue despachado!\nEnviado por: ${company}\nTracking: ${tracking}\n\n¡Muchas gracias por tu compra!`);
+                    const waLink = `https://wa.me/${sale.customer_phone.replace(/\D/g, '')}?text=${waMsg}`;
+                    showSuccessModal(response.message, null, true, waLink);
+                } else {
+                    showSuccessModal(response.message, null, true);
+                }
+                closeShipOrderModal();
+                
+                if (sale) {
+                    sale.status = 'shipped';
+                    sale.tracking_info = tracking;
+                }
+                filterSalesHistory();
+            } catch (err) {
+                console.error(err);
+                showToast("Error al enviar pedido: " + err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Confirmar Envío";
+            }
+        }
+
         // CUSTOM MODALS & TOASTS LOGIC
-        function showSuccessModal(mainMessage, couponCode, emailSent) {
+        function showSuccessModal(mainMessage, couponCode, emailSent, whatsappLink = null) {
             const modal = document.getElementById('sale-success-modal');
             const msgMain = document.getElementById('success-modal-msg-main');
             const couponBox = document.getElementById('success-modal-coupon-box');
             const couponSpan = document.getElementById('success-modal-coupon-code');
             const msgEmail = document.getElementById('success-modal-msg-email');
+            const waContainer = document.getElementById('success-modal-whatsapp-container');
+            const waBtn = document.getElementById('success-modal-whatsapp-btn');
 
             msgMain.textContent = mainMessage;
 
@@ -2941,6 +3245,15 @@
                 msgEmail.innerHTML = `<i class="fa-solid fa-paper-plane mr-1 text-emerald-400"></i> Se ha enviado el correo electrónico de confirmación al cliente.`;
             } else {
                 msgEmail.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1 text-amber-400"></i> No se envió correo (email vacío, modo local o configuración pendiente).`;
+            }
+
+            if (whatsappLink) {
+                document.getElementById('success-modal-title').textContent = "¡Acción Exitosa!";
+                waBtn.href = whatsappLink;
+                waContainer.classList.remove('hidden');
+            } else {
+                document.getElementById('success-modal-title').textContent = "¡Venta Registrada!";
+                waContainer.classList.add('hidden');
             }
 
             modal.classList.remove('hidden');
@@ -3523,6 +3836,152 @@
                 }
             );
         }
+        // =========================================
+        // MENSAJES DE CONTACTO
+        // =========================================
+        let globalMessages = [];
+
+        async function loadMessages() {
+            const password = localStorage.getItem('circula_admin_pass');
+            if (!password) return;
+
+            const tbody = document.getElementById('messages-tbody');
+            if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-slate-500 italic"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Cargando mensajes...</td></tr>`;
+
+            try {
+                globalMessages = await fetchAPI('get_messages', password);
+                renderMessages();
+            } catch (err) {
+                console.error("Error al cargar mensajes:", err);
+                if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-400 font-semibold"><i class="fa-solid fa-circle-exclamation mr-2"></i>Error al cargar mensajes</td></tr>`;
+            }
+        }
+
+        function renderMessages() {
+            const tbody = document.getElementById('messages-tbody');
+            if (!tbody) return;
+
+            if (!globalMessages || globalMessages.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-slate-500 italic">No se encontraron mensajes de contacto.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = globalMessages.map(msg => {
+                const date = new Date(msg.created_at).toLocaleDateString('es-UY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const hasAttachment = msg.attachment_name ? true : false;
+                const attachmentIcon = hasAttachment ? `<i class="fa-solid fa-paperclip text-rp-teal" title="Contiene archivo adjunto"></i>` : `<span class="text-slate-600">-</span>`;
+
+                return `
+                    <tr class="hover:bg-slate-800/30 transition-colors cursor-pointer" onclick="openMessageModal('${msg.id}')">
+                        <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">${date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-semibold text-white">${msg.name}</div>
+                            <div class="text-xs text-slate-400">${msg.email}</div>
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-300"><span class="bg-slate-800 px-2 py-1 rounded border border-slate-700">${msg.interest}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">${attachmentIcon}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <button onclick="event.stopPropagation(); deleteMessage('${msg.id}')" class="text-red-400 hover:text-red-300 transition p-1 text-sm" title="Eliminar Mensaje"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openMessageModal(id) {
+            const msg = globalMessages.find(m => m.id === id);
+            if (!msg) return;
+
+            const modal = document.getElementById('message-modal');
+            const content = document.getElementById('message-modal-content');
+            const actions = document.getElementById('message-modal-actions');
+
+            const date = new Date(msg.created_at).toLocaleDateString('es-UY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            let attachmentHtml = '';
+            let downloadBtn = '';
+            
+            if (msg.attachment_base64 && msg.attachment_name) {
+                attachmentHtml = `
+                    <div class="mt-4 p-3 bg-slate-900 rounded border border-slate-700 flex items-center gap-3">
+                        <i class="fa-solid fa-file-lines text-2xl text-rp-teal"></i>
+                        <div>
+                            <p class="text-xs font-semibold text-white">${msg.attachment_name}</p>
+                            <p class="text-[10px] text-slate-400">Archivo Adjunto</p>
+                        </div>
+                    </div>
+                `;
+                downloadBtn = `<button onclick="downloadAttachment('${msg.id}')" class="bg-rp-teal hover:bg-rp-teal-dark text-brand-dark font-semibold py-2 px-6 rounded-lg transition text-xs"><i class="fa-solid fa-download mr-1.5"></i> Descargar Adjunto</button>`;
+            }
+
+            content.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 mb-4 border-b border-slate-700 pb-4">
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Remitente</p>
+                        <p class="text-sm font-semibold text-white">${msg.name}</p>
+                        <a href="mailto:${msg.email}" class="text-xs text-rp-teal hover:underline">${msg.email}</a>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Fecha</p>
+                        <p class="text-sm text-slate-300">${date}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Motivo / Interés</p>
+                        <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded border border-slate-700">${msg.interest}</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-2">Mensaje</p>
+                    <div class="p-4 bg-slate-900/50 rounded-lg border border-slate-700/50 text-slate-300 whitespace-pre-wrap leading-relaxed">${msg.message}</div>
+                </div>
+                ${attachmentHtml}
+            `;
+
+            actions.innerHTML = `
+                ${downloadBtn}
+                <button onclick="closeMessageModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg transition text-xs">Cerrar</button>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
+
+        function downloadAttachment(id) {
+            const msg = globalMessages.find(m => m.id === id);
+            if (!msg || !msg.attachment_base64) return;
+
+            const a = document.createElement("a");
+            a.href = msg.attachment_base64;
+            a.download = msg.attachment_name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function deleteMessage(id) {
+            showConfirmModal(
+                "¿Eliminar Mensaje?",
+                "¿Estás seguro de que deseas eliminar este mensaje? No podrás recuperarlo.",
+                async () => {
+                    const password = localStorage.getItem('circula_admin_pass');
+                    try {
+                        await fetchAPI('delete_message', password, {
+                            method: 'POST',
+                            body: JSON.stringify({ id })
+                        });
+                        showToast("Mensaje eliminado con éxito.", "success");
+                        loadMessages();
+                    } catch (err) {
+                        console.error(err);
+                        showToast("Error al eliminar mensaje: " + err.message, "error");
+                    }
+                }
+            );
+        }
+
     </script>
 </body>
 

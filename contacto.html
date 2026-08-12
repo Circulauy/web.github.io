@@ -107,13 +107,9 @@
                     <!-- Right Column: Form -->
                     <div class="lg:col-span-7">
                         <div class="bg-white p-5 sm:p-8 md:p-12 rounded-3xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] card-hover reveal-element reveal-delay-100">
-                            <form action="https://formsubmit.co/contacto@circula.uy" method="POST" enctype="multipart/form-data" class="space-y-6" onsubmit="activarCarga()">
+                            <form id="contact-form" enctype="multipart/form-data" class="space-y-6" onsubmit="enviarFormulario(event)">
                                 
                                 <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
-                                <input type="hidden" name="_captcha" value="false"> 
-                                <input type="hidden" name="_template" value="table">
-                                <input type="hidden" name="auto_response" id="auto-response-input" value="Gracias por tu mensaje.">
-                                <input type="hidden" name="_next" id="redirect-url" value="">
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -227,12 +223,6 @@
         
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-            const redirectInput = document.getElementById('redirect-url');
-            if(redirectInput) {
-                const currentUrl = window.location.href.split('?')[0];
-                redirectInput.value = currentUrl + '?status=success';
-            }
-
             const urlParams = new URLSearchParams(window.location.search);
             
             // Pre-llenar campos desde URL
@@ -280,29 +270,16 @@
         }
 
         // --- LÓGICA DE ENVÍO Y PREPARACIÓN DE EMAIL ---
-        function activarCarga() {
+        async function enviarFormulario(event) {
+            event.preventDefault();
+            
             // 1. OBTENER VALORES
+            const form = event.target;
             const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
             const interest = document.getElementById('interest').value;
-            const subjectField = document.getElementById('email-subject');
-            const autoResponseInput = document.getElementById('auto-response-input');
-
-            // 2. CONFIGURAR ASUNTO (PARA TI)
-            if (subjectField && interest && name) {
-                subjectField.value = `Consulta Web: ${interest} (${name})`;
-            }
-
-            // 3. CONFIGURAR AUTO-RESPUESTA (PARA EL CLIENTE)
-            // Lógica forzada al momento de enviar para evitar errores
-            if (interest === 'Solicitud de trabajo') {
-                autoResponseInput.value = "¡Hola! Gracias por tu interés en sumarte al equipo de Circula.\n\nConfirmamos que hemos recibido tu solicitud y CV. Actualmente no contamos con vacantes activas, pero guardaremos tu información en nuestra base de datos para futuras búsquedas.\n\n¡Saludos!\nEl equipo de Circula.";
-            } else if (interest === 'Talleres para colegios') {
-                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres para instituciones.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1WlnLk0vGFIfdLAwAnGF3cuNgsgAjwndZ/view?usp=drive_link\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
-            } else if (interest === 'Talleres para empresas') {
-                autoResponseInput.value = "¡Hola! Gracias por tu interés en nuestra propuesta de talleres corporativos.\n\nTe adjuntamos nuestra propuesta 2026 en este enlace:\nhttps://drive.google.com/file/d/1y10XoMchiLkRlUdyiXqByPUAAUqsPj4-/view?usp=sharing\n\nPor otro lado, en el siguiente link podrás agendar directamente una reunión informativa:\nhttps://calendar.app.google/Zeax6rCH9hdCKMqNA\n\n¡Saludos!\nEl equipo de Circula.";
-            } else {
-                autoResponseInput.value = "¡Hola! Gracias por contactar a Circula.\n\nHemos recibido tu consulta correctamente y nuestro equipo te responderá a la brevedad con la información solicitada.\n\n¡Saludos!\nEl equipo de Circula.";
-            }
+            const message = document.getElementById('message').value;
+            const fileInput = document.getElementById('attachment');
 
             // 4. ANIMACIÓN DE CARGA
             const btn = document.getElementById('submitBtn');
@@ -312,6 +289,63 @@
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             btnText.classList.add('hidden');
             btnLoader.classList.remove('hidden');
+
+            // 3. ENVÍO POR AJAX (FETCH)
+            try {
+                let attachmentBase64 = null;
+                let attachmentName = null;
+                let attachmentType = null;
+
+                if (fileInput.files && fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    attachmentName = file.name;
+                    attachmentType = file.type;
+                    attachmentBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = error => reject(error);
+                    });
+                }
+
+                const payload = {
+                    name,
+                    email,
+                    interest,
+                    message,
+                    attachmentBase64,
+                    attachmentName,
+                    attachmentType
+                };
+
+                const response = await fetch("/.netlify/functions/contact_form", {
+                    method: "POST",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    mostrarExito();
+                    form.reset();
+                    // Limpiar campos visuales adicionales
+                    document.getElementById('file-info').innerHTML = '<i class="fas fa-info-circle mr-1"></i> Imágenes se comprimirán automáticamente. PDFs máx 10MB.';
+                    document.getElementById('file-info').className = 'mt-2 ml-1 text-xs text-slate-400';
+                    document.getElementById('vacancy-alert').classList.add('hidden');
+                } else {
+                    throw new Error("Respuesta de red incorrecta");
+                }
+            } catch (error) {
+                console.error("Error enviando el formulario:", error);
+                alert("Ocurrió un error al enviar tu mensaje. Por favor, intenta de nuevo o escríbenos a contacto@circula.uy");
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+            }
         }
 
         // --- COMPRESIÓN DE IMÁGENES ---

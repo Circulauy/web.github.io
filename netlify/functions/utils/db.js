@@ -25,7 +25,7 @@ function readMockDb() {
     } catch (err) {
         console.error("Error al leer la base de datos simulada:", err);
     }
-    return { sales: [], discountCodes: [], abandonedCarts: [] };
+    return { sales: [], discountCodes: [], abandonedCarts: [], contactMessages: [] };
 }
 
 function writeMockDb(data) {
@@ -229,6 +229,7 @@ async function saveSale(saleData) {
         source: saleData.source || 'web',
         customer_name: saleData.customer_name,
         customer_email: saleData.customer_email,
+        customer_phone: saleData.customer_phone || null,
         items: saleData.items, // Array de items [{id, name, price, quantity}]
         delivery_option: saleData.delivery_option,
         district: saleData.district || '',
@@ -274,6 +275,7 @@ async function saveSale(saleData) {
                 source: formattedSale.source,
                 customer_name: formattedSale.customer_name,
                 customer_email: formattedSale.customer_email,
+                customer_phone: formattedSale.customer_phone,
                 items: formattedSale.items,
                 delivery_option: formattedSale.delivery_option,
                 district: formattedSale.district,
@@ -832,6 +834,52 @@ async function deduplicateAbandonedCarts() {
     };
 }
 
+// ==========================================
+// MENSAJES DE CONTACTO
+// ==========================================
+
+async function saveMessage(messageData) {
+    if (isMockMode) {
+        const dbData = readMockDb();
+        if (!dbData.contactMessages) dbData.contactMessages = [];
+        const newMessage = {
+            id: 'msg-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+            created_at: new Date().toISOString(),
+            ...messageData,
+            status: 'unread'
+        };
+        dbData.contactMessages.push(newMessage);
+        writeMockDb(dbData);
+        return newMessage;
+    }
+    
+    const data = await supabaseRequest('contact_messages', {
+        method: 'POST',
+        body: JSON.stringify([messageData])
+    });
+    return data ? data[0] : null;
+}
+
+async function getMessages() {
+    if (isMockMode) {
+        const dbData = readMockDb();
+        return (dbData.contactMessages || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    const data = await supabaseRequest('contact_messages?select=*&order=created_at.desc');
+    return data || [];
+}
+
+async function deleteMessage(id) {
+    if (isMockMode) {
+        const dbData = readMockDb();
+        if (!dbData.contactMessages) return;
+        dbData.contactMessages = dbData.contactMessages.filter(m => m.id !== id);
+        writeMockDb(dbData);
+        return;
+    }
+    await supabaseRequest(`contact_messages?id=eq.${id}`, { method: 'DELETE' });
+}
+
 module.exports = {
     isMockMode,
     validateDiscountCode,
@@ -854,6 +902,9 @@ module.exports = {
     deleteAbandonedCart,
     makeCouponMultiUse,
     deduplicateSales,
-    deduplicateAbandonedCarts
+    deduplicateAbandonedCarts,
+    saveMessage,
+    getMessages,
+    deleteMessage
 };
 

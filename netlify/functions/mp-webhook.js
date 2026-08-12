@@ -65,7 +65,7 @@ async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName,
         html: `
             <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #79C7C7;">¡Hola ${buyerName}!</h2>
-                <p>Hemos recibido la confirmación de tu pago (ID: <strong>${paymentId}</strong>).</p>
+                <p>¡Hemos recibido tu pedido! Ya tenemos la confirmación de tu pago (ID: <strong>${paymentId}</strong>).</p>
                 <p>Referencia de pedido: <strong>${orderRef}</strong></p>
                 
                 ${invoiceNoticeHtml}
@@ -74,7 +74,11 @@ async function sendPaymentApprovedEmailToBuyer(paymentId, buyerEmail, buyerName,
                 <h3>Tu Resumen de Compra:</h3>
                 <ul>${itemList}</ul>
                 <p style="font-size: 18px;"><strong>Total Abonado: $${total} UYU</strong></p>
-                <p>Pronto nos pondremos en contacto contigo para coordinar la entrega.</p>
+                
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; color: #475569; font-size: 14px;"><strong>📦 Siguiente paso:</strong> A la brevedad estaremos verificando el stock de los productos. Te enviaremos un nuevo correo confirmando tu compra y la demora estimada de envío o preparación.</p>
+                </div>
+                
                 <p style="margin-top: 25px;"><em>Equipo Circula</em></p>
             </div>
         `
@@ -186,6 +190,7 @@ exports.handler = async (event) => {
         // Recuperamos datos del comprador y referencia
         const orderRef = metadata.order_id || payment.external_reference || "SIN-REF";
         const buyerName = metadata.cliente_nombre || payment.payer?.name || "Cliente Desconocido";
+        const buyerPhone = metadata.cliente_telefono || "No especificado";
         
         // Intentamos obtener el email de metadata, si no, del pagador de MP
         const buyerEmail = payment.payer?.email || "sin-email@ejemplo.com";
@@ -259,6 +264,7 @@ exports.handler = async (event) => {
                     source: 'web',
                     customer_name: buyerName,
                     customer_email: buyerEmail,
+                    customer_phone: buyerPhone,
                     items: productItems,
                     delivery_option: shippingInfo.type || 'pickup',
                     district: shippingInfo.district || '',

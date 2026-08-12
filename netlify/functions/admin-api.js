@@ -487,6 +487,91 @@ async function sendInvoicePdfEmailToBuyer(buyerEmail, buyerName, rut, razonSocia
     return !!info.messageId;
 }
 
+// Función para enviar correo de "Pedido Aceptado"
+async function sendOrderAcceptedEmail(buyerEmail, buyerName, estimatedDelay, orderId, pdfBase64, filename) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return false;
+    if (!buyerEmail || !buyerEmail.includes('@')) return false;
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    const attachments = [];
+    if (pdfBase64) {
+        attachments.push({
+            filename: filename || `e-Factura-Circula.pdf`,
+            content: pdfBase64.replace(/^data:application\/pdf;base64,/, ''),
+            encoding: 'base64',
+            contentType: 'application/pdf'
+        });
+    }
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: buyerEmail,
+        subject: `✅ Tu pedido está confirmado - Circula`,
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+                <h2 style="color: #79C7C7;">¡Buenas noticias, ${buyerName}!</h2>
+                <p>Hemos verificado el stock y aceptado tu pedido ${orderId ? `(Ref: ${orderId})` : ''}.</p>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; color: #475569; font-size: 15px;"><strong>⏳ Demora estimada de preparación/envío:</strong> ${estimatedDelay}</p>
+                </div>
+                ${pdfBase64 ? `<p>Además, te adjuntamos la factura correspondiente a tu compra en formato PDF.</p>` : ''}
+                <p>Te volveremos a escribir cuando tu pedido esté en camino.</p>
+                <p style="margin-top: 25px;"><em>Equipo Circula</em></p>
+            </div>
+        `,
+        attachments: attachments
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return !!info.messageId;
+}
+
+// Función para enviar correo de "Pedido Enviado"
+async function sendOrderShippedEmail(buyerEmail, buyerName, shippingCompany, trackingInfo, orderId) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return false;
+    if (!buyerEmail || !buyerEmail.includes('@')) return false;
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    const isLink = trackingInfo.startsWith('http');
+    const trackingHtml = isLink 
+        ? `<a href="${trackingInfo}" target="_blank" style="color: #009ee3; font-weight: bold;">Ver seguimiento aquí</a>`
+        : `<strong>${trackingInfo}</strong>`;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: buyerEmail,
+        subject: `🚚 ¡Tu pedido está en camino! - Circula`,
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+                <h2 style="color: #79C7C7;">¡Tu pedido fue despachado, ${buyerName}!</h2>
+                <p>Te avisamos que tu pedido ${orderId ? `(Ref: ${orderId})` : ''} ya fue enviado mediante <strong>${shippingCompany}</strong>.</p>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; color: #475569; font-size: 15px;"><strong>📍 Seguimiento / Tracking:</strong> ${trackingHtml}</p>
+                </div>
+                <p>¡Esperamos que lo disfrutes mucho!</p>
+                <p style="margin-top: 25px;"><em>Equipo Circula</em></p>
+            </div>
+        `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return !!info.messageId;
+}
+
 // Función auxiliar para generar códigos aleatorios únicos
 function generateRandomCode(percent = 10) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -767,6 +852,15 @@ exports.handler = async (event, context) => {
                 };
             }
 
+            if (action === 'get_messages') {
+                const messages = await db.getMessages();
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify(messages || [])
+                };
+            }
+
             if (action === 'trigger_cart_recovery') {
                 try {
                     const cronModule = require('./recover-carts-cron');
@@ -968,6 +1062,72 @@ exports.handler = async (event, context) => {
                     statusCode: 200,
                     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
                     body: JSON.stringify({ message: "Cupón generado con éxito", discount: newDiscount })
+                };
+            }
+
+            if (action === 'accept_order') {
+                const { id, estimated_delay, invoice_pdf, invoice_filename } = body;
+                if (!id) {
+                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "ID de venta es requerido." }) };
+                }
+
+                // Obtener venta actual para sacar email y nombre
+                const sale = await db.getSaleById(id);
+                if (!sale) {
+                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Venta no encontrada." }) };
+                }
+
+                // Actualizar status
+                const payload = { status: 'accepted', delay_info: estimated_delay };
+                if (invoice_pdf) {
+                    payload.invoice_status = 'sent';
+                    payload.invoice_sent_at = new Date().toISOString();
+                }
+                
+                await db.updateSale(id, payload);
+
+                // Enviar email
+                let emailSent = false;
+                try {
+                    emailSent = await sendOrderAcceptedEmail(sale.customer_email, sale.customer_name, estimated_delay, id, invoice_pdf, invoice_filename);
+                } catch (e) {
+                    console.error("Error enviando email accept_order:", e);
+                }
+
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({ message: "Pedido aceptado y correo enviado.", email_sent: emailSent })
+                };
+            }
+
+            if (action === 'ship_order') {
+                const { id, shipping_company, tracking_info } = body;
+                if (!id || !shipping_company || !tracking_info) {
+                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Faltan datos requeridos (ID, empresa, tracking)." }) };
+                }
+
+                // Obtener venta
+                const sale = await db.getSaleById(id);
+                if (!sale) {
+                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Venta no encontrada." }) };
+                }
+
+                // Actualizar status
+                await db.updateSale(id, { status: 'shipped', shipping_company, tracking_info });
+
+                // Enviar email
+                let emailSent = false;
+                try {
+                    emailSent = await sendOrderShippedEmail(sale.customer_email, sale.customer_name, shipping_company, tracking_info, id);
+                } catch (e) {
+                    console.error("Error enviando email ship_order:", e);
+                }
+
+                return {
+                    statusCode: 200,
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    body: JSON.stringify({ message: "Pedido enviado y correo notificado.", email_sent: emailSent })
                 };
             }
 
