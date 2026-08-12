@@ -115,6 +115,27 @@
                                     class="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:opacity-0"
                                     style="object-position: center;">
                                 <img src="images/Tienda/stand-celular_detalle.png" alt="Stands para celulares Detalle"
+                                    class="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+                                    style="object-position: center;">
+                            </div>
+                            <h3 class="text-xl font-bold text-text-dark mb-1 cursor-pointer hover:text-rp-teal transition">Stands para celulares</h3>
+                            <p class="text-rp-teal font-semibold mb-3 text-lg">$379</p>
+                            <p class="text-gray-600 mb-4 text-sm">Soporte ergonómico de escritorio para celulares hecho de plástico 100% reciclado.</p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-2">
+                            <input type="number" id="qty-stand-celular" min="1" value="1"
+                                onclick="event.stopPropagation()"
+                                class="w-1/3 py-2 px-3 border border-rp-border-default rounded-lg text-center focus:ring-rp-teal focus:border-rp-teal text-text-dark">
+                            <button
+                                onclick="addToCart(event,'stand-celular', 'Soporte para Celular', 379, 'images/Tienda/stand-celular.png')"
+                                class="w-2/3 py-3 bg-rp-teal text-white font-bold rounded-lg hover:bg-rp-teal/90 transition title-style text-sm">AGREGAR
+                                AL CARRITO</button>
+                        </div>
+                    </div>
+
+                    <!-- Stands para Laptops -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-rp-gray-soft card-hover flex flex-col justify-between cursor-pointer"
+                        onclick="window.location.href='detalle.html?product=stand-laptop'">
                         <div>
                             <div class="relative w-full h-48 mb-4 overflow-hidden rounded-lg border border-rp-gray-soft group cursor-pointer"
                                 onclick="window.location.href='detalle.html?product=stand-laptop'">
