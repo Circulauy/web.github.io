@@ -2,17 +2,20 @@
 
 const mercadopago = require('mercadopago');
 const { validateDiscountCode } = require('./utils/db');
+const productCatalog = require('./utils/product-catalog.json');
 
 // 1. CONFIGURACIÓN DE MERCADO PAGO
-mercadopago.configure({
-    access_token: process.env.MP_ACCESS_TOKEN 
-});
+if (process.env.MP_ACCESS_TOKEN) {
+    mercadopago.configure({
+        access_token: process.env.MP_ACCESS_TOKEN 
+    });
+}
 
 // ===========================================
 // === HANDLER PRINCIPAL ===
 // ===========================================
 
-exports.handler = async (event, context) => {
+const originalHandler = async (event, context) => {
     
     // Verificación del Access Token
     if (!process.env.MP_ACCESS_TOKEN) {
@@ -42,6 +45,20 @@ exports.handler = async (event, context) => {
             statusCode: 400, 
             body: JSON.stringify({ error: 'Faltan datos esenciales (items, nombre o email).' }) 
         };
+    }
+
+    // --- FIX SEGURIDAD: PREVENCIÓN DE PRICE TAMPERING ---
+    for (const item of items) {
+        const catalogItem = productCatalog[item.id];
+        if (!catalogItem || catalogItem.price === null) {
+            console.error(`Producto inválido o no disponible para la venta: ${item.id}`);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Un producto en tu carrito es inválido o no está disponible.' })
+            };
+        }
+        // Sobrescribir el precio enviado por el cliente con el precio oficial
+        item.unit_price = catalogItem.price;
     }
 
     // 2. VALIDACIÓN DE CUPÓN DE DESCUENTO
@@ -174,4 +191,20 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ error: "Error interno: Fallo al crear preferencia." })
         };
     }
+};
+
+exports.handler = async (event, context) => {
+    const corsUtils = require('./utils/cors');
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 200,
+            headers: corsUtils.getCorsHeaders(event),
+            body: ""
+        };
+    }
+    const response = await originalHandler(event, context);
+    if (response && typeof response === 'object') {
+        response.headers = { ...response.headers, ...corsUtils.getCorsHeaders(event) };
+    }
+    return response;
 };

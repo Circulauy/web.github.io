@@ -92,6 +92,11 @@
                             <h2 class="text-2xl font-bold mb-6 text-text-dark title-style border-b pb-4">Información de
                                 Envío</h2>
                             <form id="checkout-form" class="space-y-5">
+                                <!-- Honeypot Anti-Bot Field -->
+                                <div style="display:none;" aria-hidden="true">
+                                    <label for="website_url_check_datos">Leave this field blank</label>
+                                    <input type="text" name="website_url_check_datos" id="website_url_check_datos" tabindex="-1" autocomplete="off">
+                                </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div class="md:col-span-2 lg:col-span-1">
                                         <label for="buyer-name"
@@ -335,8 +340,7 @@
                                     <!-- Botón accesible en móviles al pie del formulario -->
                                     <div class="block lg:hidden pt-4 border-t border-rp-gray-soft/60">
                                         <button type="button" onclick="submitCheckoutForm()"
-                                            style="background-color: #009ee3 !important;"
-                                            class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:brightness-95 transition shadow-lg text-base tracking-wide flex justify-center items-center gap-2 cursor-pointer">
+                                            class="w-full bg-text-dark text-white font-bold py-4 px-6 rounded-lg hover:bg-rp-teal transition shadow-lg text-base tracking-wide flex justify-center items-center gap-2 cursor-pointer">
                                             CONTINUAR AL PAGO
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -390,12 +394,11 @@
                             <div
                                 class="flex justify-between items-center font-bold text-2xl mb-8 border-t border-rp-gray-soft pt-6">
                                 <span class="text-text-dark">TOTAL</span>
-                                <span id="checkout-total" class="text-mp-blue font-bold" style="color: #009ee3;">$0.00</span>
+                                <span id="checkout-total" class="text-rp-teal-dark font-bold">$0.00</span>
                             </div>
 
                             <button onclick="submitCheckoutForm()"
-                                style="background-color: #009ee3 !important;"
-                                class="w-full bg-mp-blue text-white font-bold py-4 px-6 rounded-lg hover:brightness-95 transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2 mb-4 cursor-pointer">
+                                class="w-full bg-text-dark text-white font-bold py-4 px-6 rounded-lg hover:bg-rp-teal transition shadow-lg text-lg tracking-wide hover:-translate-y-1 flex justify-center items-center gap-2 mb-4 cursor-pointer">
                                 FINALIZAR COMPRA
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -773,6 +776,9 @@
                 return;
             }
 
+            const honeypotEl = document.getElementById('website_url_check_datos');
+            const honeypot = honeypotEl ? honeypotEl.value : '';
+
             const name = nameEl.value;
             const email = emailEl.value;
             const phone = phoneEl.value;
@@ -839,13 +845,13 @@
                 return;
             }
 
-            checkoutCartMP(name, email, phone, deliveryOption, district, address, cartItems, invoiceType, rut, razonSocial, fiscalAddress);
+            checkoutCartMP(name, email, phone, deliveryOption, district, address, cartItems, invoiceType, rut, razonSocial, fiscalAddress, honeypot);
         }
 
         /**
          * Backend Call
          */
-        async function checkoutCartMP(buyerName, buyerEmail, buyerPhone, deliveryOption, district, address, cartItems, invoiceType = 'final', rut = '', razonSocial = '', fiscalAddress = '') {
+        async function checkoutCartMP(buyerName, buyerEmail, buyerPhone, deliveryOption, district, address, cartItems, invoiceType = 'final', rut = '', razonSocial = '', fiscalAddress = '', honeypot = '') {
             const btn = document.querySelector('button[onclick*="submitCheckoutForm"]');
             const originalText = btn ? btn.innerHTML : "FINALIZAR COMPRA";
 
@@ -913,7 +919,8 @@
                             invoiceType: invoiceType,
                             rut: rut,
                             razonSocial: razonSocial,
-                            fiscalAddress: fiscalAddress
+                            fiscalAddress: fiscalAddress,
+                            honeypot: honeypot
                         }),
                     });
 

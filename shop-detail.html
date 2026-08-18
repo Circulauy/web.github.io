@@ -651,6 +651,11 @@
                         <div class="footer-top-box">
                             <h3>Suscribite a nuestro Newsletter</h3>
                             <form class="newsletter-box" id="newsletterForm">
+                                <!-- Honeypot -->
+                                <div style="display:none;" aria-hidden="true">
+                                    <label for="website_url_check_news">Leave this field blank</label>
+                                    <input type="text" name="website_url_check_news" id="website_url_check_news" tabindex="-1" autocomplete="off">
+                                </div>
                                 <div class="form-group">
                                     <input class="" type="email" id="email" name="email"
                                         placeholder="DirecciÃ³n de Email*" required />
@@ -665,7 +670,9 @@
                         <script>
                             function sendEmail() {
                                 var email = document.getElementById("email").value;
-                                var formData = JSON.stringify({ email: email });
+                                var honeypotEl = document.getElementById("website_url_check_news");
+                                var honeypot = honeypotEl ? honeypotEl.value : "";
+                                var formData = JSON.stringify({ email: email, honeypot: honeypot });
 
                                 fetch("/.netlify/functions/send-email", {
                                     method: "POST",

@@ -751,12 +751,14 @@ async function syncMercadopagoPayments(db) {
 }
 
 exports.handler = async (event, context) => {
+    const allowedOrigin = require('./utils/cors').getAllowedOrigin(event);
+
     // Manejo de CORS
     if (event.httpMethod === "OPTIONS") {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": allowedOrigin,
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
                 "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
             },
@@ -779,18 +781,22 @@ exports.handler = async (event, context) => {
             statusCode: 500,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({ error: "Configuración del servidor incompleta. ADMIN_PASSWORD no configurada." })
         };
     }
 
     if (password !== correctPassword) {
+        // --- FIX SEGURIDAD: TARPITTING (Retardo intencional contra fuerza bruta) ---
+        // Retrasamos la respuesta 2 segundos para hacer inviables los ataques de diccionario
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         return {
             statusCode: 401,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({ error: "No autorizado. Contraseña incorrecta." })
         };
@@ -805,7 +811,7 @@ exports.handler = async (event, context) => {
                 const stats = await db.getStats();
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify(stats)
                 };
             }
@@ -814,7 +820,7 @@ exports.handler = async (event, context) => {
                 const sales = await db.getSales();
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify(sales)
                 };
             }
@@ -830,7 +836,7 @@ exports.handler = async (event, context) => {
                 const discounts = await db.getDiscountCodes();
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify(discounts)
                 };
             }
@@ -847,7 +853,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify(carts || [])
                 };
             }
@@ -856,7 +862,7 @@ exports.handler = async (event, context) => {
                 const messages = await db.getMessages();
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify(messages || [])
                 };
             }
@@ -867,14 +873,14 @@ exports.handler = async (event, context) => {
                     const result = await cronModule.runRecovery();
                     return {
                         statusCode: 200,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: result.body || JSON.stringify({ success: true, message: "Recuperación de carritos ejecutada." })
                     };
                 } catch (recErr) {
                     console.error("❌ Error en trigger_cart_recovery:", recErr);
                     return {
                         statusCode: 500,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Error ejecutando recuperación: " + recErr.message })
                     };
                 }
@@ -885,7 +891,7 @@ exports.handler = async (event, context) => {
                     const recovered = await syncMercadopagoPayments(db);
                     return {
                         statusCode: 200,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({
                             success: true,
                             recovered_count: recovered.length,
@@ -899,7 +905,7 @@ exports.handler = async (event, context) => {
                     console.error("❌ Error en sync_mercadopago:", mpErr);
                     return {
                         statusCode: 500,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Error al sincronizar con Mercado Pago: " + mpErr.message })
                     };
                 }
@@ -911,7 +917,7 @@ exports.handler = async (event, context) => {
                     const cartsResult = await db.deduplicateAbandonedCarts();
                     return {
                         statusCode: 200,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({
                             success: true,
                             deleted_sales: salesResult.deletedCount,
@@ -925,7 +931,7 @@ exports.handler = async (event, context) => {
                     console.error("❌ Error en clean_duplicates:", cleanErr);
                     return {
                         statusCode: 500,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Error al limpiar duplicados: " + cleanErr.message })
                     };
                 }
@@ -948,7 +954,7 @@ exports.handler = async (event, context) => {
                 if (!customer_name || !items || !Array.isArray(items) || items.length === 0 || !total) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Faltan campos obligatorios para registrar la venta." }) 
                     };
                 }
@@ -1029,7 +1035,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ 
                         message: "Venta registrada con éxito", 
                         sale: savedSale, 
@@ -1060,7 +1066,7 @@ exports.handler = async (event, context) => {
                 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Cupón generado con éxito", discount: newDiscount })
                 };
             }
@@ -1068,13 +1074,13 @@ exports.handler = async (event, context) => {
             if (action === 'accept_order') {
                 const { id, estimated_delay, invoice_pdf, invoice_filename } = body;
                 if (!id) {
-                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "ID de venta es requerido." }) };
+                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin }, body: JSON.stringify({ error: "ID de venta es requerido." }) };
                 }
 
                 // Obtener venta actual para sacar email y nombre
                 const sale = await db.getSaleById(id);
                 if (!sale) {
-                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Venta no encontrada." }) };
+                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin }, body: JSON.stringify({ error: "Venta no encontrada." }) };
                 }
 
                 // Actualizar status
@@ -1096,7 +1102,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Pedido aceptado y correo enviado.", email_sent: emailSent })
                 };
             }
@@ -1104,13 +1110,13 @@ exports.handler = async (event, context) => {
             if (action === 'ship_order') {
                 const { id, shipping_company, tracking_info } = body;
                 if (!id || !shipping_company || !tracking_info) {
-                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Faltan datos requeridos (ID, empresa, tracking)." }) };
+                    return { statusCode: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin }, body: JSON.stringify({ error: "Faltan datos requeridos (ID, empresa, tracking)." }) };
                 }
 
                 // Obtener venta
                 const sale = await db.getSaleById(id);
                 if (!sale) {
-                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: "Venta no encontrada." }) };
+                    return { statusCode: 404, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin }, body: JSON.stringify({ error: "Venta no encontrada." }) };
                 }
 
                 // Actualizar status
@@ -1126,7 +1132,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Pedido enviado y correo notificado.", email_sent: emailSent })
                 };
             }
@@ -1136,14 +1142,14 @@ exports.handler = async (event, context) => {
                 if (!id) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "ID de venta es requerido." }) 
                     };
                 }
                 await db.deleteSale(id);
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Venta eliminada con éxito" })
                 };
             }
@@ -1153,14 +1159,14 @@ exports.handler = async (event, context) => {
                 if (!id || !sale_data) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "ID y datos de venta son requeridos." }) 
                     };
                 }
                 const updated = await db.updateSale(id, sale_data);
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Venta actualizada con éxito", sale: updated })
                 };
             }
@@ -1170,14 +1176,14 @@ exports.handler = async (event, context) => {
                 if (!id) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "ID de cupón es requerido." }) 
                     };
                 }
                 await db.deleteDiscountCode(id);
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Cupón eliminado con éxito" })
                 };
             }
@@ -1187,14 +1193,14 @@ exports.handler = async (event, context) => {
                 if (!id) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "ID de carrito es requerido." }) 
                     };
                 }
                 await db.deleteAbandonedCart(id);
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ message: "Carrito abandonado eliminado con éxito" })
                 };
             }
@@ -1204,7 +1210,7 @@ exports.handler = async (event, context) => {
                 if (!id) {
                     return { 
                         statusCode: 400, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "ID de carrito es requerido." }) 
                     };
                 }
@@ -1213,7 +1219,7 @@ exports.handler = async (event, context) => {
                 if (!cart) {
                     return { 
                         statusCode: 404, 
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Carrito no encontrado." }) 
                     };
                 }
@@ -1247,7 +1253,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({ 
                         message: "Correo de recuperación enviado con éxito.", 
                         email_sent: emailSent,
@@ -1262,7 +1268,7 @@ exports.handler = async (event, context) => {
                 if (!sale_id || !buyer_email || !invoice_pdf_base64) {
                     return {
                         statusCode: 400,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: "Faltan datos obligatorios (ID de venta, email del comprador o archivo PDF)." })
                     };
                 }
@@ -1283,7 +1289,7 @@ exports.handler = async (event, context) => {
                     console.error("❌ Error al enviar email con factura PDF:", emailErr);
                     return {
                         statusCode: 500,
-                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                         body: JSON.stringify({ error: `Error al enviar correo: ${emailErr.message}` })
                     };
                 }
@@ -1297,7 +1303,7 @@ exports.handler = async (event, context) => {
 
                 return {
                     statusCode: 200,
-                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+                    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
                     body: JSON.stringify({
                         message: "Factura enviada con éxito al cliente.",
                         email_sent: emailSent,
@@ -1317,7 +1323,7 @@ exports.handler = async (event, context) => {
         console.error("Error crítico en admin-api:", err);
         return {
             statusCode: 500,
-            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": allowedOrigin },
             body: JSON.stringify({ error: "Error interno del servidor.", details: err.message })
         };
     }

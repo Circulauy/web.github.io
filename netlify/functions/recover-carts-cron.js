@@ -289,7 +289,7 @@ async function cronHandler(event, context) {
             statusCode: 200,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({
                 success: true,
@@ -307,7 +307,7 @@ async function cronHandler(event, context) {
             statusCode: 500,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({ error: "Error interno procesando el cron.", details: err.message })
         };

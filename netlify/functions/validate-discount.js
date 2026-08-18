@@ -3,12 +3,14 @@
 const { validateDiscountCode } = require('./utils/db');
 
 exports.handler = async (event, context) => {
+    const allowedOrigin = require('./utils/cors').getAllowedOrigin(event);
+
     // Manejo de CORS si es necesario (preflight OPTIONS)
     if (event.httpMethod === "OPTIONS") {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": allowedOrigin,
                 "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "POST, OPTIONS"
             },
@@ -50,7 +52,7 @@ exports.handler = async (event, context) => {
             statusCode: 200,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify(result)
         };

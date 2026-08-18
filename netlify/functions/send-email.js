@@ -1,8 +1,18 @@
 const nodemailer = require("nodemailer");
 
 exports.handler = async function (event, context) {
-  // Obtenemos el email desde el cuerpo de la solicitud
-  const { email } = JSON.parse(event.body);
+  // Obtenemos el email y honeypot desde el cuerpo de la solicitud
+  const { email, honeypot } = JSON.parse(event.body);
+
+  // --- FIX SEGURIDAD: HONEYPOT ANTI-BOT ---
+  if (honeypot) {
+    console.log(`🤖 Bot detectado y bloqueado en newsletter silenciósamente. Email ignorado: ${email}`);
+    // Respondemos OK para que el bot crea que funcionó
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ status: "success", message: "Correo enviado exitosamente." }),
+    };
+  }
 
   // Validación simple del email
   if (!email) {
@@ -43,4 +53,21 @@ exports.handler = async function (event, context) {
       body: JSON.stringify({ status: "error", message: `Error al enviar el correo: ${error.message}` }),
     };
   }
+};
+
+
+exports.handler = async (event, context) => {
+    const corsUtils = require('./utils/cors');
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 200,
+            headers: corsUtils.getCorsHeaders(event),
+            body: ""
+        };
+    }
+    const response = await originalHandler(event, context);
+    if (response && typeof response === 'object') {
+        response.headers = { ...response.headers, ...corsUtils.getCorsHeaders(event) };
+    }
+    return response;
 };

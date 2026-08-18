@@ -455,5 +455,16 @@
       "status": "emailed",
       "discount_code": "CIRCULA10-Y46D"
     }
+  ],
+  "contactMessages": [
+    {
+      "id": "msg-1787021675322-202",
+      "created_at": "2026-08-18T02:54:35.322Z",
+      "name": "Juan &lt;script&gt;alert(1)&lt;/script&gt;",
+      "email": "juan@test.com",
+      "interest": "Ventas",
+      "message": "Hola, me interesa comprar macetas.",
+      "status": "unread"
+    }
   ]
 }

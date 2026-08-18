@@ -2,12 +2,14 @@
 const { saveAbandonedCart } = require('./utils/db');
 
 exports.handler = async (event, context) => {
+    const allowedOrigin = require('./utils/cors').getAllowedOrigin(event);
+
     // CORS headers handling
     if (event.httpMethod === "OPTIONS") {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": allowedOrigin,
                 "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "POST, OPTIONS"
             },
@@ -19,7 +21,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 405,
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": allowedOrigin,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ error: 'Método no permitido. Utilizar POST.' })
@@ -34,7 +36,7 @@ exports.handler = async (event, context) => {
             return {
                 statusCode: 400,
                 headers: {
-                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Origin": allowedOrigin,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ error: "Cuerpo de solicitud JSON inválido" })
@@ -46,7 +48,7 @@ exports.handler = async (event, context) => {
             return {
                 statusCode: 400,
                 headers: {
-                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Origin": allowedOrigin,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ error: "Faltan campos requeridos (customer_name, customer_email, items, total)" })
@@ -66,7 +68,7 @@ exports.handler = async (event, context) => {
             statusCode: 200,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({ success: true, cart: savedCart })
         };
@@ -77,7 +79,7 @@ exports.handler = async (event, context) => {
             statusCode: 500,
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": allowedOrigin
             },
             body: JSON.stringify({ error: "Error interno del servidor al procesar el carrito." })
         };

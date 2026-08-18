@@ -111,6 +111,12 @@
                                 
                                 <input type="hidden" name="_subject" id="email-subject" value="Nueva Consulta Web (Circula)">
 
+                                <!-- Honeypot Anti-Bot Field -->
+                                <div style="display:none;" aria-hidden="true">
+                                    <label for="website_url_check">Leave this field blank</label>
+                                    <input type="text" name="website_url_check" id="website_url_check" tabindex="-1" autocomplete="off">
+                                </div>
+
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label for="name" class="block text-sm font-medium text-text-dark mb-2">Nombre Completo *</label>
@@ -279,6 +285,7 @@
             const email = document.getElementById('email').value;
             const interest = document.getElementById('interest').value;
             const message = document.getElementById('message').value;
+            const honeypot = document.getElementById('website_url_check').value;
             const fileInput = document.getElementById('attachment');
 
             // 4. ANIMACIÓN DE CARGA
@@ -313,6 +320,7 @@
                     email,
                     interest,
                     message,
+                    honeypot,
                     attachmentBase64,
                     attachmentName,
                     attachmentType

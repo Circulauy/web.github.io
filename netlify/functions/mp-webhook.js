@@ -162,7 +162,7 @@ async function sendSellerConfirmationEmail(paymentId, buyerEmail, buyerName, ite
 // WEBHOOK PRINCIPAL
 // ===========================================
 
-exports.handler = async (event) => {
+const originalHandler = async (event, context) => {
 
     if (event.httpMethod !== "POST") {
         return { statusCode: 405, body: "Método no permitido" };
@@ -338,4 +338,20 @@ exports.handler = async (event) => {
         // Si es un error de código nuestro, mejor 500 para verlo en logs.
         return { statusCode: 500, body: `Error interno: ${error.message}` };
     }
+};
+
+exports.handler = async (event, context) => {
+    const corsUtils = require('./utils/cors');
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 200,
+            headers: corsUtils.getCorsHeaders(event),
+            body: ""
+        };
+    }
+    const response = await originalHandler(event, context);
+    if (response && typeof response === 'object') {
+        response.headers = { ...response.headers, ...corsUtils.getCorsHeaders(event) };
+    }
+    return response;
 };

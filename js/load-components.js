@@ -1069,7 +1069,8 @@ async function trackCartBackendDirectly(customer_email, customer_name, cartItems
                     customer_name,
                     customer_email,
                     items,
-                    total
+                    total,
+                    honeypot: localStorage.getItem('honeypot_bot') || ''
                 })
             });
             const resData = await response.json();
@@ -1123,6 +1124,11 @@ function showEmailPromptModal(pendingProduct) {
                         class="w-full px-4 py-3 border border-rp-border-default rounded-lg focus:ring-2 focus:ring-rp-teal focus:border-rp-teal transition outline-none text-sm text-text-dark placeholder-gray-400" 
                         placeholder="tu@email.com">
                 </div>
+                
+                <div style="display:none;" aria-hidden="true">
+                    <label for="prompt-website">Leave this field blank</label>
+                    <input type="text" id="prompt-website" tabindex="-1" autocomplete="off">
+                </div>
 
                 <div class="pt-2">
                     <button type="submit" 
@@ -1167,10 +1173,12 @@ function showEmailPromptModal(pendingProduct) {
         e.preventDefault();
         const name = document.getElementById('prompt-name').value.trim();
         const email = document.getElementById('prompt-email').value.trim();
+        const honeypot = document.getElementById('prompt-website').value;
 
         if (name && email && email.includes('@')) {
             localStorage.setItem('customer_name', name);
             localStorage.setItem('customer_email', email.toLowerCase());
+            localStorage.setItem('honeypot_bot', honeypot);
 
             // Agregar el producto al carrito ya con los datos registrados
             window.addItemToCart(pendingProduct);

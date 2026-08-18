@@ -186,9 +186,11 @@
                         <button type="button" onclick="incrementDetailQty()" class="px-4 h-full bg-gray-50 hover:bg-gray-100 font-bold transition text-lg flex items-center justify-center select-none">+</button>
                     </div>
                     
-                    <button id="detail-add-btn" style="background-color: #009ee3 !important;" class="flex-1 h-[56px] bg-mp-blue text-white font-bold rounded-lg hover:brightness-95 transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95 cursor-pointer">
-                        <i class="fas fa-shopping-cart mr-2"></i> AGREGAR AL CARRITO
+                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                    <button id="detail-add-btn" class="flex-1 h-[56px] bg-text-dark text-white font-bold rounded-lg hover:bg-rp-teal transition duration-200 title-style text-lg flex items-center justify-center shadow-lg active:scale-95 cursor-pointer">
+                        <span id="add-btn-text">Agregar al Carrito</span> AGREGAR AL CARRITO
                     </button>
+                </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-6 mt-10 pt-6 border-t border-gray-100">

@@ -1,7 +1,7 @@
 // Importar la librería nodemailer para enviar correos
 const nodemailer = require("nodemailer");
 
-exports.handler = async (event) => {
+const originalHandler = async (event, context) => {
   // Verificar que el método sea POST
   if (event.httpMethod !== "POST") {
     return {
@@ -22,7 +22,17 @@ exports.handler = async (event) => {
     };
   }
 
-  const { name, email, interest, message, attachmentBase64, attachmentName, attachmentType } = formData;
+  const { name, email, interest, message, honeypot, attachmentBase64, attachmentName, attachmentType } = formData;
+
+  // --- FIX SEGURIDAD: HONEYPOT ANTI-BOT ---
+  if (honeypot) {
+    console.log(`🤖 Bot detectado y bloqueado silenciósamente. Email ignorado: ${email}`);
+    // Respondemos OK para que el bot crea que funcionó y no intente otras vulnerabilidades
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Correos enviados exitosamente" }),
+    };
+  }
 
   // Validar los datos del formulario
   if (!name || !email || !interest || !message) {
@@ -32,11 +42,28 @@ exports.handler = async (event) => {
     };
   }
 
+  // --- FIX SEGURIDAD: SANITIZACIÓN HTML ---
+  const sanitizeHTML = (str) => str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const safeName = sanitizeHTML(name);
+  const safeMessage = sanitizeHTML(message);
+
+  // --- FIX SEGURIDAD: VALIDACIÓN DE ADJUNTOS ---
+  if (attachmentType) {
+    const validMimes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+    if (!validMimes.includes(attachmentType)) {
+      console.log(`⚠️ Adjunto bloqueado por tipo inválido: ${attachmentType}`);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Tipo de archivo no permitido. Solo se aceptan PDF, JPG o PNG."}),
+      };
+    }
+  }
+
   // Guardar en la base de datos (Supabase o Mock)
   const db = require("./utils/db");
   try {
     await db.saveMessage({
-      name, email, interest, message,
+      name: safeName, email, interest, message: safeMessage,
       attachment_name: attachmentName,
       attachment_type: attachmentType,
       attachment_base64: attachmentBase64
@@ -81,15 +108,15 @@ exports.handler = async (event) => {
     from: process.env.EMAIL_USER, // El correo se envía desde la cuenta propia para evitar que Gmail lo marque como SPAM o Forjado
     replyTo: email, // Si responden a este correo, se dirige al cliente
     to: "contacto@circula.uy", 
-    subject: `Consulta Web: ${interest} (${name})`,
+    subject: `Consulta Web: ${interest} (${safeName})`,
     html: `
       <h2>Nueva consulta desde la web</h2>
-      <p><strong>Nombre:</strong> ${name}</p>
+      <p><strong>Nombre:</strong> ${safeName}</p>
       <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
       <p><strong>Interés:</strong> ${interest}</p>
       <p><strong>Mensaje:</strong></p>
       <blockquote style="background: #f8f9fa; padding: 10px; border-left: 4px solid #79C7C7;">
-        ${message.replace(/\n/g, '<br>')}
+        ${safeMessage.replace(/\n/g, '<br>')}
       </blockquote>
       ${attachments.length > 0 ? `<p><em>📎 Se incluyó un archivo adjunto.</em></p>` : ''}
     `,
@@ -100,13 +127,13 @@ exports.handler = async (event) => {
   let autoResponseHtml = "";
   if (interest === 'Solicitud de trabajo') {
     autoResponseHtml = `
-      <p>¡Hola ${name}! Gracias por tu interés en sumarte al equipo de Circula.</p>
+      <p>¡Hola ${safeName}! Gracias por tu interés en sumarte al equipo de Circula.</p>
       <p>Confirmamos que hemos recibido tu solicitud y CV. Actualmente no contamos con vacantes activas, pero guardaremos tu información en nuestra base de datos para futuras búsquedas.</p>
       <p>¡Saludos!<br>El equipo de Circula.</p>
     `;
   } else if (interest === 'Talleres para colegios') {
     autoResponseHtml = `
-      <p>¡Hola ${name}! Gracias por tu interés en nuestra propuesta de talleres para instituciones.</p>
+      <p>¡Hola ${safeName}! Gracias por tu interés en nuestra propuesta de talleres para instituciones.</p>
       <p>Te adjuntamos nuestra propuesta 2026 en este enlace:</p>
       <p><a href="https://drive.google.com/file/d/1WlnLk0vGFIfdLAwAnGF3cuNgsgAjwndZ/view?usp=drive_link">Ver Propuesta Colegios 2026</a></p>
       <p>Por otro lado, en el siguiente enlace podrás agendar directamente una reunión informativa con nosotros:</p>
@@ -115,7 +142,7 @@ exports.handler = async (event) => {
     `;
   } else if (interest === 'Talleres para empresas') {
     autoResponseHtml = `
-      <p>¡Hola ${name}! Gracias por tu interés en nuestra propuesta de talleres corporativos.</p>
+      <p>¡Hola ${safeName}! Gracias por tu interés en nuestra propuesta de talleres corporativos.</p>
       <p>Te adjuntamos nuestra propuesta 2026 en este enlace:</p>
       <p><a href="https://drive.google.com/file/d/1y10XoMchiLkRlUdyiXqByPUAAUqsPj4-/view?usp=sharing">Ver Propuesta Empresas 2026</a></p>
       <p>Por otro lado, en el siguiente enlace podrás agendar directamente una reunión informativa con nosotros:</p>
@@ -124,7 +151,7 @@ exports.handler = async (event) => {
     `;
   } else {
     autoResponseHtml = `
-      <p>¡Hola ${name}! Gracias por contactar a Circula.</p>
+      <p>¡Hola ${safeName}! Gracias por contactar a Circula.</p>
       <p>Hemos recibido tu consulta correctamente ("${interest}") y nuestro equipo te responderá a la brevedad con la información solicitada.</p>
       <p>¡Saludos!<br>El equipo de Circula.</p>
     `;
@@ -161,4 +188,21 @@ exports.handler = async (event) => {
       body: JSON.stringify({ message: "Error interno al enviar los correos" }),
     };
   }
+};
+
+
+exports.handler = async (event, context) => {
+    const corsUtils = require('./utils/cors');
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 200,
+            headers: corsUtils.getCorsHeaders(event),
+            body: ""
+        };
+    }
+    const response = await originalHandler(event, context);
+    if (response && typeof response === 'object') {
+        response.headers = { ...response.headers, ...corsUtils.getCorsHeaders(event) };
+    }
+    return response;
 };
