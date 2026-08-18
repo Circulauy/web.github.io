@@ -54,127 +54,8 @@ if (!isNavigation || isReload) {
             }
         }
 
-        /* --- HEADER TRANSITION --- */
-        #main-header {
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
-        }
-
-        /* Estado transparente cuando el video está activo — clase controlada por JS */
-        #main-header.header-transparent {
-            position: fixed !important;
-            width: 100% !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            background-color: transparent !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            border-bottom: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Ocultar centro y derecha en header-transparent */
-        #main-header.header-transparent:not(.menu-open) #desktop-nav {
-            display: none !important;
-        }
         
-        /* Hide all right-side icons EXCEPT the hamburger button */
-        #main-header.header-transparent:not(.menu-open) .flex.items-center.space-x-4 > a,
-        #main-header.header-transparent:not(.menu-open) .flex.items-center.space-x-4 > div {
-            display: none !important;
-        }
-        
-        /* Animación para desplegar el header original */
-        #main-header.header-transparent.menu-open #desktop-nav,
-        #main-header.header-transparent.menu-open .flex.items-center.space-x-4 > a,
-        #main-header.header-transparent.menu-open .flex.items-center.space-x-4 > div {
-            animation: fadeInHeaderNav 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeInHeaderNav {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Fijar el diseño para que la cruz no mueva el carrito */
-        @media (min-width: 768px) {
-            /* Asegurar espacio permanente a la derecha del carrito para alojar la hamburguesa/cruz sin desplazarlo */
-            #right-icons-container {
-                position: relative;
-                padding-right: 44px !important; 
-            }
-
-            /* La hamburguesa flota en ese espacio y no afecta el layout flex */
-            #mobile-menu-button {
-                display: none; /* por defecto oculto en el header blanco */
-                position: absolute !important;
-                right: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                margin-left: 0 !important;
-            }
-
-            /* Mostrar la hamburguesa/cruz solo en el header transparente */
-            #main-header.header-transparent #mobile-menu-button {
-                display: block !important;
-            }
-        }
-
-        /* Logo negro original */
-        #main-header.header-transparent #header-logo,
-        #main-header.header-transparent #header-logo-img {
-            filter: none !important;
-            transition: filter 0.4s ease;
-        }
-
-        /* Links e iconos generales - ocultos de todas formas, pero si aparecieran */
-        #main-header.header-transparent .nav-link,
-        #main-header.header-transparent i,
-        #main-header.header-transparent svg {
-            color: black !important;
-        }
-
-        /* Hamburguesa móvil (líneas en negro) */
-        #main-header.header-transparent #line-top,
-        #main-header.header-transparent #line-middle,
-        #main-header.header-transparent #line-bottom {
-            background-color: black !important;
-        }
-
-        /* Cart Dropdown Buttons styling */
-        #cart-dropdown .btn-checkout {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            color: white !important;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            text-align: center;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            transition: background-color 0.2s;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-
-        #cart-dropdown .btn-checkout-blue {
-            background-color: #4da3d4;
-            cursor: pointer;
-        }
-
-        #cart-dropdown .btn-checkout-blue:hover {
-            background-color: #3a8bb8;
-        }
-
-        #cart-dropdown .btn-checkout-teal {
-            background-color: #92c9c9;
-        }
-
-        #cart-dropdown .btn-checkout-teal:hover {
-            background-color: #7ab2b2;
-        }
-    \x3c/style>
-</style>
+    </style>
                         \x3cdiv id="preloader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-700">
         \x3c!-- Giant Background Percentage -->
         \x3cdiv id="loader-bg-percent" class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.03]">
@@ -343,7 +224,8 @@ if (!isNavigation || isReload) {
             
             \x3cdiv class="loader-bar-bg hidden">\x3cdiv class="loader-bar-fill" id="loader-bar">\x3c/div>\x3c/div>
         \x3c/div>
-    \x3c/div>`;
+    \x3c/div>
+`;
     document.write(rawHTML);
     
     // JS Logic
