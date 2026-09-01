@@ -716,7 +716,10 @@ function loadProductDetails() {
         }
 
         // Renderizar Textos
-        if (titleEl) titleEl.textContent = product.name;
+        if (titleEl) {
+            titleEl.textContent = product.name;
+            titleEl.className = 'text-4xl font-bold text-text-dark mb-4 title-style leading-tight';
+        }
         if (priceEl) {
             if (product.upcoming) {
                 priceEl.textContent = 'Precio a consultar';
@@ -726,7 +729,10 @@ function loadProductDetails() {
                 priceEl.className = 'text-3xl text-rp-teal font-extrabold mb-6';
             }
         }
-        if (descEl) descEl.textContent = product.desc || 'Sin descripción disponible.';
+        if (descEl) {
+            descEl.textContent = product.desc || 'Sin descripción disponible.';
+            descEl.className = 'text-gray-600 text-base mb-6 leading-relaxed';
+        }
 
         // Renderizar especificaciones / medidas
         const specsContainer = document.getElementById('detail-specs-container');
@@ -948,19 +954,19 @@ function renderCheckoutPage() {
             <div class="flex items-center gap-4 w-full sm:w-auto">
                 <img src="${item.imageUrl || 'images/logo.png'}" class="w-20 h-20 object-cover rounded-lg border border-gray-200">
                 <div>
-                    <h3 class="font-bold text-lg text-text-dark">${item.name}</h3>
+                    <h3 class="font-bold text-lg text-text-dark">${window.escapeHTML ? window.escapeHTML(item.name) : item.name}</h3>
                     <p class="text-sm text-gray-500">$${parseFloat(item.price).toLocaleString('es-UY')} c/u</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-6">
                 <div class="flex items-center border border-gray-300 rounded-full overflow-hidden">
-                    <button onclick="decrementCartItem(${index}); renderCheckoutPage();" class="px-3 py-1 hover:bg-gray-100">-</button>
+                    <button onclick="decrementCartItem('${item.id}'); renderCheckoutPage();" class="px-3 py-1 hover:bg-gray-100">-</button>
                     <span class="px-3 py-1 font-bold text-sm">${item.quantity}</span>
-                    <button onclick="incrementCartItem(${index}); renderCheckoutPage();" class="px-3 py-1 hover:bg-gray-100">+</button>
+                    <button onclick="incrementCartItem('${item.id}'); renderCheckoutPage();" class="px-3 py-1 hover:bg-gray-100">+</button>
                 </div>
                 <p class="font-bold text-lg min-w-[80px] text-right">$${itemTotal.toLocaleString('es-UY', { minimumFractionDigits: 2 })}</p>
-                <button onclick="removeCartItem(${index}); renderCheckoutPage();" class="text-red-500 hover:text-red-700">
+                <button onclick="removeCartItem('${item.id}'); renderCheckoutPage();" class="text-red-500 hover:text-red-700">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -1230,10 +1236,10 @@ window.trackGA4Event = function(eventName, params) {
     }
 };
 
-window.incrementCartItem = function (index) {
+window.incrementCartItem = function (id) {
     let cart = getCart();
-    if (cart[index]) {
-        const item = cart[index];
+    const item = cart.find(i => i.id === id);
+    if (item) {
         item.quantity++;
         saveCart(cart);
 
@@ -1253,9 +1259,10 @@ window.incrementCartItem = function (index) {
     }
 };
 
-window.decrementCartItem = function (index) {
+window.decrementCartItem = function (id) {
     let cart = getCart();
-    if (cart[index]) {
+    const index = cart.findIndex(i => i.id === id);
+    if (index > -1) {
         const item = cart[index];
         item.quantity--;
 
@@ -1278,10 +1285,11 @@ window.decrementCartItem = function (index) {
     }
 };
 
-window.removeCartItem = function (index) {
+window.removeCartItem = function (id) {
     let cart = getCart();
-    const removedItem = cart[index];
-    if (removedItem) {
+    const index = cart.findIndex(i => i.id === id);
+    if (index > -1) {
+        const removedItem = cart[index];
         cart.splice(index, 1);
         saveCart(cart);
 
@@ -1361,7 +1369,7 @@ function updateCartDropdown() {
                 <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1;">
                     <img src="${item.imageUrl || 'images/logo.png'}" class="w-12 h-12 object-cover rounded border border-gray-200">
                     <div style="display: flex; flex-direction: column;">
-                        <span style="font-size: 14px; font-weight: 600; color: #1f2937;">${item.name}</span>
+                        <span style="font-size: 14px; font-weight: 600; color: #1f2937;">${window.escapeHTML ? window.escapeHTML(item.name) : item.name}</span>
                         <span style="font-size: 12px; color: #6b7280;">Cant: ${item.quantity}</span>
                     </div>
                 </div>
@@ -1565,63 +1573,51 @@ function initializePremiumFeatures() {
         };
         requestAnimationFrame(updateCursorRing);
         
-        // Detectar elementos para hover dinámico del cursor
-        const updateHoverTargets = () => {
-            const hoverItems = document.querySelectorAll('a, button, .card-hover, .btn-checkout, input, select, textarea, [onclick]');
-            hoverItems.forEach(item => {
-                if (item.classList.contains('cursor-hover-processed')) return;
-                
-                // Excluir botones de la calculadora de impacto
-                if (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('updateImpactQty')) return;
-                
-                item.classList.add('cursor-hover-processed');
-                
-                item.addEventListener('mouseenter', () => {
-                    document.body.classList.add('cursor-active');
-                    textEl.textContent = "";
-                    let hasText = false;
-                    
-                    // COMPRAR (Botones de compra / carrito)
-                    if (item.closest('#cart-dropdown-container') || item.classList.contains('btn-checkout') || item.textContent.toUpperCase().includes('AGREGAR') || item.textContent.toUpperCase().includes('COMPRAR')) {
-                        textEl.textContent = "COMPRAR";
-                        hasText = true;
-                    } 
-                    // ENVIAR (Botones submit de formularios)
-                    else if (item.tagName.toLowerCase() === 'button' && item.type === 'submit' && item.closest('form')) {
-                        textEl.textContent = "ENVIAR";
-                        hasText = true;
-                    }
-                    // PLAY (Videos)
-                    else if (item.closest('#featured-project-video')) {
-                        textEl.textContent = "PLAY";
-                        hasText = true;
-                    }
-                    // VER (Solo links que llevan a otro lugar, o tarjetas con redirección)
-                    else if (
-                        (item.tagName.toLowerCase() === 'a' && item.hasAttribute('href') && !item.getAttribute('href').startsWith('#')) || 
-                        (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('window.location.href')) ||
-                        item.closest('#featured-products')
-                    ) {
-                        textEl.textContent = "VER";
-                        hasText = true;
-                    }
+        // Detectar elementos para hover dinámico del cursor (usando Event Delegation)
+        document.body.addEventListener('mouseover', (e) => {
+            const item = e.target.closest('a, button, .card-hover, .btn-checkout, input, select, textarea, [onclick]');
+            if (!item) return;
+            if (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('updateImpactQty')) return;
+            
+            document.body.classList.add('cursor-active');
+            textEl.textContent = "";
+            let hasText = false;
+            
+            const textContent = (item.textContent || '').toUpperCase();
+            if (item.closest('#cart-dropdown-container') || item.classList.contains('btn-checkout') || textContent.includes('AGREGAR') || textContent.includes('COMPRAR')) {
+                textEl.textContent = "COMPRAR";
+                hasText = true;
+            } else if (item.tagName.toLowerCase() === 'button' && item.type === 'submit' && item.closest('form')) {
+                textEl.textContent = "ENVIAR";
+                hasText = true;
+            } else if (item.closest('#featured-project-video')) {
+                textEl.textContent = "PLAY";
+                hasText = true;
+            } else if (
+                (item.tagName.toLowerCase() === 'a' && item.hasAttribute('href') && !item.getAttribute('href').startsWith('#')) || 
+                (item.hasAttribute('onclick') && item.getAttribute('onclick').includes('window.location.href')) ||
+                item.closest('#featured-products')
+            ) {
+                textEl.textContent = "VER";
+                hasText = true;
+            }
+            
+            if (!hasText) {
+                document.body.classList.add('cursor-blend');
+            } else {
+                document.body.classList.remove('cursor-blend');
+                cursorDot.style.opacity = '0';
+            }
+        });
 
-                    if (!hasText) {
-                        document.body.classList.add('cursor-blend');
-                    }
-                });
-                
-                item.addEventListener('mouseleave', () => {
-                    document.body.classList.remove('cursor-active', 'cursor-blend');
-                    textEl.textContent = "";
-                });
-            });
-        };
-        
-        updateHoverTargets();
-        window.addEventListener('headerLoaded', updateHoverTargets);
-        window.addEventListener('contentLoaded', updateHoverTargets);
-        setTimeout(updateHoverTargets, 1000);
+        document.body.addEventListener('mouseout', (e) => {
+            const item = e.target.closest('a, button, .card-hover, .btn-checkout, input, select, textarea, [onclick]');
+            if (item) {
+                document.body.classList.remove('cursor-active', 'cursor-blend');
+                textEl.textContent = "";
+                cursorDot.style.opacity = '1';
+            }
+        });
     };
     initCustomCursor();
 
@@ -2313,3 +2309,25 @@ function showExpoModal() {
         if (e.target === overlay) closeModal();
     });
 }
+
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.toString().replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag])
+    );
+}
+window.escapeHTML = escapeHTML;
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'cartItems') {
+        if (typeof window.updateCartCount === 'function') window.updateCartCount();
+        if (typeof renderCart === 'function') renderCart();
+        if (typeof renderCheckoutPage === 'function') renderCheckoutPage();
+    }
+});

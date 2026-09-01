@@ -350,19 +350,19 @@
                 // HTML reutilizable para el control de cantidad
                 const qtyControlHTML = `
                     <div class="qty-control">
-                        <button onclick="updateItemQty(${index}, -1)" type="button">-</button>
-                        <input type="number" value="${item.quantity}" min="1" onchange="setItemQty(${index}, this.value)">
-                        <button onclick="updateItemQty(${index}, 1)" type="button">+</button>
+                        <button onclick="updateItemQty('${productId}', -1)" type="button">-</button>
+                        <input type="number" value="${item.quantity}" min="1" onchange="setItemQty('${productId}', this.value)">
+                        <button onclick="updateItemQty('${productId}', 1)" type="button">+</button>
                     </div>
                 `;
 
                 row.innerHTML = `
                     <div class="cart-item-product">
                         <a href="detalle.html?product=${productId}" class="flex items-center gap-3 w-full hover:opacity-75 transition group">
-                            <img src="${item.imageUrl}" alt="${item.name}" class="w-14 h-14 object-cover rounded border border-rp-gray-soft group-hover:border-rp-teal transition">
+                            <img src="${item.imageUrl}" alt="${window.escapeHTML ? window.escapeHTML(item.name) : item.name}" class="w-14 h-14 object-cover rounded border border-rp-gray-soft group-hover:border-rp-teal transition">
                             <div>
-                                <h4 class="font-bold text-text-dark group-hover:text-rp-teal transition">${item.name}</h4>
-                                <div onclick="event.preventDefault(); removeItem(${index})" class="text-red-500 text-xs hover:underline mt-1 cursor-pointer w-fit">Eliminar</div>
+                                <h4 class="font-bold text-text-dark group-hover:text-rp-teal transition">${window.escapeHTML ? window.escapeHTML(item.name) : item.name}</h4>
+                                <div onclick="event.preventDefault(); event.stopPropagation(); removeItem('${productId}')" class="text-red-500 text-xs hover:underline mt-1 cursor-pointer w-fit">Eliminar</div>
                             </div>
                         </a>
                     </div>
@@ -525,12 +525,13 @@
         });
 
         // Nueva función: Cambiar cantidad con botones (+/-)
-        function updateItemQty(index, change) {
+        function updateItemQty(id, change) {
             let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-            if (cart[index]) {
-                let newQty = parseInt(cart[index].quantity) + change;
-                if (newQty < 1) newQty = 1; // Mínimo 1
-                cart[index].quantity = newQty;
+            let item = cart.find(i => i.id === id);
+            if (item) {
+                let newQty = parseInt(item.quantity) + change;
+                if (isNaN(newQty) || newQty < 1) newQty = 1; // Mínimo 1
+                item.quantity = newQty;
                 localStorage.setItem('cartItems', JSON.stringify(cart));
                 
                 // Actualizar todo
@@ -540,14 +541,15 @@
         }
 
         // Nueva función: Cambiar cantidad escribiendo en el input
-        function setItemQty(index, value) {
+        function setItemQty(id, value) {
             let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
             let newQty = parseInt(value);
             
             if (isNaN(newQty) || newQty < 1) newQty = 1; // Validación
             
-            if (cart[index]) {
-                cart[index].quantity = newQty;
+            let item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = newQty;
                 localStorage.setItem('cartItems', JSON.stringify(cart));
                 
                 renderCart();
@@ -555,12 +557,13 @@
             }
         }
 
-        function removeItem(index) {
+        function removeItem(id) {
             let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-            cart.splice(index, 1);
+            const index = cart.findIndex(i => i.id === id);
+            if (index > -1) cart.splice(index, 1);
             localStorage.setItem('cartItems', JSON.stringify(cart));
             renderCart();
-            updateCartCount();
+            window.updateCartCount();
         }
 
         function clearCart() {
@@ -585,7 +588,7 @@
                 if (msg) msg.classList.add('hidden');
                 
                 renderCart();
-                updateCartCount();
+                window.updateCartCount();
             }
         }
 
@@ -596,7 +599,7 @@
     <script>
         const cart = JSON.parse(localStorage.getItem('cartItems')) || [];
         const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        window.dataLayer.push({ event: 'view_cart', currency: 'USD', value: total, items: cart.map(item => ({ item_id: item.id, item_name: item.name, price: item.price, quantity: item.quantity })) });
+        window.dataLayer.push({ event: 'view_cart', currency: 'USD', value: total, items: cart.map(item => ({ item_id: item.id || item.name.toLowerCase().replace(/\s+/g, '-'), item_name: item.name, price: item.price, quantity: item.quantity })) });
         window.dataLayer.push({ event: 'page_view', page_title: 'Carrito - Circula', page_location: window.location.href });
     </script>
 </body>

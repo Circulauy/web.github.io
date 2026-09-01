@@ -270,36 +270,44 @@
                 if (!container) return;
                 
                 const panels = gsap.utils.toArray(".nosotros-panel");
+                const trigger = document.getElementById("nosotros-scroll-container");
                 
-                // Only apply horizontal scroll on desktop
-                if (window.innerWidth >= 768) {
+                let mm = gsap.matchMedia();
+
+                mm.add("(min-width: 768px)", () => {
+                    if (trigger) trigger.classList.add("h-screen", "overflow-hidden");
+                    container.classList.add("flex-nowrap", "w-[300vw]", "h-screen");
+                    container.classList.remove("flex-wrap", "w-full", "h-auto");
+                    panels.forEach((p, index) => {
+                        p.classList.add("w-screen");
+                        p.classList.remove("w-full", "sticky", "top-[64px]", "z-" + (index * 10), "shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
+                    });
+
                     gsap.to(container, {
                         x: () => -(container.scrollWidth - document.documentElement.clientWidth) + "px",
                         ease: "none",
                         scrollTrigger: {
                             trigger: "#nosotros-scroll-container",
                             pin: true,
-                            scrub: true, // Lock directly to scrollbar to prevent physics conflicts
-                            end: () => "+=" + (container.offsetWidth * 1.5)
+                            scrub: true,
+                            end: () => "+=" + (container.offsetWidth * 1.5),
+                            invalidateOnRefresh: true
                         }
                     });
-                } else {
-                    // Mobile fallback: Interactive Sticky Cards
-                    const trigger = document.getElementById("nosotros-scroll-container");
+                });
+
+                mm.add("(max-width: 767px)", () => {
                     if (trigger) trigger.classList.remove("h-screen", "overflow-hidden");
-                    
                     container.classList.remove("flex-nowrap", "w-[300vw]", "h-screen");
                     container.classList.add("flex-wrap", "w-full", "h-auto");
                     panels.forEach((p, index) => {
                         p.classList.remove("w-screen");
-                        // Add sticky positioning and a shadow so it looks like it slides over the previous one
-                        p.classList.add("w-full", "sticky", "top-[64px]", "z-" + (index * 10)); // top-[64px] clears the header
-                        
+                        p.classList.add("w-full", "sticky", "top-[64px]", "z-" + (index * 10));
                         if (index > 0) {
                             p.classList.add("shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
                         }
                     });
-                }
+                });
             }
         }
         

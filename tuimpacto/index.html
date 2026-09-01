@@ -289,11 +289,23 @@
                 { opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power3.out' }
             );
 
-            // Scroll Horizontal
+            // Scroll Horizontal Responsive con MatchMedia
             const container = document.getElementById("story-horizontal");
             const panels = gsap.utils.toArray(".story-panel");
+            const trigger = document.getElementById("story-scroll-container");
             
-            if (window.innerWidth >= 768) {
+            let mm = gsap.matchMedia();
+
+            mm.add("(min-width: 768px)", () => {
+                // Restaurar estilos para desktop por si viene de mobile
+                trigger.classList.add("h-screen", "overflow-hidden");
+                container.classList.add("flex-nowrap", "w-[300vw]", "h-screen");
+                container.classList.remove("flex-wrap", "w-full", "h-auto");
+                panels.forEach((p, index) => {
+                    p.classList.add("w-screen");
+                    p.classList.remove("w-full", "sticky", "top-0", "z-" + (index * 10), "shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
+                });
+
                 // Desktop horizontal scroll
                 gsap.to(container, {
                     x: () => -(container.scrollWidth - document.documentElement.clientWidth) + "px",
@@ -302,12 +314,14 @@
                         trigger: "#story-scroll-container",
                         pin: true,
                         scrub: true,
-                        end: () => "+=" + (container.offsetWidth * 1.5)
+                        end: () => "+=" + (container.offsetWidth * 1.5),
+                        invalidateOnRefresh: true
                     }
                 });
-            } else {
+            });
+
+            mm.add("(max-width: 767px)", () => {
                 // Mobile sticky cards fallback
-                const trigger = document.getElementById("story-scroll-container");
                 trigger.classList.remove("h-screen", "overflow-hidden");
                 container.classList.remove("flex-nowrap", "w-[300vw]", "h-screen");
                 container.classList.add("flex-wrap", "w-full", "h-auto");
@@ -317,7 +331,7 @@
                     p.classList.add("w-full", "sticky", "top-0", "z-" + (index * 10));
                     if (index > 0) p.classList.add("shadow-[0_-20px_50px_rgba(0,0,0,0.6)]");
                 });
-            }
+            });
         });
 
         function scrollToDashboard() {

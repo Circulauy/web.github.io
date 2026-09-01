@@ -997,7 +997,17 @@
                             }
                         };
                         
+                        let isVisible = false;
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                isVisible = entry.isIntersecting;
+                                if (isVisible) loop();
+                            });
+                        });
+                        observer.observe(canvas);
+
                         function loop() {
+                            if (!isVisible) return;
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             for (let i = particles.length - 1; i >= 0; i--) {
                                 particles[i].update();
@@ -1009,7 +1019,7 @@
                             }
                             requestAnimationFrame(loop);
                         }
-                        loop();
+                        // loop(); // loop is now started by the observer
                     })();
                 </script>
             </section>
@@ -1340,7 +1350,18 @@
                 }
             }
 
+            let isVideoVisible = false;
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    isVideoVisible = entry.isIntersecting;
+                    if (isVideoVisible) updateVideoFrame();
+                });
+            }, { rootMargin: "200px" }); // Start slightly before it enters screen
+            videoObserver.observe(videoSection);
+
             function updateVideoFrame() {
+                if (!isVideoVisible) return;
+                
                 if (canvas && isInitialized) {
                     // Interpolación gradual (0.08) para máxima suavidad visual
                     smoothProgress += (scrollProgress - smoothProgress) * 0.08;
@@ -1353,7 +1374,7 @@
                 }
                 requestAnimationFrame(updateVideoFrame);
             }
-            requestAnimationFrame(updateVideoFrame);
+            // updateVideoFrame() is now managed by videoObserver
 
 
 
