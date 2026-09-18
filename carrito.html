@@ -10,7 +10,9 @@
     <link rel="icon" type="image/svg+xml" href="images/logonegro.svg">
     <script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', 'GTM-TH8WM8KW');</script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script>tailwind.config = { theme: { extend: { colors: { 'bg-light': '#fafafa', 'text-dark': '#0f172a', 'rp-teal': '#79C7C7', 'rp-teal-dark': '#3B7A7A', 'rp-mint': '#A3E6BA', 'rp-blue-light': '#f8f9fa', 'rp-gray-soft': '#dddddd', 'mp-blue': '#009ee3' }, fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Outfit', 'sans-serif'], brand: ['Inter', 'sans-serif'], serif: ['Outfit', 'sans-serif'] } } } }</script>
     <style>
         html {
@@ -115,6 +117,7 @@
             border-radius: 0.375rem;
             overflow: hidden;
         }
+
         .qty-control button {
             padding: 0.25rem 0.5rem;
             background-color: #f3f4f6;
@@ -122,9 +125,11 @@
             color: #374151;
             transition: background-color 0.2s;
         }
+
         .qty-control button:hover {
             background-color: #e5e7eb;
         }
+
         .qty-control input {
             width: 2.5rem;
             text-align: center;
@@ -134,6 +139,7 @@
             -moz-appearance: textfield;
             appearance: textfield;
         }
+
         .qty-control input::-webkit-outer-spin-button,
         .qty-control input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -283,7 +289,8 @@
                                     <span>Subtotal</span>
                                     <span id="cart-subtotal-page" class="font-bold text-lg">$0.00</span>
                                 </div>
-                                <div id="discount-row" class="flex justify-between items-center text-green-600 font-semibold hidden">
+                                <div id="discount-row"
+                                    class="flex justify-between items-center text-green-600 font-semibold hidden">
                                     <span>Descuento (<span id="discount-percent-val">0</span>%)</span>
                                     <span id="cart-discount-page">-$0.00</span>
                                 </div>
@@ -335,22 +342,22 @@
         function renderCart() {
             const cart = JSON.parse(localStorage.getItem('cartItems')) || [];
             const container = document.getElementById('cart-items-list-page');
-            
+
             if (cart.length === 0) {
                 container.innerHTML = '<div class="p-8 text-center text-gray-500"><p class="text-lg">Tu carrito está vacío</p><a href="tienda.html" class="inline-block mt-4 text-rp-teal hover:underline">Ir a la tienda</a></div>';
                 updateTotals(0);
                 return;
             }
-            
+
             container.innerHTML = '';
-            
+
             cart.forEach((item, index) => {
                 const row = document.createElement('div');
                 row.className = 'cart-item-row';
-                
+
                 // Generamos ID de producto si no existe (fallback al nombre slugificado)
                 const productId = item.id || item.name.toLowerCase().replace(/\s+/g, '-');
-                
+
                 // HTML reutilizable para el control de cantidad
                 const qtyControlHTML = `
                     <div class="qty-control">
@@ -388,7 +395,7 @@
                 `;
                 container.appendChild(row);
             });
-            
+
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             updateTotals(total);
         }
@@ -398,12 +405,12 @@
 
         function updateTotals(subtotal) {
             document.getElementById('cart-subtotal-page').textContent = `$${subtotal.toFixed(2)}`;
-            
+
             let discountAmount = 0;
             const discountRow = document.getElementById('discount-row');
             const discountEl = document.getElementById('cart-discount-page');
             const discountPercentVal = document.getElementById('discount-percent-val');
-            
+
             if (appliedDiscountPercent > 0) {
                 discountAmount = subtotal * (appliedDiscountPercent / 100);
                 if (discountEl) discountEl.textContent = `-$${discountAmount.toFixed(2)}`;
@@ -421,7 +428,7 @@
             const input = document.getElementById('discount-code-input');
             const btn = document.getElementById('apply-discount-btn');
             const msg = document.getElementById('discount-message');
-            
+
             if (!input || !btn || !msg) return;
 
             const code = input.value.trim();
@@ -437,7 +444,7 @@
             try {
                 // Detectar entorno local
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
-                
+
                 let data;
                 if (isLocal) {
                     // Simulación local de cupones
@@ -464,12 +471,12 @@
 
                     msg.textContent = `¡Cupón aplicado! Descuento del ${appliedDiscountPercent}%`;
                     msg.className = "text-xs mt-1 text-green-600 font-semibold block";
-                    
+
                     input.disabled = true;
                     btn.disabled = false;
                     btn.textContent = "Quitar";
                     btn.onclick = removeDiscountCode;
-                    
+
                     // Re-renderizar
                     renderCart();
                 } else {
@@ -537,7 +544,7 @@
                 if (isNaN(newQty) || newQty < 1) newQty = 1; // Mínimo 1
                 item.quantity = newQty;
                 localStorage.setItem('cartItems', JSON.stringify(cart));
-                
+
                 // Actualizar todo
                 renderCart();
                 window.updateCartCount(); // Sincroniza el header
@@ -548,14 +555,14 @@
         function setItemQty(id, value) {
             let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
             let newQty = parseInt(value);
-            
+
             if (isNaN(newQty) || newQty < 1) newQty = 1; // Validación
-            
+
             let item = cart.find(i => i.id === id);
             if (item) {
                 item.quantity = newQty;
                 localStorage.setItem('cartItems', JSON.stringify(cart));
-                
+
                 renderCart();
                 window.updateCartCount();
             }
@@ -577,7 +584,7 @@
                 localStorage.removeItem('appliedDiscountPercent');
                 appliedDiscountCode = null;
                 appliedDiscountPercent = 0;
-                
+
                 const input = document.getElementById('discount-code-input');
                 const btn = document.getElementById('apply-discount-btn');
                 const msg = document.getElementById('discount-message');
@@ -590,7 +597,7 @@
                     btn.onclick = applyDiscountCode;
                 }
                 if (msg) msg.classList.add('hidden');
-                
+
                 renderCart();
                 window.updateCartCount();
             }
