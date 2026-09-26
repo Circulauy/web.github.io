@@ -124,7 +124,7 @@
         @media (max-width: 768px) {
             .timeline-step::before {
                 left: 24px;
-                bottom: -50px;
+                bottom: -6rem;
             }
         }
 
@@ -367,7 +367,7 @@
                     <!-- Step 1 -->
                     <div
                         class="relative flex flex-col md:flex-row items-center justify-between mb-24 timeline-step reveal-element">
-                        <div class="md:w-5/12 text-center md:text-right mb-8 md:mb-0 md:pr-12">
+                        <div class="md:w-5/12 text-left md:text-right pl-16 md:pl-0 mb-8 md:mb-0 md:pr-12 w-full">
                             <span class="text-4xl font-bold text-kraft block mb-2 font-heading opacity-50">01</span>
                             <h3 class="text-2xl font-bold text-text-dark mb-3">Recolección con Propósito</h3>
                             <p class="text-slate-500 font-light">Recuperamos tapitas y plásticos de un solo uso
@@ -389,7 +389,7 @@
                     <!-- Step 2 -->
                     <div
                         class="relative flex flex-col md:flex-row-reverse items-center justify-between mb-24 timeline-step reveal-element">
-                        <div class="md:w-5/12 text-center md:text-left mb-8 md:mb-0 md:pl-12">
+                        <div class="md:w-5/12 text-left md:text-left pl-16 md:pl-12 mb-8 md:mb-0 w-full">
                             <span class="text-4xl font-bold text-kraft block mb-2 font-heading opacity-50">02</span>
                             <h3 class="text-2xl font-bold text-text-dark mb-3">Clasificación Orgánica</h3>
                             <p class="text-slate-500 font-light">Separación minuciosa por colores para crear paletas
@@ -411,7 +411,7 @@
                     <!-- Step 3 -->
                     <div
                         class="relative flex flex-col md:flex-row items-center justify-between mb-24 timeline-step reveal-element">
-                        <div class="md:w-5/12 text-center md:text-right mb-8 md:mb-0 md:pr-12">
+                        <div class="md:w-5/12 text-left md:text-right pl-16 md:pl-0 mb-8 md:mb-0 md:pr-12 w-full">
                             <span class="text-4xl font-bold text-kraft block mb-2 font-heading opacity-50">03</span>
                             <h3 class="text-2xl font-bold text-text-dark mb-3">Fusión de Precisión</h3>
                             <p class="text-slate-500 font-light">Mediante un proceso de termocompresión
@@ -432,7 +432,7 @@
                     <!-- Step 4 -->
                     <div
                         class="relative flex flex-col md:flex-row-reverse items-center justify-between timeline-step reveal-element">
-                        <div class="md:w-5/12 text-center md:text-left mb-8 md:mb-0 md:pl-12">
+                        <div class="md:w-5/12 text-left md:text-left pl-16 md:pl-12 mb-8 md:mb-0 w-full">
                             <span class="text-4xl font-bold text-kraft block mb-2 font-heading opacity-50">04</span>
                             <h3 class="text-2xl font-bold text-text-dark mb-3">Moldeado Monolítico</h3>
                             <p class="text-slate-500 font-light">El material se transforma primero en placas sólidas.
@@ -1069,7 +1069,7 @@
                                 <i class="fas fa-download mr-2"></i> Si no inicia, clic aquí
                             </a>
                         </div>
-                        <form class="bg-white p-1" id="b2b-form">
+                        <form class="bg-white p-1" id="b2b-form" action="send_email.php" method="POST">
                             <input type="hidden" name="form_type" value="b2b_lead">
 
                             <div class="mb-8">
@@ -1098,7 +1098,7 @@
 
 
                             <button type="submit"
-                                class="w-full py-4 bg-text-dark text-white font-medium hover:bg-espesura transition-all duration-300 title-style text-sm tracking-widest uppercase flex justify-center items-center gap-3">
+                                class="w-full py-4 px-6 text-center bg-text-dark text-white font-medium hover:bg-espesura transition-all duration-300 title-style text-sm tracking-widest uppercase flex justify-center items-center gap-3">
                                 Descargar Catálogo / Solicitar Cotización <i class="fas fa-arrow-right"></i>
                             </button>
                         </form>
