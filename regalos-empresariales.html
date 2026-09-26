@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -402,7 +402,7 @@
                         </div>
                         <div class="md:w-5/12 pr-0 md:pr-12 pl-16 md:pl-0 w-full">
                             <div class="h-48 bg-gray-200 rounded-lg overflow-hidden shadow-sm relative">
-                                <video src="images/clasificacion.mov" autoplay loop muted playsinline
+                                <video src="images/clasificacion.mp4" autoplay loop muted playsinline
                                     class="w-full h-full object-cover object-top transition-all duration-500"></video>
                             </div>
                         </div>
@@ -1069,7 +1069,7 @@
                                 <i class="fas fa-download mr-2"></i> Si no inicia, clic aquí
                             </a>
                         </div>
-                        <form action="send_email.php" method="POST" class="bg-white p-1" id="b2b-form">
+                        <form class="bg-white p-1" id="b2b-form">
                             <input type="hidden" name="form_type" value="b2b_lead">
 
                             <div class="mb-8">
@@ -1281,10 +1281,34 @@
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
 
+                    // EVENTO PARA GOOGLE TAG MANAGER
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'generate_lead',
+                        'form_name': 'B2B_Regalos'
+                    });
+
                     // Enviamos el correo de fondo silenciosamente
-                    fetch('send_email.php', {
+                    const nombre = formData.get('nombre') || '';
+                    const email = formData.get('email') || '';
+                    const empresa = formData.get('empresa') || '';
+                    const detalles = formData.get('detalles_cotizacion') || 'No se registraron detalles de cotización.';
+                    
+                    const payload = {
+                        name: nombre,
+                        email: email,
+                        interest: "Regalos Empresariales (B2B Lead)",
+                        message: `Empresa: ${empresa}\nDetalles de cotización simulada:\n${detalles}`,
+                        honeypot: ""
+                    };
+
+                    fetch('/.netlify/functions/contact_form', {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
                     }).catch(error => console.log('Error enviando lead:', error));
                 });
             }

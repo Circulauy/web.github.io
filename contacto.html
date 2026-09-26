@@ -342,6 +342,13 @@
                     document.getElementById('file-info').innerHTML = '<i class="fas fa-info-circle mr-1"></i> Imágenes se comprimirán automáticamente. PDFs máx 10MB.';
                     document.getElementById('file-info').className = 'mt-2 ml-1 text-xs text-slate-400';
                     document.getElementById('vacancy-alert').classList.add('hidden');
+                    
+                    // EVENTO PARA GOOGLE TAG MANAGER
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'generate_lead',
+                        'form_name': 'Contacto_General'
+                    });
                 } else {
                     throw new Error("Respuesta de red incorrecta");
                 }
